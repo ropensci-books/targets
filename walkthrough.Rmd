@@ -1,6 +1,7 @@
 ```{r, message = FALSE, warning = FALSE, echo = FALSE}
 knitr::opts_knit$set(root.dir = fs::dir_create(tempfile()))
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+options(crayon.enabled = FALSE)
 ```
 
 ```{r, include = FALSE}
@@ -27,7 +28,8 @@ withr::with_dir("R", {
 tar_script({
   library(targets)
   source("R/functions.R")
-  options(crayon.enabled = FALSE, tidyverse.quiet = TRUE)
+  options(crayon.enabled = FALSE)
+  options(tidyverse.quiet = TRUE)
   tar_options(packages = c("biglm", "rmarkdown", "tidyverse"))
   tar_pipeline(
     tar_target(
