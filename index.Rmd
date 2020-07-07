@@ -1,0 +1,90 @@
+---
+title: "The targets R Package User Manual"
+author:
+- "Will Landau"
+- "Copyright Eli Lilly and Company"
+site: bookdown::bookdown_site
+documentclass: book
+output:
+  bookdown::gitbook:
+    config:
+      sharing: null
+    includes:
+      in_header: [google_analytics.html]
+      after_body: footer.html
+url: "https://wlandau.github.io/targets-manual"
+description: "In-depth discussion of the major functionality of targets."
+github-repo: "wlandau/targets-manual"
+cover-image: /images/logo.png
+apple-touch-icon: "images/apple-touch-icon.png"
+apple-touch-icon-size: 120
+favicon: "images/favicon.ico"
+always_allow_html: yes
+---
+
+```{r, message = FALSE, warning = FALSE,  echo = FALSE}
+knitr::opts_knit$set(root.dir = fs::dir_create(tempfile()))
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+# Introduction {#intro}
+
+
+The [`targets`](https://github.com/wlandau/targets) package is a [Make](https://www.gnu.org/software/make/)-like pipeline toolkit for Statistics and data science in R. With [`targets`](https://github.com/wlandau/targets), you can maintain a reproducible workflow without repeating yourself. [`targets`](https://github.com/wlandau/targets) learns how your pipeline fits together, skips costly runtime for tasks that are already up to date, runs only the necessary computation, supports implicit parallel computing, abstracts files as R objects, and shows tangible evidence that the results match the underlying code and data.
+
+The current chapter elaborates on the role and benefits of [`targets`](https://github.com/wlandau/targets), and subsequent chapters walk through the major functionality. The [documentation website](https://wlandau.github.io/targets/index.html), is a companion resource with [installation instructions](https://wlandau.github.io/targets/index.html#installation), [links to example projects](https://wlandau.github.io/targets/index.html#examples), and a [reference page with all user-side functions](https://wlandau.github.io/targets/reference/index.html). 
+
+## Motivation
+
+Data analysis can be slow. A round of scientific computation can take several minutes, hours, or even days to complete. After it finishes, if you update your code or data, your hard-earned results may no longer be valid. Unchecked, this invalidation creates chronic [Sisyphean](https://en.wikipedia.org/wiki/Sisyphus) loop:
+
+1. Launch the code.
+2. Wait while it runs.
+3. Discover an issue.
+4. Restart from scratch.
+
+## Pipeline toolkits
+
+[Pipeline toolkits](https://github.com/pditommaso/awesome-pipeline) like [GNU Make](https://www.gnu.org/software/make/) break the cycle. They watch the dependency graph of the whole workflow and skip steps, or "targets", whose code, data, and upstream dependencies have not changed since the last run of the pipeline. When all targets are up to date, this is evidence that the results match the underlying code and data, which helps us trust the results and confirm the computation is reproducible.
+
+## The `targets` package
+
+Unlike most [pipeline toolkits](https://github.com/pditommaso/awesome-pipeline), which are language agnostic or Python-focused, the [`targets`](https://github.com/wlandau/targets) package allows data scientists and researchers to work entirely within R. [`targets`](https://github.com/wlandau/targets) implicitly nudges users toward a clean, function-oriented programming style that fits the intent of the R language and helps practitioners maintain their data analysis projects.
+
+## What about `drake`?
+
+The [`drake`](https://github.com/ropensci/drake) package is an older and
+more established R-focused pipeline toolkit. It is has become a key
+piece of the R ecosystem, and development will continue. However, years
+of community feedback have exposed major user-side limitations regarding
+data management, collaboration, parallel efficiency, and pipeline
+archetypes. Unfortunately, these limitations are permanent. Solutions in
+[`drake`](https://github.com/ropensci/drake) itself would make the
+package incompatible with existing projects that use it. That is why
+`targets` was created. The `targets` package borrows from past learnings
+and attempts to advance the user experience beyond
+[`drake`](https://github.com/ropensci/drake)’s potential capabilities.
+Please see the [statement of
+need](https://wlandau.github.io/targets/articles/need.html) for technical details.
+
+If you know [`drake`](https://github.com/ropensci/drake), then you already almost know `targets`. Both tools require you to express your work in functions, which is most of the work for most users, and the packages themselves have similar interfaces. Most functions in `targets` have counterparts in [`drake`](https://github.com/ropensci/drake).
+
+Functions in `targets`| Similar functions in `drake`
+---|---
+`tar_script()` | `use_drake()`, `drake_script()`
+`tar_pipeline()` | `drake_plan()`
+`tar_target()`, `tar_target_external()` | `target()`
+`tar_options()` | `drake_config()`
+`tar_outdated()` | `outdated()`
+`tar_visnetwork()`, `tar_glimpse()` | `vis_drake_graph()`, `r_vis_drake_graph()` 
+`tar_network()` | `drake_graph_info()`, `r_drake_graph_info()`
+`tar_make()`, `tar_make_clustermq()`, and `tar_make_future()` | `make()`, `r_make()`
+`tar_load()` | `loadd()`
+`tar_read()` | `readd()`
+`tar_meta()` | `diagnose()`, `build_times()`, `cached()`
+`tar_progress()` | `drake_progress()`, `drake_running()`, `drake_done()`, `drake_failed()`, `drake_cancelled()`
+`tar_deduplicate()`, `tar_delete()`, `tar_destroy()`, `tar_invalidate()`, `tar_prune()` | `clean()`
+`tar_name()` | `id_chr()`
+`tar_knitr()` | `knitr_in()`
+`tar_cancel()` | `cancel()`, `cancel_if()`
+`tar_cue()` | `trigger()`

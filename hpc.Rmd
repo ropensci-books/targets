@@ -1,0 +1,260 @@
+# High-performance computing {#hpc}
+
+```{r, message = FALSE, warning = FALSE, echo = FALSE}
+knitr::opts_knit$set(root.dir = fs::dir_create(tempfile()))
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = FALSE)
+```
+
+```{r, message = FALSE, warning = FALSE, echo = FALSE}
+library(targets)
+```
+
+`targets` supports high-performance computing with the `tar_make_clustermq()` and `tar_make_future()` functions. These functions are like `tar_make()`, but they allow multiple targets to run simultaneously over parallel workers. These workers can be processes on your local machine, or they can be jobs on a cluster. The master process automatically sends a target to a worker as soon as
+
+1. The worker is available, and
+1. All the target's upstream dependency targets have been checked or built.
+
+Practical real-world examples of high-performance computing in `targets` can be found at the examples [linked from here](https://wlandau.github.io/targets/index.html#examples). But for the purposes of explaining the mechanics of the package, consider the following sketch of a pipeline.
+
+```{r, echo = FALSE}
+tar_script({
+  tar_pipeline(
+    tar_target(data, get_data()),
+    tar_target(fast_fit, fit_small_model(data)),
+    tar_target(slow_fit, fit_slow_model(data)),
+    tar_target(plot_1, make_plot(fast_fit)),
+    tar_target(plot_2, make_plot(slow_fit))
+  )
+})
+```
+
+```{r}
+tar_visnetwork()
+```
+
+
+When we run this pipeline with high-performance computing, `targets` automatically knows to wait for `data` to finish running before moving on to the other targets. Once `data` is finished, it moves on to targets `fast_fit` and `slow_fit`. If `fast_fit` finishes before `slow_fit`, target `plot_1` begins even as `slow_fit` is still running. Unlike [`drake`](https://github.com/ropensci/drake), `targets` applies this behavior not only to stem targets, but also to branches of patterns.
+
+The following sections cover the mechanics and configuration details of high-performance computing in `targets`.
+
+## Clustermq
+
+`tar_make_clustermq()` uses persistent workers. That means all the parallel processes launch together as soon as there is a target to build, and all the processes keep running until the pipeline winds down. The video clip below visualizes the concept.
+
+<script src="https://fast.wistia.com/embed/medias/ycczhxwkjw.jsonp" async></script><script src="https://fast.wistia.com/assets/external/E-v1.js" async></script><div class="wistia_responsive_padding" style="padding:56.21% 0 0 0;position:relative;"><div class="wistia_responsive_wrapper" style="height:100%;left:0;position:absolute;top:0;width:100%;"><div class="wistia_embed wistia_async_ycczhxwkjw videoFoam=true" style="height:100%;position:relative;width:100%"><div class="wistia_swatch" style="height:100%;left:0;opacity:0;overflow:hidden;position:absolute;top:0;transition:opacity 200ms;width:100%;"><img src="https://fast.wistia.com/embed/medias/ycczhxwkjw/swatch" style="filter:blur(5px);height:100%;object-fit:contain;width:100%;" alt="" onload="this.parentNode.style.opacity=1;" /></div></div></div></div>
+
+### Clustermq installation
+
+Persistent workers require the [`clustermq`](https://github.com/mschubert/clustermq) R package, which in turn requires [ZeroMQ](http://zeromq.org/). Please refer to the [`clustermq` installation guide](https://github.com/mschubert/clustermq/blob/master/README.md#installation) for specific instructions.
+
+### Clustermq locally
+
+When you write your `_targets.R` script, be sure to set the `clustermq.scheduler` global option to a a local scheduler like `"multicore"`. Many of the supported schedulers and their configuration details are [listed here](https://mschubert.github.io/clustermq/articles/userguide.html#configuration).
+
+```{r}
+# _targets.R
+options(clustermq.scheduler = "multicore")
+tar_pipeline(
+  tar_target(data, get_data()),
+  tar_target(fast_fit, fit_small_model(data)),
+  tar_target(slow_fit, fit_slow_model(data)),
+  tar_target(plot_1, make_plot(fast_fit)),
+  tar_target(plot_2, make_plot(slow_fit))
+)
+```
+
+Then, run `tar_make_clustermq()` with the appropriate number of workers.
+
+```{r}
+tar_make_clustermq(workers = 2)
+```
+
+### Clustermq remotely
+
+For parallel computing on a cluster,
+
+1. Choose a [scheduler listed here](https://mschubert.github.io/clustermq/articles/userguide.html#configuration) that corresponds to your cluster's resource manager.
+1. Create a [template file](https://github.com/mschubert/clustermq/tree/master/inst) that configures the computing requirements and other settings for the cluster.
+
+Supply the scheduler option and template file to the `clustermq.scheduler` and `clustermq.template` global options in your `_targets.R` file.
+
+```{r}
+# _targets.R
+options(clustermq.scheduler = "sge", clustermq.template = "sge.tmpl")
+tar_pipeline(
+  tar_target(data, get_data()),
+  tar_target(fast_fit, fit_small_model(data)),
+  tar_target(slow_fit, fit_slow_model(data)),
+  tar_target(plot_1, make_plot(fast_fit)),
+  tar_target(plot_2, make_plot(slow_fit))
+)
+```
+
+Above, `sge_tmpl` refers to a template file like the one below.
+
+```
+## From https://github.com/mschubert/clustermq/wiki/SGE
+#$ -N {{ job_name }}  # Worker name.
+#$ -t 1-{{ n_jobs }}  # Submit workers as an array.
+#$ -j y               # Combine stdout and stderr into one worker log file.
+#$ -o /dev/null       # Worker log files.
+#$ -cwd               # Use project root as working directory.
+#$ -V                 # Use environment variables.
+module load R/3.6.3   # Needed if R is an environment module on the cluster.
+CMQ_AUTH={{ auth }} R --no-save --no-restore -e 'clustermq:::worker("{{ master }}")' # Leave alone.
+```
+
+Then, run `tar_make_clustermq()` as before.
+
+```{r}
+tar_make_clustermq(workers = 2)
+```
+
+See the examples [linked from here](https://wlandau.github.io/targets/index.html#examples) to see how this setup works in real-world projects.
+
+### Clustermq configuration
+
+In addition to configuration options hard-coded in the template file, you can supply computing resources to individual targets with the `template` argument of `tar_options()`. For example, if your template has a wildcard `num_cores` for the number of cores per worker,
+
+```
+#$ -pe smp {{ num_cores }} # Number of cores per worker
+#$ -N {{ job_name | 1 }}
+#$ -t 1-{{ n_jobs }}
+#$ -j y
+#$ -o /dev/null
+#$ -cwd
+#$ -V
+module load R/3.6.3
+CMQ_AUTH={{ auth }} R --no-save --no-restore -e 'clustermq:::worker("{{ master }}")'
+```
+
+then you can call `tar_make_clustermq()` like this:
+
+```{r}
+tar_make_clustermq(workers = 2, template = list(num_cores = 2))
+```
+
+This particular use case comes up when you have custom parallel computing within targets and need to take advantage of multiple cores.
+
+## Future
+
+`tar_make_future()` runs transient workers. That means each target gets its own worker which initializes when the target begins and terminates when the target ends. The following video clip demonstrates the concept.
+
+<script src="https://fast.wistia.com/embed/medias/340yvlp515.jsonp" async></script><script src="https://fast.wistia.com/assets/external/E-v1.js" async></script><div class="wistia_responsive_padding" style="padding:56.21% 0 0 0;position:relative;"><div class="wistia_responsive_wrapper" style="height:100%;left:0;position:absolute;top:0;width:100%;"><div class="wistia_embed wistia_async_340yvlp515 videoFoam=true" style="height:100%;position:relative;width:100%"><div class="wistia_swatch" style="height:100%;left:0;opacity:0;overflow:hidden;position:absolute;top:0;transition:opacity 200ms;width:100%;"><img src="https://fast.wistia.com/embed/medias/340yvlp515/swatch" style="filter:blur(5px);height:100%;object-fit:contain;width:100%;" alt="" onload="this.parentNode.style.opacity=1;" /></div></div></div></div><br>
+
+### Future installation
+
+Install the [`future`](https://github.com/HenrikBengtsson/future) package.
+
+```{r, eval = FALSE}
+install.packages("future") # CRAN release
+# Alternatively, install the GitHub development version.
+devtools::install_github("HenrikBengtsson/future", ref = "develop")
+```
+
+If you intend to use a cluster, be sure to install the [`future.batchtools`](https://github.com/HenrikBengtsson/future.batchtools) package too. The [`future`](https://github.com/HenrikBengtsson/future) ecosystem contains even more packages that extend [`future`](https://github.com/HenrikBengtsson/future)'s parallel computing functionality, such as [`future.callr`](https://github.com/HenrikBengtsson/future.callr).
+
+### Future locally
+
+To parallelize targets over multiple processes on your local machine, declare one of the `future` [plans listed here](https://github.com/HenrikBengtsson/future/#controlling-how-futures-are-resolved) in your `_targets.R` file.
+
+```{r}
+# _targets.R
+library(future)
+plan(multisession)
+tar_pipeline(
+  tar_target(data, get_data()),
+  tar_target(fast_fit, fit_small_model(data)),
+  tar_target(slow_fit, fit_slow_model(data)),
+  tar_target(plot_1, make_plot(fast_fit)),
+  tar_target(plot_2, make_plot(slow_fit))
+)
+```
+
+Then, run `tar_make_future()` with the desired number of workers. Here, the `workers` argument specifies the maximum number of transient workers to allow at a given time. Some `future` plans also have optional `workers` arguments that set their own caps.
+
+```{r}
+tar_make_future(workers = 2)
+```
+
+### Future remotely
+
+To run transient workers on a cluster, first install the [`future.batchtools`](https://github.com/HenrikBengtsson/future.batchtools) package. Then, set one of [these plans](https://github.com/HenrikBengtsson/future.batchtools#choosing-batchtools-backend) in your `_targets.R` file.
+
+```{r}
+# _targets.R
+library(future)
+library(future.batchtools)
+plan(batchtools_sge, template = "sge.tmpl")
+tar_pipeline(
+  tar_target(data, get_data()),
+  tar_target(fast_fit, fit_small_model(data)),
+  tar_target(slow_fit, fit_slow_model(data)),
+  tar_target(plot_1, make_plot(fast_fit)),
+  tar_target(plot_2, make_plot(slow_fit))
+)
+```
+
+Here, our template file `sge.tmpl` is configured for `batchtools`.
+
+```
+#!/bin/bash
+#$ -cwd               # Run in the current working directory.
+#$ -j y               # Direct stdout and stderr to the same file.
+#$ -o <%= log.file %> # log file
+#$ -V                 # Use environment variables.
+#$ -N <%= job.name %> # job name
+module load R/3.6.3   # Uncomment and adjust if R is an environment module.
+Rscript -e 'batchtools::doJobCollection("<%= uri %>")' # Leave alone.
+exit 0 # Leave alone.
+```
+
+### Future configuration
+
+The `tar_target()`, `tar_target_external()`, and `tar_options()` functions accept a `resources` argument similar to the `template` argument of `tar_make_clustermq()`. For example, if our `batchtools` template file has a wildcard for the number of cores for a job,
+
+```
+#!/bin/bash
+#$ -pe smp <%= resources[["num_cores"]] | 1 %> # Wildcard for cores per job.
+#$ -cwd
+#$ -j y
+#$ -o <%= log.file %>
+#$ -V
+#$ -N <%= job.name %>
+module load R/3.6.3
+Rscript -e 'batchtools::doJobCollection("<%= uri %>")'
+exit 0
+```
+
+then you can set the number of cores for individual targets. In the case below, maybe the slow model needs 2 cores to run fast enough.
+
+```{r}
+# _targets.R
+library(future)
+library(future.batchtools)
+plan(batchtools_sge, template = "sge.tmpl")
+tar_pipeline(
+  tar_target(data, get_data()),
+  tar_target(fast_fit, fit_small_model(data)),
+  tar_target(slow_fit, fit_slow_model(data), resources = list(num_cores = 2)),
+  tar_target(plot_1, make_plot(fast_fit)),
+  tar_target(plot_2, make_plot(slow_fit))
+)
+```
+
+Then, run `tar_make_future()` as usual.
+
+```{r}
+tar_make_future(workers = 2)
+```
+
+## Advanced
+
+Functions `tar_target()`, `tar_target_external()`, and `tar_options()` support advanced configuration options for heavy-duty pipelines that require high-performance computing.
+
+* `deployment`: With the `deployment` argument, you can choose to run some targets locally on the master process instead of on a high-performance computing worker. This options is suitable for lightweight targets such as R Markdown reports where runtime is quick and a cluster would be excessive.
+* `memory`: Choose whether to retain a target in memory or remove it from memory whenever it is not needed at the moment. This is a tradeoff between memory consumption and storage read speeds, and like all of the options listed here, you can set it on a target-by-target basis. The default settings consume a lot of memory to avoid frequently reading from storage. To keep memory usage down to a minimum, set `memory = "transient"` in `tar_options()` and set `garbage_collection = TRUE` in your `tar_make*()` function.
+* `storage`: Choose whether the parallel workers or the master process is responsible for saving the target's value. For slow network file systems on clusters, `storage = "local"` is often faster for small numbers of targets. For large numbers of targets or low-bandwidth connections between the master and workers, `storage = "remote"` is often faster. Always choose `storage = "local"` if the workers do no have access to the file system with the `_targets/` data store.
+* `retrieval`: Choose whether the parallel workers or the master process is responsible for reading dependency targets from disk. Should usually be set to whatever you choose for `storage` (default). Always choose `retrieval = "local"` if the workers do no have access to the file system with the `_targets/` data store.
+* `format`: If your pipeline has large computation, it may also have large data. Consider setting the `format` argument to help `targets` store and retrieve your data faster.
+* `error`: Set `error` to `"continue"` to let the rest of the pipeline keep running even if a target encounters an error.

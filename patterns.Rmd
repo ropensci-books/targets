@@ -1,0 +1,217 @@
+# Patterns and branching {#patterns}
+
+```{r, message = FALSE, warning = FALSE, echo = FALSE}
+knitr::opts_knit$set(root.dir = fs::dir_create(tempfile()))
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+```{r, message = FALSE, warning = FALSE, echo = FALSE}
+library(targets)
+library(tidyverse)
+```
+
+In `targets`, it is possible to write shorthand for a large collection of targets. The `pattern` argument of `tar_target()` allows you to dynamically branch over subsets of upstream targets. The following minimal example explores the mechanics of patterns and branching (and examples of branching in real-world projects are [linked from here](https://wlandau.github.io/targets/index.html#examples)).
+
+```{r}
+library(targets)
+library(tidyverse)
+tar_script({
+  options(crayon.enabled = FALSE, tidyverse.quiet = TRUE)
+  tar_pipeline(
+    tar_target(w, c(1, 2)),
+    tar_target(x, c(10, 20)),
+    tar_target(y, w + x, pattern = map(w, x)),
+    tar_target(z, sum(y)),
+    tar_target(z2, length(y), pattern = map(y))
+  )
+})
+```
+
+```{r}
+tar_visnetwork()
+```
+
+```{r}
+tar_make()
+```
+
+Above, targets `w`, `x`, and `z` are called **stems** because they provide values for other targets to branch over. Target `y` is a **pattern** becuase it defines multiple sub-targets, or **branches**, based on the return values of the targets named inside `map()` or `cross()`. If we read target `y` into memory, all the branches will load and get aggregated according to the `iteration` argument of `tar_target()`.
+
+```{r}
+tar_read(y)
+```
+
+Target `z` accepts this entire aggregate of `y` and sums it.
+
+```{r}
+tar_read(z)
+```
+
+Target `z2` maps over `y`, so each each branch of `z2` accepts a branch of `y`.
+
+```{r}
+tar_read(z2)
+```
+
+## Patterns
+
+As we see above, the `map()` pattern creates one branch for each tuple of slices of the arguments. For example, `map(x, y)` creates one branch corresponding to `x[1]` and `y[1]` and another branch corresponding to `x[2]` and `y[2]`.
+
+The `cross()` pattern instead creates a target for *combination* of arguments. Here, `cross(x, y)` creates 4 targets: One for `x[1]` and `y[1]`, one for `x[1]` and `y[2]`, one for `x[2]` and `y[1]`, and one for `x[2]` and `y[2]`. Since we already ran the equivalent `map()` pattern, the following run only builds the (`x[1]`, `y[2]`) and (`x[2]`, `y[1]`) branches `y`.
+
+```{r}
+tar_script({
+  options(crayon.enabled = FALSE, tidyverse.quiet = TRUE)
+  tar_pipeline(
+    tar_target(w, c(1, 2)),
+    tar_target(x, c(10, 20)),
+    tar_target(y, w + x, pattern = cross(w, x))
+  )
+})
+```
+
+```{r}
+tar_make()
+```
+
+```{r}
+tar_read(y)
+```
+
+## Iteration
+
+There are many ways to slice up a stem for branching, and there are many ways to aggregate the branches of a pattern.^[Slicing is always the same when we branch over an existing pattern. If we have `tar_target(y, x, pattern = map(x))` and `x` is another pattern, then each branch of `y` always gets a branch of `x` regardless of the iteration method. Likewise, the aggregation of stems does not depend on the iteration method because every stem is already aggregated.] The `iteration` argument of `tar_target()` controls the splitting and aggregation protocol on a target-by-target basis, and you can set the default for all targets with the analogous argument of `tar_options()`.
+
+### Vector
+
+`targets` uses vector iteration by default, and you can opt into this behavior by setting `iteration = "vector"` in `tar_target()`. In vector iteration, `targets` uses the [`vctrs`](https://vctrs.r-lib.org/) package to split stems and aggregate banches. That means `vctrs::vec_slice()` slices up stems like `x` for mapping, and `vctrs::vec_c()` aggregates patterns like `y` for operations like `tar_read()`.
+
+For atomic vectors like in the example above, this behavior is already intuitive. But if we map over a data frame, each branch will get a row of the data frame due to vector iteration.
+
+```{r}
+tar_script({
+  options(crayon.enabled = FALSE, tidyverse.quiet = TRUE)
+  print_and_return <- function(x) {
+    print(x)
+    x
+  }
+  tar_pipeline(
+    tar_target(x, data.frame(a = c(1, 2), b = c("a", "b"))),
+    tar_target(y, print_and_return(x), pattern = map(x))
+  )
+})
+```
+
+```{r}
+tar_make()
+```
+
+And since `y` also has iteration = `"vector"`, the aggregate of `y` is a single data frame of all the rows.
+
+```{r}
+tar_read(y)
+```
+
+### List
+
+List iteration splits and aggregates targets as simple lists. If target `x` has `"list"` iteration, all branches of downstream patterns will get `x[[1]]`, `x[[2]]`, and so on. (`vctrs::vec_slice()` behaves more like `[]` than `[[]]`.)
+
+```{r}
+tar_script({
+  options(crayon.enabled = FALSE, tidyverse.quiet = TRUE)
+  print_and_return <- function(x) {
+    print(x)
+    x
+  }
+  tar_pipeline(
+    tar_target(
+      x,
+      data.frame(a = c(1, 2), b = c("a", "b")),
+      iteration = "list"
+    ),
+    tar_target(y, print_and_return(x), pattern = map(x)),
+    tar_target(z, x, pattern = map(x), iteration = "list")
+  )
+})
+```
+
+```{r}
+tar_make()
+```
+
+Aggregation also happens differently. In this case, the vector iteration in `y` is not ideal, and the list iteration in `z` gives us more sensible output. 
+
+```{r, error = TRUE}
+tar_read(y)
+```
+
+```{r}
+tar_read(z)
+```
+
+### Group
+
+Group iteration brings `dplyr::group_by()` functionality to patterns. This way, we can map or cross over custom subsets of rows. Consider the following data frame.
+
+```{r}
+object <- data.frame(
+  x = seq_len(6),
+  id = rep(letters[seq_len(3)], each = 2)
+)
+
+object
+```
+
+To map over the groups of rows defined by the `id` column, we
+
+1. Use `group_by()` and `tar_group()` to define the groups of rows, and
+1. Use `iteration = "group"` in `tar_target()` to tell downstream patterns to use the row groups.
+
+Put together, the pipeline looks like this.
+
+```{r}
+tar_script({
+library(dplyr)
+print_and_return <- function(x) {
+  print(x)
+  x
+}
+tar_pipeline(
+  tar_target(
+    data,
+    data.frame(
+      x = seq_len(6),
+      id = rep(letters[seq_len(3)], each = 2)
+    ) %>%
+      group_by(id) %>%
+      tar_group(),
+    iteration = "group"
+  ),
+  tar_target(
+    sums,
+    sum(print_and_return(data)$x),
+    pattern = map(data),
+    iteration = "vector"
+  )
+)
+})
+```
+
+```{r}
+tar_make()
+```
+
+```{r}
+tar_read(sums)
+```
+
+Row groups are defined in the special `tar_group` column created by `tar_group()`. `tar_group()` creates this column based on the attributes created by `dplyr::group_by()`. `targets` avoids using those attributes directly because some custom storage formats, particularly `format = "fst"` in `tar_target()`, drop all attributes.
+
+```{r}
+data.frame(
+  x = seq_len(6),
+  id = rep(letters[seq_len(3)], each = 2)
+) %>%
+  dplyr::group_by(id) %>%
+  tar_group()
+```
