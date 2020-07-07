@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 3 Best practices for targets-powered projects | The targets R Package User Manual</title>
+  <meta name="description" content="In-depth discussion of the major functionality of targets." />
+  <meta name="generator" content="bookdown 0.20 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 3 Best practices for targets-powered projects | The targets R Package User Manual" />
+  <meta property="og:type" content="book" />
+  <meta property="og:url" content="https://wlandau.github.io/targets-manual" />
+  <meta property="og:image" content="https://wlandau.github.io/targets-manual/images/logo.png" />
+  <meta property="og:description" content="In-depth discussion of the major functionality of targets." />
+  <meta name="github-repo" content="wlandau/targets-manual" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 3 Best practices for targets-powered projects | The targets R Package User Manual" />
+  
+  <meta name="twitter:description" content="In-depth discussion of the major functionality of targets." />
+  <meta name="twitter:image" content="https://wlandau.github.io/targets-manual/images/logo.png" />
+
+<meta name="author" content="Will Landau" />
+<meta name="author" content="Copyright Eli Lilly and Company" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <link rel="apple-touch-icon-precomposed" sizes="120x120" href="images/apple-touch-icon.png" />
+  <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
+<link rel="prev" href="walkthrough.html"/>
+<link rel="next" href="patterns.html"/>
+<script src="libs/header-attrs-2.3/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<script src="libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
+<link href="libs/vis-4.20.1/vis.css" rel="stylesheet" />
+<script src="libs/vis-4.20.1/vis.min.js"></script>
+<script src="libs/visNetwork-binding-2.0.9/visNetwork.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-150843595-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-150843595-1');
+</script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#motivation"><i class="fa fa-check"></i><b>1.1</b> Motivation</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#pipeline-toolkits"><i class="fa fa-check"></i><b>1.2</b> Pipeline toolkits</a></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#the-targets-package"><i class="fa fa-check"></i><b>1.3</b> The <code>targets</code> package</a></li>
+<li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#what-about-drake"><i class="fa fa-check"></i><b>1.4</b> What about <code>drake</code>?</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="walkthrough.html"><a href="walkthrough.html"><i class="fa fa-check"></i><b>2</b> Walkthrough</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="walkthrough.html"><a href="walkthrough.html#goal"><i class="fa fa-check"></i><b>2.1</b> Goal</a></li>
+<li class="chapter" data-level="2.2" data-path="walkthrough.html"><a href="walkthrough.html#files"><i class="fa fa-check"></i><b>2.2</b> Files</a></li>
+<li class="chapter" data-level="2.3" data-path="walkthrough.html"><a href="walkthrough.html#inspect-the-pipeline"><i class="fa fa-check"></i><b>2.3</b> Inspect the pipeline</a></li>
+<li class="chapter" data-level="2.4" data-path="walkthrough.html"><a href="walkthrough.html#run-the-pipeline"><i class="fa fa-check"></i><b>2.4</b> Run the pipeline</a></li>
+<li class="chapter" data-level="2.5" data-path="walkthrough.html"><a href="walkthrough.html#changes"><i class="fa fa-check"></i><b>2.5</b> Changes</a>
+<ul>
+<li class="chapter" data-level="2.5.1" data-path="walkthrough.html"><a href="walkthrough.html#change-code"><i class="fa fa-check"></i><b>2.5.1</b> Change code</a></li>
+<li class="chapter" data-level="2.5.2" data-path="walkthrough.html"><a href="walkthrough.html#change-data"><i class="fa fa-check"></i><b>2.5.2</b> Change data</a></li>
+</ul></li>
+<li class="chapter" data-level="2.6" data-path="walkthrough.html"><a href="walkthrough.html#read-your-data"><i class="fa fa-check"></i><b>2.6</b> Read your data</a></li>
+<li class="chapter" data-level="2.7" data-path="walkthrough.html"><a href="walkthrough.html#read-metadata"><i class="fa fa-check"></i><b>2.7</b> Read metadata</a></li>
+<li class="chapter" data-level="2.8" data-path="walkthrough.html"><a href="walkthrough.html#diagnosing-and-debugging-errors"><i class="fa fa-check"></i><b>2.8</b> Diagnosing and debugging errors</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="practice.html"><a href="practice.html"><i class="fa fa-check"></i><b>3</b> Best practices for <code>targets</code>-powered projects</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="practice.html"><a href="practice.html#a-move-away-from-imperative-scripts"><i class="fa fa-check"></i><b>3.1</b> A move away from imperative scripts</a></li>
+<li class="chapter" data-level="3.2" data-path="practice.html"><a href="practice.html#functions"><i class="fa fa-check"></i><b>3.2</b> Functions</a></li>
+<li class="chapter" data-level="3.3" data-path="practice.html"><a href="practice.html#targets"><i class="fa fa-check"></i><b>3.3</b> Targets</a></li>
+<li class="chapter" data-level="3.4" data-path="practice.html"><a href="practice.html#performance"><i class="fa fa-check"></i><b>3.4</b> Performance</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="patterns.html"><a href="patterns.html"><i class="fa fa-check"></i><b>4</b> Patterns and branching</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="patterns.html"><a href="patterns.html#patterns-1"><i class="fa fa-check"></i><b>4.1</b> Patterns</a></li>
+<li class="chapter" data-level="4.2" data-path="patterns.html"><a href="patterns.html#iteration"><i class="fa fa-check"></i><b>4.2</b> Iteration</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="patterns.html"><a href="patterns.html#vector"><i class="fa fa-check"></i><b>4.2.1</b> Vector</a></li>
+<li class="chapter" data-level="4.2.2" data-path="patterns.html"><a href="patterns.html#list"><i class="fa fa-check"></i><b>4.2.2</b> List</a></li>
+<li class="chapter" data-level="4.2.3" data-path="patterns.html"><a href="patterns.html#group"><i class="fa fa-check"></i><b>4.2.3</b> Group</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="walkthrough.html"><a href="walkthrough.html#files"><i class="fa fa-check"></i><b>5</b> External files and literate programming</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="files.html"><a href="files.html"><i class="fa fa-check"></i><b>5.1</b> Internal files</a></li>
+<li class="chapter" data-level="5.2" data-path="files.html"><a href="files.html#external-input-files"><i class="fa fa-check"></i><b>5.2</b> External input files</a></li>
+<li class="chapter" data-level="5.3" data-path="files.html"><a href="files.html#external-output-files"><i class="fa fa-check"></i><b>5.3</b> External output files</a></li>
+<li class="chapter" data-level="5.4" data-path="files.html"><a href="files.html#literate-programming"><i class="fa fa-check"></i><b>5.4</b> Literate programming</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="hpc.html"><a href="hpc.html"><i class="fa fa-check"></i><b>6</b> High-performance computing</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="hpc.html"><a href="hpc.html#clustermq"><i class="fa fa-check"></i><b>6.1</b> Clustermq</a>
+<ul>
+<li class="chapter" data-level="6.1.1" data-path="hpc.html"><a href="hpc.html#clustermq-installation"><i class="fa fa-check"></i><b>6.1.1</b> Clustermq installation</a></li>
+<li class="chapter" data-level="6.1.2" data-path="hpc.html"><a href="hpc.html#clustermq-locally"><i class="fa fa-check"></i><b>6.1.2</b> Clustermq locally</a></li>
+<li class="chapter" data-level="6.1.3" data-path="hpc.html"><a href="hpc.html#clustermq-remotely"><i class="fa fa-check"></i><b>6.1.3</b> Clustermq remotely</a></li>
+<li class="chapter" data-level="6.1.4" data-path="hpc.html"><a href="hpc.html#clustermq-configuration"><i class="fa fa-check"></i><b>6.1.4</b> Clustermq configuration</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="hpc.html"><a href="hpc.html#future"><i class="fa fa-check"></i><b>6.2</b> Future</a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="hpc.html"><a href="hpc.html#future-installation"><i class="fa fa-check"></i><b>6.2.1</b> Future installation</a></li>
+<li class="chapter" data-level="6.2.2" data-path="hpc.html"><a href="hpc.html#future-locally"><i class="fa fa-check"></i><b>6.2.2</b> Future locally</a></li>
+<li class="chapter" data-level="6.2.3" data-path="hpc.html"><a href="hpc.html#future-remotely"><i class="fa fa-check"></i><b>6.2.3</b> Future remotely</a></li>
+<li class="chapter" data-level="6.2.4" data-path="hpc.html"><a href="hpc.html#future-configuration"><i class="fa fa-check"></i><b>6.2.4</b> Future configuration</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="hpc.html"><a href="hpc.html#advanced"><i class="fa fa-check"></i><b>6.3</b> Advanced</a></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">The targets R Package User Manual</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="practice" class="section level1" number="3">
+<h1><span class="header-section-number">Chapter 3</span> Best practices for <code>targets</code>-powered projects</h1>
+<p>The <a href="https://github.com/wlandau/targets"><code>targets</code></a> package espouses a clean, organized, modular, function-oriented style of programming. Many data scientists and researchers initially find this style uncomfortable, not only because it can be unfamiliar, but also because may requires us to postpone our thinking about actual results and conclusions while we focus on the process of creating a new workflow. However, this up-front cost pays off. Data science projects become easier to extend, maintain, and share with collabotors, and they have longer shelf lives than otherwise. In other words, we increase reproducibility while decreasing technical debt. Once these patterns become habits, the pace of development quickens while still lending more trust and credibility to the results.</p>
+<div id="a-move-away-from-imperative-scripts" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> A move away from imperative scripts</h2>
+<p>Traditional data analysis projects are usually coded as collections of imperative scripts, often with numeric prefixes.</p>
+<pre><code>01-data.R
+02-preprocess.R
+03-analysis.R
+04-summaries.R</code></pre>
+<p>This approach does not scale well in large, cumbersome projects. Code gets tangled, messy, and difficult to test. Results fail to keep pace with rapid development, and reproducibility suffers.</p>
+</div>
+<div id="functions" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span> Functions</h2>
+<p>Functions are the most idiomatic way to express the modularity we need. They are custom shorthand that makes code easier to read and easier to test. A good pure function has</p>
+<ol style="list-style-type: decimal">
+<li>An informative name that describes what the function does.</li>
+<li>Input arguments that are easy to generate.</li>
+<li>A return value that is convenient to introspect and meaningful to the project.</li>
+</ol>
+<ol style="list-style-type: decimal">
+<li>is the shorthand, and (2) and (3) make testing easier. In data science workflows, we typically write individual functions to</li>
+</ol>
+<ol style="list-style-type: decimal">
+<li>Retrieve or generate a dataset.</li>
+<li>Preprocess a dataset.</li>
+<li>Fit a model to a preprocessed dataset.</li>
+<li>Generate machine-readable summaries of the model fit (tables of summary statistics).</li>
+<li>Generate <em>human</em>-readable summaries of the model fit (plots and reports).</li>
+</ol>
+<p>Each of the functions in (1)-(5) typically calls custom inner functions to increase modularity even further. For examples, see the <code>functions.R</code> files in the example projects <a href="https://wlandau.github.io/targets/index.html#examples">listed here</a>.</p>
+</div>
+<div id="targets" class="section level2" number="3.3">
+<h2><span class="header-section-number">3.3</span> Targets</h2>
+<p>Targets are imperative high-level steps of the workflow that run the work you define in your functions. Like functions, targets generally focus on datasets, analyses, and summaries. The <code>targets</code> package automatically skips targets that are already up to date, so you should strive to define targets that maximize time savings. Good targets usually</p>
+<ol style="list-style-type: decimal">
+<li>Are large enough to subtract a decent amount of runtime when skipped.</li>
+<li>Are small enough that some targets can be skipped even if others need to run.</li>
+<li>Invoke no side effects such as modifications to the global environment. (But targets with <code>tar_target(format = "file")</code> can save files.)</li>
+<li>Return a single value that is
+<ol style="list-style-type: lower-roman">
+<li>Easy to understand and introspect.</li>
+<li>Meaningful to the project.</li>
+<li>Easy to save as a file, e.g. with <code>readRDS()</code>.</li>
+</ol></li>
+</ol>
+<p>Regarding the last point above, it is possible to customize the storage format of the target. For details, enter <code>?tar_target</code> in the console and scroll down to the description of the <code>format</code> argument.</p>
+</div>
+<div id="performance" class="section level2" number="3.4">
+<h2><span class="header-section-number">3.4</span> Performance</h2>
+<p>If your pipeline has more than a few thousand targets, functions like <code>tar_make()</code>, <code>tar_outdated()</code>, and <code>tar_vis_drake_graph()</code> will take longer to run. There is an inevitable per-target runtime cost because package needs to check the code and data of each target individually. If this overhead becomes too much, consider batching your work into a smaller group of heavier targets. Using your custom functions, you can make each target perform multiple iterations of a task that was previously given to targets one at a time.</p>
+<p>Alternatively, if you see slowness in your project, you can contribute to the package with a profiling study. These contributions are great because they help improve the package. Here are the recommended steps.</p>
+<ol style="list-style-type: decimal">
+<li>Install the <a href="https://github.com/r-prof/proffer"><code>proffer</code></a> R package and its dependencies.</li>
+<li>Run <code>proffer::pprof(tar_make(callr_function = NULL))</code> on your project.</li>
+<li>When a web browser pops up with <code>pprof</code>, select the flame graph and screenshot it.</li>
+<li>Post the flame graph, along with any code and data you can share, to the <a href="https://github.com/wlandau/targets/issues"><code>targets</code> package issue tracker</a>. The maintainer will have a look and try to make the package faster for your use case if speedups are possible.</li>
+</ol>
+
+</div>
+</div>
+<div style = "background: #1C356D; color: white; padding: 10px 10px 10px 25px; font-size: 1em; width: 100%;">
+  Copyright Eli Lilly and Company
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="walkthrough.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="patterns.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": null,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>
