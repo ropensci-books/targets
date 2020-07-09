@@ -276,7 +276,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">3.4</span> Debugging</h2>
 <p>If one of your targets errors out because of a user-side mistake, look up the error message in <code>tar_meta()</code>. If that does not help, run the target in interactive debugging mode:</p>
 <ol style="list-style-type: decimal">
-<li>In <code>_targets.R</code>, write a call to <code>tar_options()</code> with <code>debug</code> equal to the target name. It may also be convenient to set <code>cue</code> equal to <code>tar_cue(mode = "never")</code> so <code>tar_make()</code> jumps straight to the target you want to debug.</li>
+<li>In <code>_targets.R</code>, write a call to <code>tar_options()</code> with <code>debug</code> equal to the target name. It may also be convenient to set <code>cue</code> equal to <code>tar_cue(mode = "never")</code> so <code>tar_make()</code> reaches the target you want to debug more quickly.</li>
 <li>Launch a fresh clean new interactive R session with the <code>_targets.R</code> script in your working directory.</li>
 <li>Run <code>targets::tar_make()</code> (or <code>targets::tar_make_clustermq()</code>, or <code>targets::tar_make_future()</code>) with <code>callr_function = FALSE</code>.</li>
 <li>When <code>targets</code> reaches the target you selected to debug, your R session will start an interactive debugger, and you should see <code>Browse[1]&gt;</code> in your console. Run <code>targets::tar_name()</code> to verify that you are debugging the correct target.</li>
