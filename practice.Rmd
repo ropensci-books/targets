@@ -56,9 +56,29 @@ Targets are imperative high-level steps of the workflow that run the work you de
 
 Regarding the last point above, it is possible to customize the storage format of the target. For details, enter `?tar_target` in the console and scroll down to the description of the `format` argument.
 
+## Debugging
+
+If one of your targets errors out because of a user-side mistake, look up the error message in `tar_meta()`. If that does not help, run the target in interactive debugging mode:
+
+1. In `_targets.R`, write a call to `tar_options()` with `debug` equal to the target name. It may also be convenient to set `cue` equal to `tar_cue(mode = "never")` so `tar_make()` jumps straight to the target you want to debug.
+1. Launch a fresh clean new interactive R session with the `_targets.R` script in your working directory.
+1. Run `targets::tar_make()` (or `targets::tar_make_clustermq()`, or `targets::tar_make_future()`) with `callr_function = FALSE`.
+1. When `targets` reaches the target you selected to debug, your R session will start an interactive debugger, and you should see `Browse[1]>` in your console. Run `targets::tar_name()` to verify that you are debugging the correct target.
+1. Interactively run any R code that helps you troubleshoot the problem.^[Because of the way `targets` manages environments, `ls()` will not report all your global objects, but you should still be able to access them.]
+
+To try it out yourself, write the following `_targets.R` file and then run `tar_make(callr_function = NULL)`. When the debugger launches, run `print(tar_name())` and `print(a)` to be sure things are set up properly.
+
+```{r, eval = FALSE}
+library(targets)
+tar_options(debug = "b")
+tar_pipeline(tar_target(a, "a"), tar_target(b, a))
+```
+
+For more on debugging R code, visit [this page](https://rstats.wtf/debugging-r-code.html).
+
 ## Performance
 
-If your pipeline has more than a few thousand targets, functions like `tar_make()`, `tar_outdated()`, and `tar_vis_drake_graph()` will take longer to run. There is an inevitable per-target runtime cost because package needs to check the code and data of each target individually. If this overhead becomes too much, consider batching your work into a smaller group of heavier targets. Using your custom functions, you can make each target perform multiple iterations of a task that was previously given to targets one at a time.
+If your pipeline has several thousand targets, functions like `tar_make()`, `tar_outdated()`, and `tar_vis_drake_graph()` may take longer to run. There is an inevitable per-target runtime cost because package needs to check the code and data of each target individually. If this overhead becomes too much, consider batching your work into a smaller group of heavier targets. Using your custom functions, you can make each target perform multiple iterations of a task that was previously given to targets one at a time.
 
 Alternatively, if you see slowness in your project, you can contribute to the package with a profiling study. These contributions are great because they help improve the package. Here are the recommended steps.
 

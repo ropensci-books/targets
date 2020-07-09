@@ -272,13 +272,3 @@ tar_meta()
 ```
 
 The `_targets/meta/meta` spreadsheet file is critically important. Although `targets` can still work properly if files are missing from `_targets/objects`, the pipeline will error out if `_targets/meta/meta` is corrupted. If `tar_meta()` works, the project should be fine.
-
-## Diagnosing and debugging errors
-
-If one of your targets errors out because of a user-side mistake, here is a helpful set of troubleshooting stems.
-
-1. Look at the error in `tar_meta()` to get a rough sense of where and why the error occurred.
-1. If you need more information about where the error occurred, run `tar_make()` with `callr_function = NULL` and then check the value returned from `tar_traceback()` before you close the R session. Oftentimes, this will point you toward the exact function call that caused the error.
-1. If the error message and traceback do not provide enough clues, you may need interactive debugging. Insert `browser()` statement somewhere in your custom code right before where you think the error occurred. Then, restart your R session to clean out the environment and run `tar_make()` with `callr_function = NULL`. This should drop you into an interactive debugger and help you troubleshoot more easily. 
-
-For more on debugging R code, visit [this page](https://rstats.wtf/debugging-r-code.html).
