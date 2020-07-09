@@ -163,14 +163,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="2.6" data-path="walkthrough.html"><a href="walkthrough.html#read-your-data"><i class="fa fa-check"></i><b>2.6</b> Read your data</a></li>
 <li class="chapter" data-level="2.7" data-path="walkthrough.html"><a href="walkthrough.html#read-metadata"><i class="fa fa-check"></i><b>2.7</b> Read metadata</a></li>
-<li class="chapter" data-level="2.8" data-path="walkthrough.html"><a href="walkthrough.html#diagnosing-and-debugging-errors"><i class="fa fa-check"></i><b>2.8</b> Diagnosing and debugging errors</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="practice.html"><a href="practice.html"><i class="fa fa-check"></i><b>3</b> Best practices for <code>targets</code>-powered projects</a>
 <ul>
 <li class="chapter" data-level="3.1" data-path="practice.html"><a href="practice.html#a-move-away-from-imperative-scripts"><i class="fa fa-check"></i><b>3.1</b> A move away from imperative scripts</a></li>
 <li class="chapter" data-level="3.2" data-path="practice.html"><a href="practice.html#functions"><i class="fa fa-check"></i><b>3.2</b> Functions</a></li>
 <li class="chapter" data-level="3.3" data-path="practice.html"><a href="practice.html#targets"><i class="fa fa-check"></i><b>3.3</b> Targets</a></li>
-<li class="chapter" data-level="3.4" data-path="practice.html"><a href="practice.html#performance"><i class="fa fa-check"></i><b>3.4</b> Performance</a></li>
+<li class="chapter" data-level="3.4" data-path="practice.html"><a href="practice.html#debugging"><i class="fa fa-check"></i><b>3.4</b> Debugging</a></li>
+<li class="chapter" data-level="3.5" data-path="practice.html"><a href="practice.html#performance"><i class="fa fa-check"></i><b>3.5</b> Performance</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="patterns.html"><a href="patterns.html"><i class="fa fa-check"></i><b>4</b> Patterns and branching</a>
 <ul>
@@ -247,67 +247,67 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="external-input-files" class="section level2" number="5.2">
 <h2><span class="header-section-number">5.2</span> External input files</h2>
 <p>To reproducibly track an external input file, you need to define a new target and choose <code>format = "file"</code> in <code>tar_target()</code>. Targets with the <code>"file"</code> format are called dynamic files, and these targets are unusual because their return values do not get saved in the <code>_targets/objects/</code> folder. Rather, they expect you to return a character vector files and directories, which gets stored in the <code>_targets/meta</code> spreadsheet, and then <code>targets</code> watches the data at those paths for changes. The first two targets of the <a href="https://github.com/wlandau/targets-minimal">minimal example</a> demonstrate this technique.</p>
-<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="files.html#cb46-1"></a><span class="kw">tar_script</span>({</span>
-<span id="cb46-2"><a href="files.html#cb46-2"></a>  path_to_data &lt;-<span class="st"> </span><span class="cf">function</span>() {</span>
-<span id="cb46-3"><a href="files.html#cb46-3"></a>    <span class="st">&quot;data/raw_data.csv&quot;</span></span>
-<span id="cb46-4"><a href="files.html#cb46-4"></a>  }</span>
-<span id="cb46-5"><a href="files.html#cb46-5"></a>  <span class="kw">tar_pipeline</span>(</span>
-<span id="cb46-6"><a href="files.html#cb46-6"></a>    <span class="kw">tar_target</span>(</span>
-<span id="cb46-7"><a href="files.html#cb46-7"></a>      raw_data_file,</span>
-<span id="cb46-8"><a href="files.html#cb46-8"></a>      <span class="kw">path_to_data</span>(),</span>
-<span id="cb46-9"><a href="files.html#cb46-9"></a>      <span class="dt">format =</span> <span class="st">&quot;file&quot;</span></span>
-<span id="cb46-10"><a href="files.html#cb46-10"></a>    ),</span>
-<span id="cb46-11"><a href="files.html#cb46-11"></a>    <span class="kw">tar_target</span>(</span>
-<span id="cb46-12"><a href="files.html#cb46-12"></a>      raw_data,</span>
-<span id="cb46-13"><a href="files.html#cb46-13"></a>      <span class="kw">read_csv</span>(raw_data_file, <span class="dt">col_types =</span> <span class="kw">cols</span>())</span>
-<span id="cb46-14"><a href="files.html#cb46-14"></a>    )</span>
-<span id="cb46-15"><a href="files.html#cb46-15"></a>  )</span>
-<span id="cb46-16"><a href="files.html#cb46-16"></a>})</span></code></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="files.html#cb47-1"></a><span class="kw">tar_script</span>({</span>
+<span id="cb47-2"><a href="files.html#cb47-2"></a>  path_to_data &lt;-<span class="st"> </span><span class="cf">function</span>() {</span>
+<span id="cb47-3"><a href="files.html#cb47-3"></a>    <span class="st">&quot;data/raw_data.csv&quot;</span></span>
+<span id="cb47-4"><a href="files.html#cb47-4"></a>  }</span>
+<span id="cb47-5"><a href="files.html#cb47-5"></a>  <span class="kw">tar_pipeline</span>(</span>
+<span id="cb47-6"><a href="files.html#cb47-6"></a>    <span class="kw">tar_target</span>(</span>
+<span id="cb47-7"><a href="files.html#cb47-7"></a>      raw_data_file,</span>
+<span id="cb47-8"><a href="files.html#cb47-8"></a>      <span class="kw">path_to_data</span>(),</span>
+<span id="cb47-9"><a href="files.html#cb47-9"></a>      <span class="dt">format =</span> <span class="st">&quot;file&quot;</span></span>
+<span id="cb47-10"><a href="files.html#cb47-10"></a>    ),</span>
+<span id="cb47-11"><a href="files.html#cb47-11"></a>    <span class="kw">tar_target</span>(</span>
+<span id="cb47-12"><a href="files.html#cb47-12"></a>      raw_data,</span>
+<span id="cb47-13"><a href="files.html#cb47-13"></a>      <span class="kw">read_csv</span>(raw_data_file, <span class="dt">col_types =</span> <span class="kw">cols</span>())</span>
+<span id="cb47-14"><a href="files.html#cb47-14"></a>    )</span>
+<span id="cb47-15"><a href="files.html#cb47-15"></a>  )</span>
+<span id="cb47-16"><a href="files.html#cb47-16"></a>})</span></code></pre></div>
 <p>Above, <code>raw_data_file</code> is the dynamic file target. The file <code>data/raw_data.csv</code> exists before we ever run the pipeline, and the R expresion for the target returns the character vector <code>"data/raw_data.csv"</code>. (We use the <code>path_to_data()</code> function to demonstrate that you need not literally write <code>"data/raw_data.csv"</code> as long as the path is returned somehow.)</p>
 <p>All subsequent targets that depend on the file must reference the file using the symbol <code>raw_data_file</code>. This allows <code>targets</code>’ automatic static code analysis routines to detect which targets depend on the file. Because the <code>raw_data</code> target literally mentions the symbol <code>raw_data_file</code>, <code>targets</code> knows <code>raw_data</code> depends on <code>raw_data_file</code>. This ensures that</p>
 <ol style="list-style-type: decimal">
 <li><code>raw_data_file</code> gets processed before <code>raw_data</code>, and</li>
 <li><code>tar_make()</code> automatically reruns <code>raw_data</code> if <code>raw_data_file</code> or <code>"data/raw_data.csv"</code> change.</li>
 </ol>
-<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="files.html#cb47-1"></a><span class="kw">tar_visnetwork</span>()</span></code></pre></div>
-<div id="htmlwidget-38d70eb9026494b9cb84" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
-<script type="application/json" data-for="htmlwidget-38d70eb9026494b9cb84">{"x":{"nodes":{"name":["raw_data","raw_data_file","path_to_data"],"type":["stem","stem","function"],"status":["outdated","outdated","outdated"],"seconds":[null,null,null],"bytes":[null,null,null],"children":[null,null,null],"id":["raw_data","raw_data_file","path_to_data"],"label":["raw_data","raw_data_file","path_to_data"],"font.size":[20,20,20],"level":[3,2,1],"color":["#3B9AB2","#3B9AB2","#3B9AB2"],"shape":["dot","dot","triangle"]},"edges":{"from":["raw_data_file","path_to_data"],"to":["raw_data","raw_data_file"],"arrows":["to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":false,"hoverNearest":false,"degree":1,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"left","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Outdated","Stem","Function"],"color":["#3B9AB2","#899DA4","#899DA4"],"shape":["dot","dot","triangle"],"font.size":[20,20,20]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="files.html#cb48-1"></a><span class="kw">tar_visnetwork</span>()</span></code></pre></div>
+<div id="htmlwidget-7a79b92f70561bcb1e2b" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-7a79b92f70561bcb1e2b">{"x":{"nodes":{"name":["raw_data","raw_data_file","path_to_data"],"type":["stem","stem","function"],"status":["outdated","outdated","outdated"],"seconds":[null,null,null],"bytes":[null,null,null],"children":[null,null,null],"id":["raw_data","raw_data_file","path_to_data"],"label":["raw_data","raw_data_file","path_to_data"],"font.size":[20,20,20],"level":[3,2,1],"color":["#3B9AB2","#3B9AB2","#3B9AB2"],"shape":["dot","dot","triangle"]},"edges":{"from":["raw_data_file","path_to_data"],"to":["raw_data","raw_data_file"],"arrows":["to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":false,"hoverNearest":false,"degree":1,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"left","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Outdated","Stem","Function"],"color":["#3B9AB2","#899DA4","#899DA4"],"shape":["dot","dot","triangle"],"font.size":[20,20,20]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
 <p>If we were to omit the symbol <code>raw_data_file</code> from the R expression of <code>raw_data</code>, those targets would be disconnected in the graph and <code>tar_make()</code> would make incorrect decisions.</p>
-<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="files.html#cb48-1"></a><span class="kw">tar_script</span>({</span>
-<span id="cb48-2"><a href="files.html#cb48-2"></a>  path_to_data &lt;-<span class="st"> </span><span class="cf">function</span>() {</span>
-<span id="cb48-3"><a href="files.html#cb48-3"></a>    <span class="st">&quot;data/raw_data.csv&quot;</span></span>
-<span id="cb48-4"><a href="files.html#cb48-4"></a>  }</span>
-<span id="cb48-5"><a href="files.html#cb48-5"></a>  <span class="kw">tar_pipeline</span>(</span>
-<span id="cb48-6"><a href="files.html#cb48-6"></a>    <span class="kw">tar_target</span>(</span>
-<span id="cb48-7"><a href="files.html#cb48-7"></a>      raw_data_file,</span>
-<span id="cb48-8"><a href="files.html#cb48-8"></a>      <span class="kw">path_to_data</span>(),</span>
-<span id="cb48-9"><a href="files.html#cb48-9"></a>      <span class="dt">format =</span> <span class="st">&quot;file&quot;</span></span>
-<span id="cb48-10"><a href="files.html#cb48-10"></a>    ),</span>
-<span id="cb48-11"><a href="files.html#cb48-11"></a>    <span class="kw">tar_target</span>(</span>
-<span id="cb48-12"><a href="files.html#cb48-12"></a>      raw_data,</span>
-<span id="cb48-13"><a href="files.html#cb48-13"></a>      <span class="kw">read_csv</span>(<span class="st">&quot;data/raw_data.csv&quot;</span>, <span class="dt">col_types =</span> <span class="kw">cols</span>()) <span class="co"># incorrect</span></span>
-<span id="cb48-14"><a href="files.html#cb48-14"></a>    )</span>
-<span id="cb48-15"><a href="files.html#cb48-15"></a>  )</span>
-<span id="cb48-16"><a href="files.html#cb48-16"></a>})</span></code></pre></div>
-<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="files.html#cb49-1"></a><span class="kw">tar_visnetwork</span>()</span></code></pre></div>
-<div id="htmlwidget-a9f920d4fdd475305baf" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
-<script type="application/json" data-for="htmlwidget-a9f920d4fdd475305baf">{"x":{"nodes":{"name":["raw_data","raw_data_file","path_to_data"],"type":["stem","stem","function"],"status":["outdated","outdated","outdated"],"seconds":[null,null,null],"bytes":[null,null,null],"children":[null,null,null],"id":["raw_data","raw_data_file","path_to_data"],"label":["raw_data","raw_data_file","path_to_data"],"font.size":[20,20,20],"level":[0,2,1],"color":["#3B9AB2","#3B9AB2","#3B9AB2"],"shape":["dot","dot","triangle"]},"edges":{"from":["path_to_data"],"to":["raw_data_file"],"arrows":["to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":false,"hoverNearest":false,"degree":1,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"left","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Outdated","Stem","Function"],"color":["#3B9AB2","#899DA4","#899DA4"],"shape":["dot","dot","triangle"],"font.size":[20,20,20]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="files.html#cb49-1"></a><span class="kw">tar_script</span>({</span>
+<span id="cb49-2"><a href="files.html#cb49-2"></a>  path_to_data &lt;-<span class="st"> </span><span class="cf">function</span>() {</span>
+<span id="cb49-3"><a href="files.html#cb49-3"></a>    <span class="st">&quot;data/raw_data.csv&quot;</span></span>
+<span id="cb49-4"><a href="files.html#cb49-4"></a>  }</span>
+<span id="cb49-5"><a href="files.html#cb49-5"></a>  <span class="kw">tar_pipeline</span>(</span>
+<span id="cb49-6"><a href="files.html#cb49-6"></a>    <span class="kw">tar_target</span>(</span>
+<span id="cb49-7"><a href="files.html#cb49-7"></a>      raw_data_file,</span>
+<span id="cb49-8"><a href="files.html#cb49-8"></a>      <span class="kw">path_to_data</span>(),</span>
+<span id="cb49-9"><a href="files.html#cb49-9"></a>      <span class="dt">format =</span> <span class="st">&quot;file&quot;</span></span>
+<span id="cb49-10"><a href="files.html#cb49-10"></a>    ),</span>
+<span id="cb49-11"><a href="files.html#cb49-11"></a>    <span class="kw">tar_target</span>(</span>
+<span id="cb49-12"><a href="files.html#cb49-12"></a>      raw_data,</span>
+<span id="cb49-13"><a href="files.html#cb49-13"></a>      <span class="kw">read_csv</span>(<span class="st">&quot;data/raw_data.csv&quot;</span>, <span class="dt">col_types =</span> <span class="kw">cols</span>()) <span class="co"># incorrect</span></span>
+<span id="cb49-14"><a href="files.html#cb49-14"></a>    )</span>
+<span id="cb49-15"><a href="files.html#cb49-15"></a>  )</span>
+<span id="cb49-16"><a href="files.html#cb49-16"></a>})</span></code></pre></div>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="files.html#cb50-1"></a><span class="kw">tar_visnetwork</span>()</span></code></pre></div>
+<div id="htmlwidget-da86d4d9f044585b01e1" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-da86d4d9f044585b01e1">{"x":{"nodes":{"name":["raw_data","raw_data_file","path_to_data"],"type":["stem","stem","function"],"status":["outdated","outdated","outdated"],"seconds":[null,null,null],"bytes":[null,null,null],"children":[null,null,null],"id":["raw_data","raw_data_file","path_to_data"],"label":["raw_data","raw_data_file","path_to_data"],"font.size":[20,20,20],"level":[0,2,1],"color":["#3B9AB2","#3B9AB2","#3B9AB2"],"shape":["dot","dot","triangle"]},"edges":{"from":["path_to_data"],"to":["raw_data_file"],"arrows":["to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":false,"hoverNearest":false,"degree":1,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"left","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Outdated","Stem","Function"],"color":["#3B9AB2","#899DA4","#899DA4"],"shape":["dot","dot","triangle"],"font.size":[20,20,20]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="external-output-files" class="section level2" number="5.3">
 <h2><span class="header-section-number">5.3</span> External output files</h2>
 <p>We can generate and track custom external files too, and the mechanics are similar. We still return a file path and use <code>format = "file"</code>, but this time, our R command writes a file before it returns a path. For an external plot file, our target might look like this.</p>
-<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="files.html#cb50-1"></a><span class="kw">tar_target</span>(</span>
-<span id="cb50-2"><a href="files.html#cb50-2"></a>  plot_file,</span>
-<span id="cb50-3"><a href="files.html#cb50-3"></a>  <span class="kw">save_plot_and_return_path</span>(),</span>
-<span id="cb50-4"><a href="files.html#cb50-4"></a>  <span class="dt">format =</span> <span class="st">&quot;file&quot;</span></span>
-<span id="cb50-5"><a href="files.html#cb50-5"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="files.html#cb51-1"></a><span class="kw">tar_target</span>(</span>
+<span id="cb51-2"><a href="files.html#cb51-2"></a>  plot_file,</span>
+<span id="cb51-3"><a href="files.html#cb51-3"></a>  <span class="kw">save_plot_and_return_path</span>(),</span>
+<span id="cb51-4"><a href="files.html#cb51-4"></a>  <span class="dt">format =</span> <span class="st">&quot;file&quot;</span></span>
+<span id="cb51-5"><a href="files.html#cb51-5"></a>)</span></code></pre></div>
 <p>where our custom <code>save_plot_and_return_path()</code> function does exactly what the name describes.</p>
-<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="files.html#cb51-1"></a>save_plot_and_return_path &lt;-<span class="st"> </span><span class="cf">function</span>() {</span>
-<span id="cb51-2"><a href="files.html#cb51-2"></a>  plot &lt;-<span class="st"> </span><span class="kw">ggplot</span>(mtcars) <span class="op">+</span></span>
-<span id="cb51-3"><a href="files.html#cb51-3"></a><span class="st">    </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">x =</span> wt, <span class="dt">y =</span> mpg))</span>
-<span id="cb51-4"><a href="files.html#cb51-4"></a>  <span class="kw">ggsave</span>(<span class="st">&quot;plot_file.png&quot;</span>, plot, <span class="dt">width =</span> <span class="dv">7</span>, <span class="dt">height =</span> <span class="dv">7</span>)</span>
-<span id="cb51-5"><a href="files.html#cb51-5"></a>  <span class="kw">return</span>(<span class="st">&quot;plot_file.png&quot;</span>)</span>
-<span id="cb51-6"><a href="files.html#cb51-6"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="files.html#cb52-1"></a>save_plot_and_return_path &lt;-<span class="st"> </span><span class="cf">function</span>() {</span>
+<span id="cb52-2"><a href="files.html#cb52-2"></a>  plot &lt;-<span class="st"> </span><span class="kw">ggplot</span>(mtcars) <span class="op">+</span></span>
+<span id="cb52-3"><a href="files.html#cb52-3"></a><span class="st">    </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">x =</span> wt, <span class="dt">y =</span> mpg))</span>
+<span id="cb52-4"><a href="files.html#cb52-4"></a>  <span class="kw">ggsave</span>(<span class="st">&quot;plot_file.png&quot;</span>, plot, <span class="dt">width =</span> <span class="dv">7</span>, <span class="dt">height =</span> <span class="dv">7</span>)</span>
+<span id="cb52-5"><a href="files.html#cb52-5"></a>  <span class="kw">return</span>(<span class="st">&quot;plot_file.png&quot;</span>)</span>
+<span id="cb52-6"><a href="files.html#cb52-6"></a>}</span></code></pre></div>
 </div>
 <div id="literate-programming" class="section level2" number="5.4">
 <h2><span class="header-section-number">5.4</span> Literate programming</h2>
@@ -323,65 +323,65 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Explicit mentions of the symbols <code>fit</code> and <code>hist</code> in the command.</li>
 </ol>
 <p>The target definition looks like this.</p>
-<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="files.html#cb52-1"></a><span class="kw">tar_target</span>(</span>
-<span id="cb52-2"><a href="files.html#cb52-2"></a>  report, {</span>
-<span id="cb52-3"><a href="files.html#cb52-3"></a>    <span class="kw">render</span>(<span class="st">&quot;report.Rmd&quot;</span>, <span class="dt">quiet =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb52-4"><a href="files.html#cb52-4"></a>    <span class="kw">c</span>(<span class="op">!!</span><span class="kw">tar_knitr</span>(<span class="st">&quot;report.Rmd&quot;</span>), <span class="st">&quot;report.html&quot;</span>)</span>
-<span id="cb52-5"><a href="files.html#cb52-5"></a>  },</span>
-<span id="cb52-6"><a href="files.html#cb52-6"></a>  <span class="dt">format =</span> <span class="st">&quot;file&quot;</span></span>
-<span id="cb52-7"><a href="files.html#cb52-7"></a>)</span>
-<span id="cb52-8"><a href="files.html#cb52-8"></a><span class="co">#&gt; &lt;stem target&gt; </span></span>
-<span id="cb52-9"><a href="files.html#cb52-9"></a><span class="co">#&gt;   name: report </span></span>
-<span id="cb52-10"><a href="files.html#cb52-10"></a><span class="co">#&gt;   command:</span></span>
-<span id="cb52-11"><a href="files.html#cb52-11"></a><span class="co">#&gt;     {</span></span>
-<span id="cb52-12"><a href="files.html#cb52-12"></a><span class="co">#&gt;         render(&quot;report.Rmd&quot;, quiet = TRUE)</span></span>
-<span id="cb52-13"><a href="files.html#cb52-13"></a><span class="co">#&gt;         c(list(deps = list(fit, hist), path = &quot;report.Rmd&quot;)[[&quot;path&quot;]], </span></span>
-<span id="cb52-14"><a href="files.html#cb52-14"></a><span class="co">#&gt;             &quot;report.html&quot;)</span></span>
-<span id="cb52-15"><a href="files.html#cb52-15"></a><span class="co">#&gt;     } </span></span>
-<span id="cb52-16"><a href="files.html#cb52-16"></a><span class="co">#&gt;   format: file </span></span>
-<span id="cb52-17"><a href="files.html#cb52-17"></a><span class="co">#&gt;   iteration method: vector </span></span>
-<span id="cb52-18"><a href="files.html#cb52-18"></a><span class="co">#&gt;   error mode: stop </span></span>
-<span id="cb52-19"><a href="files.html#cb52-19"></a><span class="co">#&gt;   memory mode: persistent </span></span>
-<span id="cb52-20"><a href="files.html#cb52-20"></a><span class="co">#&gt;   storage mode: local </span></span>
-<span id="cb52-21"><a href="files.html#cb52-21"></a><span class="co">#&gt;   retrieval mode: local </span></span>
-<span id="cb52-22"><a href="files.html#cb52-22"></a><span class="co">#&gt;   deploy to: remote </span></span>
-<span id="cb52-23"><a href="files.html#cb52-23"></a><span class="co">#&gt;   template (clustermq):</span></span>
-<span id="cb52-24"><a href="files.html#cb52-24"></a><span class="co">#&gt;     list() </span></span>
-<span id="cb52-25"><a href="files.html#cb52-25"></a><span class="co">#&gt;   resources (future):</span></span>
-<span id="cb52-26"><a href="files.html#cb52-26"></a><span class="co">#&gt;     list() </span></span>
-<span id="cb52-27"><a href="files.html#cb52-27"></a><span class="co">#&gt;   cue:</span></span>
-<span id="cb52-28"><a href="files.html#cb52-28"></a><span class="co">#&gt;     depend: TRUE</span></span>
-<span id="cb52-29"><a href="files.html#cb52-29"></a><span class="co">#&gt;     file: TRUE</span></span>
-<span id="cb52-30"><a href="files.html#cb52-30"></a><span class="co">#&gt;     iteration: TRUE</span></span>
-<span id="cb52-31"><a href="files.html#cb52-31"></a><span class="co">#&gt;     command: TRUE</span></span>
-<span id="cb52-32"><a href="files.html#cb52-32"></a><span class="co">#&gt;     mode: thorough</span></span>
-<span id="cb52-33"><a href="files.html#cb52-33"></a><span class="co">#&gt;     format: TRUE </span></span>
-<span id="cb52-34"><a href="files.html#cb52-34"></a><span class="co">#&gt;   packages:</span></span>
-<span id="cb52-35"><a href="files.html#cb52-35"></a><span class="co">#&gt;     base</span></span>
-<span id="cb52-36"><a href="files.html#cb52-36"></a><span class="co">#&gt;     biglm</span></span>
-<span id="cb52-37"><a href="files.html#cb52-37"></a><span class="co">#&gt;     datasets</span></span>
-<span id="cb52-38"><a href="files.html#cb52-38"></a><span class="co">#&gt;     DBI</span></span>
-<span id="cb52-39"><a href="files.html#cb52-39"></a><span class="co">#&gt;     dplyr</span></span>
-<span id="cb52-40"><a href="files.html#cb52-40"></a><span class="co">#&gt;     forcats</span></span>
-<span id="cb52-41"><a href="files.html#cb52-41"></a><span class="co">#&gt;     fs</span></span>
-<span id="cb52-42"><a href="files.html#cb52-42"></a><span class="co">#&gt;     ggplot2</span></span>
-<span id="cb52-43"><a href="files.html#cb52-43"></a><span class="co">#&gt;     graphics</span></span>
-<span id="cb52-44"><a href="files.html#cb52-44"></a><span class="co">#&gt;     grDevices</span></span>
-<span id="cb52-45"><a href="files.html#cb52-45"></a><span class="co">#&gt;     methods</span></span>
-<span id="cb52-46"><a href="files.html#cb52-46"></a><span class="co">#&gt;     purrr</span></span>
-<span id="cb52-47"><a href="files.html#cb52-47"></a><span class="co">#&gt;     readr</span></span>
-<span id="cb52-48"><a href="files.html#cb52-48"></a><span class="co">#&gt;     stats</span></span>
-<span id="cb52-49"><a href="files.html#cb52-49"></a><span class="co">#&gt;     stringr</span></span>
-<span id="cb52-50"><a href="files.html#cb52-50"></a><span class="co">#&gt;     targets</span></span>
-<span id="cb52-51"><a href="files.html#cb52-51"></a><span class="co">#&gt;     tibble</span></span>
-<span id="cb52-52"><a href="files.html#cb52-52"></a><span class="co">#&gt;     tidyr</span></span>
-<span id="cb52-53"><a href="files.html#cb52-53"></a><span class="co">#&gt;     tidyverse</span></span>
-<span id="cb52-54"><a href="files.html#cb52-54"></a><span class="co">#&gt;     utils</span></span>
-<span id="cb52-55"><a href="files.html#cb52-55"></a><span class="co">#&gt;     withr </span></span>
-<span id="cb52-56"><a href="files.html#cb52-56"></a><span class="co">#&gt;   library:</span></span>
-<span id="cb52-57"><a href="files.html#cb52-57"></a><span class="co">#&gt;     NULL</span></span></code></pre></div>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="files.html#cb53-1"></a><span class="kw">tar_target</span>(</span>
+<span id="cb53-2"><a href="files.html#cb53-2"></a>  report, {</span>
+<span id="cb53-3"><a href="files.html#cb53-3"></a>    <span class="kw">render</span>(<span class="st">&quot;report.Rmd&quot;</span>, <span class="dt">quiet =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb53-4"><a href="files.html#cb53-4"></a>    <span class="kw">c</span>(<span class="op">!!</span><span class="kw">tar_knitr</span>(<span class="st">&quot;report.Rmd&quot;</span>), <span class="st">&quot;report.html&quot;</span>)</span>
+<span id="cb53-5"><a href="files.html#cb53-5"></a>  },</span>
+<span id="cb53-6"><a href="files.html#cb53-6"></a>  <span class="dt">format =</span> <span class="st">&quot;file&quot;</span></span>
+<span id="cb53-7"><a href="files.html#cb53-7"></a>)</span>
+<span id="cb53-8"><a href="files.html#cb53-8"></a><span class="co">#&gt; &lt;stem target&gt; </span></span>
+<span id="cb53-9"><a href="files.html#cb53-9"></a><span class="co">#&gt;   name: report </span></span>
+<span id="cb53-10"><a href="files.html#cb53-10"></a><span class="co">#&gt;   command:</span></span>
+<span id="cb53-11"><a href="files.html#cb53-11"></a><span class="co">#&gt;     {</span></span>
+<span id="cb53-12"><a href="files.html#cb53-12"></a><span class="co">#&gt;         render(&quot;report.Rmd&quot;, quiet = TRUE)</span></span>
+<span id="cb53-13"><a href="files.html#cb53-13"></a><span class="co">#&gt;         c(list(deps = list(fit, hist), path = &quot;report.Rmd&quot;)[[&quot;path&quot;]], </span></span>
+<span id="cb53-14"><a href="files.html#cb53-14"></a><span class="co">#&gt;             &quot;report.html&quot;)</span></span>
+<span id="cb53-15"><a href="files.html#cb53-15"></a><span class="co">#&gt;     } </span></span>
+<span id="cb53-16"><a href="files.html#cb53-16"></a><span class="co">#&gt;   format: file </span></span>
+<span id="cb53-17"><a href="files.html#cb53-17"></a><span class="co">#&gt;   iteration method: vector </span></span>
+<span id="cb53-18"><a href="files.html#cb53-18"></a><span class="co">#&gt;   error mode: stop </span></span>
+<span id="cb53-19"><a href="files.html#cb53-19"></a><span class="co">#&gt;   memory mode: persistent </span></span>
+<span id="cb53-20"><a href="files.html#cb53-20"></a><span class="co">#&gt;   storage mode: local </span></span>
+<span id="cb53-21"><a href="files.html#cb53-21"></a><span class="co">#&gt;   retrieval mode: local </span></span>
+<span id="cb53-22"><a href="files.html#cb53-22"></a><span class="co">#&gt;   deploy to: remote </span></span>
+<span id="cb53-23"><a href="files.html#cb53-23"></a><span class="co">#&gt;   template (clustermq):</span></span>
+<span id="cb53-24"><a href="files.html#cb53-24"></a><span class="co">#&gt;     list() </span></span>
+<span id="cb53-25"><a href="files.html#cb53-25"></a><span class="co">#&gt;   resources (future):</span></span>
+<span id="cb53-26"><a href="files.html#cb53-26"></a><span class="co">#&gt;     list() </span></span>
+<span id="cb53-27"><a href="files.html#cb53-27"></a><span class="co">#&gt;   cue:</span></span>
+<span id="cb53-28"><a href="files.html#cb53-28"></a><span class="co">#&gt;     depend: TRUE</span></span>
+<span id="cb53-29"><a href="files.html#cb53-29"></a><span class="co">#&gt;     file: TRUE</span></span>
+<span id="cb53-30"><a href="files.html#cb53-30"></a><span class="co">#&gt;     iteration: TRUE</span></span>
+<span id="cb53-31"><a href="files.html#cb53-31"></a><span class="co">#&gt;     command: TRUE</span></span>
+<span id="cb53-32"><a href="files.html#cb53-32"></a><span class="co">#&gt;     mode: thorough</span></span>
+<span id="cb53-33"><a href="files.html#cb53-33"></a><span class="co">#&gt;     format: TRUE </span></span>
+<span id="cb53-34"><a href="files.html#cb53-34"></a><span class="co">#&gt;   packages:</span></span>
+<span id="cb53-35"><a href="files.html#cb53-35"></a><span class="co">#&gt;     base</span></span>
+<span id="cb53-36"><a href="files.html#cb53-36"></a><span class="co">#&gt;     biglm</span></span>
+<span id="cb53-37"><a href="files.html#cb53-37"></a><span class="co">#&gt;     datasets</span></span>
+<span id="cb53-38"><a href="files.html#cb53-38"></a><span class="co">#&gt;     DBI</span></span>
+<span id="cb53-39"><a href="files.html#cb53-39"></a><span class="co">#&gt;     dplyr</span></span>
+<span id="cb53-40"><a href="files.html#cb53-40"></a><span class="co">#&gt;     forcats</span></span>
+<span id="cb53-41"><a href="files.html#cb53-41"></a><span class="co">#&gt;     fs</span></span>
+<span id="cb53-42"><a href="files.html#cb53-42"></a><span class="co">#&gt;     ggplot2</span></span>
+<span id="cb53-43"><a href="files.html#cb53-43"></a><span class="co">#&gt;     graphics</span></span>
+<span id="cb53-44"><a href="files.html#cb53-44"></a><span class="co">#&gt;     grDevices</span></span>
+<span id="cb53-45"><a href="files.html#cb53-45"></a><span class="co">#&gt;     methods</span></span>
+<span id="cb53-46"><a href="files.html#cb53-46"></a><span class="co">#&gt;     purrr</span></span>
+<span id="cb53-47"><a href="files.html#cb53-47"></a><span class="co">#&gt;     readr</span></span>
+<span id="cb53-48"><a href="files.html#cb53-48"></a><span class="co">#&gt;     stats</span></span>
+<span id="cb53-49"><a href="files.html#cb53-49"></a><span class="co">#&gt;     stringr</span></span>
+<span id="cb53-50"><a href="files.html#cb53-50"></a><span class="co">#&gt;     targets</span></span>
+<span id="cb53-51"><a href="files.html#cb53-51"></a><span class="co">#&gt;     tibble</span></span>
+<span id="cb53-52"><a href="files.html#cb53-52"></a><span class="co">#&gt;     tidyr</span></span>
+<span id="cb53-53"><a href="files.html#cb53-53"></a><span class="co">#&gt;     tidyverse</span></span>
+<span id="cb53-54"><a href="files.html#cb53-54"></a><span class="co">#&gt;     utils</span></span>
+<span id="cb53-55"><a href="files.html#cb53-55"></a><span class="co">#&gt;     withr </span></span>
+<span id="cb53-56"><a href="files.html#cb53-56"></a><span class="co">#&gt;   library:</span></span>
+<span id="cb53-57"><a href="files.html#cb53-57"></a><span class="co">#&gt;     NULL</span></span></code></pre></div>
 <p>The <code>tar_knitr()</code> function searches reports for mentions of <code>tar_read()</code> and <code>tar_load()</code> and returns code that mentions the target names as symbols. The <a href="https://adv-r.hadley.nz/quasiquotation.html">tidy evaluation</a> unquote operator <code>!!</code> tells <code>targets</code> to evaluate <code>tar_knitr()</code> right now instead of in <code>tar_make()</code>. From the print output above, you can see that the R expression of the target returns the correct file paths <strong>and</strong> mentions the symbols <code>fit</code> and <code>hist</code>. As a result, <code>targets</code> knows the report depends on <code>fit</code> and <code>hist</code>, and it knows that <code>report.Rmd</code> and <code>report.html</code> are the files associated with this dynamic file target.</p>
-<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="files.html#cb53-1"></a><span class="kw">tar_visnetwork</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="files.html#cb54-1"></a><span class="kw">tar_visnetwork</span>()</span></code></pre></div>
 <p><img src="images/knitr-graph.png" /></p>
 
 </div>
