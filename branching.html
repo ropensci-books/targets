@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 4 Branching: patterns and metaprogramming | The targets R Package User Manual</title>
+  <meta name="description" content="In-depth discussion of the major functionality of targets." />
+  <meta name="generator" content="bookdown 0.20 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 4 Branching: patterns and metaprogramming | The targets R Package User Manual" />
+  <meta property="og:type" content="book" />
+  <meta property="og:url" content="https://wlandau.github.io/targets-manual" />
+  <meta property="og:image" content="https://wlandau.github.io/targets-manual/images/logo.png" />
+  <meta property="og:description" content="In-depth discussion of the major functionality of targets." />
+  <meta name="github-repo" content="wlandau/targets-manual" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 4 Branching: patterns and metaprogramming | The targets R Package User Manual" />
+  
+  <meta name="twitter:description" content="In-depth discussion of the major functionality of targets." />
+  <meta name="twitter:image" content="https://wlandau.github.io/targets-manual/images/logo.png" />
+
+<meta name="author" content="Will Landau" />
+<meta name="author" content="Copyright Eli Lilly and Company" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <link rel="apple-touch-icon-precomposed" sizes="120x120" href="images/apple-touch-icon.png" />
+  <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
+<link rel="prev" href="practice.html"/>
+<link rel="next" href="files.html"/>
+<script src="libs/header-attrs-2.3/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<script src="libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
+<link href="libs/vis-4.20.1/vis.css" rel="stylesheet" />
+<script src="libs/vis-4.20.1/vis.min.js"></script>
+<script src="libs/visNetwork-binding-2.0.9/visNetwork.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-150843595-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-150843595-1');
+</script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#motivation"><i class="fa fa-check"></i><b>1.1</b> Motivation</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#pipeline-toolkits"><i class="fa fa-check"></i><b>1.2</b> Pipeline toolkits</a></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#the-targets-package"><i class="fa fa-check"></i><b>1.3</b> The <code>targets</code> package</a></li>
+<li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#what-about-drake"><i class="fa fa-check"></i><b>1.4</b> What about <code>drake</code>?</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="walkthrough.html"><a href="walkthrough.html"><i class="fa fa-check"></i><b>2</b> Walkthrough</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="walkthrough.html"><a href="walkthrough.html#goal"><i class="fa fa-check"></i><b>2.1</b> Goal</a></li>
+<li class="chapter" data-level="2.2" data-path="walkthrough.html"><a href="walkthrough.html#files"><i class="fa fa-check"></i><b>2.2</b> Files</a></li>
+<li class="chapter" data-level="2.3" data-path="walkthrough.html"><a href="walkthrough.html#inspect-the-pipeline"><i class="fa fa-check"></i><b>2.3</b> Inspect the pipeline</a></li>
+<li class="chapter" data-level="2.4" data-path="walkthrough.html"><a href="walkthrough.html#run-the-pipeline"><i class="fa fa-check"></i><b>2.4</b> Run the pipeline</a></li>
+<li class="chapter" data-level="2.5" data-path="walkthrough.html"><a href="walkthrough.html#changes"><i class="fa fa-check"></i><b>2.5</b> Changes</a>
+<ul>
+<li class="chapter" data-level="2.5.1" data-path="walkthrough.html"><a href="walkthrough.html#change-code"><i class="fa fa-check"></i><b>2.5.1</b> Change code</a></li>
+<li class="chapter" data-level="2.5.2" data-path="walkthrough.html"><a href="walkthrough.html#change-data"><i class="fa fa-check"></i><b>2.5.2</b> Change data</a></li>
+</ul></li>
+<li class="chapter" data-level="2.6" data-path="walkthrough.html"><a href="walkthrough.html#read-your-data"><i class="fa fa-check"></i><b>2.6</b> Read your data</a></li>
+<li class="chapter" data-level="2.7" data-path="walkthrough.html"><a href="walkthrough.html#read-metadata"><i class="fa fa-check"></i><b>2.7</b> Read metadata</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="practice.html"><a href="practice.html"><i class="fa fa-check"></i><b>3</b> Best practices for <code>targets</code>-powered projects</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="practice.html"><a href="practice.html#a-move-away-from-imperative-scripts"><i class="fa fa-check"></i><b>3.1</b> A move away from imperative scripts</a></li>
+<li class="chapter" data-level="3.2" data-path="practice.html"><a href="practice.html#functions"><i class="fa fa-check"></i><b>3.2</b> Functions</a></li>
+<li class="chapter" data-level="3.3" data-path="practice.html"><a href="practice.html#targets"><i class="fa fa-check"></i><b>3.3</b> Targets</a></li>
+<li class="chapter" data-level="3.4" data-path="practice.html"><a href="practice.html#debugging"><i class="fa fa-check"></i><b>3.4</b> Debugging</a></li>
+<li class="chapter" data-level="3.5" data-path="practice.html"><a href="practice.html#performance"><i class="fa fa-check"></i><b>3.5</b> Performance</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="branching.html"><a href="branching.html"><i class="fa fa-check"></i><b>4</b> Branching: patterns and metaprogramming</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="branching.html"><a href="branching.html#patterns"><i class="fa fa-check"></i><b>4.1</b> Patterns</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="branching.html"><a href="branching.html#pattern-types"><i class="fa fa-check"></i><b>4.1.1</b> Pattern types</a></li>
+<li class="chapter" data-level="4.1.2" data-path="branching.html"><a href="branching.html#iteration"><i class="fa fa-check"></i><b>4.1.2</b> Iteration</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="branching.html"><a href="branching.html#metaprogramming"><i class="fa fa-check"></i><b>4.2</b> Metaprogramming</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="walkthrough.html"><a href="walkthrough.html#files"><i class="fa fa-check"></i><b>5</b> External files and literate programming</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="files.html"><a href="files.html"><i class="fa fa-check"></i><b>5.1</b> Internal files</a></li>
+<li class="chapter" data-level="5.2" data-path="files.html"><a href="files.html#external-input-files"><i class="fa fa-check"></i><b>5.2</b> External input files</a></li>
+<li class="chapter" data-level="5.3" data-path="files.html"><a href="files.html#external-output-files"><i class="fa fa-check"></i><b>5.3</b> External output files</a></li>
+<li class="chapter" data-level="5.4" data-path="files.html"><a href="files.html#literate-programming"><i class="fa fa-check"></i><b>5.4</b> Literate programming</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="hpc.html"><a href="hpc.html"><i class="fa fa-check"></i><b>6</b> High-performance computing</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="hpc.html"><a href="hpc.html#clustermq"><i class="fa fa-check"></i><b>6.1</b> Clustermq</a>
+<ul>
+<li class="chapter" data-level="6.1.1" data-path="hpc.html"><a href="hpc.html#clustermq-installation"><i class="fa fa-check"></i><b>6.1.1</b> Clustermq installation</a></li>
+<li class="chapter" data-level="6.1.2" data-path="hpc.html"><a href="hpc.html#clustermq-locally"><i class="fa fa-check"></i><b>6.1.2</b> Clustermq locally</a></li>
+<li class="chapter" data-level="6.1.3" data-path="hpc.html"><a href="hpc.html#clustermq-remotely"><i class="fa fa-check"></i><b>6.1.3</b> Clustermq remotely</a></li>
+<li class="chapter" data-level="6.1.4" data-path="hpc.html"><a href="hpc.html#clustermq-configuration"><i class="fa fa-check"></i><b>6.1.4</b> Clustermq configuration</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="hpc.html"><a href="hpc.html#future"><i class="fa fa-check"></i><b>6.2</b> Future</a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="hpc.html"><a href="hpc.html#future-installation"><i class="fa fa-check"></i><b>6.2.1</b> Future installation</a></li>
+<li class="chapter" data-level="6.2.2" data-path="hpc.html"><a href="hpc.html#future-locally"><i class="fa fa-check"></i><b>6.2.2</b> Future locally</a></li>
+<li class="chapter" data-level="6.2.3" data-path="hpc.html"><a href="hpc.html#future-remotely"><i class="fa fa-check"></i><b>6.2.3</b> Future remotely</a></li>
+<li class="chapter" data-level="6.2.4" data-path="hpc.html"><a href="hpc.html#future-configuration"><i class="fa fa-check"></i><b>6.2.4</b> Future configuration</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="hpc.html"><a href="hpc.html#advanced"><i class="fa fa-check"></i><b>6.3</b> Advanced</a></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">The targets R Package User Manual</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="branching" class="section level1" number="4">
+<h1><span class="header-section-number">Chapter 4</span> Branching: patterns and metaprogramming</h1>
+<p>In <code>targets</code>, it is possible to write shorthand for large collections of targets.</p>
+<div id="patterns" class="section level2" number="4.1">
+<h2><span class="header-section-number">4.1</span> Patterns</h2>
+<p>The <code>pattern</code> argument of <code>tar_target()</code> allows you to dynamically branch over subsets of upstream targets. The following minimal example explores the mechanics of patterns and branching (and examples of branching in real-world projects are <a href="https://wlandau.github.io/targets/index.html#examples">linked from here</a>).</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="branching.html#cb25-1"></a><span class="kw">library</span>(targets)</span>
+<span id="cb25-2"><a href="branching.html#cb25-2"></a><span class="kw">library</span>(tidyverse)</span>
+<span id="cb25-3"><a href="branching.html#cb25-3"></a><span class="kw">tar_script</span>({</span>
+<span id="cb25-4"><a href="branching.html#cb25-4"></a>  <span class="kw">options</span>(<span class="dt">crayon.enabled =</span> <span class="ot">FALSE</span>, <span class="dt">tidyverse.quiet =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb25-5"><a href="branching.html#cb25-5"></a>  <span class="kw">tar_pipeline</span>(</span>
+<span id="cb25-6"><a href="branching.html#cb25-6"></a>    <span class="kw">tar_target</span>(w, <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>)),</span>
+<span id="cb25-7"><a href="branching.html#cb25-7"></a>    <span class="kw">tar_target</span>(x, <span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">20</span>)),</span>
+<span id="cb25-8"><a href="branching.html#cb25-8"></a>    <span class="kw">tar_target</span>(y, w <span class="op">+</span><span class="st"> </span>x, <span class="dt">pattern =</span> <span class="kw">map</span>(w, x)),</span>
+<span id="cb25-9"><a href="branching.html#cb25-9"></a>    <span class="kw">tar_target</span>(z, <span class="kw">sum</span>(y)),</span>
+<span id="cb25-10"><a href="branching.html#cb25-10"></a>    <span class="kw">tar_target</span>(z2, <span class="kw">length</span>(y), <span class="dt">pattern =</span> <span class="kw">map</span>(y))</span>
+<span id="cb25-11"><a href="branching.html#cb25-11"></a>  )</span>
+<span id="cb25-12"><a href="branching.html#cb25-12"></a>})</span></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="branching.html#cb26-1"></a><span class="kw">tar_visnetwork</span>()</span></code></pre></div>
+<div id="htmlwidget-bf2997fb3b2f93a31365" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-bf2997fb3b2f93a31365">{"x":{"nodes":{"name":["w","x","y","z","z2"],"type":["stem","stem","map","stem","map"],"status":["outdated","outdated","outdated","uptodate","uptodate"],"seconds":[null,null,null,null,null],"bytes":[null,null,null,null,null],"children":[null,null,null,null,null],"id":["w","x","y","z","z2"],"label":["w","x","y","z","z2"],"font.size":[20,20,20,20,20],"level":[1,1,2,3,3],"color":["#3B9AB2","#3B9AB2","#3B9AB2","#0B775E","#0B775E"],"shape":["dot","dot","square","dot","square"]},"edges":{"from":["y","w","x","y"],"to":["z2","y","y","z"],"arrows":["to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":false,"hoverNearest":false,"degree":1,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"left","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Outdated","Up to date","Stem","Map"],"color":["#3B9AB2","#0B775E","#899DA4","#899DA4"],"shape":["dot","dot","dot","square"],"font.size":[20,20,20,20]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="branching.html#cb27-1"></a><span class="kw">tar_make</span>()</span>
+<span id="cb27-2"><a href="branching.html#cb27-2"></a><span class="co">#&gt; ● run target w</span></span>
+<span id="cb27-3"><a href="branching.html#cb27-3"></a><span class="co">#&gt; ● run target x</span></span>
+<span id="cb27-4"><a href="branching.html#cb27-4"></a><span class="co">#&gt; ● run branch y_61ced14d</span></span>
+<span id="cb27-5"><a href="branching.html#cb27-5"></a><span class="co">#&gt; ● run branch y_4096b6a8</span></span>
+<span id="cb27-6"><a href="branching.html#cb27-6"></a><span class="co">#&gt; ● run branch z2_275d234a</span></span>
+<span id="cb27-7"><a href="branching.html#cb27-7"></a><span class="co">#&gt; ● run branch z2_8c730b35</span></span>
+<span id="cb27-8"><a href="branching.html#cb27-8"></a><span class="co">#&gt; ● run target z</span></span></code></pre></div>
+<p>Above, targets <code>w</code>, <code>x</code>, and <code>z</code> are called <strong>stems</strong> because they provide values for other targets to branch over. Target <code>y</code> is a <strong>pattern</strong> becuase it defines multiple sub-targets, or <strong>branches</strong>, based on the return values of the targets named inside <code>map()</code> or <code>cross()</code>. If we read target <code>y</code> into memory, all the branches will load and get aggregated according to the <code>iteration</code> argument of <code>tar_target()</code>.</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="branching.html#cb28-1"></a><span class="kw">tar_read</span>(y)</span>
+<span id="cb28-2"><a href="branching.html#cb28-2"></a><span class="co">#&gt; [1] 11 22</span></span></code></pre></div>
+<p>Target <code>z</code> accepts this entire aggregate of <code>y</code> and sums it.</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="branching.html#cb29-1"></a><span class="kw">tar_read</span>(z)</span>
+<span id="cb29-2"><a href="branching.html#cb29-2"></a><span class="co">#&gt; [1] 33</span></span></code></pre></div>
+<p>Target <code>z2</code> maps over <code>y</code>, so each each branch of <code>z2</code> accepts a branch of <code>y</code>.</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="branching.html#cb30-1"></a><span class="kw">tar_read</span>(z2)</span>
+<span id="cb30-2"><a href="branching.html#cb30-2"></a><span class="co">#&gt; [1] 1 1</span></span></code></pre></div>
+<div id="pattern-types" class="section level3" number="4.1.1">
+<h3><span class="header-section-number">4.1.1</span> Pattern types</h3>
+<p>As we see above, the <code>map()</code> pattern creates one branch for each tuple of slices of the arguments. For example, <code>map(x, y)</code> creates one branch corresponding to <code>x[1]</code> and <code>y[1]</code> and another branch corresponding to <code>x[2]</code> and <code>y[2]</code>.</p>
+<p>The <code>cross()</code> pattern instead creates a target for <em>combination</em> of arguments. Here, <code>cross(x, y)</code> creates 4 targets: One for <code>x[1]</code> and <code>y[1]</code>, one for <code>x[1]</code> and <code>y[2]</code>, one for <code>x[2]</code> and <code>y[1]</code>, and one for <code>x[2]</code> and <code>y[2]</code>. Since we already ran the equivalent <code>map()</code> pattern, the following run only builds the (<code>x[1]</code>, <code>y[2]</code>) and (<code>x[2]</code>, <code>y[1]</code>) branches <code>y</code>.</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="branching.html#cb31-1"></a><span class="kw">tar_script</span>({</span>
+<span id="cb31-2"><a href="branching.html#cb31-2"></a>  <span class="kw">options</span>(<span class="dt">crayon.enabled =</span> <span class="ot">FALSE</span>, <span class="dt">tidyverse.quiet =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb31-3"><a href="branching.html#cb31-3"></a>  <span class="kw">tar_pipeline</span>(</span>
+<span id="cb31-4"><a href="branching.html#cb31-4"></a>    <span class="kw">tar_target</span>(w, <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>)),</span>
+<span id="cb31-5"><a href="branching.html#cb31-5"></a>    <span class="kw">tar_target</span>(x, <span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">20</span>)),</span>
+<span id="cb31-6"><a href="branching.html#cb31-6"></a>    <span class="kw">tar_target</span>(y, w <span class="op">+</span><span class="st"> </span>x, <span class="dt">pattern =</span> <span class="kw">cross</span>(w, x))</span>
+<span id="cb31-7"><a href="branching.html#cb31-7"></a>  )</span>
+<span id="cb31-8"><a href="branching.html#cb31-8"></a>})</span></code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="branching.html#cb32-1"></a><span class="kw">tar_make</span>()</span>
+<span id="cb32-2"><a href="branching.html#cb32-2"></a><span class="co">#&gt; ✔ skip target w</span></span>
+<span id="cb32-3"><a href="branching.html#cb32-3"></a><span class="co">#&gt; ✔ skip target x</span></span>
+<span id="cb32-4"><a href="branching.html#cb32-4"></a><span class="co">#&gt; ✔ skip branch y_61ced14d</span></span>
+<span id="cb32-5"><a href="branching.html#cb32-5"></a><span class="co">#&gt; ● run branch y_4b87fe9a</span></span>
+<span id="cb32-6"><a href="branching.html#cb32-6"></a><span class="co">#&gt; ● run branch y_6f1bdd19</span></span>
+<span id="cb32-7"><a href="branching.html#cb32-7"></a><span class="co">#&gt; ✔ skip branch y_4096b6a8</span></span></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="branching.html#cb33-1"></a><span class="kw">tar_read</span>(y)</span>
+<span id="cb33-2"><a href="branching.html#cb33-2"></a><span class="co">#&gt; [1] 11 21 12 22</span></span></code></pre></div>
+</div>
+<div id="iteration" class="section level3" number="4.1.2">
+<h3><span class="header-section-number">4.1.2</span> Iteration</h3>
+<p>There are many ways to slice up a stem for branching, and there are many ways to aggregate the branches of a pattern.<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> The <code>iteration</code> argument of <code>tar_target()</code> controls the splitting and aggregation protocol on a target-by-target basis, and you can set the default for all targets with the analogous argument of <code>tar_options()</code>.</p>
+<div id="vector" class="section level4" number="4.1.2.1">
+<h4><span class="header-section-number">4.1.2.1</span> Vector</h4>
+<p><code>targets</code> uses vector iteration by default, and you can opt into this behavior by setting <code>iteration = "vector"</code> in <code>tar_target()</code>. In vector iteration, <code>targets</code> uses the <a href="https://vctrs.r-lib.org/"><code>vctrs</code></a> package to split stems and aggregate banches. That means <code>vctrs::vec_slice()</code> slices up stems like <code>x</code> for mapping, and <code>vctrs::vec_c()</code> aggregates patterns like <code>y</code> for operations like <code>tar_read()</code>.</p>
+<p>For atomic vectors like in the example above, this behavior is already intuitive. But if we map over a data frame, each branch will get a row of the data frame due to vector iteration.</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="branching.html#cb34-1"></a><span class="kw">tar_script</span>({</span>
+<span id="cb34-2"><a href="branching.html#cb34-2"></a>  <span class="kw">options</span>(<span class="dt">crayon.enabled =</span> <span class="ot">FALSE</span>, <span class="dt">tidyverse.quiet =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb34-3"><a href="branching.html#cb34-3"></a>  print_and_return &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</span>
+<span id="cb34-4"><a href="branching.html#cb34-4"></a>    <span class="kw">print</span>(x)</span>
+<span id="cb34-5"><a href="branching.html#cb34-5"></a>    x</span>
+<span id="cb34-6"><a href="branching.html#cb34-6"></a>  }</span>
+<span id="cb34-7"><a href="branching.html#cb34-7"></a>  <span class="kw">tar_pipeline</span>(</span>
+<span id="cb34-8"><a href="branching.html#cb34-8"></a>    <span class="kw">tar_target</span>(x, <span class="kw">data.frame</span>(<span class="dt">a =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="dt">b =</span> <span class="kw">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>))),</span>
+<span id="cb34-9"><a href="branching.html#cb34-9"></a>    <span class="kw">tar_target</span>(y, <span class="kw">print_and_return</span>(x), <span class="dt">pattern =</span> <span class="kw">map</span>(x))</span>
+<span id="cb34-10"><a href="branching.html#cb34-10"></a>  )</span>
+<span id="cb34-11"><a href="branching.html#cb34-11"></a>})</span></code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="branching.html#cb35-1"></a><span class="kw">tar_make</span>()</span>
+<span id="cb35-2"><a href="branching.html#cb35-2"></a><span class="co">#&gt; ● run target x</span></span>
+<span id="cb35-3"><a href="branching.html#cb35-3"></a><span class="co">#&gt; ● run branch y_2e131731</span></span>
+<span id="cb35-4"><a href="branching.html#cb35-4"></a><span class="co">#&gt;   a b</span></span>
+<span id="cb35-5"><a href="branching.html#cb35-5"></a><span class="co">#&gt; 1 1 a</span></span>
+<span id="cb35-6"><a href="branching.html#cb35-6"></a><span class="co">#&gt; ● run branch y_6c3b7977</span></span>
+<span id="cb35-7"><a href="branching.html#cb35-7"></a><span class="co">#&gt;   a b</span></span>
+<span id="cb35-8"><a href="branching.html#cb35-8"></a><span class="co">#&gt; 1 2 b</span></span></code></pre></div>
+<p>And since <code>y</code> also has iteration = <code>"vector"</code>, the aggregate of <code>y</code> is a single data frame of all the rows.</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="branching.html#cb36-1"></a><span class="kw">tar_read</span>(y)</span>
+<span id="cb36-2"><a href="branching.html#cb36-2"></a><span class="co">#&gt;   a b</span></span>
+<span id="cb36-3"><a href="branching.html#cb36-3"></a><span class="co">#&gt; 1 1 a</span></span>
+<span id="cb36-4"><a href="branching.html#cb36-4"></a><span class="co">#&gt; 2 2 b</span></span></code></pre></div>
+</div>
+<div id="list" class="section level4" number="4.1.2.2">
+<h4><span class="header-section-number">4.1.2.2</span> List</h4>
+<p>List iteration splits and aggregates targets as simple lists. If target <code>x</code> has <code>"list"</code> iteration, all branches of downstream patterns will get <code>x[[1]]</code>, <code>x[[2]]</code>, and so on. (<code>vctrs::vec_slice()</code> behaves more like <code>[]</code> than <code>[[]]</code>.)</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="branching.html#cb37-1"></a><span class="kw">tar_script</span>({</span>
+<span id="cb37-2"><a href="branching.html#cb37-2"></a>  <span class="kw">options</span>(<span class="dt">crayon.enabled =</span> <span class="ot">FALSE</span>, <span class="dt">tidyverse.quiet =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb37-3"><a href="branching.html#cb37-3"></a>  print_and_return &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</span>
+<span id="cb37-4"><a href="branching.html#cb37-4"></a>    <span class="kw">print</span>(x)</span>
+<span id="cb37-5"><a href="branching.html#cb37-5"></a>    x</span>
+<span id="cb37-6"><a href="branching.html#cb37-6"></a>  }</span>
+<span id="cb37-7"><a href="branching.html#cb37-7"></a>  <span class="kw">tar_pipeline</span>(</span>
+<span id="cb37-8"><a href="branching.html#cb37-8"></a>    <span class="kw">tar_target</span>(</span>
+<span id="cb37-9"><a href="branching.html#cb37-9"></a>      x,</span>
+<span id="cb37-10"><a href="branching.html#cb37-10"></a>      <span class="kw">data.frame</span>(<span class="dt">a =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="dt">b =</span> <span class="kw">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>)),</span>
+<span id="cb37-11"><a href="branching.html#cb37-11"></a>      <span class="dt">iteration =</span> <span class="st">&quot;list&quot;</span></span>
+<span id="cb37-12"><a href="branching.html#cb37-12"></a>    ),</span>
+<span id="cb37-13"><a href="branching.html#cb37-13"></a>    <span class="kw">tar_target</span>(y, <span class="kw">print_and_return</span>(x), <span class="dt">pattern =</span> <span class="kw">map</span>(x)),</span>
+<span id="cb37-14"><a href="branching.html#cb37-14"></a>    <span class="kw">tar_target</span>(z, x, <span class="dt">pattern =</span> <span class="kw">map</span>(x), <span class="dt">iteration =</span> <span class="st">&quot;list&quot;</span>)</span>
+<span id="cb37-15"><a href="branching.html#cb37-15"></a>  )</span>
+<span id="cb37-16"><a href="branching.html#cb37-16"></a>})</span></code></pre></div>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="branching.html#cb38-1"></a><span class="kw">tar_make</span>()</span>
+<span id="cb38-2"><a href="branching.html#cb38-2"></a><span class="co">#&gt; ● run target x</span></span>
+<span id="cb38-3"><a href="branching.html#cb38-3"></a><span class="co">#&gt; ● run branch y_651b13c7</span></span>
+<span id="cb38-4"><a href="branching.html#cb38-4"></a><span class="co">#&gt; [1] 1 2</span></span>
+<span id="cb38-5"><a href="branching.html#cb38-5"></a><span class="co">#&gt; ● run branch y_1c8c7726</span></span>
+<span id="cb38-6"><a href="branching.html#cb38-6"></a><span class="co">#&gt; [1] &quot;a&quot; &quot;b&quot;</span></span>
+<span id="cb38-7"><a href="branching.html#cb38-7"></a><span class="co">#&gt; ● run branch z_651b13c7</span></span>
+<span id="cb38-8"><a href="branching.html#cb38-8"></a><span class="co">#&gt; ● run branch z_1c8c7726</span></span></code></pre></div>
+<p>Aggregation also happens differently. In this case, the vector iteration in <code>y</code> is not ideal, and the list iteration in <code>z</code> gives us more sensible output.</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="branching.html#cb39-1"></a><span class="kw">tar_read</span>(y)</span>
+<span id="cb39-2"><a href="branching.html#cb39-2"></a><span class="co">#&gt; Error: Can&#39;t combine `..1` &lt;double&gt; and `..2` &lt;character&gt;.</span></span></code></pre></div>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="branching.html#cb40-1"></a><span class="kw">tar_read</span>(z)</span>
+<span id="cb40-2"><a href="branching.html#cb40-2"></a><span class="co">#&gt; [[1]]</span></span>
+<span id="cb40-3"><a href="branching.html#cb40-3"></a><span class="co">#&gt; [1] 1 2</span></span>
+<span id="cb40-4"><a href="branching.html#cb40-4"></a><span class="co">#&gt; </span></span>
+<span id="cb40-5"><a href="branching.html#cb40-5"></a><span class="co">#&gt; [[2]]</span></span>
+<span id="cb40-6"><a href="branching.html#cb40-6"></a><span class="co">#&gt; [1] &quot;a&quot; &quot;b&quot;</span></span></code></pre></div>
+</div>
+<div id="group" class="section level4" number="4.1.2.3">
+<h4><span class="header-section-number">4.1.2.3</span> Group</h4>
+<p>Group iteration brings <code>dplyr::group_by()</code> functionality to patterns. This way, we can map or cross over custom subsets of rows. Consider the following data frame.</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="branching.html#cb41-1"></a>object &lt;-<span class="st"> </span><span class="kw">data.frame</span>(</span>
+<span id="cb41-2"><a href="branching.html#cb41-2"></a>  <span class="dt">x =</span> <span class="kw">seq_len</span>(<span class="dv">6</span>),</span>
+<span id="cb41-3"><a href="branching.html#cb41-3"></a>  <span class="dt">id =</span> <span class="kw">rep</span>(letters[<span class="kw">seq_len</span>(<span class="dv">3</span>)], <span class="dt">each =</span> <span class="dv">2</span>)</span>
+<span id="cb41-4"><a href="branching.html#cb41-4"></a>)</span>
+<span id="cb41-5"><a href="branching.html#cb41-5"></a></span>
+<span id="cb41-6"><a href="branching.html#cb41-6"></a>object</span>
+<span id="cb41-7"><a href="branching.html#cb41-7"></a><span class="co">#&gt;   x id</span></span>
+<span id="cb41-8"><a href="branching.html#cb41-8"></a><span class="co">#&gt; 1 1  a</span></span>
+<span id="cb41-9"><a href="branching.html#cb41-9"></a><span class="co">#&gt; 2 2  a</span></span>
+<span id="cb41-10"><a href="branching.html#cb41-10"></a><span class="co">#&gt; 3 3  b</span></span>
+<span id="cb41-11"><a href="branching.html#cb41-11"></a><span class="co">#&gt; 4 4  b</span></span>
+<span id="cb41-12"><a href="branching.html#cb41-12"></a><span class="co">#&gt; 5 5  c</span></span>
+<span id="cb41-13"><a href="branching.html#cb41-13"></a><span class="co">#&gt; 6 6  c</span></span></code></pre></div>
+<p>To map over the groups of rows defined by the <code>id</code> column, we</p>
+<ol style="list-style-type: decimal">
+<li>Use <code>group_by()</code> and <code>tar_group()</code> to define the groups of rows, and</li>
+<li>Use <code>iteration = "group"</code> in <code>tar_target()</code> to tell downstream patterns to use the row groups.</li>
+</ol>
+<p>Put together, the pipeline looks like this.</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="branching.html#cb42-1"></a><span class="kw">tar_script</span>({</span>
+<span id="cb42-2"><a href="branching.html#cb42-2"></a><span class="kw">library</span>(dplyr)</span>
+<span id="cb42-3"><a href="branching.html#cb42-3"></a>print_and_return &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</span>
+<span id="cb42-4"><a href="branching.html#cb42-4"></a>  <span class="kw">print</span>(x)</span>
+<span id="cb42-5"><a href="branching.html#cb42-5"></a>  x</span>
+<span id="cb42-6"><a href="branching.html#cb42-6"></a>}</span>
+<span id="cb42-7"><a href="branching.html#cb42-7"></a><span class="kw">tar_pipeline</span>(</span>
+<span id="cb42-8"><a href="branching.html#cb42-8"></a>  <span class="kw">tar_target</span>(</span>
+<span id="cb42-9"><a href="branching.html#cb42-9"></a>    data,</span>
+<span id="cb42-10"><a href="branching.html#cb42-10"></a>    <span class="kw">data.frame</span>(</span>
+<span id="cb42-11"><a href="branching.html#cb42-11"></a>      <span class="dt">x =</span> <span class="kw">seq_len</span>(<span class="dv">6</span>),</span>
+<span id="cb42-12"><a href="branching.html#cb42-12"></a>      <span class="dt">id =</span> <span class="kw">rep</span>(letters[<span class="kw">seq_len</span>(<span class="dv">3</span>)], <span class="dt">each =</span> <span class="dv">2</span>)</span>
+<span id="cb42-13"><a href="branching.html#cb42-13"></a>    ) <span class="op">%&gt;%</span></span>
+<span id="cb42-14"><a href="branching.html#cb42-14"></a><span class="st">      </span><span class="kw">group_by</span>(id) <span class="op">%&gt;%</span></span>
+<span id="cb42-15"><a href="branching.html#cb42-15"></a><span class="st">      </span><span class="kw">tar_group</span>(),</span>
+<span id="cb42-16"><a href="branching.html#cb42-16"></a>    <span class="dt">iteration =</span> <span class="st">&quot;group&quot;</span></span>
+<span id="cb42-17"><a href="branching.html#cb42-17"></a>  ),</span>
+<span id="cb42-18"><a href="branching.html#cb42-18"></a>  <span class="kw">tar_target</span>(</span>
+<span id="cb42-19"><a href="branching.html#cb42-19"></a>    sums,</span>
+<span id="cb42-20"><a href="branching.html#cb42-20"></a>    <span class="kw">sum</span>(<span class="kw">print_and_return</span>(data)<span class="op">$</span>x),</span>
+<span id="cb42-21"><a href="branching.html#cb42-21"></a>    <span class="dt">pattern =</span> <span class="kw">map</span>(data),</span>
+<span id="cb42-22"><a href="branching.html#cb42-22"></a>    <span class="dt">iteration =</span> <span class="st">&quot;vector&quot;</span></span>
+<span id="cb42-23"><a href="branching.html#cb42-23"></a>  )</span>
+<span id="cb42-24"><a href="branching.html#cb42-24"></a>)</span>
+<span id="cb42-25"><a href="branching.html#cb42-25"></a>})</span></code></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="branching.html#cb43-1"></a><span class="kw">tar_make</span>()</span>
+<span id="cb43-2"><a href="branching.html#cb43-2"></a><span class="co">#&gt; </span></span>
+<span id="cb43-3"><a href="branching.html#cb43-3"></a><span class="co">#&gt; Attaching package: ‘dplyr’</span></span>
+<span id="cb43-4"><a href="branching.html#cb43-4"></a><span class="co">#&gt; </span></span>
+<span id="cb43-5"><a href="branching.html#cb43-5"></a><span class="co">#&gt; The following objects are masked from ‘package:stats’:</span></span>
+<span id="cb43-6"><a href="branching.html#cb43-6"></a><span class="co">#&gt; </span></span>
+<span id="cb43-7"><a href="branching.html#cb43-7"></a><span class="co">#&gt;     filter, lag</span></span>
+<span id="cb43-8"><a href="branching.html#cb43-8"></a><span class="co">#&gt; </span></span>
+<span id="cb43-9"><a href="branching.html#cb43-9"></a><span class="co">#&gt; The following objects are masked from ‘package:base’:</span></span>
+<span id="cb43-10"><a href="branching.html#cb43-10"></a><span class="co">#&gt; </span></span>
+<span id="cb43-11"><a href="branching.html#cb43-11"></a><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span>
+<span id="cb43-12"><a href="branching.html#cb43-12"></a><span class="co">#&gt; </span></span>
+<span id="cb43-13"><a href="branching.html#cb43-13"></a><span class="co">#&gt; ● run target data</span></span>
+<span id="cb43-14"><a href="branching.html#cb43-14"></a><span class="co">#&gt; ● run branch sums_9c27c3ec</span></span>
+<span id="cb43-15"><a href="branching.html#cb43-15"></a><span class="co">#&gt; # A tibble: 2 x 3</span></span>
+<span id="cb43-16"><a href="branching.html#cb43-16"></a><span class="co">#&gt; # Groups:   id [1]</span></span>
+<span id="cb43-17"><a href="branching.html#cb43-17"></a><span class="co">#&gt;       x id    tar_group</span></span>
+<span id="cb43-18"><a href="branching.html#cb43-18"></a><span class="co">#&gt;   &lt;int&gt; &lt;chr&gt;     &lt;int&gt;</span></span>
+<span id="cb43-19"><a href="branching.html#cb43-19"></a><span class="co">#&gt; 1     1 a             1</span></span>
+<span id="cb43-20"><a href="branching.html#cb43-20"></a><span class="co">#&gt; 2     2 a             1</span></span>
+<span id="cb43-21"><a href="branching.html#cb43-21"></a><span class="co">#&gt; ● run branch sums_8c545d52</span></span>
+<span id="cb43-22"><a href="branching.html#cb43-22"></a><span class="co">#&gt; # A tibble: 2 x 3</span></span>
+<span id="cb43-23"><a href="branching.html#cb43-23"></a><span class="co">#&gt; # Groups:   id [1]</span></span>
+<span id="cb43-24"><a href="branching.html#cb43-24"></a><span class="co">#&gt;       x id    tar_group</span></span>
+<span id="cb43-25"><a href="branching.html#cb43-25"></a><span class="co">#&gt;   &lt;int&gt; &lt;chr&gt;     &lt;int&gt;</span></span>
+<span id="cb43-26"><a href="branching.html#cb43-26"></a><span class="co">#&gt; 1     3 b             2</span></span>
+<span id="cb43-27"><a href="branching.html#cb43-27"></a><span class="co">#&gt; 2     4 b             2</span></span>
+<span id="cb43-28"><a href="branching.html#cb43-28"></a><span class="co">#&gt; ● run branch sums_2babc46e</span></span>
+<span id="cb43-29"><a href="branching.html#cb43-29"></a><span class="co">#&gt; # A tibble: 2 x 3</span></span>
+<span id="cb43-30"><a href="branching.html#cb43-30"></a><span class="co">#&gt; # Groups:   id [1]</span></span>
+<span id="cb43-31"><a href="branching.html#cb43-31"></a><span class="co">#&gt;       x id    tar_group</span></span>
+<span id="cb43-32"><a href="branching.html#cb43-32"></a><span class="co">#&gt;   &lt;int&gt; &lt;chr&gt;     &lt;int&gt;</span></span>
+<span id="cb43-33"><a href="branching.html#cb43-33"></a><span class="co">#&gt; 1     5 c             3</span></span>
+<span id="cb43-34"><a href="branching.html#cb43-34"></a><span class="co">#&gt; 2     6 c             3</span></span></code></pre></div>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="branching.html#cb44-1"></a><span class="kw">tar_read</span>(sums)</span>
+<span id="cb44-2"><a href="branching.html#cb44-2"></a><span class="co">#&gt; [1]  3  7 11</span></span></code></pre></div>
+<p>Row groups are defined in the special <code>tar_group</code> column created by <code>tar_group()</code>. <code>tar_group()</code> creates this column based on the attributes created by <code>dplyr::group_by()</code>. <code>targets</code> avoids using those attributes directly because some custom storage formats, particularly <code>format = "fst"</code> in <code>tar_target()</code>, drop all attributes.</p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="branching.html#cb45-1"></a><span class="kw">data.frame</span>(</span>
+<span id="cb45-2"><a href="branching.html#cb45-2"></a>  <span class="dt">x =</span> <span class="kw">seq_len</span>(<span class="dv">6</span>),</span>
+<span id="cb45-3"><a href="branching.html#cb45-3"></a>  <span class="dt">id =</span> <span class="kw">rep</span>(letters[<span class="kw">seq_len</span>(<span class="dv">3</span>)], <span class="dt">each =</span> <span class="dv">2</span>)</span>
+<span id="cb45-4"><a href="branching.html#cb45-4"></a>) <span class="op">%&gt;%</span></span>
+<span id="cb45-5"><a href="branching.html#cb45-5"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">group_by</span>(id) <span class="op">%&gt;%</span></span>
+<span id="cb45-6"><a href="branching.html#cb45-6"></a><span class="st">  </span><span class="kw">tar_group</span>()</span>
+<span id="cb45-7"><a href="branching.html#cb45-7"></a><span class="co">#&gt; # A tibble: 6 x 3</span></span>
+<span id="cb45-8"><a href="branching.html#cb45-8"></a><span class="co">#&gt; # Groups:   id [3]</span></span>
+<span id="cb45-9"><a href="branching.html#cb45-9"></a><span class="co">#&gt;       x id    tar_group</span></span>
+<span id="cb45-10"><a href="branching.html#cb45-10"></a><span class="co">#&gt;   &lt;int&gt; &lt;chr&gt;     &lt;int&gt;</span></span>
+<span id="cb45-11"><a href="branching.html#cb45-11"></a><span class="co">#&gt; 1     1 a             1</span></span>
+<span id="cb45-12"><a href="branching.html#cb45-12"></a><span class="co">#&gt; 2     2 a             1</span></span>
+<span id="cb45-13"><a href="branching.html#cb45-13"></a><span class="co">#&gt; 3     3 b             2</span></span>
+<span id="cb45-14"><a href="branching.html#cb45-14"></a><span class="co">#&gt; 4     4 b             2</span></span>
+<span id="cb45-15"><a href="branching.html#cb45-15"></a><span class="co">#&gt; 5     5 c             3</span></span>
+<span id="cb45-16"><a href="branching.html#cb45-16"></a><span class="co">#&gt; 6     6 c             3</span></span></code></pre></div>
+</div>
+</div>
+</div>
+<div id="metaprogramming" class="section level2" number="4.2">
+<h2><span class="header-section-number">4.2</span> Metaprogramming</h2>
+<p>Metaprogramming is an alternative to patterns for large collections of targets. Metaprogramming can help you understand of the targets you start with, create informative target names, and construct complicated pipelines when layered on top of patterns.</p>
+<p>In the example below, we define a target for each data source in a mock workflow. We use <code>tar_target_raw()</code> instead of <code>tar_target()</code> to avoid the non-standard evaluation, which lets us supply target names, expressions, and pattern specifications programmatically.</p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="branching.html#cb46-1"></a><span class="kw">library</span>(purrr)</span>
+<span id="cb46-2"><a href="branching.html#cb46-2"></a>datasets &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;gapminder&quot;</span>, <span class="st">&quot;who&quot;</span>, <span class="st">&quot;imf&quot;</span>)</span>
+<span id="cb46-3"><a href="branching.html#cb46-3"></a>data_target_list &lt;-<span class="st"> </span><span class="kw">map</span>(</span>
+<span id="cb46-4"><a href="branching.html#cb46-4"></a>  datasets,</span>
+<span id="cb46-5"><a href="branching.html#cb46-5"></a>  <span class="op">~</span><span class="kw">tar_target_raw</span>(.x, <span class="kw">substitute</span>(<span class="kw">get_data</span>(x), <span class="dt">env =</span> <span class="kw">list</span>(<span class="dt">x =</span> .x)))</span>
+<span id="cb46-6"><a href="branching.html#cb46-6"></a>)</span></code></pre></div>
+<p>As expected the first target has the name <code>gapminder</code> and the expression <code>get_data("gapminder")</code>.</p>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="branching.html#cb47-1"></a>data_target_list[[<span class="dv">1</span>]]</span>
+<span id="cb47-2"><a href="branching.html#cb47-2"></a><span class="co">#&gt; &lt;stem target&gt; </span></span>
+<span id="cb47-3"><a href="branching.html#cb47-3"></a><span class="co">#&gt;   name: gapminder </span></span>
+<span id="cb47-4"><a href="branching.html#cb47-4"></a><span class="co">#&gt;   command:</span></span>
+<span id="cb47-5"><a href="branching.html#cb47-5"></a><span class="co">#&gt;     get_data(&quot;gapminder&quot;) </span></span>
+<span id="cb47-6"><a href="branching.html#cb47-6"></a><span class="co">#&gt;   format: rds </span></span>
+<span id="cb47-7"><a href="branching.html#cb47-7"></a><span class="co">#&gt;   iteration method: vector </span></span>
+<span id="cb47-8"><a href="branching.html#cb47-8"></a><span class="co">#&gt;   error mode: stop </span></span>
+<span id="cb47-9"><a href="branching.html#cb47-9"></a><span class="co">#&gt;   memory mode: persistent </span></span>
+<span id="cb47-10"><a href="branching.html#cb47-10"></a><span class="co">#&gt;   storage mode: local </span></span>
+<span id="cb47-11"><a href="branching.html#cb47-11"></a><span class="co">#&gt;   retrieval mode: local </span></span>
+<span id="cb47-12"><a href="branching.html#cb47-12"></a><span class="co">#&gt;   deploy to: remote </span></span>
+<span id="cb47-13"><a href="branching.html#cb47-13"></a><span class="co">#&gt;   template (clustermq):</span></span>
+<span id="cb47-14"><a href="branching.html#cb47-14"></a><span class="co">#&gt;     list() </span></span>
+<span id="cb47-15"><a href="branching.html#cb47-15"></a><span class="co">#&gt;   resources (future):</span></span>
+<span id="cb47-16"><a href="branching.html#cb47-16"></a><span class="co">#&gt;     list() </span></span>
+<span id="cb47-17"><a href="branching.html#cb47-17"></a><span class="co">#&gt;   cue:</span></span>
+<span id="cb47-18"><a href="branching.html#cb47-18"></a><span class="co">#&gt;     depend: TRUE</span></span>
+<span id="cb47-19"><a href="branching.html#cb47-19"></a><span class="co">#&gt;     file: TRUE</span></span>
+<span id="cb47-20"><a href="branching.html#cb47-20"></a><span class="co">#&gt;     iteration: TRUE</span></span>
+<span id="cb47-21"><a href="branching.html#cb47-21"></a><span class="co">#&gt;     command: TRUE</span></span>
+<span id="cb47-22"><a href="branching.html#cb47-22"></a><span class="co">#&gt;     mode: thorough</span></span>
+<span id="cb47-23"><a href="branching.html#cb47-23"></a><span class="co">#&gt;     format: TRUE </span></span>
+<span id="cb47-24"><a href="branching.html#cb47-24"></a><span class="co">#&gt;   packages:</span></span>
+<span id="cb47-25"><a href="branching.html#cb47-25"></a><span class="co">#&gt;     base</span></span>
+<span id="cb47-26"><a href="branching.html#cb47-26"></a><span class="co">#&gt;     biglm</span></span>
+<span id="cb47-27"><a href="branching.html#cb47-27"></a><span class="co">#&gt;     datasets</span></span>
+<span id="cb47-28"><a href="branching.html#cb47-28"></a><span class="co">#&gt;     DBI</span></span>
+<span id="cb47-29"><a href="branching.html#cb47-29"></a><span class="co">#&gt;     dplyr</span></span>
+<span id="cb47-30"><a href="branching.html#cb47-30"></a><span class="co">#&gt;     forcats</span></span>
+<span id="cb47-31"><a href="branching.html#cb47-31"></a><span class="co">#&gt;     fs</span></span>
+<span id="cb47-32"><a href="branching.html#cb47-32"></a><span class="co">#&gt;     ggplot2</span></span>
+<span id="cb47-33"><a href="branching.html#cb47-33"></a><span class="co">#&gt;     graphics</span></span>
+<span id="cb47-34"><a href="branching.html#cb47-34"></a><span class="co">#&gt;     grDevices</span></span>
+<span id="cb47-35"><a href="branching.html#cb47-35"></a><span class="co">#&gt;     methods</span></span>
+<span id="cb47-36"><a href="branching.html#cb47-36"></a><span class="co">#&gt;     purrr</span></span>
+<span id="cb47-37"><a href="branching.html#cb47-37"></a><span class="co">#&gt;     readr</span></span>
+<span id="cb47-38"><a href="branching.html#cb47-38"></a><span class="co">#&gt;     stats</span></span>
+<span id="cb47-39"><a href="branching.html#cb47-39"></a><span class="co">#&gt;     stringr</span></span>
+<span id="cb47-40"><a href="branching.html#cb47-40"></a><span class="co">#&gt;     targets</span></span>
+<span id="cb47-41"><a href="branching.html#cb47-41"></a><span class="co">#&gt;     tibble</span></span>
+<span id="cb47-42"><a href="branching.html#cb47-42"></a><span class="co">#&gt;     tidyr</span></span>
+<span id="cb47-43"><a href="branching.html#cb47-43"></a><span class="co">#&gt;     tidyverse</span></span>
+<span id="cb47-44"><a href="branching.html#cb47-44"></a><span class="co">#&gt;     utils</span></span>
+<span id="cb47-45"><a href="branching.html#cb47-45"></a><span class="co">#&gt;     withr </span></span>
+<span id="cb47-46"><a href="branching.html#cb47-46"></a><span class="co">#&gt;   library:</span></span>
+<span id="cb47-47"><a href="branching.html#cb47-47"></a><span class="co">#&gt;     NULL</span></span></code></pre></div>
+<p>In practice, we use the above target list to build our pipeline in <code>_targets.R</code>.</p>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="branching.html#cb48-1"></a><span class="kw">tar_script</span>({</span>
+<span id="cb48-2"><a href="branching.html#cb48-2"></a>  <span class="kw">library</span>(purrr)</span>
+<span id="cb48-3"><a href="branching.html#cb48-3"></a>  datasets &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;gapminder&quot;</span>, <span class="st">&quot;who&quot;</span>, <span class="st">&quot;imf&quot;</span>)</span>
+<span id="cb48-4"><a href="branching.html#cb48-4"></a>  data_target_list &lt;-<span class="st"> </span><span class="kw">map</span>(</span>
+<span id="cb48-5"><a href="branching.html#cb48-5"></a>    datasets,</span>
+<span id="cb48-6"><a href="branching.html#cb48-6"></a>    <span class="op">~</span><span class="kw">tar_target_raw</span>(.x, <span class="kw">substitute</span>(<span class="kw">get_data</span>(x), <span class="dt">env =</span> <span class="kw">list</span>(<span class="dt">x =</span> .x)))</span>
+<span id="cb48-7"><a href="branching.html#cb48-7"></a>  )</span>
+<span id="cb48-8"><a href="branching.html#cb48-8"></a>  <span class="kw">tar_pipeline</span>(data_target_list)</span>
+<span id="cb48-9"><a href="branching.html#cb48-9"></a>})</span>
+<span id="cb48-10"><a href="branching.html#cb48-10"></a></span>
+<span id="cb48-11"><a href="branching.html#cb48-11"></a><span class="kw">tar_glimpse</span>()</span></code></pre></div>
+<div id="htmlwidget-674583e03421384eec47" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-674583e03421384eec47">{"x":{"nodes":{"name":["imf","gapminder","who"],"type":["stem","stem","stem"],"status":["undefined","undefined","undefined"],"seconds":[null,null,null],"bytes":[null,null,null],"children":[null,null,null],"id":["imf","gapminder","who"],"label":["imf","gapminder","who"],"font.size":[20,20,20],"level":[0,0,0],"color":["#899DA4","#899DA4","#899DA4"],"shape":["dot","dot","dot"]},"edges":{"from":[],"to":[],"arrows":[]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":false,"hoverNearest":false,"degree":1,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"left","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Stem"],"shape":["dot"],"color":["#899DA4"],"font.size":[20]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
+<p>We can define symbols with <code>rlang::sym()</code> and insert them into expressions with <code>substitute()</code>. It is straightforward to define entire chains of targets this way. The example below demonstrates how to work with symbols and use metaprogramming and patterns simultaneously.</p>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="branching.html#cb49-1"></a><span class="kw">tar_script</span>({</span>
+<span id="cb49-2"><a href="branching.html#cb49-2"></a>  <span class="kw">library</span>(purrr)</span>
+<span id="cb49-3"><a href="branching.html#cb49-3"></a>  <span class="kw">library</span>(rlang)</span>
+<span id="cb49-4"><a href="branching.html#cb49-4"></a>  target_a &lt;-<span class="st"> </span><span class="kw">tar_target</span>(a, <span class="kw">seq_len</span>(<span class="dv">2</span>))</span>
+<span id="cb49-5"><a href="branching.html#cb49-5"></a>  target_list &lt;-<span class="st"> </span><span class="kw">map</span>(</span>
+<span id="cb49-6"><a href="branching.html#cb49-6"></a>    <span class="kw">seq</span>(<span class="dv">2</span>, <span class="dv">4</span>),</span>
+<span id="cb49-7"><a href="branching.html#cb49-7"></a>    <span class="op">~</span><span class="kw">tar_target_raw</span>(</span>
+<span id="cb49-8"><a href="branching.html#cb49-8"></a>      letters[.x],</span>
+<span id="cb49-9"><a href="branching.html#cb49-9"></a>      <span class="kw">substitute</span>(<span class="kw">identity</span>(y), <span class="dt">env =</span> <span class="kw">list</span>(<span class="dt">y =</span> <span class="kw">sym</span>(letters[.x <span class="op">-</span><span class="st"> </span><span class="dv">1</span>]))),</span>
+<span id="cb49-10"><a href="branching.html#cb49-10"></a>      <span class="dt">pattern =</span> <span class="kw">substitute</span>(<span class="kw">map</span>(y), <span class="dt">env =</span> <span class="kw">list</span>(<span class="dt">y =</span> <span class="kw">sym</span>(letters[.x <span class="op">-</span><span class="st"> </span><span class="dv">1</span>])))</span>
+<span id="cb49-11"><a href="branching.html#cb49-11"></a>    )</span>
+<span id="cb49-12"><a href="branching.html#cb49-12"></a>  )</span>
+<span id="cb49-13"><a href="branching.html#cb49-13"></a>  <span class="kw">tar_pipeline</span>(target_a, target_list)</span>
+<span id="cb49-14"><a href="branching.html#cb49-14"></a>})</span>
+<span id="cb49-15"><a href="branching.html#cb49-15"></a></span>
+<span id="cb49-16"><a href="branching.html#cb49-16"></a><span class="kw">tar_glimpse</span>()</span>
+<span id="cb49-17"><a href="branching.html#cb49-17"></a><span class="co">#&gt; </span></span>
+<span id="cb49-18"><a href="branching.html#cb49-18"></a><span class="co">#&gt; Attaching package: ‘rlang’</span></span>
+<span id="cb49-19"><a href="branching.html#cb49-19"></a><span class="co">#&gt; </span></span>
+<span id="cb49-20"><a href="branching.html#cb49-20"></a><span class="co">#&gt; The following objects are masked from ‘package:purrr’:</span></span>
+<span id="cb49-21"><a href="branching.html#cb49-21"></a><span class="co">#&gt; </span></span>
+<span id="cb49-22"><a href="branching.html#cb49-22"></a><span class="co">#&gt;     %@%, as_function, flatten, flatten_chr, flatten_dbl, flatten_int,</span></span>
+<span id="cb49-23"><a href="branching.html#cb49-23"></a><span class="co">#&gt;     flatten_lgl, flatten_raw, invoke, list_along, modify, prepend,</span></span>
+<span id="cb49-24"><a href="branching.html#cb49-24"></a><span class="co">#&gt;     splice</span></span></code></pre></div>
+<div id="htmlwidget-0b95e590322f1575b640" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-0b95e590322f1575b640">{"x":{"nodes":{"name":["a","b","c","d"],"type":["stem","map","map","map"],"status":["undefined","undefined","undefined","undefined"],"seconds":[null,null,null,null],"bytes":[null,null,null,null],"children":[null,null,null,null],"id":["a","b","c","d"],"label":["a","b","c","d"],"font.size":[20,20,20,20],"level":[1,2,3,4],"color":["#899DA4","#899DA4","#899DA4","#899DA4"],"shape":["dot","square","square","square"]},"edges":{"from":["a","b","c"],"to":["b","c","d"],"arrows":["to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":false,"hoverNearest":false,"degree":1,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"left","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Stem","Map"],"shape":["dot","square"],"color":["#899DA4","#899DA4"],"font.size":[20,20]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
+
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="2">
+<li id="fn2"><p>Slicing is always the same when we branch over an existing pattern. If we have <code>tar_target(y, x, pattern = map(x))</code> and <code>x</code> is another pattern, then each branch of <code>y</code> always gets a branch of <code>x</code> regardless of the iteration method. Likewise, the aggregation of stems does not depend on the iteration method because every stem is already aggregated.<a href="branching.html#fnref2" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+<div style = "background: #1C356D; color: white; padding: 10px 10px 10px 25px; font-size: 1em; width: 100%;">
+  Copyright Eli Lilly and Company
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="practice.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="files.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": null,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>
