@@ -382,7 +382,7 @@ exit 0 # Leave alone.</code></pre>
 </div>
 <div id="future-configuration" class="section level3" number="6.2.4">
 <h3><span class="header-section-number">6.2.4</span> Future configuration</h3>
-<p>The <code>tar_target()</code>, <code>tar_target_external()</code>, and <code>tar_options()</code> functions accept a <code>resources</code> argument similar to the <code>template</code> argument of <code>tar_make_clustermq()</code>. For example, if our <code>batchtools</code> template file has a wildcard for the number of cores for a job,</p>
+<p>The <code>tar_target()</code>, <code>tar_target_raw()</code>, and <code>tar_options()</code> functions accept a <code>resources</code> argument similar to the <code>template</code> argument of <code>tar_make_clustermq()</code>. For example, if our <code>batchtools</code> template file has a wildcard for the number of cores for a job,</p>
 <pre><code>#!/bin/bash
 #$ -pe smp &lt;%= resources[[&quot;num_cores&quot;]] | 1 %&gt; # Wildcard for cores per job.
 #$ -cwd
@@ -411,7 +411,7 @@ exit 0</code></pre>
 </div>
 <div id="advanced" class="section level2" number="6.3">
 <h2><span class="header-section-number">6.3</span> Advanced</h2>
-<p>Functions <code>tar_target()</code>, <code>tar_target_external()</code>, and <code>tar_options()</code> support advanced configuration options for heavy-duty pipelines that require high-performance computing.</p>
+<p>Functions <code>tar_target()</code>, <code>tar_target_raw()</code>, and <code>tar_options()</code> support advanced configuration options for heavy-duty pipelines that require high-performance computing.</p>
 <ul>
 <li><code>deployment</code>: With the <code>deployment</code> argument, you can choose to run some targets locally on the master process instead of on a high-performance computing worker. This options is suitable for lightweight targets such as R Markdown reports where runtime is quick and a cluster would be excessive.</li>
 <li><code>memory</code>: Choose whether to retain a target in memory or remove it from memory whenever it is not needed at the moment. This is a tradeoff between memory consumption and storage read speeds, and like all of the options listed here, you can set it on a target-by-target basis. The default settings consume a lot of memory to avoid frequently reading from storage. To keep memory usage down to a minimum, set <code>memory = "transient"</code> in <code>tar_options()</code> and set <code>garbage_collection = TRUE</code> in your <code>tar_make*()</code> function.</li>
