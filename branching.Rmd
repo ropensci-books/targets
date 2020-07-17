@@ -175,7 +175,7 @@ Put together, the pipeline looks like this.
 
 ```{r}
 tar_script({
-library(dplyr)
+suppressPackageStartupMessages(library(dplyr))
 print_and_return <- function(x) {
   print(x)
   x
@@ -228,7 +228,7 @@ In the example below, we define a target for each data source in a mock workflow
 
 ```{r}
 tar_script({
-  library(purrr)
+  suppressPackageStartupMessages(library(purrr))
   datasets <- c("gapminder", "who", "imf")
   data_target_list <- map(
     datasets,
@@ -248,8 +248,8 @@ We can define symbols with `rlang::sym()` and insert them into expressions with 
 
 ```{r}
 tar_script({
-  library(purrr)
-  library(rlang)
+  suppressPackageStartupMessages(library(purrr))
+  suppressPackageStartupMessages(library(rlang))
   target_a <- tar_target(a, seq_len(2))
   target_list <- map(
     seq(2, 4),
