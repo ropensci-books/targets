@@ -282,9 +282,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Interactively run any R code that helps you troubleshoot the problem.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></li>
 </ol>
 <p>To try it out yourself, write the following <code>_targets.R</code> file and then run <code>tar_make(callr_function = NULL)</code>. When the debugger launches, run <code>print(tar_name())</code> and <code>print(a)</code> to be sure things are set up properly.</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="practice.html#cb24-1"></a><span class="kw">library</span>(targets)</span>
-<span id="cb24-2"><a href="practice.html#cb24-2"></a><span class="kw">tar_options</span>(<span class="dt">debug =</span> <span class="st">&quot;b&quot;</span>)</span>
-<span id="cb24-3"><a href="practice.html#cb24-3"></a><span class="kw">tar_pipeline</span>(<span class="kw">tar_target</span>(a, <span class="st">&quot;a&quot;</span>), <span class="kw">tar_target</span>(b, a))</span></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="practice.html#cb25-1"></a><span class="kw">library</span>(targets)</span>
+<span id="cb25-2"><a href="practice.html#cb25-2"></a><span class="kw">tar_options</span>(<span class="dt">debug =</span> <span class="st">&quot;b&quot;</span>)</span>
+<span id="cb25-3"><a href="practice.html#cb25-3"></a><span class="kw">tar_pipeline</span>(<span class="kw">tar_target</span>(a, <span class="st">&quot;a&quot;</span>), <span class="kw">tar_target</span>(b, a))</span></code></pre></div>
 <p>For more on debugging R code, visit <a href="https://rstats.wtf/debugging-r-code.html">this page</a>.</p>
 </div>
 <div id="performance" class="section level2" number="3.5">
