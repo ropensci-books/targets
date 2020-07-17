@@ -227,23 +227,6 @@ Metaprogramming is an alternative to patterns for large collections of targets. 
 In the example below, we define a target for each data source in a mock workflow. We use `tar_target_raw()` instead of `tar_target()` to avoid the non-standard evaluation, which lets us supply target names, expressions, and pattern specifications programmatically.
 
 ```{r}
-library(purrr)
-datasets <- c("gapminder", "who", "imf")
-data_target_list <- map(
-  datasets,
-  ~tar_target_raw(.x, substitute(get_data(x), env = list(x = .x)))
-)
-```
-
-As expected the first target has the name `gapminder` and the expression `get_data("gapminder")`.
-
-```{r}
-data_target_list[[1]]
-```
-
-In practice, we use the above target list to build our pipeline in `_targets.R`.
-
-```{r}
 tar_script({
   library(purrr)
   datasets <- c("gapminder", "who", "imf")
@@ -253,8 +236,12 @@ tar_script({
   )
   tar_pipeline(data_target_list)
 })
+```
 
-tar_glimpse()
+`tar_manifest()` is especially important for checking the correctness of your metaprogramming.
+
+```{r}
+tar_manifest(fields = "command")
 ```
 
 We can define symbols with `rlang::sym()` and insert them into expressions with `substitute()`. It is straightforward to define entire chains of targets this way. The example below demonstrates how to work with symbols and use metaprogramming and patterns simultaneously.
@@ -274,7 +261,14 @@ tar_script({
   )
   tar_pipeline(target_a, target_list)
 })
-
-tar_glimpse()
 ```
 
+```{r}
+library(dplyr)
+tar_manifest() %>%
+  mutate(dimensions = as.character(dimensions))
+```
+
+```{r}
+tar_glimpse()
+```
