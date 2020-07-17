@@ -67,24 +67,24 @@ and attempts to advance the user experience beyond
 Please see the [statement of
 need](https://wlandau.github.io/targets/articles/need.html) for technical details.
 
-If you know [`drake`](https://github.com/ropensci/drake), then you already almost know `targets`. Both tools require you to express your work in functions, which is most of the work for most users, and the packages themselves have similar interfaces. Most functions in `targets` have counterparts in [`drake`](https://github.com/ropensci/drake).
+If you know [`drake`](https://github.com/ropensci/drake), then you already almost know `targets`. The programming style is similar, and most functions in `targets` have counterparts in [`drake`](https://github.com/ropensci/drake).
 
-Functions in `targets`| Similar functions in `drake`
+Functions in `drake`| Similar functions in `targets`
 ---|---
-`tar_script()` | `use_drake()`, `drake_script()`
-`tar_pipeline()` | `drake_plan()`
-`tar_target()`, `tar_target_raw()` | `target()`
-`tar_options()` | `drake_config()`
-`tar_outdated()` | `outdated()`
-`tar_visnetwork()`, `tar_glimpse()` | `vis_drake_graph()`, `r_vis_drake_graph()` 
-`tar_network()` | `drake_graph_info()`, `r_drake_graph_info()`
-`tar_make()`, `tar_make_clustermq()`, and `tar_make_future()` | `make()`, `r_make()`
-`tar_load()` | `loadd()`
-`tar_read()` | `readd()`
-`tar_meta()` | `diagnose()`, `build_times()`, `cached()`
-`tar_progress()` | `drake_progress()`, `drake_running()`, `drake_done()`, `drake_failed()`, `drake_cancelled()`
-`tar_deduplicate()`, `tar_delete()`, `tar_destroy()`, `tar_invalidate()`, `tar_prune()` | `clean()`
-`tar_name()` | `id_chr()`
-`tar_knitr()` | `knitr_in()`
-`tar_cancel()` | `cancel()`, `cancel_if()`
-`tar_cue()` | `trigger()`
+`use_drake()`, `drake_script()` | `tar_script()`
+`drake_plan()` | `tar_pipeline()`, `tar_manifest()`
+`target()` | `tar_target()`, `tar_target_raw()`
+`drake_config()` | `tar_options()`
+`outdated()` | `tar_outdated()`
+`vis_drake_graph()`, `r_vis_drake_graph()` | `tar_visnetwork()`, `tar_glimpse()` 
+`drake_graph_info()`, `r_drake_graph_info()` | `tar_network()`
+`make()`, `r_make()` | `tar_make()`, `tar_make_clustermq()`, `tar_make_future()`
+`loadd()` | `tar_load()`
+`readd()` | `tar_read()`
+`diagnose()`, `build_times()`, `cached()` | `tar_meta()`
+`drake_progress()`, `drake_running()`, `drake_done()`, `drake_failed()`, `drake_cancelled()` | `tar_progress()`
+`clean()` | `tar_deduplicate()`, `tar_delete()`, `tar_destroy()`, `tar_invalidate()`, `tar_prune()`
+`id_chr()` | `tar_name()`
+`knitr_in()` | `tar_knitr()`
+`cancel()`, `cancel_if()` | `tar_cancel()`
+`trigger()` | `tar_cue()`
