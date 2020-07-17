@@ -211,7 +211,7 @@ exit 0 # Leave alone.
 
 ### Future configuration
 
-The `tar_target()`, `tar_target_external()`, and `tar_options()` functions accept a `resources` argument similar to the `template` argument of `tar_make_clustermq()`. For example, if our `batchtools` template file has a wildcard for the number of cores for a job,
+The `tar_target()`, `tar_target_raw()`, and `tar_options()` functions accept a `resources` argument similar to the `template` argument of `tar_make_clustermq()`. For example, if our `batchtools` template file has a wildcard for the number of cores for a job,
 
 ```
 #!/bin/bash
@@ -250,7 +250,7 @@ tar_make_future(workers = 2)
 
 ## Advanced
 
-Functions `tar_target()`, `tar_target_external()`, and `tar_options()` support advanced configuration options for heavy-duty pipelines that require high-performance computing.
+Functions `tar_target()`, `tar_target_raw()`, and `tar_options()` support advanced configuration options for heavy-duty pipelines that require high-performance computing.
 
 * `deployment`: With the `deployment` argument, you can choose to run some targets locally on the master process instead of on a high-performance computing worker. This options is suitable for lightweight targets such as R Markdown reports where runtime is quick and a cluster would be excessive.
 * `memory`: Choose whether to retain a target in memory or remove it from memory whenever it is not needed at the moment. This is a tradeoff between memory consumption and storage read speeds, and like all of the options listed here, you can set it on a target-by-target basis. The default settings consume a lot of memory to avoid frequently reading from storage. To keep memory usage down to a minimum, set `memory = "transient"` in `tar_options()` and set `garbage_collection = TRUE` in your `tar_make*()` function.
