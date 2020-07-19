@@ -131,7 +131,7 @@ All `_targets.R` scripts have these requirements.
 
 ## Inspect the pipeline
 
-Before you run the pipeline, it is good practice to inspect it for errors. `tar_manifest()` shows you a data frame information about the targets, and it has functionality to specify the targets and columns returned.
+Before you run the pipeline for real, you should always inspect the manifest and the graph for errors. `tar_manifest()` shows you a data frame information about the targets, and it has functionality to specify the targets and columns returned.
 
 ```{r}
 tar_manifest(fields = "command")
@@ -149,7 +149,7 @@ and `tar_visnetwork()`.
 tar_visnetwork()
 ```
 
-Both graphing functions visualize the underlying directed acyclic graph (DAG) and tell you how targets are connected. This DAG is indifferent to the order you write targets in `tar_pipeline()`. You will still get the same graph even if you rearrange them. This is because `targets` uses static code analysis with `codetools::findGlobals()` to detect dependency relationships. For example, target `raw_data` depends on target `raw_data_file` because the R expression for `raw_data` mentions the symbol `raw_data_file`. This process can be a bit hard to understand sometimes, so you should always look at the graph to verify that `targets` understands the flow of your pipeline.
+Both graphing functions above visualize the underlying directed acyclic graph (DAG) and tell you how targets are connected. This DAG is indifferent to the order you write targets in `tar_pipeline()`. You will still get the same graph even if you rearrange them. This is because `targets` uses static code analysis to detect the dependencies of each target, and this process does not depend on target order. For details, visit the [dependency detection section of the best practices guide](https://wlandau.github.io/targets-manual/practice.html#dependency-detection).
 
 ## Run the pipeline
 

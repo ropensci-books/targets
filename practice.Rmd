@@ -56,6 +56,26 @@ Targets are imperative high-level steps of the workflow that run the work you de
 
 Regarding the last point above, it is possible to customize the storage format of the target. For details, enter `?tar_target` in the console and scroll down to the description of the `format` argument.
 
+## Dependency detection
+
+Adept pipeline construction requires an understanding of how the dependency relationships among different targets and objects are detected. To identify the targets and global objects that each target depends on, the `targets` package uses static code analysis with `codetools::findGlobals()`. Let us look at the dependencies of the `raw_data` target.
+
+```{r}
+library(codetools)
+findGlobals(function() {
+  read_csv(raw_data_file, col_types = cols())
+})
+```
+
+The `raw_data` target depends on target `raw_data_file` because the command for `raw_data` mentions the symbol `raw_data_file`. Similarly, if we were to create a user-defined `read_csv()` function, the `raw_data` target would also depend on `read_csv()` and any other user-defined global functions and objects nested inside `read_csv()`. Changes to any of these objects would cause the `raw_data` target to rerun on the next `tar_make()`.
+
+Not all of the objects from `codetools::findGlobals()` actually register as dependencies. When it comes to detecting dependencies, `targets` only recognizes
+
+1. Other targets (such as `raw_data_file`).
+1. Functions and objects in the main environment. This environment is almost always the global environment of the R process that runs `_targets.R`, so these dependencies are usually going to be the custom functions and objects you write yourself.
+
+This process excludes many objects from dependency detection. For example, both `{` and `cols()` are excluded because they are defined in the environments of packages (`base` and `readr`, respectively). Functions and objects from packages are ignored unless you supply a package environment to the `envir` argument of `tar_options()` when you call it in `_targets.R`, e.g. `tar_options(envir = getNamespace("packageName"))`. You shoul only set `envir` if you write your own package to contain your whole data analysis project.
+
 ## Debugging
 
 If one of your targets errors out because of a user-side mistake, look up the error message in `tar_meta()`. If that does not help, run the target in interactive debugging mode:
