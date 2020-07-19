@@ -169,7 +169,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.1" data-path="practice.html"><a href="practice.html#a-move-away-from-imperative-scripts"><i class="fa fa-check"></i><b>3.1</b> A move away from imperative scripts</a></li>
 <li class="chapter" data-level="3.2" data-path="practice.html"><a href="practice.html#functions"><i class="fa fa-check"></i><b>3.2</b> Functions</a></li>
 <li class="chapter" data-level="3.3" data-path="practice.html"><a href="practice.html#targets"><i class="fa fa-check"></i><b>3.3</b> Targets</a></li>
-<li class="chapter" data-level="3.4" data-path="practice.html"><a href="practice.html#dependencies"><i class="fa fa-check"></i><b>3.4</b> Dependencies</a></li>
+<li class="chapter" data-level="3.4" data-path="practice.html"><a href="practice.html#dependency-detection"><i class="fa fa-check"></i><b>3.4</b> Dependency detection</a></li>
 <li class="chapter" data-level="3.5" data-path="practice.html"><a href="practice.html#debugging"><i class="fa fa-check"></i><b>3.5</b> Debugging</a></li>
 <li class="chapter" data-level="3.6" data-path="practice.html"><a href="practice.html#performance"><i class="fa fa-check"></i><b>3.6</b> Performance</a></li>
 </ul></li>
@@ -275,9 +275,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ol>
 <p>Regarding the last point above, it is possible to customize the storage format of the target. For details, enter <code>?tar_target</code> in the console and scroll down to the description of the <code>format</code> argument.</p>
 </div>
-<div id="dependencies" class="section level2" number="3.4">
-<h2><span class="header-section-number">3.4</span> Dependencies</h2>
-<p>Adept pipeline construction requires an understanding of dependency detection. To identify the targets and global objects that each target depends on, the <code>targets</code> package uses static code analysis with <code>codetools::findGlobals()</code>. Let us look at the dependencies of the <code>raw_data</code> target.</p>
+<div id="dependency-detection" class="section level2" number="3.4">
+<h2><span class="header-section-number">3.4</span> Dependency detection</h2>
+<p>Adept pipeline construction requires an understanding of how the dependency relationships among different targets and objects are detected. To identify the targets and global objects that each target depends on, the <code>targets</code> package uses static code analysis with <code>codetools::findGlobals()</code>. Let us look at the dependencies of the <code>raw_data</code> target.</p>
 <div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="practice.html#cb25-1"></a><span class="kw">library</span>(codetools)</span>
 <span id="cb25-2"><a href="practice.html#cb25-2"></a><span class="kw">findGlobals</span>(<span class="cf">function</span>() {</span>
 <span id="cb25-3"><a href="practice.html#cb25-3"></a>  <span class="kw">read_csv</span>(raw_data_file, <span class="dt">col_types =</span> <span class="kw">cols</span>())</span>
