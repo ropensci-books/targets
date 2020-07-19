@@ -62,7 +62,7 @@ If one of your targets errors out because of a user-side mistake, look up the er
 
 1. In `_targets.R`, write a call to `tar_options()` with `debug` equal to the target name. It may also be convenient to set `cue` equal to `tar_cue(mode = "never")` so `tar_make()` reaches the target you want to debug more quickly.
 1. Launch a fresh clean new interactive R session with the `_targets.R` script in your working directory.
-1. Run `targets::tar_make()` (or `targets::tar_make_clustermq()`, or `targets::tar_make_future()`) with `callr_function = FALSE`.
+1. Run `targets::tar_make()` (or `targets::tar_make_clustermq()`, or `targets::tar_make_future()`) with `callr_function = NULL`.
 1. When `targets` reaches the target you selected to debug, your R session will start an interactive debugger, and you should see `Browse[1]>` in your console. Run `targets::tar_name()` to verify that you are debugging the correct target.
 1. Interactively run any R code that helps you troubleshoot the problem.^[Because of the way `targets` manages environments, `ls()` will not report all your global objects, but you should still be able to access them.]
 
