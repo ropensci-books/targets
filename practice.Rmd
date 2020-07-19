@@ -56,9 +56,9 @@ Targets are imperative high-level steps of the workflow that run the work you de
 
 Regarding the last point above, it is possible to customize the storage format of the target. For details, enter `?tar_target` in the console and scroll down to the description of the `format` argument.
 
-## Dependency detection
+## Dependencies
 
-Adept pipeline construction requires an understanding of how the dependency relationships among different targets and objects are detected. To identify the targets and global objects that each target depends on, the `targets` package uses static code analysis with `codetools::findGlobals()`. Let us look at the dependencies of the `raw_data` target.
+Adept pipeline construction requires an understanding of dependency detection. To identify the targets and global objects that each target depends on, the `targets` package uses static code analysis with `codetools::findGlobals()`. Let us look at the dependencies of the `raw_data` target.
 
 ```{r}
 library(codetools)
