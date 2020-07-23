@@ -51,7 +51,6 @@
 
 
 
-<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
 <script src="libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
 <link href="libs/vis-4.20.1/vis.css" rel="stylesheet" />
 <script src="libs/vis-4.20.1/vis.min.js"></script>
@@ -278,11 +277,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="dependencies" class="section level2" number="3.4">
 <h2><span class="header-section-number">3.4</span> Dependencies</h2>
 <p>Adept pipeline construction requires an understanding of dependency detection. To identify the targets and global objects that each target depends on, the <code>targets</code> package uses static code analysis with <code>codetools::findGlobals()</code>. Let us look at the dependencies of the <code>raw_data</code> target.</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="practice.html#cb25-1"></a><span class="kw">library</span>(codetools)</span>
-<span id="cb25-2"><a href="practice.html#cb25-2"></a><span class="kw">findGlobals</span>(<span class="cf">function</span>() {</span>
-<span id="cb25-3"><a href="practice.html#cb25-3"></a>  <span class="kw">read_csv</span>(raw_data_file, <span class="dt">col_types =</span> <span class="kw">cols</span>())</span>
-<span id="cb25-4"><a href="practice.html#cb25-4"></a>})</span>
-<span id="cb25-5"><a href="practice.html#cb25-5"></a><span class="co">#&gt; [1] &quot;{&quot;             &quot;cols&quot;          &quot;raw_data_file&quot; &quot;read_csv&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="practice.html#cb25-1" aria-hidden="true"></a><span class="kw">library</span>(codetools)</span>
+<span id="cb25-2"><a href="practice.html#cb25-2" aria-hidden="true"></a><span class="kw">findGlobals</span>(<span class="cf">function</span>() {</span>
+<span id="cb25-3"><a href="practice.html#cb25-3" aria-hidden="true"></a>  <span class="kw">read_csv</span>(raw_data_file, <span class="dt">col_types =</span> <span class="kw">cols</span>())</span>
+<span id="cb25-4"><a href="practice.html#cb25-4" aria-hidden="true"></a>})</span>
+<span id="cb25-5"><a href="practice.html#cb25-5" aria-hidden="true"></a><span class="co">#&gt; [1] &quot;{&quot;             &quot;cols&quot;          &quot;raw_data_file&quot; &quot;read_csv&quot;</span></span></code></pre></div>
 <p>The <code>raw_data</code> target depends on target <code>raw_data_file</code> because the command for <code>raw_data</code> mentions the symbol <code>raw_data_file</code>. Similarly, if we were to create a user-defined <code>read_csv()</code> function, the <code>raw_data</code> target would also depend on <code>read_csv()</code> and any other user-defined global functions and objects nested inside <code>read_csv()</code>. Changes to any of these objects would cause the <code>raw_data</code> target to rerun on the next <code>tar_make()</code>.</p>
 <p>Not all of the objects from <code>codetools::findGlobals()</code> actually register as dependencies. When it comes to detecting dependencies, <code>targets</code> only recognizes</p>
 <ol style="list-style-type: decimal">
@@ -302,9 +301,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Interactively run any R code that helps you troubleshoot the problem.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></li>
 </ol>
 <p>To try it out yourself, write the following <code>_targets.R</code> file and then run <code>tar_make(callr_function = NULL)</code>. When the debugger launches, run <code>print(tar_name())</code> and <code>print(a)</code> to be sure things are set up properly.</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="practice.html#cb26-1"></a><span class="kw">library</span>(targets)</span>
-<span id="cb26-2"><a href="practice.html#cb26-2"></a><span class="kw">tar_options</span>(<span class="dt">debug =</span> <span class="st">&quot;b&quot;</span>)</span>
-<span id="cb26-3"><a href="practice.html#cb26-3"></a><span class="kw">tar_pipeline</span>(<span class="kw">tar_target</span>(a, <span class="st">&quot;a&quot;</span>), <span class="kw">tar_target</span>(b, a))</span></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="practice.html#cb26-1" aria-hidden="true"></a><span class="kw">library</span>(targets)</span>
+<span id="cb26-2"><a href="practice.html#cb26-2" aria-hidden="true"></a><span class="kw">tar_options</span>(<span class="dt">debug =</span> <span class="st">&quot;b&quot;</span>)</span>
+<span id="cb26-3"><a href="practice.html#cb26-3" aria-hidden="true"></a><span class="kw">tar_pipeline</span>(<span class="kw">tar_target</span>(a, <span class="st">&quot;a&quot;</span>), <span class="kw">tar_target</span>(b, a))</span></code></pre></div>
 <p>For more on debugging R code, visit <a href="https://rstats.wtf/debugging-r-code.html">this page</a>.</p>
 </div>
 <div id="performance" class="section level2" number="3.6">
