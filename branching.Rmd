@@ -175,11 +175,9 @@ Put together, the pipeline looks like this.
 
 ```{r}
 tar_script({
-suppressPackageStartupMessages(library(dplyr))
-print_and_return <- function(x) {
-  print(x)
-  x
-}
+options(crayon.enabled = FALSE, tidyverse.quiet = TRUE)
+tar_options(packages = "tidyverse")
+
 tar_pipeline(
   tar_target(
     data,
@@ -192,10 +190,10 @@ tar_pipeline(
     iteration = "group"
   ),
   tar_target(
-    sums,
-    sum(print_and_return(data)$x),
+    subsets,
+    data,
     pattern = map(data),
-    iteration = "vector"
+    iteration = "list"
   )
 )
 })
@@ -206,10 +204,10 @@ tar_make()
 ```
 
 ```{r}
-tar_read(sums)
+tar_read(subsets)
 ```
 
-Row groups are defined in the special `tar_group` column created by `tar_group()`. `tar_group()` creates this column based on the attributes created by `dplyr::group_by()`. `targets` avoids using those attributes directly because some custom storage formats, particularly `format = "fst"` in `tar_target()`, drop all attributes.
+Row groups are defined in the special `tar_group` column created by `tar_group()`. 
 
 ```{r}
 data.frame(
@@ -218,6 +216,72 @@ data.frame(
 ) %>%
   dplyr::group_by(id) %>%
   tar_group()
+```
+
+`tar_group()` creates this column based on the orderings of the grouping variables supplied to `dplyr::group_by()`, not the order of the rows in the data.
+
+```{r}
+flip_order <- function(x) {
+  ordered(x, levels = sort(unique(x), decreasing = TRUE))
+}
+
+data.frame(
+  x = seq_len(6),
+  id = flip_order(rep(letters[seq_len(3)], each = 2))
+) %>%
+  dplyr::group_by(id) %>%
+  tar_group()
+```
+
+The ordering in `tar_group` agrees with the ordering shown by `dplyr::group_keys()`.
+
+```{r}
+data.frame(
+  x = seq_len(6),
+  id = flip_order(rep(letters[seq_len(3)], each = 2))
+) %>%
+  dplyr::group_by(id) %>%
+  dplyr::group_keys()
+```
+
+Branches are arranged in increasing order with respect to the integers in `tar_group`.
+
+```{r}
+tar_script({
+options(crayon.enabled = FALSE, tidyverse.quiet = TRUE)
+tar_options(packages = "tidyverse")
+
+flip_order <- function(x) {
+  ordered(x, levels = sort(unique(x), decreasing = TRUE))
+}
+
+tar_pipeline(
+  tar_target(
+    data,
+    data.frame(
+      x = seq_len(6),
+      id = flip_order(rep(letters[seq_len(3)], each = 2))
+    ) %>%
+      group_by(id) %>%
+      tar_group(),
+    iteration = "group"
+  ),
+  tar_target(
+    subsets,
+    data,
+    pattern = map(data),
+    iteration = "list"
+  )
+)
+})
+```
+
+```{r}
+tar_make()
+```
+
+```{r}
+tar_read(subsets)
 ```
 
 ## Metaprogramming
