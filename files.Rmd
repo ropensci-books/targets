@@ -125,12 +125,13 @@ Above, the report depends on targets `fit` and `hist`. The use of `tar_read()` a
 
 ![](./images/knitr-ide.png)
 
-To connect the target with the pipeline, we define a special kind of target with 4 requirements:
+To connect the target with the pipeline, we define a special kind of target using `tar_render()` from the [`tarchetypes`](https://github.com/wlandau/tarchetypes) package instead of the usual `tar_target()`, which
 
-1. `format = "file"` in `tar_target()`.
-1. `tidy_eval = TRUE` in `tar_target()` (default).
-1. An R expression that returns the paths to the report's source file and the rendered output file.
-1. Explicit mentions of the symbols `fit` and `hist` in the command.
+1. Finds all the `tar_load()`/`tar_read()` dependencies in the report and inserts them into the target's command. This enforces the proper dependency relationships.
+1. Sets `format = "file"` (see `tar_target()`) so `targets` watches the files at the returned paths.
+1. Configures the target's command to return both the output report files and the input source file. All these file paths are relative paths so the project stays portable.
+1. Forces the report to run in the user's current working directory instead of the working directory of the report.
+1. Sets convenient default options such as `deployment = "local"` in `tar_target()` and `quiet = TRUE` in `rmarkdown::render()`.
 
 The target definition looks like this.
 
@@ -149,23 +150,14 @@ writeLines(lines, "report.Rmd")
 ```
 
 ```{r}
-tar_target(
-  report, {
-    render("report.Rmd", quiet = TRUE)
-    c(!!tar_knitr("report.Rmd"), "report.html")
-  },
-  format = "file"
-)
+library(tarchetypes)
+tar_render(report, "report.Rmd")
 ```
 
-The `tar_knitr()` function searches reports for mentions of `tar_read()` and `tar_load()` and returns code that mentions the target names as symbols. The [tidy evaluation](https://adv-r.hadley.nz/quasiquotation.html) unquote operator `!!` tells `targets` to evaluate `tar_knitr()` right now instead of in `tar_make()`. From the print output above, you can see that the R expression of the target returns the correct file paths **and** mentions the symbols `fit` and `hist`. As a result, `targets` knows the report depends on `fit` and `hist`, and it knows that `report.Rmd` and `report.html` are the files associated with this dynamic file target.
+Because symbols `fit` and `hist` appear in the command, `targets` knows that `report` depends on `fit` and `hist`. These dependency relationships show up in the graph.
 
 ```{r, eval = FALSE}
 tar_visnetwork()
 ```
 
 ![](./images/knitr-graph.png)
-
-### Working directory
-
-The current working directory (i.e. `getwd()`) must contain the `_targets/` data store not only when `tar_knitr()` is evaluated, but also when the actual report is run. The easiest way to deal with this is just to keep all your R Markdown source files at the root directory of the project. If you need to put your report somewhere else, such as a subdirectory, consider setting `knit_root_dir = getwd()` in `rmarkdown::render()` or `knitr::opts_knit$set(root.dir = "your_project_root_directory")` in an early code chunk of the report itself.
