@@ -30,7 +30,7 @@ tar_script({
   source("R/functions.R")
   options(crayon.enabled = FALSE)
   options(tidyverse.quiet = TRUE)
-  tar_options(packages = c("biglm", "rmarkdown", "tidyverse"))
+  tar_option_set(packages = c("biglm", "rmarkdown", "tidyverse"))
   tar_pipeline(
     tar_target(
       raw_data_file,
@@ -100,7 +100,7 @@ Both `raw_data.csv` and `functions.R` are custom components. You as the user dec
 library(targets)
 source("R/functions.R")
 options(tidyverse.quiet = TRUE)
-tar_options(packages = c("biglm", "rmarkdown", "tidyverse"))
+tar_option_set(packages = c("biglm", "rmarkdown", "tidyverse"))
 tar_pipeline(
   tar_target(
     raw_data_file,
@@ -125,7 +125,7 @@ All `_targets.R` scripts have these requirements.
 
 1. Load the [`targets`](https://github.com/wlandau/targets) package itself. (`_targets.R` scripts created with `tar_script()` automatically insert a `library(targets)` line at the top by default.)
 1. Load your custom functions and global objects into the R session. In our case, our only such object is the `create_plot()` function, and we load it into the session by calling `source("R/functions.R")`.
-1. Call `tar_options()` to set the default settings for all you targets, such as the names of required packages and the data storage format. Individual targets can override these settings.
+1. Call `tar_option_set()` to set the default settings for all you targets, such as the names of required packages and the data storage format. Individual targets can override these settings.
 1. Define individual targets with the `tar_target()` function. Each target is an intermediate step of the workflow. At minimum, a target must have a name and an R expression. This expression runs when the pipeline builds the target, and the return value is saved as a file in the `_targets/objects/` folder. The only targets not stored in `_/targets/objects/` are dynamic files such as `raw_data_file`. Here, `format = "file"` makes `raw_data_file` a dynamic file. That means `targets` watches the data at the file paths returned from the expression (in this case, `"data/raw_data.csv")`.
 1. Gather the targets in a pipeline with the `tar_pipeline()` function. `tar_pipeline()` is flexible: it can accept individual `tar_target()` objects or nested lists of such objects. Every `_targets.R` script must end with a `tar_pipeline()` object, which usually means there is an explicit call to `tar_pipeline()` at the very bottom.
 

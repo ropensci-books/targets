@@ -84,7 +84,7 @@ tar_read(y)
 
 ### Iteration
 
-There are many ways to slice up a stem for branching, and there are many ways to aggregate the branches of a pattern.^[Slicing is always the same when we branch over an existing pattern. If we have `tar_target(y, x, pattern = map(x))` and `x` is another pattern, then each branch of `y` always gets a branch of `x` regardless of the iteration method. Likewise, the aggregation of stems does not depend on the iteration method because every stem is already aggregated.] The `iteration` argument of `tar_target()` controls the splitting and aggregation protocol on a target-by-target basis, and you can set the default for all targets with the analogous argument of `tar_options()`.
+There are many ways to slice up a stem for branching, and there are many ways to aggregate the branches of a pattern.^[Slicing is always the same when we branch over an existing pattern. If we have `tar_target(y, x, pattern = map(x))` and `x` is another pattern, then each branch of `y` always gets a branch of `x` regardless of the iteration method. Likewise, the aggregation of stems does not depend on the iteration method because every stem is already aggregated.] The `iteration` argument of `tar_target()` controls the splitting and aggregation protocol on a target-by-target basis, and you can set the default for all targets with the analogous argument of `tar_option_set()`.
 
 #### Vector
 
@@ -176,7 +176,7 @@ Put together, the pipeline looks like this.
 ```{r}
 tar_script({
 options(crayon.enabled = FALSE, tidyverse.quiet = TRUE)
-tar_options(packages = "tidyverse")
+tar_option_set(packages = "tidyverse")
 
 tar_pipeline(
   tar_target(
@@ -249,7 +249,7 @@ Branches are arranged in increasing order with respect to the integers in `tar_g
 ```{r}
 tar_script({
 options(crayon.enabled = FALSE, tidyverse.quiet = TRUE)
-tar_options(packages = "tidyverse")
+tar_option_set(packages = "tidyverse")
 
 flip_order <- function(x) {
   ordered(x, levels = sort(unique(x), decreasing = TRUE))

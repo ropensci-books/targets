@@ -74,13 +74,13 @@ Not all of the objects from `codetools::findGlobals()` actually register as depe
 1. Other targets (such as `raw_data_file`).
 1. Functions and objects in the main environment. This environment is almost always the global environment of the R process that runs `_targets.R`, so these dependencies are usually going to be the custom functions and objects you write yourself.
 
-This process excludes many objects from dependency detection. For example, both `{` and `cols()` are excluded because they are defined in the environments of packages (`base` and `readr`, respectively). Functions and objects from packages are ignored unless you supply a package environment to the `envir` argument of `tar_options()` when you call it in `_targets.R`, e.g. `tar_options(envir = getNamespace("packageName"))`. You shoul only set `envir` if you write your own package to contain your whole data analysis project.
+This process excludes many objects from dependency detection. For example, both `{` and `cols()` are excluded because they are defined in the environments of packages (`base` and `readr`, respectively). Functions and objects from packages are ignored unless you supply a package environment to the `envir` argument of `tar_option_set()` when you call it in `_targets.R`, e.g. `tar_option_set(envir = getNamespace("packageName"))`. You shoul only set `envir` if you write your own package to contain your whole data analysis project.
 
 ## Debugging
 
 If one of your targets errors out because of a user-side mistake, look up the error message in `tar_meta()`. If that does not help, run the target in interactive debugging mode:
 
-1. In `_targets.R`, write a call to `tar_options()` with `debug` equal to the target name. It may also be convenient to set `cue` equal to `tar_cue(mode = "never")` so `tar_make()` reaches the target you want to debug more quickly.
+1. In `_targets.R`, write a call to `tar_option_set()` with `debug` equal to the target name. It may also be convenient to set `cue` equal to `tar_cue(mode = "never")` so `tar_make()` reaches the target you want to debug more quickly.
 1. Launch a fresh clean new interactive R session with the `_targets.R` script in your working directory.
 1. Run `targets::tar_make()` (or `targets::tar_make_clustermq()`, or `targets::tar_make_future()`) with `callr_function = NULL`.
 1. When `targets` reaches the target you selected to debug, your R session will start an interactive debugger, and you should see `Browse[1]>` in your console. Run `targets::tar_name()` to verify that you are debugging the correct target.
@@ -90,7 +90,7 @@ To try it out yourself, write the following `_targets.R` file and then run `tar_
 
 ```{r, eval = FALSE}
 library(targets)
-tar_options(debug = "b")
+tar_option_set(debug = "b")
 tar_pipeline(tar_target(a, "a"), tar_target(b, a))
 ```
 
