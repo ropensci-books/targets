@@ -285,13 +285,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Other targets (such as <code>raw_data_file</code>).</li>
 <li>Functions and objects in the main environment. This environment is almost always the global environment of the R process that runs <code>_targets.R</code>, so these dependencies are usually going to be the custom functions and objects you write yourself.</li>
 </ol>
-<p>This process excludes many objects from dependency detection. For example, both <code>{</code> and <code>cols()</code> are excluded because they are defined in the environments of packages (<code>base</code> and <code>readr</code>, respectively). Functions and objects from packages are ignored unless you supply a package environment to the <code>envir</code> argument of <code>tar_options()</code> when you call it in <code>_targets.R</code>, e.g. <code>tar_options(envir = getNamespace("packageName"))</code>. You shoul only set <code>envir</code> if you write your own package to contain your whole data analysis project.</p>
+<p>This process excludes many objects from dependency detection. For example, both <code>{</code> and <code>cols()</code> are excluded because they are defined in the environments of packages (<code>base</code> and <code>readr</code>, respectively). Functions and objects from packages are ignored unless you supply a package environment to the <code>envir</code> argument of <code>tar_option_set()</code> when you call it in <code>_targets.R</code>, e.g. <code>tar_option_set(envir = getNamespace("packageName"))</code>. You shoul only set <code>envir</code> if you write your own package to contain your whole data analysis project.</p>
 </div>
 <div id="debugging" class="section level2" number="3.5">
 <h2><span class="header-section-number">3.5</span> Debugging</h2>
 <p>If one of your targets errors out because of a user-side mistake, look up the error message in <code>tar_meta()</code>. If that does not help, run the target in interactive debugging mode:</p>
 <ol style="list-style-type: decimal">
-<li>In <code>_targets.R</code>, write a call to <code>tar_options()</code> with <code>debug</code> equal to the target name. It may also be convenient to set <code>cue</code> equal to <code>tar_cue(mode = "never")</code> so <code>tar_make()</code> reaches the target you want to debug more quickly.</li>
+<li>In <code>_targets.R</code>, write a call to <code>tar_option_set()</code> with <code>debug</code> equal to the target name. It may also be convenient to set <code>cue</code> equal to <code>tar_cue(mode = "never")</code> so <code>tar_make()</code> reaches the target you want to debug more quickly.</li>
 <li>Launch a fresh clean new interactive R session with the <code>_targets.R</code> script in your working directory.</li>
 <li>Run <code>targets::tar_make()</code> (or <code>targets::tar_make_clustermq()</code>, or <code>targets::tar_make_future()</code>) with <code>callr_function = NULL</code>.</li>
 <li>When <code>targets</code> reaches the target you selected to debug, your R session will start an interactive debugger, and you should see <code>Browse[1]&gt;</code> in your console. Run <code>targets::tar_name()</code> to verify that you are debugging the correct target.</li>
@@ -299,7 +299,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ol>
 <p>To try it out yourself, write the following <code>_targets.R</code> file and then run <code>tar_make(callr_function = NULL)</code>. When the debugger launches, run <code>print(tar_name())</code> and <code>print(a)</code> to be sure things are set up properly.</p>
 <div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="practice.html#cb26-1" aria-hidden="true"></a><span class="kw">library</span>(targets)</span>
-<span id="cb26-2"><a href="practice.html#cb26-2" aria-hidden="true"></a><span class="kw">tar_options</span>(<span class="dt">debug =</span> <span class="st">&quot;b&quot;</span>)</span>
+<span id="cb26-2"><a href="practice.html#cb26-2" aria-hidden="true"></a><span class="kw">tar_option_set</span>(<span class="dt">debug =</span> <span class="st">&quot;b&quot;</span>)</span>
 <span id="cb26-3"><a href="practice.html#cb26-3" aria-hidden="true"></a><span class="kw">tar_pipeline</span>(<span class="kw">tar_target</span>(a, <span class="st">&quot;a&quot;</span>), <span class="kw">tar_target</span>(b, a))</span></code></pre></div>
 <p>For more on debugging R code, visit <a href="https://rstats.wtf/debugging-r-code.html">this page</a>.</p>
 </div>
