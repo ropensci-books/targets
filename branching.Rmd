@@ -82,6 +82,28 @@ tar_make()
 tar_read(y)
 ```
 
+### Branching over files
+
+Branching over files is tricky. A target with `format = "file"` treats the entire set of files as an irreducible bundle. That means in order to branch over files downstream, each file must already have its own branch.
+
+```{r, eval = FALSE}
+tar_pipeline(
+  tar_target(paths, c("a.csv", "b.csv")),
+  tar_target(files, paths, format = "file", pattern = map(paths)),
+  tar_target(data, read_csv(files), pattern = map(files))
+)
+```
+
+The [`tar_files()`](https://wlandau.github.io/tarchetypes/reference/tar_files.html) function from the [`tarchetypes`](https://github.com/wlandau/tarchetypes) package is shorthand for the first two targets above.
+
+```{r, eval = FALSE}
+library(tarchetypes)
+tar_pipeline(
+  tar_files(files, c("a.csv", "b.csv")),
+  tar_target(data, read_csv(files), pattern = map(files))
+)
+```
+
 ### Iteration
 
 There are many ways to slice up a stem for branching, and there are many ways to aggregate the branches of a pattern.^[Slicing is always the same when we branch over an existing pattern. If we have `tar_target(y, x, pattern = map(x))` and `x` is another pattern, then each branch of `y` always gets a branch of `x` regardless of the iteration method. Likewise, the aggregation of stems does not depend on the iteration method because every stem is already aggregated.] The `iteration` argument of `tar_target()` controls the splitting and aggregation protocol on a target-by-target basis, and you can set the default for all targets with the analogous argument of `tar_option_set()`.
