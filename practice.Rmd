@@ -58,18 +58,17 @@ Regarding the last point above, it is possible to customize the storage format o
 
 ## Dependencies
 
-Adept pipeline construction requires an understanding of dependency detection. To identify the targets and global objects that each target depends on, the `targets` package uses static code analysis with `codetools::findGlobals()`. Let us look at the dependencies of the `raw_data` target.
+Adept pipeline construction requires an understanding of dependency detection. To identify the targets and global objects that each target depends on, the `targets` package uses static code analysis with [`codetools`](https://CRAN.R-project.org/package=codetools), and you can emulate this process with `tar_deps()`. Let us look at the dependencies of the `raw_data` target.
 
 ```{r}
-library(codetools)
-findGlobals(function() {
+tar_deps(function() {
   read_csv(raw_data_file, col_types = cols())
 })
 ```
 
 The `raw_data` target depends on target `raw_data_file` because the command for `raw_data` mentions the symbol `raw_data_file`. Similarly, if we were to create a user-defined `read_csv()` function, the `raw_data` target would also depend on `read_csv()` and any other user-defined global functions and objects nested inside `read_csv()`. Changes to any of these objects would cause the `raw_data` target to rerun on the next `tar_make()`.
 
-Not all of the objects from `codetools::findGlobals()` actually register as dependencies. When it comes to detecting dependencies, `targets` only recognizes
+Not all of the objects from `tar_deps()` actually register as dependencies. When it comes to detecting dependencies, `targets` only recognizes
 
 1. Other targets (such as `raw_data_file`).
 1. Functions and objects in the main environment. This environment is almost always the global environment of the R process that runs `_targets.R`, so these dependencies are usually going to be the custom functions and objects you write yourself.
