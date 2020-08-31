@@ -117,17 +117,17 @@ save_plot_and_return_path <- function() {
 
 ## Literate programming
 
-R Markdown reports are a little more challenging because they often depend on upstream targets. To integrate an R Markdown report with a `targets` pipeline, you must use `tar_read()` and `tar_load()` in active code chunks to explicitly name the targets that the report depends on. The report from the [minimal example](https://github.com/wlandau/targets-minimal) looks like this.
+R Markdown reports are a little more challenging because they often depend on upstream targets. To integrate an R Markdown report with a `targets` pipeline, you must use `tar_read()` and `tar_load()` in active code chunks to explicitly name the targets that the report depends on. (Do not use `tar_read_raw()` or `tar_load_raw()` for this.) The report from the [minimal example](https://github.com/wlandau/targets-minimal) looks like this.
 
 ![](./images/knitr-source.png)
 
-Above, the report depends on targets `fit` and `hist`. The use of `tar_read()` and `tar_load()` allows us to run the report outside the pipeline. As long as `_targets/` folder has data on the required targets from a previous `tar_make()`, you can open the RStudio IDE, edit the report, and click the Knit button like you would for any other R Markdown report.
+Above, the report depends on targets `fit` and `hist`. The use of `tar_read()` and `tar_load()` allows us to run the report outside the pipeline. (Again, do not use `tar_read_raw()` or `tar_load_raw()` for this.) As long as `_targets/` folder has data on the required targets from a previous `tar_make()`, you can open the RStudio IDE, edit the report, and click the Knit button like you would for any other R Markdown report.
 
 ![](./images/knitr-ide.png)
 
 To connect the target with the pipeline, we define a special kind of target using `tar_render()` from the [`tarchetypes`](https://github.com/wlandau/tarchetypes) package instead of the usual `tar_target()`, which
 
-1. Finds all the `tar_load()`/`tar_read()` dependencies in the report and inserts them into the target's command. This enforces the proper dependency relationships.
+1. Finds all the `tar_load()`/`tar_read()` dependencies in the report and inserts them into the target's command. This enforces the proper dependency relationships. (`tar_load_raw()` and `tar_read_raw()` are ignored because those dependencies cannot be resolved with static code analysis.) 
 1. Sets `format = "file"` (see `tar_target()`) so `targets` watches the files at the returned paths.
 1. Configures the target's command to return both the output report files and the input source file. All these file paths are relative paths so the project stays portable.
 1. Forces the report to run in the user's current working directory instead of the working directory of the report.
