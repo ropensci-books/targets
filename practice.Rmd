@@ -145,6 +145,8 @@ Remove all workspace files with `tar_undebug()`.
 tar_undebug()
 ```
 
+Sometimes, you may not be able to debug with `error = "save"`. Workspace files are saved with `qs::qsave()`, so if one of your dependencies cannot be properly serialized this way (e.g. Keras models you store with `format = "keras"`) then the workspace cannot be saved properly. If this happens to you, either avoid [non-exportable objects](https://cran.r-project.org/web/packages/future/vignettes/future-4-non-exportable-objects.html) or use interactive debugging.
+
 ### Interactive debugging
 
 1. In `_targets.R`, write a call to `tar_option_set()` with `debug` equal to the target name. It may also be convenient to set `cue` equal to `tar_cue(mode = "never")` so `tar_make()` reaches the target you want to debug more quickly.
