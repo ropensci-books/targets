@@ -77,7 +77,75 @@ This process excludes many objects from dependency detection. For example, both 
 
 ## Debugging
 
-If one of your targets errors out because of a user-side mistake, look up the error message in `tar_meta()`. If that does not help, run the target in interactive debugging mode:
+If one of your targets fails, first look up the error message in `tar_meta()`. If that does not help, try one of the following techniques.
+
+### Workspaces
+
+If you set `error = "save"` in `tar_option_set()` or `tar_target()`, a target will save its workspace to a compressed file in `_targets/workspaces/` if it errors out. Objects in the workspace include global objects (e.g. functions), dependency targets, the random number generator seed, and the traceback. You can load this workspace and set the target's seed with `tar_workspace()`. Workspace files can be quite large, and you can remove them all with `tar_undebug()`.
+
+```{r, eval = FALSE}
+options(tidyverse.quiet = TRUE)
+library(targets)
+library(tidyverse)
+tar_script({
+  options(crayon.enabled = FALSE)
+  tar_option_set(error = "save")
+  f <- function(x) {
+    stopifnot(x < 4)
+  }
+  tar_pipeline(
+    tar_target(x, seq_len(4)),
+    tar_target(y, f(x), pattern = map(x))
+  )
+})
+tar_make()
+#> ● run target x
+#> ● run branch y_29239c8a
+#> ● run branch y_7cc32924
+#> ● run branch y_bd602d50
+#> ● run branch y_05f206d7
+#> x error branch y_05f206d7
+#> ● save workspace y_05f206d7
+#> Error : x < 4 is not TRUE .
+#> Error: callr subprocess failed: x < 4 is not TRUE .
+```
+
+One of the `y_*******` targets errored out.
+
+```{r, eval = FALSE}
+failed <- tar_meta(fields = error) %>%
+  na.omit() %>%
+  pull(name)
+
+print(failed)
+#> [1] "y_05f206d7"
+```
+
+Let's load its workspace.
+
+```{r, eval = FALSE}
+tar_workspace(y_05f206d7)
+```
+
+We now have the dependencies of `y_05f206d7` in memory, which allows you to try out any failed function calls interactively.
+
+```{r, eval = FALSE}
+print(x)
+#> [1] 4
+f(x)
+#> Error in f(x) : x < 4 is not TRUE
+```
+
+
+In addition, current random number generator seed (`.Random.seed`) is also the value `y_05f206d7` started with.
+
+Remove all workspace files with `tar_undebug()`.
+
+```{r, eval = FALSE}
+tar_undebug()
+```
+
+### Interactive debugging
 
 1. In `_targets.R`, write a call to `tar_option_set()` with `debug` equal to the target name. It may also be convenient to set `cue` equal to `tar_cue(mode = "never")` so `tar_make()` reaches the target you want to debug more quickly.
 1. Launch a fresh clean new interactive R session with the `_targets.R` script in your working directory.
