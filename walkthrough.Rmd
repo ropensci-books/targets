@@ -249,7 +249,7 @@ tar_make()
 
 `targets` has a convenient functions `tar_read()` to read your data from the `_targets/` data store.
 
-```{r}
+```{r, eval = FALSE}
 tar_read(hist)
 ```
 
@@ -268,13 +268,13 @@ The purpose of `tar_read()` and `tar_load()` is to make exploratory data analysi
 To read the build progress of your targets while `tar_make()` is running, you can open a new R session and run `tar_progress()`. It reads the spreadsheet in `_targets/meta/progress` and tells you which targets are running, built, errored, or cancelled.
 
 ```{r}
-tar_progress()
+as.data.frame(tar_progress())
 ```
 
 Likewise, the `tar_meta()` function reads `_targets/meta/meta` and tells you high-level information about the target's settings, data, and results. The `warnings`, `error`, and `traceback` columns give you diagnostic information about targets with problems.
 
 ```{r}
-tar_meta()
+as.data.frame(tar_meta())
 ```
 
 The `_targets/meta/meta` spreadsheet file is critically important. Although `targets` can still work properly if files are missing from `_targets/objects`, the pipeline will error out if `_targets/meta/meta` is corrupted. If `tar_meta()` works, the project should be fine.
