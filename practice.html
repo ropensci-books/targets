@@ -169,7 +169,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.2" data-path="practice.html"><a href="practice.html#functions"><i class="fa fa-check"></i><b>3.2</b> Functions</a></li>
 <li class="chapter" data-level="3.3" data-path="practice.html"><a href="practice.html#targets"><i class="fa fa-check"></i><b>3.3</b> Targets</a></li>
 <li class="chapter" data-level="3.4" data-path="practice.html"><a href="practice.html#dependencies"><i class="fa fa-check"></i><b>3.4</b> Dependencies</a></li>
-<li class="chapter" data-level="3.5" data-path="practice.html"><a href="practice.html#debugging"><i class="fa fa-check"></i><b>3.5</b> Debugging</a></li>
+<li class="chapter" data-level="3.5" data-path="practice.html"><a href="practice.html#debugging"><i class="fa fa-check"></i><b>3.5</b> Debugging</a>
+<ul>
+<li class="chapter" data-level="3.5.1" data-path="practice.html"><a href="practice.html#workspaces"><i class="fa fa-check"></i><b>3.5.1</b> Workspaces</a></li>
+<li class="chapter" data-level="3.5.2" data-path="practice.html"><a href="practice.html#interactive-debugging"><i class="fa fa-check"></i><b>3.5.2</b> Interactive debugging</a></li>
+</ul></li>
 <li class="chapter" data-level="3.6" data-path="practice.html"><a href="practice.html#performance"><i class="fa fa-check"></i><b>3.6</b> Performance</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="files.html"><a href="files.html"><i class="fa fa-check"></i><b>4</b> External files and literate programming</a>
@@ -289,7 +293,55 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="debugging" class="section level2" number="3.5">
 <h2><span class="header-section-number">3.5</span> Debugging</h2>
-<p>If one of your targets errors out because of a user-side mistake, look up the error message in <code>tar_meta()</code>. If that does not help, run the target in interactive debugging mode:</p>
+<p>If one of your targets fails, first look up the error message in <code>tar_meta()</code>. If that does not help, try one of the following techniques.</p>
+<div id="workspaces" class="section level3" number="3.5.1">
+<h3><span class="header-section-number">3.5.1</span> Workspaces</h3>
+<p>If you set <code>error = "save"</code> in <code>tar_option_set()</code> or <code>tar_target()</code>, a target will save its workspace to a compressed file in <code>_targets/workspaces/</code> if it errors out. Objects in the workspace include global objects (e.g. functions), dependency targets, the random number generator seed, and the traceback. You can load this workspace and set the target’s seed with <code>tar_workspace()</code>. Workspace files can be quite large, and you can remove them all with <code>tar_undebug()</code>.</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="practice.html#cb26-1" aria-hidden="true"></a><span class="kw">options</span>(<span class="dt">tidyverse.quiet =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb26-2"><a href="practice.html#cb26-2" aria-hidden="true"></a><span class="kw">library</span>(targets)</span>
+<span id="cb26-3"><a href="practice.html#cb26-3" aria-hidden="true"></a><span class="kw">library</span>(tidyverse)</span>
+<span id="cb26-4"><a href="practice.html#cb26-4" aria-hidden="true"></a><span class="kw">tar_script</span>({</span>
+<span id="cb26-5"><a href="practice.html#cb26-5" aria-hidden="true"></a>  <span class="kw">options</span>(<span class="dt">crayon.enabled =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb26-6"><a href="practice.html#cb26-6" aria-hidden="true"></a>  <span class="kw">tar_option_set</span>(<span class="dt">error =</span> <span class="st">&quot;save&quot;</span>)</span>
+<span id="cb26-7"><a href="practice.html#cb26-7" aria-hidden="true"></a>  f &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</span>
+<span id="cb26-8"><a href="practice.html#cb26-8" aria-hidden="true"></a>    <span class="kw">stopifnot</span>(x <span class="op">&lt;</span><span class="st"> </span><span class="dv">4</span>)</span>
+<span id="cb26-9"><a href="practice.html#cb26-9" aria-hidden="true"></a>  }</span>
+<span id="cb26-10"><a href="practice.html#cb26-10" aria-hidden="true"></a>  <span class="kw">tar_pipeline</span>(</span>
+<span id="cb26-11"><a href="practice.html#cb26-11" aria-hidden="true"></a>    <span class="kw">tar_target</span>(x, <span class="kw">seq_len</span>(<span class="dv">4</span>)),</span>
+<span id="cb26-12"><a href="practice.html#cb26-12" aria-hidden="true"></a>    <span class="kw">tar_target</span>(y, <span class="kw">f</span>(x), <span class="dt">pattern =</span> <span class="kw">map</span>(x)) <span class="co"># The branching chapter describes patterns.</span></span>
+<span id="cb26-13"><a href="practice.html#cb26-13" aria-hidden="true"></a>  )</span>
+<span id="cb26-14"><a href="practice.html#cb26-14" aria-hidden="true"></a>})</span>
+<span id="cb26-15"><a href="practice.html#cb26-15" aria-hidden="true"></a><span class="kw">tar_make</span>()</span>
+<span id="cb26-16"><a href="practice.html#cb26-16" aria-hidden="true"></a><span class="co">#&gt; ● run target x</span></span>
+<span id="cb26-17"><a href="practice.html#cb26-17" aria-hidden="true"></a><span class="co">#&gt; ● run branch y_29239c8a</span></span>
+<span id="cb26-18"><a href="practice.html#cb26-18" aria-hidden="true"></a><span class="co">#&gt; ● run branch y_7cc32924</span></span>
+<span id="cb26-19"><a href="practice.html#cb26-19" aria-hidden="true"></a><span class="co">#&gt; ● run branch y_bd602d50</span></span>
+<span id="cb26-20"><a href="practice.html#cb26-20" aria-hidden="true"></a><span class="co">#&gt; ● run branch y_05f206d7</span></span>
+<span id="cb26-21"><a href="practice.html#cb26-21" aria-hidden="true"></a><span class="co">#&gt; x error branch y_05f206d7</span></span>
+<span id="cb26-22"><a href="practice.html#cb26-22" aria-hidden="true"></a><span class="co">#&gt; ● save workspace y_05f206d7</span></span>
+<span id="cb26-23"><a href="practice.html#cb26-23" aria-hidden="true"></a><span class="co">#&gt; Error : x &lt; 4 is not TRUE .</span></span>
+<span id="cb26-24"><a href="practice.html#cb26-24" aria-hidden="true"></a><span class="co">#&gt; Error: callr subprocess failed: x &lt; 4 is not TRUE .</span></span></code></pre></div>
+<p>One of the <code>y_*******</code> targets errored out.</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="practice.html#cb27-1" aria-hidden="true"></a>failed &lt;-<span class="st"> </span><span class="kw">tar_meta</span>(<span class="dt">fields =</span> error) <span class="op">%&gt;%</span></span>
+<span id="cb27-2"><a href="practice.html#cb27-2" aria-hidden="true"></a><span class="st">  </span><span class="kw">na.omit</span>() <span class="op">%&gt;%</span></span>
+<span id="cb27-3"><a href="practice.html#cb27-3" aria-hidden="true"></a><span class="st">  </span><span class="kw">pull</span>(name)</span>
+<span id="cb27-4"><a href="practice.html#cb27-4" aria-hidden="true"></a></span>
+<span id="cb27-5"><a href="practice.html#cb27-5" aria-hidden="true"></a><span class="kw">print</span>(failed)</span>
+<span id="cb27-6"><a href="practice.html#cb27-6" aria-hidden="true"></a><span class="co">#&gt; [1] &quot;y_05f206d7&quot;</span></span></code></pre></div>
+<p>Let’s load its workspace.</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="practice.html#cb28-1" aria-hidden="true"></a><span class="kw">tar_workspace</span>(y_05f206d7)</span></code></pre></div>
+<p>We now have the dependencies of <code>y_05f206d7</code> in memory, which allows you to try out any failed function calls interactively.</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="practice.html#cb29-1" aria-hidden="true"></a><span class="kw">print</span>(x)</span>
+<span id="cb29-2"><a href="practice.html#cb29-2" aria-hidden="true"></a><span class="co">#&gt; [1] 4</span></span>
+<span id="cb29-3"><a href="practice.html#cb29-3" aria-hidden="true"></a><span class="kw">f</span>(x)</span>
+<span id="cb29-4"><a href="practice.html#cb29-4" aria-hidden="true"></a><span class="co">#&gt; Error in f(x) : x &lt; 4 is not TRUE</span></span></code></pre></div>
+<p>In addition, current random number generator seed (<code>.Random.seed</code>) is also the value <code>y_05f206d7</code> started with.</p>
+<p>Remove all workspace files with <code>tar_undebug()</code>.</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="practice.html#cb30-1" aria-hidden="true"></a><span class="kw">tar_undebug</span>()</span></code></pre></div>
+<p>Sometimes, you may not be able to debug with <code>error = "save"</code>. Workspace files are saved with <code>qs::qsave()</code>, so if one of your dependencies cannot be properly serialized this way (e.g. Keras models you store with <code>format = "keras"</code>) then the workspace cannot be saved properly. If this happens to you, either avoid <a href="https://cran.r-project.org/web/packages/future/vignettes/future-4-non-exportable-objects.html">non-exportable objects</a> or use interactive debugging.</p>
+</div>
+<div id="interactive-debugging" class="section level3" number="3.5.2">
+<h3><span class="header-section-number">3.5.2</span> Interactive debugging</h3>
 <ol style="list-style-type: decimal">
 <li>In <code>_targets.R</code>, write a call to <code>tar_option_set()</code> with <code>debug</code> equal to the target name. It may also be convenient to set <code>cue</code> equal to <code>tar_cue(mode = "never")</code> so <code>tar_make()</code> reaches the target you want to debug more quickly.</li>
 <li>Launch a fresh clean new interactive R session with the <code>_targets.R</code> script in your working directory.</li>
@@ -298,10 +350,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Interactively run any R code that helps you troubleshoot the problem.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></li>
 </ol>
 <p>To try it out yourself, write the following <code>_targets.R</code> file and then run <code>tar_make(callr_function = NULL)</code>. When the debugger launches, run <code>print(tar_name())</code> and <code>print(a)</code> to be sure things are set up properly.</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="practice.html#cb26-1" aria-hidden="true"></a><span class="kw">library</span>(targets)</span>
-<span id="cb26-2"><a href="practice.html#cb26-2" aria-hidden="true"></a><span class="kw">tar_option_set</span>(<span class="dt">debug =</span> <span class="st">&quot;b&quot;</span>)</span>
-<span id="cb26-3"><a href="practice.html#cb26-3" aria-hidden="true"></a><span class="kw">tar_pipeline</span>(<span class="kw">tar_target</span>(a, <span class="st">&quot;a&quot;</span>), <span class="kw">tar_target</span>(b, a))</span></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="practice.html#cb31-1" aria-hidden="true"></a><span class="kw">library</span>(targets)</span>
+<span id="cb31-2"><a href="practice.html#cb31-2" aria-hidden="true"></a><span class="kw">tar_option_set</span>(<span class="dt">debug =</span> <span class="st">&quot;b&quot;</span>)</span>
+<span id="cb31-3"><a href="practice.html#cb31-3" aria-hidden="true"></a><span class="kw">tar_pipeline</span>(<span class="kw">tar_target</span>(a, <span class="st">&quot;a&quot;</span>), <span class="kw">tar_target</span>(b, a))</span></code></pre></div>
 <p>For more on debugging R code, visit <a href="https://rstats.wtf/debugging-r-code.html">this page</a>.</p>
+</div>
 </div>
 <div id="performance" class="section level2" number="3.6">
 <h2><span class="header-section-number">3.6</span> Performance</h2>
