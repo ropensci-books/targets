@@ -1,0 +1,331 @@
+# Static branching {#static}
+
+```{r, message = FALSE, warning = FALSE, echo = FALSE}
+knitr::opts_knit$set(root.dir = fs::dir_create(tempfile()))
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+```{r, message = FALSE, warning = FALSE, echo = FALSE}
+library(targets)
+library(tarchetypes)
+library(tidyverse)
+```
+
+The `targets` packages supports shorthand to create large pipelines. Static branching creates batches of targets up front before the pipeline runs. Static branching is not designed for the kind of volume that [dynamic branching](#dynamic) can handle, but it is more flexible when the targets are heterogeneous.
+
+## Map
+
+[`tar_map()`](https://wlandau.github.io/tarchetypes/reference/tar_map.html) from the [`tarchetypes`](https://github.com/wlandau/tarchetypes) package creates copies of existing target objects, where each new command is a variation on the original. In the example below, we have a data analysis workflow that iterates over datasets and analysis methods. The `values` data frame has the operational parameters of each data analysis, and `tar_map()` creates one new target per row.
+
+```{r, eval = FALSE}
+# _targets.R file:
+library(targets)
+library(tarchetypes)
+library(tibble)
+values <- tibble(
+  method_function = rlang::syms(c("method1", "method2")),
+  data_source = c("NIH", "NIAID")
+)
+targets <- tar_map(
+  values = values,
+  tar_target(analysis, method_function(data_source, reps = 10)),
+  tar_target(summary, summarize_analysis(analysis, data_source))
+)
+tar_pipeline(targets)
+```
+
+```{r, echo = FALSE}
+tar_script({
+library(targets)
+library(tarchetypes)
+library(tibble)
+values <- tibble(
+  method_function = rlang::syms(c("method1", "method2")),
+  data_source = c("NIH", "NIAID")
+)
+targets <- tar_map(
+  values = values,
+  tar_target(analysis, method_function(data_source, reps = 10)),
+  tar_target(summary, summarize_analysis(analysis, data_source))
+)
+tar_pipeline(targets)
+})
+```
+
+```{r, paged.print = FALSE}
+tar_manifest()
+```
+```{r}
+tar_visnetwork(targets_only = TRUE)
+```
+For shorter target names, use the `names` argument of `tar_map()`. And for more combinations of settings, use `tidyr::expand_grid()` on `values`.
+
+```{r, eval = FALSE}
+# _targets.R file:
+library(targets)
+library(tarchetypes)
+library(tidyr)
+values <- expand_grid( # Use all possible combinations of input settings.
+  method_function = rlang::syms(c("method1", "method2")),
+  data_source = c("NIH", "NIAID")
+)
+targets <- tar_map(
+  values = values,
+  names = "data_source", # Select columns from `values` for target names.
+  tar_target(analysis, method_function(data_source, reps = 10)),
+  tar_target(summary, summarize_analysis(analysis, data_source))
+)
+tar_pipeline(targets)
+```
+
+```{r, echo = FALSE}
+tar_script({
+library(targets)
+library(tarchetypes)
+library(tidyr)
+values <- expand_grid(
+  method_function = rlang::syms(c("method1", "method2")),
+  data_source = c("NIH", "NIAID")
+)
+targets <- tar_map(
+  values = values,
+  names = "data_source", 
+  tar_target(analysis, method_function(data_source, reps = 10)),
+  tar_target(summary, summarize_analysis(analysis, data_source))
+)
+tar_pipeline(targets)
+})
+```
+
+```{r, paged.print = FALSE}
+tar_manifest()
+```
+```{r}
+# You may need to zoom out on this interactive graph to see all 8 targets.
+tar_visnetwork(targets_only = TRUE)
+```
+
+You can even combine together static and dynamic branching. The static `tar_map()` is an excellent outer layer on top of targets with patterns. The following is a sketch of a pipeline that runs each of two data analysis methods 10 times, once per random seed. Static branching iterates over the method functions, while dynamic branching iterates over the seeds. `tar_map()` creates new patterns as well as new commands. So below, the summary methods map over the analysis methods both statically and dynamically.
+
+```{r, eval = FALSE}
+# _targets.R file:
+library(targets)
+library(tarchetypes)
+library(tibble)
+random_seed <- tar_target(random_seed, seq_len(10))
+targets <- tar_map(
+  values = tibble(method_function = rlang::syms(c("method1", "method2"))),
+  tar_target(
+    analysis,
+    method_function("NIH", seed = random_seed),
+    pattern = map(random_seed)
+  ),
+  tar_target(
+    summary,
+    summarize_analysis(analysis),
+    pattern = map(analysis)
+  )
+)
+tar_pipeline(random_seed, targets)
+```
+
+```{r, echo = FALSE}
+tar_script({
+library(targets)
+library(tarchetypes)
+library(tibble)
+random_seed <- tar_target(random_seed, seq_len(10))
+targets <- tar_map(
+  values = tibble(method_function = rlang::syms(c("method1", "method2"))),
+  tar_target(
+    analysis,
+    method_function("NIH", seed = random_seed),
+    pattern = map(random_seed)
+  ),
+  tar_target(
+    summary,
+    summarize_analysis(analysis),
+    pattern = map(analysis)
+  )
+)
+tar_pipeline(random_seed, targets)
+})
+```
+
+```{r, paged.print = FALSE}
+tar_manifest() %>%
+  # "dimensions" has targets being dynamically mapped over:
+  mutate(dimensions = as.character(dimensions))
+```
+
+```{r, paged.print = FALSE}
+tar_visnetwork(targets_only = TRUE)
+```
+
+## Combine
+
+[`tar_combine()`](https://wlandau.github.io/tarchetypes/reference/tar_combine.html) from the [`tarchetypes`](https://github.com/wlandau/tarchetypes) package creates a new target to aggregate the results of upstream targets. In the simple example below, our combined target simply aggregates the rows returned from two other targets.
+
+```{r, eval = FALSE}
+# _targets.R file:
+library(targets)
+library(tarchetypes)
+library(tibble)
+options(crayon.enabled = FALSE)
+target1 <- tar_target(head, head(mtcars, 1))
+target2 <- tar_target(tail, tail(mtcars, 1))
+target3 <- tar_combine(combined_target, target1, target2)
+tar_pipeline(target1, target2, target3)
+```
+
+```{r, echo = FALSE}
+tar_script({
+library(targets)
+library(tarchetypes)
+library(tibble)
+options(crayon.enabled = FALSE)
+target1 <- tar_target(head_mtcars, head(mtcars, 1))
+target2 <- tar_target(tail_mtcars, tail(mtcars, 1))
+target3 <- tar_combine(combined_target, target1, target2)
+tar_pipeline(target1, target2, target3)
+})
+```
+
+```{r}
+tar_manifest()
+```
+
+```{r}
+tar_visnetwork(targets_only = TRUE)
+```
+
+```{r}
+tar_make()
+```
+
+```{r}
+tar_read(combined_target)
+```
+
+To use `tar_combine()` and `tar_map()` together in more complicated situations, you may need to supply `unlist = FALSE` to `tar_map()`. That way, `tar_map()` will return a nested list of target objects, and you can combine the ones you want. The pipeline extends our previous `tar_map()` example by combining just the summaries, omitting the analyses from `tar_combine()`. Also note the use of `bind_rows(!!!.x)` below. This is how you supply custom code to combine the return values of other targets. `.x` is a placeholder for the return values, and `!!!` is the "unquote-splice" operator from the `rlang` package.
+
+
+
+```{r, eval = FALSE}
+# _targets.R file:
+library(targets)
+library(tarchetypes)
+library(tibble)
+random_seed <- tar_target(random_seed, seq_len(10))
+mapped <- tar_map(
+  unlist = FALSE, # Return a nested list from tar_map()
+  values = tibble(method_function = rlang::syms(c("method1", "method2"))),
+  tar_target(
+    analysis,
+    method_function("NIH", seed = random_seed),
+    pattern = map(random_seed)
+  ),
+  tar_target(
+    summary,
+    summarize_analysis(analysis),
+    pattern = map(analysis)
+  )
+)
+combined <- tar_combine(
+  combined_summaries,
+  mapped[[2]],
+  command = dplyr::bind_rows(!!!.x, .id = "method")
+)
+tar_pipeline(random_seed, mapped, combined)
+```
+
+```{r, echo = FALSE}
+tar_script({
+library(targets)
+library(tarchetypes)
+library(tibble)
+random_seed <- tar_target(random_seed, seq_len(10))
+mapped <- tar_map(
+  unlist = FALSE, # Return a nested list from tar_map()
+  values = tibble(method_function = rlang::syms(c("method1", "method2"))),
+  tar_target(
+    analysis,
+    method_function("NIH", seed = random_seed),
+    pattern = map(random_seed)
+  ),
+  tar_target(
+    summary,
+    summarize_analysis(analysis),
+    pattern = map(analysis)
+  )
+)
+combined <- tar_combine(
+  combined_summaries,
+  mapped[[2]],
+  command = dplyr::bind_rows(!!!.x, .id = "method")
+)
+tar_pipeline(random_seed, mapped, combined)
+})
+```
+
+```{r, paged.print = FALSE}
+tar_manifest() %>%
+  # "dimensions" has targets being dynamically mapped over:
+  mutate(dimensions = as.character(dimensions))
+```
+```{r}
+tar_visnetwork(targets_only = TRUE)
+```
+
+## Metaprogram
+
+Custom metaprogramming is an alternative to built-in branching for large collections of targets. Metaprogramming can help you understand of the targets you start with, create informative target names, and construct complicated pipelines when layered on top of patterns.
+
+In the example below, we define a target for each data source in a mock workflow. We use `tar_target_raw()` instead of `tar_target()` to avoid the non-standard evaluation, which lets us supply target names, expressions, and pattern specifications programmatically.
+
+```{r}
+tar_script({
+  suppressPackageStartupMessages(library(purrr))
+  datasets <- c("gapminder", "who", "imf")
+  data_target_list <- map(
+    datasets,
+    ~tar_target_raw(.x, substitute(get_data(x), env = list(x = .x)))
+  )
+  tar_pipeline(data_target_list)
+})
+```
+
+`tar_manifest()` is especially important for checking the correctness of your metaprogramming.
+
+```{r}
+tar_manifest(fields = "command")
+```
+
+We can define symbols with `rlang::sym()` and insert them into expressions with `substitute()`. It is straightforward to define entire chains of targets this way. The example below demonstrates how to work with symbols and use metaprogramming and patterns simultaneously.
+
+```{r}
+tar_script({
+  suppressPackageStartupMessages(library(purrr))
+  suppressPackageStartupMessages(library(rlang))
+  target_a <- tar_target(a, seq_len(2))
+  target_list <- map(
+    seq(2, 4),
+    ~tar_target_raw(
+      letters[.x],
+      substitute(identity(y), env = list(y = sym(letters[.x - 1]))),
+      pattern = substitute(map(y), env = list(y = sym(letters[.x - 1])))
+    )
+  )
+  tar_pipeline(target_a, target_list)
+})
+```
+
+```{r}
+library(dplyr)
+tar_manifest() %>%
+  mutate(dimensions = as.character(dimensions))
+```
+
+```{r}
+tar_glimpse()
+```

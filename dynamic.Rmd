@@ -1,4 +1,4 @@
-# Branching: patterns and metaprogramming {#branching}
+# Dynamic branching {#dynamic}
 
 ```{r, message = FALSE, warning = FALSE, echo = FALSE}
 knitr::opts_knit$set(root.dir = fs::dir_create(tempfile()))
@@ -10,11 +10,11 @@ library(targets)
 library(tidyverse)
 ```
 
-In `targets`, it is possible to write shorthand for large collections of targets.
+The `targets` packages supports shorthand to create large pipelines. Dynamic branching defines new targets (i.e. branches) while the pipeline is running, and those definitions can be based on prior results from upstream targets. Relative to [static branching](#static), dynamic branching is better suited to iterating over a larger number of very similar tasks (but can act as an inner layer inside [static branching](#static), as the next chapter demonstrates).
 
 ## Patterns
 
-The `pattern` argument of `tar_target()` allows you to dynamically branch over subsets of upstream targets. The following minimal example explores the mechanics of patterns and branching (and examples of branching in real-world projects are [linked from here](https://wlandau.github.io/targets/index.html#examples)).
+To use dynamic branching, set the `pattern` argument of `tar_target()`. A pattern is a dynamic branching specification expressed in terms of functional programming. The following minimal example explores the mechanics of patterns (and examples of branching in real-world projects are [linked from here](https://wlandau.github.io/targets/index.html#examples)).
 
 ```{r}
 library(targets)
@@ -57,7 +57,7 @@ Target `z2` maps over `y`, so each each branch of `z2` accepts a branch of `y`.
 tar_read(z2)
 ```
 
-### Pattern types
+## Pattern types
 
 As we see above, the `map()` pattern creates one branch for each tuple of slices of the arguments. For example, `map(x, y)` creates one branch corresponding to `x[1]` and `y[1]` and another branch corresponding to `x[2]` and `y[2]`.
 
@@ -82,9 +82,9 @@ tar_make()
 tar_read(y)
 ```
 
-### Branching over files
+## Dynamic branching over files
 
-Branching over files is tricky. A target with `format = "file"` treats the entire set of files as an irreducible bundle. That means in order to branch over files downstream, each file must already have its own branch.
+Dynamic branching over files is tricky. A target with `format = "file"` treats the entire set of files as an irreducible bundle. That means in order to branch over files downstream, each file must already have its own branch.
 
 ```{r, eval = FALSE}
 tar_pipeline(
@@ -104,11 +104,11 @@ tar_pipeline(
 )
 ```
 
-### Iteration
+## Iteration
 
 There are many ways to slice up a stem for branching, and there are many ways to aggregate the branches of a pattern.^[Slicing is always the same when we branch over an existing pattern. If we have `tar_target(y, x, pattern = map(x))` and `x` is another pattern, then each branch of `y` always gets a branch of `x` regardless of the iteration method. Likewise, the aggregation of stems does not depend on the iteration method because every stem is already aggregated.] The `iteration` argument of `tar_target()` controls the splitting and aggregation protocol on a target-by-target basis, and you can set the default for all targets with the analogous argument of `tar_option_set()`.
 
-#### Vector
+### Vector
 
 `targets` uses vector iteration by default, and you can opt into this behavior by setting `iteration = "vector"` in `tar_target()`. In vector iteration, `targets` uses the [`vctrs`](https://vctrs.r-lib.org/) package to split stems and aggregate banches. That means `vctrs::vec_slice()` slices up stems like `x` for mapping, and `vctrs::vec_c()` aggregates patterns like `y` for operations like `tar_read()`.
 
@@ -138,7 +138,7 @@ And since `y` also has iteration = `"vector"`, the aggregate of `y` is a single 
 tar_read(y)
 ```
 
-#### List
+### List
 
 List iteration splits and aggregates targets as simple lists. If target `x` has `"list"` iteration, all branches of downstream patterns will get `x[[1]]`, `x[[2]]`, and so on. (`vctrs::vec_slice()` behaves more like `[]` than `[[]]`.)
 
@@ -175,7 +175,7 @@ tar_read(y)
 tar_read(z)
 ```
 
-#### Group
+### Group
 
 Group iteration brings `dplyr::group_by()` functionality to patterns. This way, we can map or cross over custom subsets of rows. Consider the following data frame.
 
@@ -304,57 +304,4 @@ tar_make()
 
 ```{r}
 lapply(tar_read(subsets), as.data.frame)
-```
-
-## Metaprogramming
-
-Metaprogramming is an alternative to patterns for large collections of targets. Metaprogramming can help you understand of the targets you start with, create informative target names, and construct complicated pipelines when layered on top of patterns.
-
-In the example below, we define a target for each data source in a mock workflow. We use `tar_target_raw()` instead of `tar_target()` to avoid the non-standard evaluation, which lets us supply target names, expressions, and pattern specifications programmatically.
-
-```{r}
-tar_script({
-  suppressPackageStartupMessages(library(purrr))
-  datasets <- c("gapminder", "who", "imf")
-  data_target_list <- map(
-    datasets,
-    ~tar_target_raw(.x, substitute(get_data(x), env = list(x = .x)))
-  )
-  tar_pipeline(data_target_list)
-})
-```
-
-`tar_manifest()` is especially important for checking the correctness of your metaprogramming.
-
-```{r}
-tar_manifest(fields = "command")
-```
-
-We can define symbols with `rlang::sym()` and insert them into expressions with `substitute()`. It is straightforward to define entire chains of targets this way. The example below demonstrates how to work with symbols and use metaprogramming and patterns simultaneously.
-
-```{r}
-tar_script({
-  suppressPackageStartupMessages(library(purrr))
-  suppressPackageStartupMessages(library(rlang))
-  target_a <- tar_target(a, seq_len(2))
-  target_list <- map(
-    seq(2, 4),
-    ~tar_target_raw(
-      letters[.x],
-      substitute(identity(y), env = list(y = sym(letters[.x - 1]))),
-      pattern = substitute(map(y), env = list(y = sym(letters[.x - 1])))
-    )
-  )
-  tar_pipeline(target_a, target_list)
-})
-```
-
-```{r}
-library(dplyr)
-tar_manifest() %>%
-  mutate(dimensions = as.character(dimensions))
-```
-
-```{r}
-tar_glimpse()
 ```

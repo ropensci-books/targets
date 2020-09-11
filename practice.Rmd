@@ -81,23 +81,26 @@ If one of your targets fails, first look up the error message in `tar_meta()`. I
 
 ### Workspaces
 
-If you set `error = "save"` in `tar_option_set()` or `tar_target()`, a target will save its workspace to a compressed file in `_targets/workspaces/` if it errors out. Objects in the workspace include global objects (e.g. functions), dependency targets, the random number generator seed, and the traceback. You can load this workspace and set the target's seed with `tar_workspace()`. Workspace files can be quite large, so you should remove them all with `tar_undebug()` when you are done debugging.
+If you set `error = "save"` in `tar_option_set()` or `tar_target()`, a target will save its workspace to a compressed file in `_targets/workspaces/` if it errors out. Objects in the workspace include a listing of the target's required packages, the global objects (e.g. functions), dependency targets, the random number generator seed, and the traceback. You can load this workspace with `tar_workspace()`. `tar_workspace()` loads the packages, populates the objects in the environment, and sets the seed to the seed of the target. Workspace files can be quite large, so you should remove them all with `tar_undebug()` when you are done debugging.
 
 ```{r, eval = FALSE}
+# _targets.R file:
 options(tidyverse.quiet = TRUE)
 library(targets)
 library(tidyverse)
-tar_script({
-  options(crayon.enabled = FALSE)
-  tar_option_set(error = "save")
-  f <- function(x) {
-    stopifnot(x < 4)
-  }
-  tar_pipeline(
-    tar_target(x, seq_len(4)),
-    tar_target(y, f(x), pattern = map(x)) # The branching chapter describes patterns.
-  )
-})
+options(crayon.enabled = FALSE)
+tar_option_set(error = "save")
+f <- function(x) {
+  stopifnot(x < 4)
+}
+tar_pipeline(
+  tar_target(x, seq_len(4)),
+  tar_target(y, f(x), pattern = map(x)) # The branching chapter describes patterns.
+)
+```
+
+```{r, eval = FALSE}
+# R console:
 tar_make()
 #> ● run target x
 #> ● run branch y_29239c8a

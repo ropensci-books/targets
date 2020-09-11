@@ -97,6 +97,7 @@ create_plot <- function(data) {
 Both `raw_data.csv` and `functions.R` are custom components. You as the user decide whether to use them, what to name them, and where to put them. However, the "target script" `_targets.R` file is special. (So special, in fact, that there is a special `tar_script()` function to help you create one). Every [`targets`](https://github.com/wlandau/targets) project requires a `_targets.R` script in the project's root directory to declare and configure the pipeline. Ours looks like this.
 
 ```{r, eval = FALSE}
+# _targets.R
 library(targets)
 source("R/functions.R")
 options(tidyverse.quiet = TRUE)
