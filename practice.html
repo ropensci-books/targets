@@ -194,6 +194,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="5.4.2" data-path="dynamic.html"><a href="dynamic.html#list"><i class="fa fa-check"></i><b>5.4.2</b> List</a></li>
 <li class="chapter" data-level="5.4.3" data-path="dynamic.html"><a href="dynamic.html#group"><i class="fa fa-check"></i><b>5.4.3</b> Group</a></li>
 </ul></li>
+<li class="chapter" data-level="5.5" data-path="dynamic.html"><a href="dynamic.html#batching"><i class="fa fa-check"></i><b>5.5</b> Batching</a></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="static.html"><a href="static.html"><i class="fa fa-check"></i><b>6</b> Static branching</a>
 <ul>
@@ -366,7 +367,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="performance" class="section level2" number="3.6">
 <h2><span class="header-section-number">3.6</span> Performance</h2>
-<p>If your pipeline has several thousand targets, functions like <code>tar_make()</code>, <code>tar_outdated()</code>, and <code>tar_vis_drake_graph()</code> may take longer to run. There is an inevitable per-target runtime cost because package needs to check the code and data of each target individually. If this overhead becomes too much, consider batching your work into a smaller group of heavier targets. Using your custom functions, you can make each target perform multiple iterations of a task that was previously given to targets one at a time.</p>
+<p>If your pipeline has several thousand targets, functions like <code>tar_make()</code>, <code>tar_outdated()</code>, and <code>tar_vis_drake_graph()</code> may take longer to run. There is an inevitable per-target runtime cost because package needs to check the code and data of each target individually. If this overhead becomes too much, consider batching your work into a smaller group of heavier targets. Using your custom functions, you can make each target perform multiple iterations of a task that was previously given to targets one at a time. For details and an example, please see the discussion on batching at the bottom of the <a href="dynamic.html#dynamic">dynamic branching chapter</a>.</p>
 <p>Alternatively, if you see slowness in your project, you can contribute to the package with a profiling study. These contributions are great because they help improve the package. Here are the recommended steps.</p>
 <ol style="list-style-type: decimal">
 <li>Install the <a href="https://github.com/r-prof/proffer"><code>proffer</code></a> R package and its dependencies.</li>
