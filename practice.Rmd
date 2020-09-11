@@ -170,7 +170,7 @@ For more on debugging R code, visit [this page](https://rstats.wtf/debugging-r-c
 
 ## Performance
 
-If your pipeline has several thousand targets, functions like `tar_make()`, `tar_outdated()`, and `tar_vis_drake_graph()` may take longer to run. There is an inevitable per-target runtime cost because package needs to check the code and data of each target individually. If this overhead becomes too much, consider batching your work into a smaller group of heavier targets. Using your custom functions, you can make each target perform multiple iterations of a task that was previously given to targets one at a time.
+If your pipeline has several thousand targets, functions like `tar_make()`, `tar_outdated()`, and `tar_vis_drake_graph()` may take longer to run. There is an inevitable per-target runtime cost because package needs to check the code and data of each target individually. If this overhead becomes too much, consider batching your work into a smaller group of heavier targets. Using your custom functions, you can make each target perform multiple iterations of a task that was previously given to targets one at a time. For details and an example, please see the discussion on batching at the bottom of the [dynamic branching chapter](#dynamic).
 
 Alternatively, if you see slowness in your project, you can contribute to the package with a profiling study. These contributions are great because they help improve the package. Here are the recommended steps.
 
