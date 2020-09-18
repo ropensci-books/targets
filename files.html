@@ -283,8 +283,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><code>tar_make()</code> automatically reruns <code>raw_data</code> if <code>raw_data_file</code> or <code>"data/raw_data.csv"</code> change.</li>
 </ol>
 <div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="files.html#cb35-1" aria-hidden="true"></a><span class="kw">tar_visnetwork</span>()</span></code></pre></div>
-<div id="htmlwidget-8cc97776c50ad8a63bcc" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
-<script type="application/json" data-for="htmlwidget-8cc97776c50ad8a63bcc">{"x":{"nodes":{"name":["raw_data","raw_data_file","path_to_data"],"type":["stem","stem","function"],"status":["outdated","outdated","outdated"],"seconds":[null,null,null],"bytes":[null,null,null],"branches":[null,null,null],"id":["raw_data","raw_data_file","path_to_data"],"label":["raw_data","raw_data_file","path_to_data"],"font.size":[20,20,20],"level":[3,2,1],"color":["#3B9AB2","#3B9AB2","#3B9AB2"],"shape":["dot","dot","triangle"]},"edges":{"from":["raw_data_file","path_to_data"],"to":["raw_data","raw_data_file"],"arrows":["to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":false,"hoverNearest":false,"degree":1,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"left","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Outdated","Stem","Function"],"color":["#3B9AB2","#899DA4","#899DA4"],"shape":["dot","dot","triangle"],"font.size":[20,20,20]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-a48ed0b87fa569202217" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-a48ed0b87fa569202217">{"x":{"nodes":{"name":["raw_data","raw_data_file","path_to_data"],"type":["stem","stem","function"],"status":["outdated","outdated","outdated"],"seconds":[null,null,null],"bytes":[null,null,null],"branches":[null,null,null],"id":["raw_data","raw_data_file","path_to_data"],"label":["raw_data","raw_data_file","path_to_data"],"font.size":[20,20,20],"level":[3,2,1],"color":["#3B9AB2","#3B9AB2","#3B9AB2"],"shape":["dot","dot","triangle"]},"edges":{"from":["raw_data_file","path_to_data"],"to":["raw_data","raw_data_file"],"arrows":["to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":false,"hoverNearest":false,"degree":1,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"left","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Outdated","Stem","Function"],"color":["#3B9AB2","#899DA4","#899DA4"],"shape":["dot","dot","triangle"],"font.size":[20,20,20]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
 <p>If we were to omit the symbol <code>raw_data_file</code> from the R expression of <code>raw_data</code>, those targets would be disconnected in the graph and <code>tar_make()</code> would make incorrect decisions.</p>
 <div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="files.html#cb36-1" aria-hidden="true"></a><span class="kw">tar_script</span>({</span>
 <span id="cb36-2"><a href="files.html#cb36-2" aria-hidden="true"></a>  path_to_data &lt;-<span class="st"> </span><span class="cf">function</span>() {</span>
@@ -303,8 +303,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb36-15"><a href="files.html#cb36-15" aria-hidden="true"></a>  )</span>
 <span id="cb36-16"><a href="files.html#cb36-16" aria-hidden="true"></a>})</span></code></pre></div>
 <div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="files.html#cb37-1" aria-hidden="true"></a><span class="kw">tar_visnetwork</span>()</span></code></pre></div>
-<div id="htmlwidget-e78958b28643f589f7b5" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
-<script type="application/json" data-for="htmlwidget-e78958b28643f589f7b5">{"x":{"nodes":{"name":["raw_data","raw_data_file","path_to_data"],"type":["stem","stem","function"],"status":["outdated","outdated","outdated"],"seconds":[null,null,null],"bytes":[null,null,null],"branches":[null,null,null],"id":["raw_data","raw_data_file","path_to_data"],"label":["raw_data","raw_data_file","path_to_data"],"font.size":[20,20,20],"level":[0,2,1],"color":["#3B9AB2","#3B9AB2","#3B9AB2"],"shape":["dot","dot","triangle"]},"edges":{"from":["path_to_data"],"to":["raw_data_file"],"arrows":["to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":false,"hoverNearest":false,"degree":1,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"left","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Outdated","Stem","Function"],"color":["#3B9AB2","#899DA4","#899DA4"],"shape":["dot","dot","triangle"],"font.size":[20,20,20]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-f641fa429daacc91be69" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-f641fa429daacc91be69">{"x":{"nodes":{"name":["raw_data","raw_data_file","path_to_data"],"type":["stem","stem","function"],"status":["outdated","outdated","outdated"],"seconds":[null,null,null],"bytes":[null,null,null],"branches":[null,null,null],"id":["raw_data","raw_data_file","path_to_data"],"label":["raw_data","raw_data_file","path_to_data"],"font.size":[20,20,20],"level":[0,2,1],"color":["#3B9AB2","#3B9AB2","#3B9AB2"],"shape":["dot","dot","triangle"]},"edges":{"from":["path_to_data"],"to":["raw_data_file"],"arrows":["to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":false,"hoverNearest":false,"degree":1,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"left","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Outdated","Stem","Function"],"color":["#3B9AB2","#899DA4","#899DA4"],"shape":["dot","dot","triangle"],"font.size":[20,20,20]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="external-output-files" class="section level2" number="4.3">
 <h2><span class="header-section-number">4.3</span> External output files</h2>
@@ -352,42 +352,40 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb40-13"><a href="files.html#cb40-13" aria-hidden="true"></a><span class="co">#&gt;   storage mode: local </span></span>
 <span id="cb40-14"><a href="files.html#cb40-14" aria-hidden="true"></a><span class="co">#&gt;   retrieval mode: local </span></span>
 <span id="cb40-15"><a href="files.html#cb40-15" aria-hidden="true"></a><span class="co">#&gt;   deploy to: local </span></span>
-<span id="cb40-16"><a href="files.html#cb40-16" aria-hidden="true"></a><span class="co">#&gt;   template (clustermq):</span></span>
+<span id="cb40-16"><a href="files.html#cb40-16" aria-hidden="true"></a><span class="co">#&gt;   resources:</span></span>
 <span id="cb40-17"><a href="files.html#cb40-17" aria-hidden="true"></a><span class="co">#&gt;     list() </span></span>
-<span id="cb40-18"><a href="files.html#cb40-18" aria-hidden="true"></a><span class="co">#&gt;   resources (future):</span></span>
-<span id="cb40-19"><a href="files.html#cb40-19" aria-hidden="true"></a><span class="co">#&gt;     list() </span></span>
-<span id="cb40-20"><a href="files.html#cb40-20" aria-hidden="true"></a><span class="co">#&gt;   cue:</span></span>
-<span id="cb40-21"><a href="files.html#cb40-21" aria-hidden="true"></a><span class="co">#&gt;     mode: thorough</span></span>
-<span id="cb40-22"><a href="files.html#cb40-22" aria-hidden="true"></a><span class="co">#&gt;     command: TRUE</span></span>
-<span id="cb40-23"><a href="files.html#cb40-23" aria-hidden="true"></a><span class="co">#&gt;     depend: TRUE</span></span>
-<span id="cb40-24"><a href="files.html#cb40-24" aria-hidden="true"></a><span class="co">#&gt;     format: TRUE</span></span>
-<span id="cb40-25"><a href="files.html#cb40-25" aria-hidden="true"></a><span class="co">#&gt;     iteration: TRUE</span></span>
-<span id="cb40-26"><a href="files.html#cb40-26" aria-hidden="true"></a><span class="co">#&gt;     file: TRUE </span></span>
-<span id="cb40-27"><a href="files.html#cb40-27" aria-hidden="true"></a><span class="co">#&gt;   packages:</span></span>
-<span id="cb40-28"><a href="files.html#cb40-28" aria-hidden="true"></a><span class="co">#&gt;     tarchetypes</span></span>
-<span id="cb40-29"><a href="files.html#cb40-29" aria-hidden="true"></a><span class="co">#&gt;     biglm</span></span>
-<span id="cb40-30"><a href="files.html#cb40-30" aria-hidden="true"></a><span class="co">#&gt;     DBI</span></span>
-<span id="cb40-31"><a href="files.html#cb40-31" aria-hidden="true"></a><span class="co">#&gt;     withr</span></span>
-<span id="cb40-32"><a href="files.html#cb40-32" aria-hidden="true"></a><span class="co">#&gt;     forcats</span></span>
-<span id="cb40-33"><a href="files.html#cb40-33" aria-hidden="true"></a><span class="co">#&gt;     stringr</span></span>
-<span id="cb40-34"><a href="files.html#cb40-34" aria-hidden="true"></a><span class="co">#&gt;     dplyr</span></span>
-<span id="cb40-35"><a href="files.html#cb40-35" aria-hidden="true"></a><span class="co">#&gt;     purrr</span></span>
-<span id="cb40-36"><a href="files.html#cb40-36" aria-hidden="true"></a><span class="co">#&gt;     readr</span></span>
-<span id="cb40-37"><a href="files.html#cb40-37" aria-hidden="true"></a><span class="co">#&gt;     tidyr</span></span>
-<span id="cb40-38"><a href="files.html#cb40-38" aria-hidden="true"></a><span class="co">#&gt;     tibble</span></span>
-<span id="cb40-39"><a href="files.html#cb40-39" aria-hidden="true"></a><span class="co">#&gt;     ggplot2</span></span>
-<span id="cb40-40"><a href="files.html#cb40-40" aria-hidden="true"></a><span class="co">#&gt;     tidyverse</span></span>
-<span id="cb40-41"><a href="files.html#cb40-41" aria-hidden="true"></a><span class="co">#&gt;     targets</span></span>
-<span id="cb40-42"><a href="files.html#cb40-42" aria-hidden="true"></a><span class="co">#&gt;     fs</span></span>
-<span id="cb40-43"><a href="files.html#cb40-43" aria-hidden="true"></a><span class="co">#&gt;     stats</span></span>
-<span id="cb40-44"><a href="files.html#cb40-44" aria-hidden="true"></a><span class="co">#&gt;     graphics</span></span>
-<span id="cb40-45"><a href="files.html#cb40-45" aria-hidden="true"></a><span class="co">#&gt;     grDevices</span></span>
-<span id="cb40-46"><a href="files.html#cb40-46" aria-hidden="true"></a><span class="co">#&gt;     utils</span></span>
-<span id="cb40-47"><a href="files.html#cb40-47" aria-hidden="true"></a><span class="co">#&gt;     datasets</span></span>
-<span id="cb40-48"><a href="files.html#cb40-48" aria-hidden="true"></a><span class="co">#&gt;     methods</span></span>
-<span id="cb40-49"><a href="files.html#cb40-49" aria-hidden="true"></a><span class="co">#&gt;     base </span></span>
-<span id="cb40-50"><a href="files.html#cb40-50" aria-hidden="true"></a><span class="co">#&gt;   library:</span></span>
-<span id="cb40-51"><a href="files.html#cb40-51" aria-hidden="true"></a><span class="co">#&gt;     NULL</span></span></code></pre></div>
+<span id="cb40-18"><a href="files.html#cb40-18" aria-hidden="true"></a><span class="co">#&gt;   cue:</span></span>
+<span id="cb40-19"><a href="files.html#cb40-19" aria-hidden="true"></a><span class="co">#&gt;     mode: thorough</span></span>
+<span id="cb40-20"><a href="files.html#cb40-20" aria-hidden="true"></a><span class="co">#&gt;     command: TRUE</span></span>
+<span id="cb40-21"><a href="files.html#cb40-21" aria-hidden="true"></a><span class="co">#&gt;     depend: TRUE</span></span>
+<span id="cb40-22"><a href="files.html#cb40-22" aria-hidden="true"></a><span class="co">#&gt;     format: TRUE</span></span>
+<span id="cb40-23"><a href="files.html#cb40-23" aria-hidden="true"></a><span class="co">#&gt;     iteration: TRUE</span></span>
+<span id="cb40-24"><a href="files.html#cb40-24" aria-hidden="true"></a><span class="co">#&gt;     file: TRUE </span></span>
+<span id="cb40-25"><a href="files.html#cb40-25" aria-hidden="true"></a><span class="co">#&gt;   packages:</span></span>
+<span id="cb40-26"><a href="files.html#cb40-26" aria-hidden="true"></a><span class="co">#&gt;     tarchetypes</span></span>
+<span id="cb40-27"><a href="files.html#cb40-27" aria-hidden="true"></a><span class="co">#&gt;     biglm</span></span>
+<span id="cb40-28"><a href="files.html#cb40-28" aria-hidden="true"></a><span class="co">#&gt;     DBI</span></span>
+<span id="cb40-29"><a href="files.html#cb40-29" aria-hidden="true"></a><span class="co">#&gt;     withr</span></span>
+<span id="cb40-30"><a href="files.html#cb40-30" aria-hidden="true"></a><span class="co">#&gt;     forcats</span></span>
+<span id="cb40-31"><a href="files.html#cb40-31" aria-hidden="true"></a><span class="co">#&gt;     stringr</span></span>
+<span id="cb40-32"><a href="files.html#cb40-32" aria-hidden="true"></a><span class="co">#&gt;     dplyr</span></span>
+<span id="cb40-33"><a href="files.html#cb40-33" aria-hidden="true"></a><span class="co">#&gt;     purrr</span></span>
+<span id="cb40-34"><a href="files.html#cb40-34" aria-hidden="true"></a><span class="co">#&gt;     readr</span></span>
+<span id="cb40-35"><a href="files.html#cb40-35" aria-hidden="true"></a><span class="co">#&gt;     tidyr</span></span>
+<span id="cb40-36"><a href="files.html#cb40-36" aria-hidden="true"></a><span class="co">#&gt;     tibble</span></span>
+<span id="cb40-37"><a href="files.html#cb40-37" aria-hidden="true"></a><span class="co">#&gt;     ggplot2</span></span>
+<span id="cb40-38"><a href="files.html#cb40-38" aria-hidden="true"></a><span class="co">#&gt;     tidyverse</span></span>
+<span id="cb40-39"><a href="files.html#cb40-39" aria-hidden="true"></a><span class="co">#&gt;     targets</span></span>
+<span id="cb40-40"><a href="files.html#cb40-40" aria-hidden="true"></a><span class="co">#&gt;     fs</span></span>
+<span id="cb40-41"><a href="files.html#cb40-41" aria-hidden="true"></a><span class="co">#&gt;     stats</span></span>
+<span id="cb40-42"><a href="files.html#cb40-42" aria-hidden="true"></a><span class="co">#&gt;     graphics</span></span>
+<span id="cb40-43"><a href="files.html#cb40-43" aria-hidden="true"></a><span class="co">#&gt;     grDevices</span></span>
+<span id="cb40-44"><a href="files.html#cb40-44" aria-hidden="true"></a><span class="co">#&gt;     utils</span></span>
+<span id="cb40-45"><a href="files.html#cb40-45" aria-hidden="true"></a><span class="co">#&gt;     datasets</span></span>
+<span id="cb40-46"><a href="files.html#cb40-46" aria-hidden="true"></a><span class="co">#&gt;     methods</span></span>
+<span id="cb40-47"><a href="files.html#cb40-47" aria-hidden="true"></a><span class="co">#&gt;     base </span></span>
+<span id="cb40-48"><a href="files.html#cb40-48" aria-hidden="true"></a><span class="co">#&gt;   library:</span></span>
+<span id="cb40-49"><a href="files.html#cb40-49" aria-hidden="true"></a><span class="co">#&gt;     NULL</span></span></code></pre></div>
 <p>Because symbols <code>fit</code> and <code>hist</code> appear in the command, <code>targets</code> knows that <code>report</code> depends on <code>fit</code> and <code>hist</code>. When we put the <code>report</code> target in the pipeline, these dependency relationships show up in the graph.</p>
 <div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="files.html#cb41-1" aria-hidden="true"></a><span class="co"># _targets.R</span></span>
 <span id="cb41-2"><a href="files.html#cb41-2" aria-hidden="true"></a><span class="kw">library</span>(targets)</span>
