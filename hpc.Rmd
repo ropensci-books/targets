@@ -114,7 +114,7 @@ See the examples [linked from here](https://wlandau.github.io/targets/index.html
 
 ### Clustermq configuration
 
-In addition to configuration options hard-coded in the template file, you can supply computing resources to individual targets with the `template` argument of `tar_option_set()`. For example, if your template has a wildcard `num_cores` for the number of cores per worker,
+In addition to configuration options hard-coded in the template file, you can supply custom computing resources with the `resources` argument of `tar_option_set()`. As an example, let's use a wildcard for the number of cores per worker on an SGE cluster. In the template file, supply `{{ num_cores }}` wildcard to the `-pe smp` flag.
 
 ```
 #$ -pe smp {{ num_cores }} # Number of cores per worker
@@ -128,10 +128,18 @@ module load R/3.6.3
 CMQ_AUTH={{ auth }} R --no-save --no-restore -e 'clustermq:::worker("{{ master }}")'
 ```
 
-then you can call `tar_make_clustermq()` like this:
+Then, supply the value of `num_cores` to the `resources` option from within `_targets.R`.
 
 ```{r}
-tar_make_clustermq(workers = 2, template = list(num_cores = 2))
+# _targets.R
+tar_option_set(resources = list(num_cores = 2))
+tar_pipeline(...)
+```
+
+Finally, call `tar_make_clustermq()` normally.
+
+```{r}
+tar_make_clustermq(workers = 2)
 ```
 
 This particular use case comes up when you have custom parallel computing within targets and need to take advantage of multiple cores.
@@ -211,7 +219,7 @@ exit 0 # Leave alone.
 
 ### Future configuration
 
-The `tar_target()`, `tar_target_raw()`, and `tar_option_set()` functions accept a `resources` argument similar to the `template` argument of `tar_make_clustermq()`. For example, if our `batchtools` template file has a wildcard for the number of cores for a job,
+The `tar_target()`, `tar_target_raw()`, and `tar_option_set()` functions accept a `resources` argument. For example, if our `batchtools` template file has a wildcard for the number of cores for a job,
 
 ```
 #!/bin/bash
@@ -247,6 +255,8 @@ Then, run `tar_make_future()` as usual.
 ```{r}
 tar_make_future(workers = 2)
 ```
+
+The `resources` of `tar_target()` defaults to `tar_option_get("resources")`. You can set the default value for all targets using `tar_option_set()`.
 
 ## Advanced
 
