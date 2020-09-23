@@ -418,6 +418,124 @@ need</a> for technical details.</p>
 </tr>
 </tbody>
 </table>
+<p>Likewise, many <code>make()</code> arguments have equivalent arguments elsewhere.</p>
+<table>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Argument of <code>drake::make()</code></th>
+<th>Counterparts in <code>targets</code></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>targets</code></td>
+<td><code>names</code> in <a href="https://wlandau.github.io/targets/reference/tar_make.html"><code>tar_make()</code></a> etc.</td>
+</tr>
+<tr class="even">
+<td><code>envir</code></td>
+<td><code>envir</code> in <a href="https://wlandau.github.io/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
+</tr>
+<tr class="odd">
+<td><code>verbose</code></td>
+<td><code>reporter</code> in <a href="https://wlandau.github.io/targets/reference/tar_make.html"><code>tar_make()</code></a> etc.</td>
+</tr>
+<tr class="even">
+<td><code>parallelism</code></td>
+<td>Choice of function: <a href="https://wlandau.github.io/targets/reference/tar_make.html"><code>tar_make()</code></a> vs <a href="https://wlandau.github.io/targets/reference/tar_make_clustermq.html"><code>tar_make_clustermq()</code></a> vs <a href="https://wlandau.github.io/targets/reference/tar_make_future.html"><code>tar_make_future()</code></a></td>
+</tr>
+<tr class="odd">
+<td><code>jobs</code></td>
+<td><code>workers</code> in <a href="https://wlandau.github.io/targets/reference/tar_make_clustermq.html"><code>tar_make_clustermq()</code></a> and <a href="https://wlandau.github.io/targets/reference/tar_make_future.html"><code>tar_make_future()</code></a></td>
+</tr>
+<tr class="even">
+<td><code>packages</code></td>
+<td><code>packages</code> in <a href="https://wlandau.github.io/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://wlandau.github.io/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
+</tr>
+<tr class="odd">
+<td><code>lib_loc</code></td>
+<td><code>library</code> in <a href="https://wlandau.github.io/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://wlandau.github.io/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
+</tr>
+<tr class="even">
+<td><code>trigger</code></td>
+<td><code>cue</code> in <a href="https://wlandau.github.io/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://wlandau.github.io/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
+</tr>
+<tr class="odd">
+<td><code>caching</code></td>
+<td><code>storage</code> and <code>retrieval</code> in <a href="https://wlandau.github.io/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://wlandau.github.io/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
+</tr>
+<tr class="even">
+<td><code>keep_going</code></td>
+<td><code>error</code> in <a href="https://wlandau.github.io/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://wlandau.github.io/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
+</tr>
+<tr class="odd">
+<td><code>memory_strategy</code></td>
+<td><code>memory</code> in <a href="https://wlandau.github.io/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://wlandau.github.io/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
+</tr>
+<tr class="even">
+<td><code>garbage_collection</code></td>
+<td><code>garbage_collection</code> in <a href="https://wlandau.github.io/targets/reference/tar_make.html"><code>tar_make()</code></a> etc.</td>
+</tr>
+<tr class="odd">
+<td><code>template</code></td>
+<td><code>resources</code> in <a href="https://wlandau.github.io/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://wlandau.github.io/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
+</tr>
+<tr class="even">
+<td><code>curl_handles</code></td>
+<td><code>handle</code> element of <code>resources</code> argument of <a href="https://wlandau.github.io/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://wlandau.github.io/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
+</tr>
+<tr class="odd">
+<td><code>format</code></td>
+<td><code>format</code> in <a href="https://wlandau.github.io/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://wlandau.github.io/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
+</tr>
+</tbody>
+</table>
+<p>In addition, many <a href="https://books.ropensci.org/drake/plans.html#special-columns">optional columns of <code>drake</code> plans</a> are expressed differently in <code>targets</code>.</p>
+<table>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th><a href="https://books.ropensci.org/drake/plans.html#special-columns">Optional column of <code>drake</code> plans</a></th>
+<th>Feature in <code>targets</code></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>format</code></td>
+<td><code>format</code> argument of <a href="https://wlandau.github.io/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://wlandau.github.io/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
+</tr>
+<tr class="even">
+<td><code>dynamic</code></td>
+<td><code>pattern</code> argument of <a href="https://wlandau.github.io/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://wlandau.github.io/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
+</tr>
+<tr class="odd">
+<td><code>transform</code></td>
+<td><a href="https://wlandau.github.io/tarchetypes/reference/index.html#section-branching">static branching functions in <code>tarchetypes</code></a> such as <a href="https://wlandau.github.io/tarchetypes/reference/tar_map.html"><code>tar_map()</code></a> and <a href="https://wlandau.github.io/tarchetypes/reference/tar_combine.html"><code>tar_combine()</code></a></td>
+</tr>
+<tr class="even">
+<td><code>trigger</code></td>
+<td><code>cue</code> argument of <a href="https://wlandau.github.io/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://wlandau.github.io/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
+</tr>
+<tr class="odd">
+<td><code>hpc</code></td>
+<td><code>deployment</code> argument of <a href="https://wlandau.github.io/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://wlandau.github.io/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
+</tr>
+<tr class="even">
+<td><code>resources</code></td>
+<td><code>resources</code> argument of <a href="https://wlandau.github.io/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://wlandau.github.io/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
+</tr>
+<tr class="odd">
+<td><code>caching</code></td>
+<td><code>storage</code> and <code>retrieval</code> arguments of <a href="https://wlandau.github.io/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://wlandau.github.io/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
+</tr>
+</tbody>
+</table>
 
 </div>
 </div>
