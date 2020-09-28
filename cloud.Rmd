@@ -1,0 +1,21 @@
+# Cloud integration {#cloud}
+
+```{r, message = FALSE, warning = FALSE, echo = FALSE}
+knitr::opts_knit$set(root.dir = fs::dir_create(tempfile()))
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = FALSE)
+```
+
+```{r, message = FALSE, warning = FALSE, echo = FALSE}
+library(targets)
+```
+
+`targets` has built-in cloud capabilities to help scale pipelines up and out.
+
+## Compute
+
+Right now, `targets` does not have built-in cloud-based distributed computing support. However, future development plans include seamless integration with [AWS Batch](https://aws.amazon.com/batch/). As a temporary workaround, it is possible to deploy a burstable [SLURM](https://slurm.schedmd.com/documentation.html) cluster using [AWS ParallelCluster](https://aws.amazon.com/hpc/parallelcluster/) and leverage `targets`' [existing support for traditional schedulers](#hpc).
+
+## Storage
+
+`targets` supports cloud storage on a target-by-target basis using [Amazon Simple Storage Service, or S3](https://aws.amazon.com/s3/). After a target completes, the return value is uploaded to a user-defined S3 bucket [S3 bucket](https://docs.aws.amazon.com/AmazonS3/latest/user-guide/create-bucket.html). 
+More details to follow.
