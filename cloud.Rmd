@@ -89,7 +89,7 @@ tar_pipeline(
 
 ### Run the pipeline
 
-When you run [`tar_make()`](https://wlandau.github.io/targets/reference/tar_make.html), your local R session computes `rnorm(5)`, saves it to a temporary [`qs`](https://github.com/traversc/qs) file on disk, and then uploads it to a file called `_targets/data` on your S3 bucket. Likewise for `mean_file`, but because the format is `"aws_file"`, you are responsible for supplying the path to the file that gets uploaded to `_targets/mean_file`.
+When you run the pipeline above with [`tar_make()`](https://wlandau.github.io/targets/reference/tar_make.html), your local R session computes `rnorm(5)`, saves it to a temporary [`qs`](https://github.com/traversc/qs) file on disk, and then uploads it to a file called `_targets/data` on your S3 bucket. Likewise for `mean_file`, but because the format is `"aws_file"`, you are responsible for supplying the path to the file that gets uploaded to `_targets/mean_file`.
 
 ```{r, eval = FALSE}
 tar_make()
