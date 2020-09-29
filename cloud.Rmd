@@ -17,5 +17,119 @@ Right now, `targets` does not have built-in cloud-based distributed computing su
 
 ## Storage
 
-`targets` supports cloud storage on a target-by-target basis using [Amazon Simple Storage Service, or S3](https://aws.amazon.com/s3/). After a target completes, the return value is uploaded to a user-defined S3 bucket [S3 bucket](https://docs.aws.amazon.com/AmazonS3/latest/user-guide/create-bucket.html). 
-More details to follow.
+`targets` supports cloud storage on a target-by-target basis using [Amazon Simple Storage Service, or S3](https://aws.amazon.com/s3/). After a target completes, the return value is uploaded to a user-defined S3 bucket [S3 bucket](https://docs.aws.amazon.com/AmazonS3/latest/user-guide/create-bucket.html). Follow these steps to get started.
+
+### Get started with Amazon S3 web console
+
+If you do not already have an Amazon Web Services account, sign up for the free tier at <https://aws.amazon.com/free>. Then, follow [these step-by-step instructions](https://docs.aws.amazon.com/AmazonS3/latest/gsg/GetStartedWithS3.html) to practice using Amazon S3 through the web console at <https://console.aws.amazon.com/s3/>.
+
+### Configure your local machine
+
+`targets` uses the [`aws.s3`](https://github.com/cloudyr/aws.s3) package behind the scenes. It is not a strict dependency of `targets`, so you will need to install it yourself.
+
+```{r, eval = FALSE}
+install.packages("aws.s3")
+```
+
+Next, `aws.s3` needs an access ID, secret access key, and default region. Follow [these steps](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html#cli-configure-quickstart-creds) to generate the keys, and choose a region from [this table of endpoints](https://docs.aws.amazon.com/general/latest/gr/s3.html). Then, open the `.Renviron` file in your home directory with `usethis::edit_r_environ()` and store this information in [special environment variables](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html). Here is an example `.Renviron` file.
+
+```{r, eval = FALSE}
+# Example .Renviron file
+AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE
+AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+AWS_DEFAULT_REGION=us-east-1
+```
+
+Restart your R session so the changes take effect. Your keys are sensitive personal information. You can print them in your private console to verify correctness, but otherwise please avoid saving them to any persistent documents other than `.Renviron`.
+
+```{r, eval = FALSE}
+Sys.getenv("AWS_ACCESS_KEY_ID")
+#> [1] "AKIAIOSFODNN7EXAMPLE"
+Sys.getenv("AWS_SECRET_ACCESS_KEY")
+#> [1] "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+Sys.getenv("AWS_DEFAULT_REGION")
+#> [1] "us-east-1"
+```
+
+### Create S3 buckets
+
+Now, you are ready to create one or more [S3 buckets](https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingBucket.html) for your `targets` pipeline. Each pipeline should have its own set of buckets. Create one through the web console or with `aws.s3::put_bucket()`.
+
+```{r, eval = FALSE}
+library(aws.s3)
+put_bucket("my-test-bucket-25edb4956460647d")
+#> [1] TRUE
+```
+
+Sign in to <https://s3.console.aws.amazon.com/s3> to verify that the bucket exists.
+
+### Configure the pipeline
+
+To connect your pipeline with S3,
+
+1. Supply your bucket name to `resources` in `tar_option_set()`. To use different buckets for different targets, set `resources` directly in `tar_target()`.
+1. Supply AWS-powered storage formats to `tar_option_set()` and/or `tar_target()`. See the [`tar_target()` help file](https://wlandau.github.io/targets/reference/tar_target.html#arguments) for the full list of formats.
+
+Your `_targets.R` file will look something like this.
+
+```{r, eval = FALSE}
+# Example _targets.R
+library(targets)
+tar_option_set(resources = list(bucket = "my-test-bucket-25edb4956460647d"))
+write_mean <- function(data) {
+  tmp <- tempfile()
+  writeLines(as.character(mean(data)), tmp)
+  tmp
+}
+tar_pipeline(
+  tar_target(data, rnorm(5), format = "aws_qs"),
+  tar_target(mean_file, write_mean(data), format = "aws_file")
+)
+```
+
+### Run the pipeline
+
+When you run [`tar_make()`](https://wlandau.github.io/targets/reference/tar_make.html), your local R session computes `rnorm(5)`, saves it to a temporary [`qs`](https://github.com/traversc/qs) file on disk, and then uploads it to a file called `_targets/data` on your S3 bucket. Likewise for `mean_file`, but because the format is `"aws_file"`, you are responsible for supplying the path to the file that gets uploaded to `_targets/mean_file`.
+
+```{r, eval = FALSE}
+tar_make()
+#> ● run target data
+#> ● run target mean_file
+```
+
+And of course, your targets stay up to date if you make no changes.
+
+```{r, eval = FALSE}
+tar_make()
+#> ✓ skip target data
+#> ✓ skip target mean_file
+#> ✓ Already up to date.
+```
+
+### Manage the data
+
+Log into <https://s3.console.aws.amazon.com/s3>. You should see objects `_targets/data` and `_targets/mean_file` in your bucket. To download this data locally, use `tar_read()` and `tar_load()` like before. These functions download the data from the bucket and load it into R.
+
+```{r, eval = FALSE}
+tar_read(data)
+#> [1] -0.74654607 -0.59593497 -1.57229983  0.40915323  0.02579023
+```
+
+The `"aws_file"` format is different from the other AWS-powered formats. `tar_read()` and `tar_load()` download the object to a temporary file and return the path so you can process it yourself.^[Non-"file" AWS formats also download temporary files, but they are immediately discarded after they are read into memory.]
+
+```{r, eval = FALSE}
+tar_load(mean_file)
+mean_file
+#> [1] "_targets/scratch/mean_fileff086e70876d"
+```
+
+```{r, eval = FALSE}
+readLines(mean_file)
+#> [1] "-0.495967480886693"
+```
+
+When you are done with these temporary files and the pipeline is no longer running, you can safely remove everything in `_targets/scratch/`.
+
+```{r, eval = FALSE}
+unlink("_targets/scratch/", recursive = TRUE)
+```
