@@ -133,3 +133,9 @@ When you are done with these temporary files and the pipeline is no longer runni
 ```{r, eval = FALSE}
 unlink("_targets/scratch/", recursive = TRUE)
 ```
+
+Lastly, if you want to erase the whole project or start over from scratch, consider removing the S3 bucket to avoid incurring storage fees. The easiest way to do this is through the [S3 console](https://s3.console.aws.amazon.com/s3). You can alternatively call `aws.s3::delete_bucket()`, but you have to make sure the bucket is empty first.
+
+```{r, eval = FALSE}
+delete_bucket("my-test-bucket-25edb4956460647d")
+```
