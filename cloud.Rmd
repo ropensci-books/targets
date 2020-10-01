@@ -89,7 +89,7 @@ tar_pipeline(
 
 ### Run the pipeline
 
-When you run the pipeline above with [`tar_make()`](https://wlandau.github.io/targets/reference/tar_make.html), your local R session computes `rnorm(5)`, saves it to a temporary [`qs`](https://github.com/traversc/qs) file on disk, and then uploads it to a file called `_targets/data` on your S3 bucket. Likewise for `mean_file`, but because the format is `"aws_file"`, you are responsible for supplying the path to the file that gets uploaded to `_targets/mean_file`.
+When you run the pipeline above with [`tar_make()`](https://wlandau.github.io/targets/reference/tar_make.html), your local R session computes `rnorm(5)`, saves it to a temporary [`qs`](https://github.com/traversc/qs) file on disk, and then uploads it to a file called `_targets/objects/data` on your S3 bucket. Likewise for `mean_file`, but because the format is `"aws_file"`, you are responsible for supplying the path to the file that gets uploaded to `_targets/objects/mean_file`.
 
 ```{r, eval = FALSE}
 tar_make()
@@ -108,7 +108,7 @@ tar_make()
 
 ### Manage the data
 
-Log into <https://s3.console.aws.amazon.com/s3>. You should see objects `_targets/data` and `_targets/mean_file` in your bucket. To download this data locally, use `tar_read()` and `tar_load()` like before. These functions download the data from the bucket and load it into R.
+Log into <https://s3.console.aws.amazon.com/s3>. You should see objects `_targets/objects/data` and `_targets/objects/mean_file` in your bucket. To download this data locally, use `tar_read()` and `tar_load()` like before. These functions download the data from the bucket and load it into R.
 
 ```{r, eval = FALSE}
 tar_read(data)
