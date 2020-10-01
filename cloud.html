@@ -33,7 +33,7 @@
   <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
 <link rel="prev" href="hpc.html"/>
 
-<script src="libs/header-attrs-2.3/header-attrs.js"></script>
+<script src="libs/header-attrs-2.4/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -312,7 +312,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="run-the-pipeline" class="section level3" number="8.2.5">
 <h3><span class="header-section-number">8.2.5</span> Run the pipeline</h3>
-<p>When you run the pipeline above with <a href="https://wlandau.github.io/targets/reference/tar_make.html"><code>tar_make()</code></a>, your local R session computes <code>rnorm(5)</code>, saves it to a temporary <a href="https://github.com/traversc/qs"><code>qs</code></a> file on disk, and then uploads it to a file called <code>_targets/data</code> on your S3 bucket. Likewise for <code>mean_file</code>, but because the format is <code>"aws_file"</code>, you are responsible for supplying the path to the file that gets uploaded to <code>_targets/mean_file</code>.</p>
+<p>When you run the pipeline above with <a href="https://wlandau.github.io/targets/reference/tar_make.html"><code>tar_make()</code></a>, your local R session computes <code>rnorm(5)</code>, saves it to a temporary <a href="https://github.com/traversc/qs"><code>qs</code></a> file on disk, and then uploads it to a file called <code>_targets/objects/data</code> on your S3 bucket. Likewise for <code>mean_file</code>, but because the format is <code>"aws_file"</code>, you are responsible for supplying the path to the file that gets uploaded to <code>_targets/objects/mean_file</code>.</p>
 <div class="sourceCode" id="cb116"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb116-1"><a href="cloud.html#cb116-1" aria-hidden="true"></a><span class="kw">tar_make</span>()</span>
 <span id="cb116-2"><a href="cloud.html#cb116-2" aria-hidden="true"></a><span class="co">#&gt; ● run target data</span></span>
 <span id="cb116-3"><a href="cloud.html#cb116-3" aria-hidden="true"></a><span class="co">#&gt; ● run target mean_file</span></span></code></pre></div>
@@ -324,7 +324,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="manage-the-data" class="section level3" number="8.2.6">
 <h3><span class="header-section-number">8.2.6</span> Manage the data</h3>
-<p>Log into <a href="https://s3.console.aws.amazon.com/s3" class="uri">https://s3.console.aws.amazon.com/s3</a>. You should see objects <code>_targets/data</code> and <code>_targets/mean_file</code> in your bucket. To download this data locally, use <code>tar_read()</code> and <code>tar_load()</code> like before. These functions download the data from the bucket and load it into R.</p>
+<p>Log into <a href="https://s3.console.aws.amazon.com/s3" class="uri">https://s3.console.aws.amazon.com/s3</a>. You should see objects <code>_targets/objects/data</code> and <code>_targets/objects/mean_file</code> in your bucket. To download this data locally, use <code>tar_read()</code> and <code>tar_load()</code> like before. These functions download the data from the bucket and load it into R.</p>
 <div class="sourceCode" id="cb118"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb118-1"><a href="cloud.html#cb118-1" aria-hidden="true"></a><span class="kw">tar_read</span>(data)</span>
 <span id="cb118-2"><a href="cloud.html#cb118-2" aria-hidden="true"></a><span class="co">#&gt; [1] -0.74654607 -0.59593497 -1.57229983  0.40915323  0.02579023</span></span></code></pre></div>
 <p>The <code>"aws_file"</code> format is different from the other AWS-powered formats. <code>tar_read()</code> and <code>tar_load()</code> download the object to a temporary file and return the path so you can process it yourself.<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a></p>
