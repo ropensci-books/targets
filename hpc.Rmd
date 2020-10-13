@@ -9,7 +9,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = FALSE)
 library(targets)
 ```
 
-`targets` supports high-performance computing with the `tar_make_clustermq()` and `tar_make_future()` functions. These functions are like `tar_make()`, but they allow multiple targets to run simultaneously over parallel workers. These workers can be processes on your local machine, or they can be jobs on a computing cluster. The master process automatically sends a target to a worker as soon as
+`targets` supports high-performance computing with the `tar_make_clustermq()` and `tar_make_future()` functions. These functions are like `tar_make()`, but they allow multiple targets to run simultaneously over parallel workers. These workers can be processes on your local machine, or they can be jobs on a computing cluster. The main process automatically sends a target to a worker as soon as
 
 1. The worker is available, and
 1. All the target's upstream dependency targets have been checked or built.
@@ -45,7 +45,7 @@ The following sections cover the mechanics and configuration details of high-per
 
 ### Clustermq installation
 
-Persistent workers require the [`clustermq`](https://github.com/mschubert/clustermq) R package, which in turn requires [ZeroMQ](http://zeromq.org/). Please refer to the [`clustermq` installation guide](https://github.com/mschubert/clustermq/blob/master/README.md#installation) for specific instructions.
+Persistent workers require the [`clustermq`](https://github.com/mschubert/clustermq) R package, which in turn requires [ZeroMQ](http://zeromq.org/). Please refer to the [`clustermq` installation guide](https://github.com/mschubert/clustermq/blob/main/README.md#installation) for specific instructions.
 
 ### Clustermq locally
 
@@ -74,7 +74,7 @@ tar_make_clustermq(workers = 2)
 For parallel computing on a cluster,
 
 1. Choose a [scheduler listed here](https://mschubert.github.io/clustermq/articles/userguide.html#configuration) that corresponds to your cluster's resource manager.
-1. Create a [template file](https://github.com/mschubert/clustermq/tree/master/inst) that configures the computing requirements and other settings for the cluster.
+1. Create a [template file](https://github.com/mschubert/clustermq/tree/main/inst) that configures the computing requirements and other settings for the cluster.
 
 Supply the scheduler option and template file to the `clustermq.scheduler` and `clustermq.template` global options in your `_targets.R` file.
 
@@ -101,7 +101,7 @@ Above, `sge_tmpl` refers to a template file like the one below.
 #$ -cwd               # Use project root as working directory.
 #$ -V                 # Use environment variables.
 module load R/3.6.3   # Needed if R is an environment module on the cluster.
-CMQ_AUTH={{ auth }} R --no-save --no-restore -e 'clustermq:::worker("{{ master }}")' # Leave alone.
+CMQ_AUTH={{ auth }} R --no-save --no-restore -e 'clustermq:::worker("{{ main }}")' # Leave alone.
 ```
 
 Then, run `tar_make_clustermq()` as before.
@@ -125,7 +125,7 @@ In addition to configuration options hard-coded in the template file, you can su
 #$ -cwd
 #$ -V
 module load R/3.6.3
-CMQ_AUTH={{ auth }} R --no-save --no-restore -e 'clustermq:::worker("{{ master }}")'
+CMQ_AUTH={{ auth }} R --no-save --no-restore -e 'clustermq:::worker("{{ main }}")'
 ```
 
 Then, supply the value of `num_cores` to the `resources` option from within `_targets.R`.
@@ -262,9 +262,9 @@ The `resources` of `tar_target()` defaults to `tar_option_get("resources")`. You
 
 Functions `tar_target()`, `tar_target_raw()`, and `tar_option_set()` support advanced configuration options for heavy-duty pipelines that require high-performance computing.
 
-* `deployment`: With the `deployment` argument, you can choose to run some targets locally on the master process instead of on a high-performance computing worker. This options is suitable for lightweight targets such as R Markdown reports where runtime is quick and a cluster would be excessive.
+* `deployment`: With the `deployment` argument, you can choose to run some targets locally on the main process instead of on a high-performance computing worker. This options is suitable for lightweight targets such as R Markdown reports where runtime is quick and a cluster would be excessive.
 * `memory`: Choose whether to retain a target in memory or remove it from memory whenever it is not needed at the moment. This is a tradeoff between memory consumption and storage read speeds, and like all of the options listed here, you can set it on a target-by-target basis. The default settings consume a lot of memory to avoid frequently reading from storage. To keep memory usage down to a minimum, set `memory = "transient"` in `tar_option_set()` and set `garbage_collection = TRUE` in your `tar_make*()` function.
-* `storage`: Choose whether the parallel workers or the master process is responsible for saving the target's value. For slow network file systems on clusters, `storage = "master"` is often faster for small numbers of targets. For large numbers of targets or low-bandwidth connections between the master and workers, `storage = "worker"` is often faster. Always choose `storage = "master"` if the workers do no have access to the file system with the `_targets/` data store.
-* `retrieval`: Choose whether the parallel workers or the master process is responsible for reading dependency targets from disk. Should usually be set to whatever you choose for `storage` (default). Always choose `retrieval = "master"` if the workers do no have access to the file system with the `_targets/` data store.
+* `storage`: Choose whether the parallel workers or the main process is responsible for saving the target's value. For slow network file systems on clusters, `storage = "main"` is often faster for small numbers of targets. For large numbers of targets or low-bandwidth connections between the main and workers, `storage = "worker"` is often faster. Always choose `storage = "main"` if the workers do no have access to the file system with the `_targets/` data store.
+* `retrieval`: Choose whether the parallel workers or the main process is responsible for reading dependency targets from disk. Should usually be set to whatever you choose for `storage` (default). Always choose `retrieval = "main"` if the workers do no have access to the file system with the `_targets/` data store.
 * `format`: If your pipeline has large computation, it may also have large data. Consider setting the `format` argument to help `targets` store and retrieve your data faster.
 * `error`: Set `error` to `"continue"` to let the rest of the pipeline keep running even if a target encounters an error.
