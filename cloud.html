@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 8 Cloud integration | The targets R Package User Manual</title>
   <meta name="description" content="In-depth discussion of the major functionality of targets." />
-  <meta name="generator" content="bookdown 0.20 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 8 Cloud integration | The targets R Package User Manual" />
   <meta property="og:type" content="book" />
@@ -229,7 +229,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="8.2.2" data-path="cloud.html"><a href="cloud.html#configure-your-local-machine"><i class="fa fa-check"></i><b>8.2.2</b> Configure your local machine</a></li>
 <li class="chapter" data-level="8.2.3" data-path="cloud.html"><a href="cloud.html#create-s3-buckets"><i class="fa fa-check"></i><b>8.2.3</b> Create S3 buckets</a></li>
 <li class="chapter" data-level="8.2.4" data-path="cloud.html"><a href="cloud.html#configure-the-pipeline"><i class="fa fa-check"></i><b>8.2.4</b> Configure the pipeline</a></li>
-<li class="chapter" data-level="8.2.5" data-path="walkthrough.html"><a href="walkthrough.html#run-the-pipeline"><i class="fa fa-check"></i><b>8.2.5</b> Run the pipeline</a></li>
+<li class="chapter" data-level="8.2.5" data-path="cloud.html"><a href="cloud.html#run-the-pipeline-1"><i class="fa fa-check"></i><b>8.2.5</b> Run the pipeline</a></li>
 <li class="chapter" data-level="8.2.6" data-path="cloud.html"><a href="cloud.html#manage-the-data"><i class="fa fa-check"></i><b>8.2.6</b> Manage the data</a></li>
 </ul></li>
 </ul></li>
@@ -310,7 +310,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb115-11"><a href="cloud.html#cb115-11" aria-hidden="true"></a>  <span class="kw">tar_target</span>(mean_file, <span class="kw">write_mean</span>(data), <span class="dt">format =</span> <span class="st">&quot;aws_file&quot;</span>)</span>
 <span id="cb115-12"><a href="cloud.html#cb115-12" aria-hidden="true"></a>)</span></code></pre></div>
 </div>
-<div id="run-the-pipeline" class="section level3" number="8.2.5">
+<div id="run-the-pipeline-1" class="section level3" number="8.2.5">
 <h3><span class="header-section-number">8.2.5</span> Run the pipeline</h3>
 <p>When you run the pipeline above with <a href="https://wlandau.github.io/targets/reference/tar_make.html"><code>tar_make()</code></a>, your local R session computes <code>rnorm(5)</code>, saves it to a temporary <a href="https://github.com/traversc/qs"><code>qs</code></a> file on disk, and then uploads it to a file called <code>_targets/objects/data</code> on your S3 bucket. Likewise for <code>mean_file</code>, but because the format is <code>"aws_file"</code>, you are responsible for supplying the path to the file that gets uploaded to <code>_targets/objects/mean_file</code>.</p>
 <div class="sourceCode" id="cb116"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb116-1"><a href="cloud.html#cb116-1" aria-hidden="true"></a><span class="kw">tar_make</span>()</span>
