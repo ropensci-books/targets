@@ -1,0 +1,14 @@
+install.packages(
+  c(
+    "biglm",
+    "bookdown",
+    "fs",
+    "purrr",
+    "remotes",
+    "tidyverse",
+    "visNetwork",
+    "withr"
+  )
+)
+remotes::install_github("wlandau/targets")
+remotes::install_github("wlandau/tarchetypes")
