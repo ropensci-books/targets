@@ -376,10 +376,37 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>When <code>targets</code> reaches the target you selected to debug, your R session will start an interactive debugger, and you should see <code>Browse[1]&gt;</code> in your console. Run <code>targets::tar_name()</code> to verify that you are debugging the correct target.</li>
 <li>Interactively run any R code that helps you troubleshoot the problem.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></li>
 </ol>
-<p>To try it out yourself, write the following <code>_targets.R</code> file and then run <code>tar_make(callr_function = NULL)</code>. When the debugger launches, run <code>print(tar_name())</code> and <code>print(a)</code> to be sure things are set up properly.</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="practice.html#cb32-1" aria-hidden="true"></a><span class="kw">library</span>(targets)</span>
-<span id="cb32-2"><a href="practice.html#cb32-2" aria-hidden="true"></a><span class="kw">tar_option_set</span>(<span class="dt">debug =</span> <span class="st">&quot;b&quot;</span>)</span>
-<span id="cb32-3"><a href="practice.html#cb32-3" aria-hidden="true"></a><span class="kw">tar_pipeline</span>(<span class="kw">tar_target</span>(a, <span class="st">&quot;a&quot;</span>), <span class="kw">tar_target</span>(b, a))</span></code></pre></div>
+<p>To try it out yourself, write the following <code>_targets.R</code> file.</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="practice.html#cb32-1" aria-hidden="true"></a><span class="co"># _targets.R</span></span>
+<span id="cb32-2"><a href="practice.html#cb32-2" aria-hidden="true"></a><span class="kw">library</span>(targets)</span>
+<span id="cb32-3"><a href="practice.html#cb32-3" aria-hidden="true"></a><span class="kw">tar_option_set</span>(<span class="dt">debug =</span> <span class="st">&quot;b&quot;</span>)</span>
+<span id="cb32-4"><a href="practice.html#cb32-4" aria-hidden="true"></a>f &lt;-<span class="st"> </span><span class="cf">function</span>(x) x <span class="op">+</span><span class="st"> </span><span class="dv">1</span></span>
+<span id="cb32-5"><a href="practice.html#cb32-5" aria-hidden="true"></a><span class="kw">tar_pipeline</span>(</span>
+<span id="cb32-6"><a href="practice.html#cb32-6" aria-hidden="true"></a>  <span class="kw">tar_target</span>(a, <span class="dv">1</span>),</span>
+<span id="cb32-7"><a href="practice.html#cb32-7" aria-hidden="true"></a>  <span class="kw">tar_target</span>(b, <span class="kw">f</span>(a))</span>
+<span id="cb32-8"><a href="practice.html#cb32-8" aria-hidden="true"></a>)</span></code></pre></div>
+<p>Then, call <code>tar_make(callr_function = NULL)</code> to drop into a debugger at the command of <code>b</code>.</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="practice.html#cb33-1" aria-hidden="true"></a><span class="co"># R console</span></span>
+<span id="cb33-2"><a href="practice.html#cb33-2" aria-hidden="true"></a><span class="kw">tar_make</span>(<span class="dt">callr_function =</span> <span class="ot">NULL</span>)</span>
+<span id="cb33-3"><a href="practice.html#cb33-3" aria-hidden="true"></a><span class="co">#&gt; ● run target a</span></span>
+<span id="cb33-4"><a href="practice.html#cb33-4" aria-hidden="true"></a><span class="co">#&gt; ● run target b</span></span>
+<span id="cb33-5"><a href="practice.html#cb33-5" aria-hidden="true"></a><span class="co">#&gt; Called from: eval(expr, envir)</span></span>
+<span id="cb33-6"><a href="practice.html#cb33-6" aria-hidden="true"></a>Browse[<span class="dv">1</span>]<span class="op">&gt;</span></span></code></pre></div>
+<p>When the debugger launches, run <code>targets::tar_name()</code> to confirm you are running the correct target.</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="practice.html#cb34-1" aria-hidden="true"></a>Browse[<span class="dv">1</span>]<span class="op">&gt;</span><span class="st"> </span>targets<span class="op">::</span><span class="kw">tar_name</span>()</span>
+<span id="cb34-2"><a href="practice.html#cb34-2" aria-hidden="true"></a><span class="co">#&gt; [1] &quot;b&quot;</span></span></code></pre></div>
+<p>In the debugger, the dependency targets of <code>b</code> are available in the current environment, and the global objects and functions are available in the parent environment.</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="practice.html#cb35-1" aria-hidden="true"></a>Browse[<span class="dv">1</span>]<span class="op">&gt;</span><span class="st"> </span><span class="kw">ls</span>()</span>
+<span id="cb35-2"><a href="practice.html#cb35-2" aria-hidden="true"></a><span class="co">#&gt; [1] &quot;a&quot;</span></span>
+<span id="cb35-3"><a href="practice.html#cb35-3" aria-hidden="true"></a>Browse[<span class="dv">1</span>]<span class="op">&gt;</span><span class="st"> </span>a</span>
+<span id="cb35-4"><a href="practice.html#cb35-4" aria-hidden="true"></a><span class="co">#&gt; [1] 1</span></span>
+<span id="cb35-5"><a href="practice.html#cb35-5" aria-hidden="true"></a>Browse[<span class="dv">1</span>]<span class="op">&gt;</span><span class="st"> </span><span class="kw">ls</span>(<span class="kw">parent.env</span>(<span class="kw">environment</span>()))</span>
+<span id="cb35-6"><a href="practice.html#cb35-6" aria-hidden="true"></a><span class="co">#&gt; [1] &quot;f&quot;</span></span>
+<span id="cb35-7"><a href="practice.html#cb35-7" aria-hidden="true"></a>Browse[<span class="dv">1</span>]<span class="op">&gt;</span><span class="st"> </span><span class="kw">f</span>(<span class="dv">1</span>)</span>
+<span id="cb35-8"><a href="practice.html#cb35-8" aria-hidden="true"></a><span class="co">#&gt; [1] 2</span></span></code></pre></div>
+<p>Press <code>n</code> or <code>c</code> to advance to the next line or breakpoint.</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="practice.html#cb36-1" aria-hidden="true"></a>Browse[<span class="dv">1</span>]<span class="op">&gt;</span><span class="st"> </span>n</span>
+<span id="cb36-2"><a href="practice.html#cb36-2" aria-hidden="true"></a><span class="op">&gt;</span></span></code></pre></div>
 <p>For more on debugging R code, visit <a href="https://rstats.wtf/debugging-r-code.html">this page</a>.</p>
 </div>
 </div>

@@ -263,7 +263,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>All the target’s upstream dependency targets have been checked or built.</li>
 </ol>
 <p>Practical real-world examples of high-performance computing in <code>targets</code> can be found at the examples <a href="https://wlandau.github.io/targets/index.html#examples">linked from here</a>. But for the purposes of explaining the mechanics of the package, consider the following sketch of a pipeline.</p>
-<div class="sourceCode" id="cb98"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb98-1"><a href="hpc.html#cb98-1" aria-hidden="true"></a><span class="kw">tar_visnetwork</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb102"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb102-1"><a href="hpc.html#cb102-1" aria-hidden="true"></a><span class="kw">tar_visnetwork</span>()</span></code></pre></div>
 <p>When we run this pipeline with high-performance computing, <code>targets</code> automatically knows to wait for <code>data</code> to finish running before moving on to the other targets. Once <code>data</code> is finished, it moves on to targets <code>fast_fit</code> and <code>slow_fit</code>. If <code>fast_fit</code> finishes before <code>slow_fit</code>, target <code>plot_1</code> begins even as <code>slow_fit</code> is still running. Unlike <a href="https://github.com/ropensci/drake"><code>drake</code></a>, <code>targets</code> applies this behavior not only to stem targets, but also to branches of patterns.</p>
 <p>The following sections cover the mechanics and configuration details of high-performance computing in <code>targets</code>.</p>
 <div id="clustermq" class="section level2" number="7.1">
@@ -287,17 +287,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="clustermq-locally" class="section level3" number="7.1.2">
 <h3><span class="header-section-number">7.1.2</span> Clustermq locally</h3>
 <p>When you write your <code>_targets.R</code> script, be sure to set the <code>clustermq.scheduler</code> global option to a a local scheduler like <code>"multicore"</code>. Many of the supported schedulers and their configuration details are <a href="https://mschubert.github.io/clustermq/articles/userguide.html#configuration">listed here</a>.</p>
-<div class="sourceCode" id="cb99"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb99-1"><a href="hpc.html#cb99-1" aria-hidden="true"></a><span class="co"># _targets.R</span></span>
-<span id="cb99-2"><a href="hpc.html#cb99-2" aria-hidden="true"></a><span class="kw">options</span>(<span class="dt">clustermq.scheduler =</span> <span class="st">&quot;multicore&quot;</span>)</span>
-<span id="cb99-3"><a href="hpc.html#cb99-3" aria-hidden="true"></a><span class="kw">tar_pipeline</span>(</span>
-<span id="cb99-4"><a href="hpc.html#cb99-4" aria-hidden="true"></a>  <span class="kw">tar_target</span>(data, <span class="kw">get_data</span>()),</span>
-<span id="cb99-5"><a href="hpc.html#cb99-5" aria-hidden="true"></a>  <span class="kw">tar_target</span>(fast_fit, <span class="kw">fit_small_model</span>(data)),</span>
-<span id="cb99-6"><a href="hpc.html#cb99-6" aria-hidden="true"></a>  <span class="kw">tar_target</span>(slow_fit, <span class="kw">fit_slow_model</span>(data)),</span>
-<span id="cb99-7"><a href="hpc.html#cb99-7" aria-hidden="true"></a>  <span class="kw">tar_target</span>(plot_<span class="dv">1</span>, <span class="kw">make_plot</span>(fast_fit)),</span>
-<span id="cb99-8"><a href="hpc.html#cb99-8" aria-hidden="true"></a>  <span class="kw">tar_target</span>(plot_<span class="dv">2</span>, <span class="kw">make_plot</span>(slow_fit))</span>
-<span id="cb99-9"><a href="hpc.html#cb99-9" aria-hidden="true"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb103"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb103-1"><a href="hpc.html#cb103-1" aria-hidden="true"></a><span class="co"># _targets.R</span></span>
+<span id="cb103-2"><a href="hpc.html#cb103-2" aria-hidden="true"></a><span class="kw">options</span>(<span class="dt">clustermq.scheduler =</span> <span class="st">&quot;multicore&quot;</span>)</span>
+<span id="cb103-3"><a href="hpc.html#cb103-3" aria-hidden="true"></a><span class="kw">tar_pipeline</span>(</span>
+<span id="cb103-4"><a href="hpc.html#cb103-4" aria-hidden="true"></a>  <span class="kw">tar_target</span>(data, <span class="kw">get_data</span>()),</span>
+<span id="cb103-5"><a href="hpc.html#cb103-5" aria-hidden="true"></a>  <span class="kw">tar_target</span>(fast_fit, <span class="kw">fit_small_model</span>(data)),</span>
+<span id="cb103-6"><a href="hpc.html#cb103-6" aria-hidden="true"></a>  <span class="kw">tar_target</span>(slow_fit, <span class="kw">fit_slow_model</span>(data)),</span>
+<span id="cb103-7"><a href="hpc.html#cb103-7" aria-hidden="true"></a>  <span class="kw">tar_target</span>(plot_<span class="dv">1</span>, <span class="kw">make_plot</span>(fast_fit)),</span>
+<span id="cb103-8"><a href="hpc.html#cb103-8" aria-hidden="true"></a>  <span class="kw">tar_target</span>(plot_<span class="dv">2</span>, <span class="kw">make_plot</span>(slow_fit))</span>
+<span id="cb103-9"><a href="hpc.html#cb103-9" aria-hidden="true"></a>)</span></code></pre></div>
 <p>Then, run <code>tar_make_clustermq()</code> with the appropriate number of workers.</p>
-<div class="sourceCode" id="cb100"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb100-1"><a href="hpc.html#cb100-1" aria-hidden="true"></a><span class="kw">tar_make_clustermq</span>(<span class="dt">workers =</span> <span class="dv">2</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb104-1"><a href="hpc.html#cb104-1" aria-hidden="true"></a><span class="kw">tar_make_clustermq</span>(<span class="dt">workers =</span> <span class="dv">2</span>)</span></code></pre></div>
 </div>
 <div id="clustermq-remotely" class="section level3" number="7.1.3">
 <h3><span class="header-section-number">7.1.3</span> Clustermq remotely</h3>
@@ -307,15 +307,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Create a <a href="https://github.com/mschubert/clustermq/tree/main/inst">template file</a> that configures the computing requirements and other settings for the cluster.</li>
 </ol>
 <p>Supply the scheduler option and template file to the <code>clustermq.scheduler</code> and <code>clustermq.template</code> global options in your <code>_targets.R</code> file.</p>
-<div class="sourceCode" id="cb101"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb101-1"><a href="hpc.html#cb101-1" aria-hidden="true"></a><span class="co"># _targets.R</span></span>
-<span id="cb101-2"><a href="hpc.html#cb101-2" aria-hidden="true"></a><span class="kw">options</span>(<span class="dt">clustermq.scheduler =</span> <span class="st">&quot;sge&quot;</span>, <span class="dt">clustermq.template =</span> <span class="st">&quot;sge.tmpl&quot;</span>)</span>
-<span id="cb101-3"><a href="hpc.html#cb101-3" aria-hidden="true"></a><span class="kw">tar_pipeline</span>(</span>
-<span id="cb101-4"><a href="hpc.html#cb101-4" aria-hidden="true"></a>  <span class="kw">tar_target</span>(data, <span class="kw">get_data</span>()),</span>
-<span id="cb101-5"><a href="hpc.html#cb101-5" aria-hidden="true"></a>  <span class="kw">tar_target</span>(fast_fit, <span class="kw">fit_small_model</span>(data)),</span>
-<span id="cb101-6"><a href="hpc.html#cb101-6" aria-hidden="true"></a>  <span class="kw">tar_target</span>(slow_fit, <span class="kw">fit_slow_model</span>(data)),</span>
-<span id="cb101-7"><a href="hpc.html#cb101-7" aria-hidden="true"></a>  <span class="kw">tar_target</span>(plot_<span class="dv">1</span>, <span class="kw">make_plot</span>(fast_fit)),</span>
-<span id="cb101-8"><a href="hpc.html#cb101-8" aria-hidden="true"></a>  <span class="kw">tar_target</span>(plot_<span class="dv">2</span>, <span class="kw">make_plot</span>(slow_fit))</span>
-<span id="cb101-9"><a href="hpc.html#cb101-9" aria-hidden="true"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb105"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb105-1"><a href="hpc.html#cb105-1" aria-hidden="true"></a><span class="co"># _targets.R</span></span>
+<span id="cb105-2"><a href="hpc.html#cb105-2" aria-hidden="true"></a><span class="kw">options</span>(<span class="dt">clustermq.scheduler =</span> <span class="st">&quot;sge&quot;</span>, <span class="dt">clustermq.template =</span> <span class="st">&quot;sge.tmpl&quot;</span>)</span>
+<span id="cb105-3"><a href="hpc.html#cb105-3" aria-hidden="true"></a><span class="kw">tar_pipeline</span>(</span>
+<span id="cb105-4"><a href="hpc.html#cb105-4" aria-hidden="true"></a>  <span class="kw">tar_target</span>(data, <span class="kw">get_data</span>()),</span>
+<span id="cb105-5"><a href="hpc.html#cb105-5" aria-hidden="true"></a>  <span class="kw">tar_target</span>(fast_fit, <span class="kw">fit_small_model</span>(data)),</span>
+<span id="cb105-6"><a href="hpc.html#cb105-6" aria-hidden="true"></a>  <span class="kw">tar_target</span>(slow_fit, <span class="kw">fit_slow_model</span>(data)),</span>
+<span id="cb105-7"><a href="hpc.html#cb105-7" aria-hidden="true"></a>  <span class="kw">tar_target</span>(plot_<span class="dv">1</span>, <span class="kw">make_plot</span>(fast_fit)),</span>
+<span id="cb105-8"><a href="hpc.html#cb105-8" aria-hidden="true"></a>  <span class="kw">tar_target</span>(plot_<span class="dv">2</span>, <span class="kw">make_plot</span>(slow_fit))</span>
+<span id="cb105-9"><a href="hpc.html#cb105-9" aria-hidden="true"></a>)</span></code></pre></div>
 <p>Above, <code>sge_tmpl</code> refers to a template file like the one below.</p>
 <pre><code>## From https://github.com/mschubert/clustermq/wiki/SGE
 #$ -N {{ job_name }}  # Worker name.
@@ -327,7 +327,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 module load R/3.6.3   # Needed if R is an environment module on the cluster.
 CMQ_AUTH={{ auth }} R --no-save --no-restore -e &#39;clustermq:::worker(&quot;{{ main }}&quot;)&#39; # Leave alone.</code></pre>
 <p>Then, run <code>tar_make_clustermq()</code> as before.</p>
-<div class="sourceCode" id="cb103"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb103-1"><a href="hpc.html#cb103-1" aria-hidden="true"></a><span class="kw">tar_make_clustermq</span>(<span class="dt">workers =</span> <span class="dv">2</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb107"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb107-1"><a href="hpc.html#cb107-1" aria-hidden="true"></a><span class="kw">tar_make_clustermq</span>(<span class="dt">workers =</span> <span class="dv">2</span>)</span></code></pre></div>
 <p>See the examples <a href="https://wlandau.github.io/targets/index.html#examples">linked from here</a> to see how this setup works in real-world projects.</p>
 </div>
 <div id="clustermq-configuration" class="section level3" number="7.1.4">
@@ -343,11 +343,11 @@ CMQ_AUTH={{ auth }} R --no-save --no-restore -e &#39;clustermq:::worker(&quot;{{
 module load R/3.6.3
 CMQ_AUTH={{ auth }} R --no-save --no-restore -e &#39;clustermq:::worker(&quot;{{ main }}&quot;)&#39;</code></pre>
 <p>Then, supply the value of <code>num_cores</code> to the <code>resources</code> option from within <code>_targets.R</code>.</p>
-<div class="sourceCode" id="cb105"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb105-1"><a href="hpc.html#cb105-1" aria-hidden="true"></a><span class="co"># _targets.R</span></span>
-<span id="cb105-2"><a href="hpc.html#cb105-2" aria-hidden="true"></a><span class="kw">tar_option_set</span>(<span class="dt">resources =</span> <span class="kw">list</span>(<span class="dt">num_cores =</span> <span class="dv">2</span>))</span>
-<span id="cb105-3"><a href="hpc.html#cb105-3" aria-hidden="true"></a><span class="kw">tar_pipeline</span>(...)</span></code></pre></div>
+<div class="sourceCode" id="cb109"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb109-1"><a href="hpc.html#cb109-1" aria-hidden="true"></a><span class="co"># _targets.R</span></span>
+<span id="cb109-2"><a href="hpc.html#cb109-2" aria-hidden="true"></a><span class="kw">tar_option_set</span>(<span class="dt">resources =</span> <span class="kw">list</span>(<span class="dt">num_cores =</span> <span class="dv">2</span>))</span>
+<span id="cb109-3"><a href="hpc.html#cb109-3" aria-hidden="true"></a><span class="kw">tar_pipeline</span>(...)</span></code></pre></div>
 <p>Finally, call <code>tar_make_clustermq()</code> normally.</p>
-<div class="sourceCode" id="cb106"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb106-1"><a href="hpc.html#cb106-1" aria-hidden="true"></a><span class="kw">tar_make_clustermq</span>(<span class="dt">workers =</span> <span class="dv">2</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb110"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb110-1"><a href="hpc.html#cb110-1" aria-hidden="true"></a><span class="kw">tar_make_clustermq</span>(<span class="dt">workers =</span> <span class="dv">2</span>)</span></code></pre></div>
 <p>This particular use case comes up when you have custom parallel computing within targets and need to take advantage of multiple cores.</p>
 </div>
 </div>
@@ -369,41 +369,41 @@ CMQ_AUTH={{ auth }} R --no-save --no-restore -e &#39;clustermq:::worker(&quot;{{
 <div id="future-installation" class="section level3" number="7.2.1">
 <h3><span class="header-section-number">7.2.1</span> Future installation</h3>
 <p>Install the <a href="https://github.com/HenrikBengtsson/future"><code>future</code></a> package.</p>
-<div class="sourceCode" id="cb107"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb107-1"><a href="hpc.html#cb107-1" aria-hidden="true"></a><span class="kw">install.packages</span>(<span class="st">&quot;future&quot;</span>) <span class="co"># CRAN release</span></span>
-<span id="cb107-2"><a href="hpc.html#cb107-2" aria-hidden="true"></a><span class="co"># Alternatively, install the GitHub development version.</span></span>
-<span id="cb107-3"><a href="hpc.html#cb107-3" aria-hidden="true"></a>devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&quot;HenrikBengtsson/future&quot;</span>, <span class="dt">ref =</span> <span class="st">&quot;develop&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb111"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb111-1"><a href="hpc.html#cb111-1" aria-hidden="true"></a><span class="kw">install.packages</span>(<span class="st">&quot;future&quot;</span>) <span class="co"># CRAN release</span></span>
+<span id="cb111-2"><a href="hpc.html#cb111-2" aria-hidden="true"></a><span class="co"># Alternatively, install the GitHub development version.</span></span>
+<span id="cb111-3"><a href="hpc.html#cb111-3" aria-hidden="true"></a>devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&quot;HenrikBengtsson/future&quot;</span>, <span class="dt">ref =</span> <span class="st">&quot;develop&quot;</span>)</span></code></pre></div>
 <p>If you intend to use a cluster, be sure to install the <a href="https://github.com/HenrikBengtsson/future.batchtools"><code>future.batchtools</code></a> package too. The <a href="https://github.com/HenrikBengtsson/future"><code>future</code></a> ecosystem contains even more packages that extend <a href="https://github.com/HenrikBengtsson/future"><code>future</code></a>’s parallel computing functionality, such as <a href="https://github.com/HenrikBengtsson/future.callr"><code>future.callr</code></a>.</p>
 </div>
 <div id="future-locally" class="section level3" number="7.2.2">
 <h3><span class="header-section-number">7.2.2</span> Future locally</h3>
 <p>To parallelize targets over multiple processes on your local machine, declare one of the <code>future</code> <a href="https://github.com/HenrikBengtsson/future/#controlling-how-futures-are-resolved">plans listed here</a> in your <code>_targets.R</code> file.</p>
-<div class="sourceCode" id="cb108"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb108-1"><a href="hpc.html#cb108-1" aria-hidden="true"></a><span class="co"># _targets.R</span></span>
-<span id="cb108-2"><a href="hpc.html#cb108-2" aria-hidden="true"></a><span class="kw">library</span>(future)</span>
-<span id="cb108-3"><a href="hpc.html#cb108-3" aria-hidden="true"></a><span class="kw">plan</span>(multisession)</span>
-<span id="cb108-4"><a href="hpc.html#cb108-4" aria-hidden="true"></a><span class="kw">tar_pipeline</span>(</span>
-<span id="cb108-5"><a href="hpc.html#cb108-5" aria-hidden="true"></a>  <span class="kw">tar_target</span>(data, <span class="kw">get_data</span>()),</span>
-<span id="cb108-6"><a href="hpc.html#cb108-6" aria-hidden="true"></a>  <span class="kw">tar_target</span>(fast_fit, <span class="kw">fit_small_model</span>(data)),</span>
-<span id="cb108-7"><a href="hpc.html#cb108-7" aria-hidden="true"></a>  <span class="kw">tar_target</span>(slow_fit, <span class="kw">fit_slow_model</span>(data)),</span>
-<span id="cb108-8"><a href="hpc.html#cb108-8" aria-hidden="true"></a>  <span class="kw">tar_target</span>(plot_<span class="dv">1</span>, <span class="kw">make_plot</span>(fast_fit)),</span>
-<span id="cb108-9"><a href="hpc.html#cb108-9" aria-hidden="true"></a>  <span class="kw">tar_target</span>(plot_<span class="dv">2</span>, <span class="kw">make_plot</span>(slow_fit))</span>
-<span id="cb108-10"><a href="hpc.html#cb108-10" aria-hidden="true"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb112"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb112-1"><a href="hpc.html#cb112-1" aria-hidden="true"></a><span class="co"># _targets.R</span></span>
+<span id="cb112-2"><a href="hpc.html#cb112-2" aria-hidden="true"></a><span class="kw">library</span>(future)</span>
+<span id="cb112-3"><a href="hpc.html#cb112-3" aria-hidden="true"></a><span class="kw">plan</span>(multisession)</span>
+<span id="cb112-4"><a href="hpc.html#cb112-4" aria-hidden="true"></a><span class="kw">tar_pipeline</span>(</span>
+<span id="cb112-5"><a href="hpc.html#cb112-5" aria-hidden="true"></a>  <span class="kw">tar_target</span>(data, <span class="kw">get_data</span>()),</span>
+<span id="cb112-6"><a href="hpc.html#cb112-6" aria-hidden="true"></a>  <span class="kw">tar_target</span>(fast_fit, <span class="kw">fit_small_model</span>(data)),</span>
+<span id="cb112-7"><a href="hpc.html#cb112-7" aria-hidden="true"></a>  <span class="kw">tar_target</span>(slow_fit, <span class="kw">fit_slow_model</span>(data)),</span>
+<span id="cb112-8"><a href="hpc.html#cb112-8" aria-hidden="true"></a>  <span class="kw">tar_target</span>(plot_<span class="dv">1</span>, <span class="kw">make_plot</span>(fast_fit)),</span>
+<span id="cb112-9"><a href="hpc.html#cb112-9" aria-hidden="true"></a>  <span class="kw">tar_target</span>(plot_<span class="dv">2</span>, <span class="kw">make_plot</span>(slow_fit))</span>
+<span id="cb112-10"><a href="hpc.html#cb112-10" aria-hidden="true"></a>)</span></code></pre></div>
 <p>Then, run <code>tar_make_future()</code> with the desired number of workers. Here, the <code>workers</code> argument specifies the maximum number of transient workers to allow at a given time. Some <code>future</code> plans also have optional <code>workers</code> arguments that set their own caps.</p>
-<div class="sourceCode" id="cb109"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb109-1"><a href="hpc.html#cb109-1" aria-hidden="true"></a><span class="kw">tar_make_future</span>(<span class="dt">workers =</span> <span class="dv">2</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb113"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb113-1"><a href="hpc.html#cb113-1" aria-hidden="true"></a><span class="kw">tar_make_future</span>(<span class="dt">workers =</span> <span class="dv">2</span>)</span></code></pre></div>
 </div>
 <div id="future-remotely" class="section level3" number="7.2.3">
 <h3><span class="header-section-number">7.2.3</span> Future remotely</h3>
 <p>To run transient workers on a cluster, first install the <a href="https://github.com/HenrikBengtsson/future.batchtools"><code>future.batchtools</code></a> package. Then, set one of <a href="https://github.com/HenrikBengtsson/future.batchtools#choosing-batchtools-backend">these plans</a> in your <code>_targets.R</code> file.</p>
-<div class="sourceCode" id="cb110"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb110-1"><a href="hpc.html#cb110-1" aria-hidden="true"></a><span class="co"># _targets.R</span></span>
-<span id="cb110-2"><a href="hpc.html#cb110-2" aria-hidden="true"></a><span class="kw">library</span>(future)</span>
-<span id="cb110-3"><a href="hpc.html#cb110-3" aria-hidden="true"></a><span class="kw">library</span>(future.batchtools)</span>
-<span id="cb110-4"><a href="hpc.html#cb110-4" aria-hidden="true"></a><span class="kw">plan</span>(batchtools_sge, <span class="dt">template =</span> <span class="st">&quot;sge.tmpl&quot;</span>)</span>
-<span id="cb110-5"><a href="hpc.html#cb110-5" aria-hidden="true"></a><span class="kw">tar_pipeline</span>(</span>
-<span id="cb110-6"><a href="hpc.html#cb110-6" aria-hidden="true"></a>  <span class="kw">tar_target</span>(data, <span class="kw">get_data</span>()),</span>
-<span id="cb110-7"><a href="hpc.html#cb110-7" aria-hidden="true"></a>  <span class="kw">tar_target</span>(fast_fit, <span class="kw">fit_small_model</span>(data)),</span>
-<span id="cb110-8"><a href="hpc.html#cb110-8" aria-hidden="true"></a>  <span class="kw">tar_target</span>(slow_fit, <span class="kw">fit_slow_model</span>(data)),</span>
-<span id="cb110-9"><a href="hpc.html#cb110-9" aria-hidden="true"></a>  <span class="kw">tar_target</span>(plot_<span class="dv">1</span>, <span class="kw">make_plot</span>(fast_fit)),</span>
-<span id="cb110-10"><a href="hpc.html#cb110-10" aria-hidden="true"></a>  <span class="kw">tar_target</span>(plot_<span class="dv">2</span>, <span class="kw">make_plot</span>(slow_fit))</span>
-<span id="cb110-11"><a href="hpc.html#cb110-11" aria-hidden="true"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb114"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb114-1"><a href="hpc.html#cb114-1" aria-hidden="true"></a><span class="co"># _targets.R</span></span>
+<span id="cb114-2"><a href="hpc.html#cb114-2" aria-hidden="true"></a><span class="kw">library</span>(future)</span>
+<span id="cb114-3"><a href="hpc.html#cb114-3" aria-hidden="true"></a><span class="kw">library</span>(future.batchtools)</span>
+<span id="cb114-4"><a href="hpc.html#cb114-4" aria-hidden="true"></a><span class="kw">plan</span>(batchtools_sge, <span class="dt">template =</span> <span class="st">&quot;sge.tmpl&quot;</span>)</span>
+<span id="cb114-5"><a href="hpc.html#cb114-5" aria-hidden="true"></a><span class="kw">tar_pipeline</span>(</span>
+<span id="cb114-6"><a href="hpc.html#cb114-6" aria-hidden="true"></a>  <span class="kw">tar_target</span>(data, <span class="kw">get_data</span>()),</span>
+<span id="cb114-7"><a href="hpc.html#cb114-7" aria-hidden="true"></a>  <span class="kw">tar_target</span>(fast_fit, <span class="kw">fit_small_model</span>(data)),</span>
+<span id="cb114-8"><a href="hpc.html#cb114-8" aria-hidden="true"></a>  <span class="kw">tar_target</span>(slow_fit, <span class="kw">fit_slow_model</span>(data)),</span>
+<span id="cb114-9"><a href="hpc.html#cb114-9" aria-hidden="true"></a>  <span class="kw">tar_target</span>(plot_<span class="dv">1</span>, <span class="kw">make_plot</span>(fast_fit)),</span>
+<span id="cb114-10"><a href="hpc.html#cb114-10" aria-hidden="true"></a>  <span class="kw">tar_target</span>(plot_<span class="dv">2</span>, <span class="kw">make_plot</span>(slow_fit))</span>
+<span id="cb114-11"><a href="hpc.html#cb114-11" aria-hidden="true"></a>)</span></code></pre></div>
 <p>Here, our template file <code>sge.tmpl</code> is configured for <code>batchtools</code>.</p>
 <pre><code>#!/bin/bash
 #$ -cwd               # Run in the current working directory.
@@ -429,19 +429,19 @@ module load R/3.6.3
 Rscript -e &#39;batchtools::doJobCollection(&quot;&lt;%= uri %&gt;&quot;)&#39;
 exit 0</code></pre>
 <p>then you can set the number of cores for individual targets. In the case below, maybe the slow model needs 2 cores to run fast enough.</p>
-<div class="sourceCode" id="cb113"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb113-1"><a href="hpc.html#cb113-1" aria-hidden="true"></a><span class="co"># _targets.R</span></span>
-<span id="cb113-2"><a href="hpc.html#cb113-2" aria-hidden="true"></a><span class="kw">library</span>(future)</span>
-<span id="cb113-3"><a href="hpc.html#cb113-3" aria-hidden="true"></a><span class="kw">library</span>(future.batchtools)</span>
-<span id="cb113-4"><a href="hpc.html#cb113-4" aria-hidden="true"></a><span class="kw">plan</span>(batchtools_sge, <span class="dt">template =</span> <span class="st">&quot;sge.tmpl&quot;</span>)</span>
-<span id="cb113-5"><a href="hpc.html#cb113-5" aria-hidden="true"></a><span class="kw">tar_pipeline</span>(</span>
-<span id="cb113-6"><a href="hpc.html#cb113-6" aria-hidden="true"></a>  <span class="kw">tar_target</span>(data, <span class="kw">get_data</span>()),</span>
-<span id="cb113-7"><a href="hpc.html#cb113-7" aria-hidden="true"></a>  <span class="kw">tar_target</span>(fast_fit, <span class="kw">fit_small_model</span>(data)),</span>
-<span id="cb113-8"><a href="hpc.html#cb113-8" aria-hidden="true"></a>  <span class="kw">tar_target</span>(slow_fit, <span class="kw">fit_slow_model</span>(data), <span class="dt">resources =</span> <span class="kw">list</span>(<span class="dt">num_cores =</span> <span class="dv">2</span>)),</span>
-<span id="cb113-9"><a href="hpc.html#cb113-9" aria-hidden="true"></a>  <span class="kw">tar_target</span>(plot_<span class="dv">1</span>, <span class="kw">make_plot</span>(fast_fit)),</span>
-<span id="cb113-10"><a href="hpc.html#cb113-10" aria-hidden="true"></a>  <span class="kw">tar_target</span>(plot_<span class="dv">2</span>, <span class="kw">make_plot</span>(slow_fit))</span>
-<span id="cb113-11"><a href="hpc.html#cb113-11" aria-hidden="true"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb117"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb117-1"><a href="hpc.html#cb117-1" aria-hidden="true"></a><span class="co"># _targets.R</span></span>
+<span id="cb117-2"><a href="hpc.html#cb117-2" aria-hidden="true"></a><span class="kw">library</span>(future)</span>
+<span id="cb117-3"><a href="hpc.html#cb117-3" aria-hidden="true"></a><span class="kw">library</span>(future.batchtools)</span>
+<span id="cb117-4"><a href="hpc.html#cb117-4" aria-hidden="true"></a><span class="kw">plan</span>(batchtools_sge, <span class="dt">template =</span> <span class="st">&quot;sge.tmpl&quot;</span>)</span>
+<span id="cb117-5"><a href="hpc.html#cb117-5" aria-hidden="true"></a><span class="kw">tar_pipeline</span>(</span>
+<span id="cb117-6"><a href="hpc.html#cb117-6" aria-hidden="true"></a>  <span class="kw">tar_target</span>(data, <span class="kw">get_data</span>()),</span>
+<span id="cb117-7"><a href="hpc.html#cb117-7" aria-hidden="true"></a>  <span class="kw">tar_target</span>(fast_fit, <span class="kw">fit_small_model</span>(data)),</span>
+<span id="cb117-8"><a href="hpc.html#cb117-8" aria-hidden="true"></a>  <span class="kw">tar_target</span>(slow_fit, <span class="kw">fit_slow_model</span>(data), <span class="dt">resources =</span> <span class="kw">list</span>(<span class="dt">num_cores =</span> <span class="dv">2</span>)),</span>
+<span id="cb117-9"><a href="hpc.html#cb117-9" aria-hidden="true"></a>  <span class="kw">tar_target</span>(plot_<span class="dv">1</span>, <span class="kw">make_plot</span>(fast_fit)),</span>
+<span id="cb117-10"><a href="hpc.html#cb117-10" aria-hidden="true"></a>  <span class="kw">tar_target</span>(plot_<span class="dv">2</span>, <span class="kw">make_plot</span>(slow_fit))</span>
+<span id="cb117-11"><a href="hpc.html#cb117-11" aria-hidden="true"></a>)</span></code></pre></div>
 <p>Then, run <code>tar_make_future()</code> as usual.</p>
-<div class="sourceCode" id="cb114"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb114-1"><a href="hpc.html#cb114-1" aria-hidden="true"></a><span class="kw">tar_make_future</span>(<span class="dt">workers =</span> <span class="dv">2</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb118"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb118-1"><a href="hpc.html#cb118-1" aria-hidden="true"></a><span class="kw">tar_make_future</span>(<span class="dt">workers =</span> <span class="dv">2</span>)</span></code></pre></div>
 <p>The <code>resources</code> of <code>tar_target()</code> defaults to <code>tar_option_get("resources")</code>. You can set the default value for all targets using <code>tar_option_set()</code>.</p>
 </div>
 </div>
