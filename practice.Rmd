@@ -158,12 +158,55 @@ Sometimes, you may not be able to debug with `error = "save"`. Workspace files a
 1. When `targets` reaches the target you selected to debug, your R session will start an interactive debugger, and you should see `Browse[1]>` in your console. Run `targets::tar_name()` to verify that you are debugging the correct target.
 1. Interactively run any R code that helps you troubleshoot the problem.^[Because of the way `targets` manages environments, `ls()` will not report all your global objects, but you should still be able to access them.]
 
-To try it out yourself, write the following `_targets.R` file and then run `tar_make(callr_function = NULL)`. When the debugger launches, run `print(tar_name())` and `print(a)` to be sure things are set up properly.
+To try it out yourself, write the following `_targets.R` file.
 
 ```{r, eval = FALSE}
+# _targets.R
 library(targets)
 tar_option_set(debug = "b")
-tar_pipeline(tar_target(a, "a"), tar_target(b, a))
+f <- function(x) x + 1
+tar_pipeline(
+  tar_target(a, 1),
+  tar_target(b, f(a))
+)
+```
+
+Then, call `tar_make(callr_function = NULL)` to drop into a debugger at the command of `b`. 
+
+```{r, eval = FALSE}
+# R console
+tar_make(callr_function = NULL)
+#> ● run target a
+#> ● run target b
+#> Called from: eval(expr, envir)
+Browse[1]>
+```
+
+When the debugger launches, run `targets::tar_name()` to confirm you are running the correct target.
+
+```{r, eval = FALSE}
+Browse[1]> targets::tar_name()
+#> [1] "b"
+```
+
+In the debugger, the dependency targets of `b` are available in the current environment, and the global objects and functions are available in the parent environment.
+
+```{r, eval = FALSE}
+Browse[1]> ls()
+#> [1] "a"
+Browse[1]> a
+#> [1] 1
+Browse[1]> ls(parent.env(environment()))
+#> [1] "f"
+Browse[1]> f(1)
+#> [1] 2
+```
+
+Press `n` or `c` to advance to the next line or breakpoint.
+
+```{r, eval = FALSE}
+Browse[1]> n
+>
 ```
 
 For more on debugging R code, visit [this page](https://rstats.wtf/debugging-r-code.html).
