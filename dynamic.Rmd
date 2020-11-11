@@ -82,6 +82,34 @@ tar_make()
 tar_read(y)
 ```
 
+## Composable patterns
+
+You can compose multiple patterns to more finely control the branches you create. Below, target `z` creates six branches, one for each combination of `w` and tuple (`x`, `y`). The pattern `cross(w, map(x, y))` is equivalent to `tidyr::crossing(w, tidyr::nesting(x, y))`.
+
+```{r}
+tar_script({
+  options(crayon.enabled = FALSE)
+  tar_pipeline(
+    tar_target(w_comp, seq_len(2)),
+    tar_target(x_comp, head(letters, 3)),
+    tar_target(y_comp, head(LETTERS, 3)),
+    tar_target(
+      z_comp,
+      data.frame(w = w_comp, x = x_comp, y = y_comp),
+      pattern = cross(w_comp, map(x_comp, y_comp))
+    )
+  )
+})
+```
+
+```{r}
+tar_make()
+```
+
+```{r}
+tar_read(z_comp)
+```
+
 ## Dynamic branching over files
 
 Dynamic branching over files is tricky. A target with `format = "file"` treats the entire set of files as an irreducible bundle. That means in order to branch over files downstream, each file must already have its own branch.
