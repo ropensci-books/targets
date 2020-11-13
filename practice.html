@@ -324,13 +324,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>If one of your targets fails, first look up the error message in <code>tar_meta()</code>. If that does not help, try one of the following techniques.</p>
 <div id="workspaces" class="section level3" number="3.5.1">
 <h3><span class="header-section-number">3.5.1</span> Workspaces</h3>
-<p>If you set <code>error = "save"</code> in <code>tar_option_set()</code> or <code>tar_target()</code>, a target will save its workspace to a compressed file in <code>_targets/workspaces/</code> if it errors out. Objects in the workspace include a listing of the target’s required packages, the global objects (e.g. functions), dependency targets, the random number generator seed, and the traceback. You can load this workspace with <code>tar_workspace()</code>. <code>tar_workspace()</code> loads the packages, populates the objects in the environment, and sets the seed to the seed of the target. Workspace files can be quite large, so you should remove them all with <code>tar_undebug()</code> when you are done debugging.</p>
+<p>Workspaces are special lightweight reference files that allow <code>tar_workspace()</code> to recreate the runtime environment of a target. This lets you troubleshoot issues outside the pipeline in an interactive session. There are two ways to save a workspace file:</p>
+<ol style="list-style-type: decimal">
+<li>Set <code>error = "workspace"</code> in <code>tar_option_set()</code> or <code>tar_target()</code>. Then, <code>tar_make()</code> and friends will save a workspace file for every target that errors out.</li>
+<li>In the <code>workspaces</code> argument of <code>tar_option_set()</code>, specify the targets for which you want to save workspaces. Then, run <code>tar_make()</code> or similar. A workspace file will be saved for each existing target, regardless of whether the target runs or gets skipped in the pipeline.</li>
+</ol>
+<p>Here is an example of (1).</p>
 <div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="practice.html#cb26-1" aria-hidden="true"></a><span class="co"># _targets.R file:</span></span>
 <span id="cb26-2"><a href="practice.html#cb26-2" aria-hidden="true"></a><span class="kw">options</span>(<span class="dt">tidyverse.quiet =</span> <span class="ot">TRUE</span>)</span>
 <span id="cb26-3"><a href="practice.html#cb26-3" aria-hidden="true"></a><span class="kw">library</span>(targets)</span>
 <span id="cb26-4"><a href="practice.html#cb26-4" aria-hidden="true"></a><span class="kw">library</span>(tidyverse)</span>
 <span id="cb26-5"><a href="practice.html#cb26-5" aria-hidden="true"></a><span class="kw">options</span>(<span class="dt">crayon.enabled =</span> <span class="ot">FALSE</span>)</span>
-<span id="cb26-6"><a href="practice.html#cb26-6" aria-hidden="true"></a><span class="kw">tar_option_set</span>(<span class="dt">error =</span> <span class="st">&quot;save&quot;</span>)</span>
+<span id="cb26-6"><a href="practice.html#cb26-6" aria-hidden="true"></a><span class="kw">tar_option_set</span>(<span class="dt">error =</span> <span class="st">&quot;workspace&quot;</span>)</span>
 <span id="cb26-7"><a href="practice.html#cb26-7" aria-hidden="true"></a>f &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</span>
 <span id="cb26-8"><a href="practice.html#cb26-8" aria-hidden="true"></a>  <span class="kw">stopifnot</span>(x <span class="op">&lt;</span><span class="st"> </span><span class="dv">4</span>)</span>
 <span id="cb26-9"><a href="practice.html#cb26-9" aria-hidden="true"></a>}</span>
@@ -356,7 +361,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb28-4"><a href="practice.html#cb28-4" aria-hidden="true"></a></span>
 <span id="cb28-5"><a href="practice.html#cb28-5" aria-hidden="true"></a><span class="kw">print</span>(failed)</span>
 <span id="cb28-6"><a href="practice.html#cb28-6" aria-hidden="true"></a><span class="co">#&gt; [1] &quot;y_05f206d7&quot;</span></span></code></pre></div>
-<p>Let’s load its workspace.</p>
+<p><code>tar_workspace()</code> reads the special metadata in the workspace file and then loads the target’s dependencies from various locations in <code>_targets/objects</code> and/or the <a href="cloud.html#cloud">cloud</a>. It also sets the random number generator seed to the seed of the target, loads the required packages, and runs <code>_targets.R</code> to load other global object dependencies such as functions.</p>
 <div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="practice.html#cb29-1" aria-hidden="true"></a><span class="kw">tar_workspace</span>(y_05f206d7)</span></code></pre></div>
 <p>We now have the dependencies of <code>y_05f206d7</code> in memory, which allows you to try out any failed function calls interactively.</p>
 <div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="practice.html#cb30-1" aria-hidden="true"></a><span class="kw">print</span>(x)</span>
@@ -364,12 +369,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb30-3"><a href="practice.html#cb30-3" aria-hidden="true"></a><span class="kw">f</span>(x)</span>
 <span id="cb30-4"><a href="practice.html#cb30-4" aria-hidden="true"></a><span class="co">#&gt; Error in f(x) : x &lt; 4 is not TRUE</span></span></code></pre></div>
 <p>In addition, current random number generator seed (<code>.Random.seed</code>) is also the value <code>y_05f206d7</code> started with.</p>
-<p>Remove all workspace files with <code>tar_undebug()</code>.</p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="practice.html#cb31-1" aria-hidden="true"></a><span class="kw">tar_undebug</span>()</span></code></pre></div>
-<p>Sometimes, you may not be able to debug with <code>error = "save"</code>. Workspace files are saved with <code>qs::qsave()</code>, so if one of your dependencies cannot be properly serialized this way (e.g. Keras models you store with <code>format = "keras"</code>) then the workspace cannot be saved properly. If this happens to you, either avoid <a href="https://cran.r-project.org/web/packages/future/vignettes/future-4-non-exportable-objects.html">non-exportable objects</a> or use interactive debugging.</p>
+<p>Remove all workspace files with:</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="practice.html#cb31-1" aria-hidden="true"></a><span class="kw">tar_destroy</span>(<span class="dt">destroy =</span> <span class="st">&quot;workspaces&quot;</span>)</span></code></pre></div>
 </div>
 <div id="interactive-debugging" class="section level3" number="3.5.2">
 <h3><span class="header-section-number">3.5.2</span> Interactive debugging</h3>
+<p>Interactive debugging is a way to troubleshoot targets without saving or loading workspace files. Here are the steps.</p>
 <ol style="list-style-type: decimal">
 <li>In <code>_targets.R</code>, write a call to <code>tar_option_set()</code> with <code>debug</code> equal to the target name. Consider also setting <code>cue</code> equal to <code>tar_cue(mode = "never")</code> so <code>tar_make()</code> reaches the target you want to debug more quickly.</li>
 <li>Launch a fresh clean new interactive R session with the <code>_targets.R</code> script in your working directory.</li>
