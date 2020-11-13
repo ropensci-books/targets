@@ -81,7 +81,12 @@ If one of your targets fails, first look up the error message in `tar_meta()`. I
 
 ### Workspaces
 
-If you set `error = "save"` in `tar_option_set()` or `tar_target()`, a target will save its workspace to a compressed file in `_targets/workspaces/` if it errors out. Objects in the workspace include a listing of the target's required packages, the global objects (e.g. functions), dependency targets, the random number generator seed, and the traceback. You can load this workspace with `tar_workspace()`. `tar_workspace()` loads the packages, populates the objects in the environment, and sets the seed to the seed of the target. Workspace files can be quite large, so you should remove them all with `tar_undebug()` when you are done debugging.
+Workspaces are special lightweight reference files that allow `tar_workspace()` to recreate the runtime environment of a target. This lets you troubleshoot issues outside the pipeline in an interactive session. There are two ways to save a workspace file:
+
+1. Set `error = "workspace"` in `tar_option_set()` or `tar_target()`. Then, `tar_make()` and friends will save a workspace file for every target that errors out.
+1. In the `workspaces` argument of `tar_option_set()`, specify the targets for which you want to save workspaces. Then, run `tar_make()` or similar. A workspace file will be saved for each existing target, regardless of whether the target runs or gets skipped in the pipeline.
+
+Here is an example of (1).
 
 ```{r, eval = FALSE}
 # _targets.R file:
@@ -89,7 +94,7 @@ options(tidyverse.quiet = TRUE)
 library(targets)
 library(tidyverse)
 options(crayon.enabled = FALSE)
-tar_option_set(error = "save")
+tar_option_set(error = "workspace")
 f <- function(x) {
   stopifnot(x < 4)
 }
@@ -124,7 +129,7 @@ print(failed)
 #> [1] "y_05f206d7"
 ```
 
-Let's load its workspace.
+`tar_workspace()` reads the special metadata in the workspace file and then loads the target's dependencies from various locations in `_targets/objects` and/or the [cloud](#cloud). It also sets the random number generator seed to the seed of the target, loads the required packages, and runs `_targets.R` to load other global object dependencies such as functions. 
 
 ```{r, eval = FALSE}
 tar_workspace(y_05f206d7)
@@ -142,15 +147,15 @@ f(x)
 
 In addition, current random number generator seed (`.Random.seed`) is also the value `y_05f206d7` started with.
 
-Remove all workspace files with `tar_undebug()`.
+Remove all workspace files with:
 
 ```{r, eval = FALSE}
-tar_undebug()
+tar_destroy(destroy = "workspaces")
 ```
 
-Sometimes, you may not be able to debug with `error = "save"`. Workspace files are saved with `qs::qsave()`, so if one of your dependencies cannot be properly serialized this way (e.g. Keras models you store with `format = "keras"`) then the workspace cannot be saved properly. If this happens to you, either avoid [non-exportable objects](https://cran.r-project.org/web/packages/future/vignettes/future-4-non-exportable-objects.html) or use interactive debugging.
-
 ### Interactive debugging
+
+Interactive debugging is a way to troubleshoot targets without saving or loading workspace files. Here are the steps.
 
 1. In `_targets.R`, write a call to `tar_option_set()` with `debug` equal to the target name. Consider also setting `cue` equal to `tar_cue(mode = "never")` so `tar_make()` reaches the target you want to debug more quickly.
 1. Launch a fresh clean new interactive R session with the `_targets.R` script in your working directory.
