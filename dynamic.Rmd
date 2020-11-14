@@ -93,40 +93,32 @@ tar_make()
 tar_read(z_comp)
 ```
 
-To check the correctness of a pattern without running the pipeline, use [`tar_pattern()`](https://wlandau.github.io/targets/reference/tar_pattern.html). First, make up some branch/bud names for the upstream dependencies. They need not be realistic, but they should be characters.
-
-```{r}
-w_comp <- c("w_comp_550d7457", "w_comp_a20cadbf")
-x_comp <- c("x_comp_42f35290", "x_comp_f95ad1c7", "x_comp_e2eccaa5")
-y_comp <- c("y_comp_67188e74", "y_comp_5512ec97", "y_comp_4b1cfc1b")
-```
-
-Next, supply the pattern and names to [`tar_pattern()`](https://wlandau.github.io/targets/reference/tar_pattern.html).
+To check the correctness of a pattern without running the pipeline, use [`tar_pattern()`](https://wlandau.github.io/targets/reference/tar_pattern.html). Simply supply the pattern itself and the length of each dependency target. The branch names in the data frames below are made up, but they convey a high-level picture of the branching structure.
 
 ```{r}
 tar_pattern(
   cross(w_comp, map(x_comp, y_comp)),
-  w_comp = w_comp,
-  x_comp = x_comp,
-  y_comp = y_comp
+  w_comp = 2,
+  x_comp = 3,
+  y_comp = 3
 )
 ```
 
 ```{r}
 tar_pattern(
   head(cross(w_comp, map(x_comp, y_comp)), n = 2),
-  w_comp = w_comp,
-  x_comp = x_comp,
-  y_comp = y_comp
+  w_comp = 2,
+  x_comp = 3,
+  y_comp = 3
 )
 ```
 
 ```{r}
 tar_pattern(
   cross(w_comp, sample(map(x_comp, y_comp), n = 2)),
-  w_comp = w_comp,
-  x_comp = x_comp,
-  y_comp = y_comp
+  w_comp = 2,
+  x_comp = 3,
+  y_comp = 3
 )
 ```
 
