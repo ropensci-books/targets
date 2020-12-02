@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 2 Walkthrough | The targets R Package User Manual</title>
+  <meta name="description" content="In-depth discussion of the major functionality of targets." />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 2 Walkthrough | The targets R Package User Manual" />
+  <meta property="og:type" content="book" />
+  <meta property="og:url" content="https://wlandau.github.io/targets-manual" />
+  <meta property="og:image" content="https://wlandau.github.io/targets-manual/man/figures/logo.png" />
+  <meta property="og:description" content="In-depth discussion of the major functionality of targets." />
+  <meta name="github-repo" content="wlandau/targets-manual" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 2 Walkthrough | The targets R Package User Manual" />
+  
+  <meta name="twitter:description" content="In-depth discussion of the major functionality of targets." />
+  <meta name="twitter:image" content="https://wlandau.github.io/targets-manual/man/figures/logo.png" />
+
+<meta name="author" content="Will Landau" />
+<meta name="author" content="Copyright Eli Lilly and Company" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <link rel="apple-touch-icon-precomposed" sizes="120x120" href="man/figures/apple-touch-icon.png" />
+  <link rel="shortcut icon" href="man/figures/favicon.ico" type="image/x-icon" />
+<link rel="prev" href="index.html"/>
+<link rel="next" href="practice.html"/>
+<script src="libs/header-attrs-2.5/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0/anchor-sections.js"></script>
+<script src="libs/htmlwidgets-1.5.2/htmlwidgets.js"></script>
+<link href="libs/vis-4.20.1/vis.css" rel="stylesheet" />
+<script src="libs/vis-4.20.1/vis.min.js"></script>
+<script src="libs/visNetwork-binding-2.0.9/visNetwork.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-150843595-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-150843595-1');
+</script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#motivation"><i class="fa fa-check"></i><b>1.1</b> Motivation</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#pipeline-toolkits"><i class="fa fa-check"></i><b>1.2</b> Pipeline toolkits</a></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#the-targets-package"><i class="fa fa-check"></i><b>1.3</b> The <code>targets</code> package</a></li>
+<li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#what-about-drake"><i class="fa fa-check"></i><b>1.4</b> What about <code>drake</code>?</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="walkthrough.html"><a href="walkthrough.html"><i class="fa fa-check"></i><b>2</b> Walkthrough</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="walkthrough.html"><a href="walkthrough.html#goal-of-the-analysis"><i class="fa fa-check"></i><b>2.1</b> Goal of the analysis</a></li>
+<li class="chapter" data-level="2.2" data-path="walkthrough.html"><a href="walkthrough.html#file-structure"><i class="fa fa-check"></i><b>2.2</b> File structure</a></li>
+<li class="chapter" data-level="2.3" data-path="walkthrough.html"><a href="walkthrough.html#inspect-the-pipeline"><i class="fa fa-check"></i><b>2.3</b> Inspect the pipeline</a></li>
+<li class="chapter" data-level="2.4" data-path="walkthrough.html"><a href="walkthrough.html#run-the-pipeline"><i class="fa fa-check"></i><b>2.4</b> Run the pipeline</a></li>
+<li class="chapter" data-level="2.5" data-path="walkthrough.html"><a href="walkthrough.html#changes"><i class="fa fa-check"></i><b>2.5</b> Changes</a>
+<ul>
+<li class="chapter" data-level="2.5.1" data-path="walkthrough.html"><a href="walkthrough.html#change-code"><i class="fa fa-check"></i><b>2.5.1</b> Change code</a></li>
+<li class="chapter" data-level="2.5.2" data-path="walkthrough.html"><a href="walkthrough.html#change-data"><i class="fa fa-check"></i><b>2.5.2</b> Change data</a></li>
+</ul></li>
+<li class="chapter" data-level="2.6" data-path="walkthrough.html"><a href="walkthrough.html#read-your-data"><i class="fa fa-check"></i><b>2.6</b> Read your data</a></li>
+<li class="chapter" data-level="2.7" data-path="walkthrough.html"><a href="walkthrough.html#read-metadata"><i class="fa fa-check"></i><b>2.7</b> Read metadata</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="practice.html"><a href="practice.html"><i class="fa fa-check"></i><b>3</b> Best practices for <code>targets</code>-powered projects</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="practice.html"><a href="practice.html#a-move-away-from-imperative-scripts"><i class="fa fa-check"></i><b>3.1</b> A move away from imperative scripts</a></li>
+<li class="chapter" data-level="3.2" data-path="practice.html"><a href="practice.html#functions"><i class="fa fa-check"></i><b>3.2</b> Functions</a></li>
+<li class="chapter" data-level="3.3" data-path="practice.html"><a href="practice.html#packages"><i class="fa fa-check"></i><b>3.3</b> Packages</a></li>
+<li class="chapter" data-level="3.4" data-path="practice.html"><a href="practice.html#targets"><i class="fa fa-check"></i><b>3.4</b> Targets</a></li>
+<li class="chapter" data-level="3.5" data-path="practice.html"><a href="practice.html#dependencies"><i class="fa fa-check"></i><b>3.5</b> Dependencies</a></li>
+<li class="chapter" data-level="3.6" data-path="practice.html"><a href="practice.html#debugging"><i class="fa fa-check"></i><b>3.6</b> Debugging</a>
+<ul>
+<li class="chapter" data-level="3.6.1" data-path="practice.html"><a href="practice.html#workspaces"><i class="fa fa-check"></i><b>3.6.1</b> Workspaces</a></li>
+<li class="chapter" data-level="3.6.2" data-path="practice.html"><a href="practice.html#interactive-debugging"><i class="fa fa-check"></i><b>3.6.2</b> Interactive debugging</a></li>
+</ul></li>
+<li class="chapter" data-level="3.7" data-path="practice.html"><a href="practice.html#performance"><i class="fa fa-check"></i><b>3.7</b> Performance</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="files.html"><a href="files.html"><i class="fa fa-check"></i><b>4</b> External files and literate programming</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="files.html"><a href="files.html#internal-files"><i class="fa fa-check"></i><b>4.1</b> Internal files</a></li>
+<li class="chapter" data-level="4.2" data-path="files.html"><a href="files.html#external-input-files"><i class="fa fa-check"></i><b>4.2</b> External input files</a></li>
+<li class="chapter" data-level="4.3" data-path="files.html"><a href="files.html#external-output-files"><i class="fa fa-check"></i><b>4.3</b> External output files</a></li>
+<li class="chapter" data-level="4.4" data-path="files.html"><a href="files.html#literate-programming"><i class="fa fa-check"></i><b>4.4</b> Literate programming</a>
+<ul>
+<li class="chapter" data-level="4.4.1" data-path="files.html"><a href="files.html#parameterized-r-markdown"><i class="fa fa-check"></i><b>4.4.1</b> Parameterized R Markdown</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="dynamic.html"><a href="dynamic.html"><i class="fa fa-check"></i><b>5</b> Dynamic branching</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="dynamic.html"><a href="dynamic.html#patterns"><i class="fa fa-check"></i><b>5.1</b> Patterns</a></li>
+<li class="chapter" data-level="5.2" data-path="dynamic.html"><a href="dynamic.html#pattern-construction"><i class="fa fa-check"></i><b>5.2</b> Pattern construction</a></li>
+<li class="chapter" data-level="5.3" data-path="dynamic.html"><a href="dynamic.html#dynamic-branching-over-files"><i class="fa fa-check"></i><b>5.3</b> Dynamic branching over files</a></li>
+<li class="chapter" data-level="5.4" data-path="dynamic.html"><a href="dynamic.html#iteration"><i class="fa fa-check"></i><b>5.4</b> Iteration</a>
+<ul>
+<li class="chapter" data-level="5.4.1" data-path="dynamic.html"><a href="dynamic.html#vector"><i class="fa fa-check"></i><b>5.4.1</b> Vector</a></li>
+<li class="chapter" data-level="5.4.2" data-path="dynamic.html"><a href="dynamic.html#list"><i class="fa fa-check"></i><b>5.4.2</b> List</a></li>
+<li class="chapter" data-level="5.4.3" data-path="dynamic.html"><a href="dynamic.html#group"><i class="fa fa-check"></i><b>5.4.3</b> Group</a></li>
+</ul></li>
+<li class="chapter" data-level="5.5" data-path="dynamic.html"><a href="dynamic.html#batching"><i class="fa fa-check"></i><b>5.5</b> Batching</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="static.html"><a href="static.html"><i class="fa fa-check"></i><b>6</b> Static branching</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="static.html"><a href="static.html#map"><i class="fa fa-check"></i><b>6.1</b> Map</a></li>
+<li class="chapter" data-level="6.2" data-path="static.html"><a href="static.html#combine"><i class="fa fa-check"></i><b>6.2</b> Combine</a></li>
+<li class="chapter" data-level="6.3" data-path="static.html"><a href="static.html#metaprogram"><i class="fa fa-check"></i><b>6.3</b> Metaprogram</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="hpc.html"><a href="hpc.html"><i class="fa fa-check"></i><b>7</b> High-performance computing</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="hpc.html"><a href="hpc.html#clustermq"><i class="fa fa-check"></i><b>7.1</b> Clustermq</a>
+<ul>
+<li class="chapter" data-level="7.1.1" data-path="hpc.html"><a href="hpc.html#clustermq-installation"><i class="fa fa-check"></i><b>7.1.1</b> Clustermq installation</a></li>
+<li class="chapter" data-level="7.1.2" data-path="hpc.html"><a href="hpc.html#clustermq-locally"><i class="fa fa-check"></i><b>7.1.2</b> Clustermq locally</a></li>
+<li class="chapter" data-level="7.1.3" data-path="hpc.html"><a href="hpc.html#clustermq-remotely"><i class="fa fa-check"></i><b>7.1.3</b> Clustermq remotely</a></li>
+<li class="chapter" data-level="7.1.4" data-path="hpc.html"><a href="hpc.html#clustermq-configuration"><i class="fa fa-check"></i><b>7.1.4</b> Clustermq configuration</a></li>
+</ul></li>
+<li class="chapter" data-level="7.2" data-path="hpc.html"><a href="hpc.html#future"><i class="fa fa-check"></i><b>7.2</b> Future</a>
+<ul>
+<li class="chapter" data-level="7.2.1" data-path="hpc.html"><a href="hpc.html#future-installation"><i class="fa fa-check"></i><b>7.2.1</b> Future installation</a></li>
+<li class="chapter" data-level="7.2.2" data-path="hpc.html"><a href="hpc.html#future-locally"><i class="fa fa-check"></i><b>7.2.2</b> Future locally</a></li>
+<li class="chapter" data-level="7.2.3" data-path="hpc.html"><a href="hpc.html#future-remotely"><i class="fa fa-check"></i><b>7.2.3</b> Future remotely</a></li>
+<li class="chapter" data-level="7.2.4" data-path="hpc.html"><a href="hpc.html#future-configuration"><i class="fa fa-check"></i><b>7.2.4</b> Future configuration</a></li>
+</ul></li>
+<li class="chapter" data-level="7.3" data-path="hpc.html"><a href="hpc.html#advanced"><i class="fa fa-check"></i><b>7.3</b> Advanced</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="cloud.html"><a href="cloud.html"><i class="fa fa-check"></i><b>8</b> Cloud integration</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="cloud.html"><a href="cloud.html#compute"><i class="fa fa-check"></i><b>8.1</b> Compute</a></li>
+<li class="chapter" data-level="8.2" data-path="cloud.html"><a href="cloud.html#storage"><i class="fa fa-check"></i><b>8.2</b> Storage</a>
+<ul>
+<li class="chapter" data-level="8.2.1" data-path="cloud.html"><a href="cloud.html#get-started-with-the-amazon-s3-web-console"><i class="fa fa-check"></i><b>8.2.1</b> Get started with the Amazon S3 web console</a></li>
+<li class="chapter" data-level="8.2.2" data-path="cloud.html"><a href="cloud.html#configure-your-local-machine"><i class="fa fa-check"></i><b>8.2.2</b> Configure your local machine</a></li>
+<li class="chapter" data-level="8.2.3" data-path="cloud.html"><a href="cloud.html#create-s3-buckets"><i class="fa fa-check"></i><b>8.2.3</b> Create S3 buckets</a></li>
+<li class="chapter" data-level="8.2.4" data-path="cloud.html"><a href="cloud.html#configure-the-pipeline"><i class="fa fa-check"></i><b>8.2.4</b> Configure the pipeline</a></li>
+<li class="chapter" data-level="8.2.5" data-path="cloud.html"><a href="cloud.html#run-the-pipeline-1"><i class="fa fa-check"></i><b>8.2.5</b> Run the pipeline</a></li>
+<li class="chapter" data-level="8.2.6" data-path="cloud.html"><a href="cloud.html#manage-the-data"><i class="fa fa-check"></i><b>8.2.6</b> Manage the data</a></li>
+</ul></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">The targets R Package User Manual</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="walkthrough" class="section level1" number="2">
+<h1><span class="header-section-number">Chapter 2</span> Walkthrough</h1>
+<p>This chapter walks through a minimal example of a <a href="https://github.com/wlandau/targets"><code>targets</code></a>-powered data analysis project. The source code is <a href="https://github.com/wlandau/targets-minimal">here</a>, and other examples are linked from the <a href="https://wlandau.github.io/targets/index.html#examples">documentation website</a>.</p>
+<div id="goal-of-the-analysis" class="section level2" number="2.1">
+<h2><span class="header-section-number">2.1</span> Goal of the analysis</h2>
+<p>The this minimal workflow is to assess the relationship among ozone, wind, and temperature in base R’s airquality dataset. We get the data from a file, preprocess it, visualize it, fit a regression model, and generate an R Markdown report to communicate the results.</p>
+</div>
+<div id="file-structure" class="section level2" number="2.2">
+<h2><span class="header-section-number">2.2</span> File structure</h2>
+<p>The file structure of the project looks like this.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="walkthrough.html#cb1-1" aria-hidden="true" tabindex="-1"></a>├── _targets.R</span>
+<span id="cb1-2"><a href="walkthrough.html#cb1-2" aria-hidden="true" tabindex="-1"></a>├── R<span class="sc">/</span></span>
+<span id="cb1-3"><a href="walkthrough.html#cb1-3" aria-hidden="true" tabindex="-1"></a>├──── functions.R</span>
+<span id="cb1-4"><a href="walkthrough.html#cb1-4" aria-hidden="true" tabindex="-1"></a>├── data<span class="sc">/</span></span>
+<span id="cb1-5"><a href="walkthrough.html#cb1-5" aria-hidden="true" tabindex="-1"></a>└──── raw_data.csv</span></code></pre></div>
+<p><code>raw_data.csv</code> contains the data we want to analyze.</p>
+<pre><code>Ozone,Solar.R,Wind,Temp,Month,Day
+36,118,8.0,72,5,2
+12,149,12.6,74,5,3
+...</code></pre>
+<p><code>functions.R</code> contains our custom user-defined functions. (See the <a href="practice.html#practice">best practices chapter</a> for a discussion of function-oriented workflows.)</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="walkthrough.html#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># functions.R</span></span>
+<span id="cb3-2"><a href="walkthrough.html#cb3-2" aria-hidden="true" tabindex="-1"></a>create_plot <span class="ot">&lt;-</span> <span class="cf">function</span>(data) {</span>
+<span id="cb3-3"><a href="walkthrough.html#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(data) <span class="sc">+</span></span>
+<span id="cb3-4"><a href="walkthrough.html#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x =</span> Ozone)) <span class="sc">+</span></span>
+<span id="cb3-5"><a href="walkthrough.html#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_gray</span>(<span class="dv">24</span>)</span>
+<span id="cb3-6"><a href="walkthrough.html#cb3-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Both <code>raw_data.csv</code> and <code>functions.R</code> are custom components. You as the user decide whether to use them, what to name them, and where to put them. However, the “target script” <code>_targets.R</code> file is special. (So special, in fact, that there is a special <code>tar_script()</code> function to help you create one). Every <a href="https://github.com/wlandau/targets"><code>targets</code></a> project requires a <code>_targets.R</code> script in the project’s root directory to declare and configure the pipeline. Ours looks like this.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="walkthrough.html#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb4-2"><a href="walkthrough.html#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb4-3"><a href="walkthrough.html#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions.R&quot;</span>)</span>
+<span id="cb4-4"><a href="walkthrough.html#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">tidyverse.quiet =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb4-5"><a href="walkthrough.html#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">packages =</span> <span class="fu">c</span>(<span class="st">&quot;biglm&quot;</span>, <span class="st">&quot;rmarkdown&quot;</span>, <span class="st">&quot;tidyverse&quot;</span>))</span>
+<span id="cb4-6"><a href="walkthrough.html#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_pipeline</span>(</span>
+<span id="cb4-7"><a href="walkthrough.html#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb4-8"><a href="walkthrough.html#cb4-8" aria-hidden="true" tabindex="-1"></a>    raw_data_file,</span>
+<span id="cb4-9"><a href="walkthrough.html#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;data/raw_data.csv&quot;</span>,</span>
+<span id="cb4-10"><a href="walkthrough.html#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">format =</span> <span class="st">&quot;file&quot;</span></span>
+<span id="cb4-11"><a href="walkthrough.html#cb4-11" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb4-12"><a href="walkthrough.html#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb4-13"><a href="walkthrough.html#cb4-13" aria-hidden="true" tabindex="-1"></a>    raw_data,</span>
+<span id="cb4-14"><a href="walkthrough.html#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">read_csv</span>(raw_data_file, <span class="at">col_types =</span> <span class="fu">cols</span>())</span>
+<span id="cb4-15"><a href="walkthrough.html#cb4-15" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb4-16"><a href="walkthrough.html#cb4-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb4-17"><a href="walkthrough.html#cb4-17" aria-hidden="true" tabindex="-1"></a>    data,</span>
+<span id="cb4-18"><a href="walkthrough.html#cb4-18" aria-hidden="true" tabindex="-1"></a>    raw_data <span class="sc">%&gt;%</span></span>
+<span id="cb4-19"><a href="walkthrough.html#cb4-19" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">Ozone =</span> <span class="fu">replace_na</span>(Ozone, <span class="fu">mean</span>(Ozone, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)))</span>
+<span id="cb4-20"><a href="walkthrough.html#cb4-20" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb4-21"><a href="walkthrough.html#cb4-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(hist, <span class="fu">create_plot</span>(data)),</span>
+<span id="cb4-22"><a href="walkthrough.html#cb4-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(fit, <span class="fu">biglm</span>(Ozone <span class="sc">~</span> Wind <span class="sc">+</span> Temp, data))</span>
+<span id="cb4-23"><a href="walkthrough.html#cb4-23" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<p>All <code>_targets.R</code> scripts have these requirements.</p>
+<ol style="list-style-type: decimal">
+<li>Load the <a href="https://github.com/wlandau/targets"><code>targets</code></a> package itself. (<code>_targets.R</code> scripts created with <code>tar_script()</code> automatically insert a <code>library(targets)</code> line at the top by default.)</li>
+<li>Load your custom functions and global objects into the R session. In our case, our only such object is the <code>create_plot()</code> function, and we load it into the session by calling <code>source("R/functions.R")</code>.</li>
+<li>Call <code>tar_option_set()</code> to set the default settings for all you targets, such as the names of required packages and the data storage format. Individual targets can override these settings.</li>
+<li>Define individual targets with the <code>tar_target()</code> function. Each target is an intermediate step of the workflow. At minimum, a target must have a name and an R expression. This expression runs when the pipeline builds the target, and the return value is saved as a file in the <code>_targets/objects/</code> folder. The only targets not stored in <code>_/targets/objects/</code> are dynamic files such as <code>raw_data_file</code>. Here, <code>format = "file"</code> makes <code>raw_data_file</code> a dynamic file. That means <code>targets</code> watches the data at the file paths returned from the expression (in this case, <code>"data/raw_data.csv")</code>.</li>
+<li>Gather the targets in a pipeline with the <code>tar_pipeline()</code> function. <code>tar_pipeline()</code> is flexible: it can accept individual <code>tar_target()</code> objects or nested lists of such objects. Every <code>_targets.R</code> script must end with a <code>tar_pipeline()</code> object, which usually means there is an explicit call to <code>tar_pipeline()</code> at the very bottom.</li>
+</ol>
+</div>
+<div id="inspect-the-pipeline" class="section level2" number="2.3">
+<h2><span class="header-section-number">2.3</span> Inspect the pipeline</h2>
+<p>Before you run the pipeline for real, you should always inspect the manifest and the graph for errors. <code>tar_manifest()</code> shows you a data frame information about the targets, and it has functionality to specify the targets and columns returned.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="walkthrough.html#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_manifest</span>(<span class="at">fields =</span> <span class="st">&quot;command&quot;</span>)</span>
+<span id="cb5-2"><a href="walkthrough.html#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 5 x 2</span></span>
+<span id="cb5-3"><a href="walkthrough.html#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   name         command                                                          </span></span>
+<span id="cb5-4"><a href="walkthrough.html#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;        &lt;chr&gt;                                                            </span></span>
+<span id="cb5-5"><a href="walkthrough.html#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 raw_data     &quot;read_csv(raw_data_file, col_types = cols())&quot;                    </span></span>
+<span id="cb5-6"><a href="walkthrough.html#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 fit          &quot;biglm(Ozone ~ Wind + Temp, data)&quot;                               </span></span>
+<span id="cb5-7"><a href="walkthrough.html#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 hist         &quot;create_plot(data)&quot;                                              </span></span>
+<span id="cb5-8"><a href="walkthrough.html#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 raw_data_fi… &quot;\&quot;data/raw_data.csv\&quot;&quot;                                          </span></span>
+<span id="cb5-9"><a href="walkthrough.html#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 data         &quot;raw_data %&gt;% mutate(Ozone = replace_na(Ozone, mean(Ozone,  \\n …</span></span></code></pre></div>
+<p>There are also graphical displays with <code>tar_glimpse()</code></p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="walkthrough.html#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_glimpse</span>()</span></code></pre></div>
+<div id="htmlwidget-bb197a6706df87202c29" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-bb197a6706df87202c29">{"x":{"nodes":{"name":["raw_data","fit","hist","raw_data_file","data"],"type":["stem","stem","stem","stem","stem"],"status":["undefined","undefined","undefined","undefined","undefined"],"seconds":[null,null,null,null,null],"bytes":[null,null,null,null,null],"branches":[null,null,null,null,null],"id":["raw_data","fit","hist","raw_data_file","data"],"label":["raw_data","fit","hist","raw_data_file","data"],"font.size":[20,20,20,20,20],"level":[2,4,4,1,3],"color":["#899DA4","#899DA4","#899DA4","#899DA4","#899DA4"],"shape":["dot","dot","dot","dot","dot"]},"edges":{"from":["raw_data_file","data","data","raw_data"],"to":["raw_data","fit","hist","data"],"arrows":["to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":false,"hoverNearest":false,"degree":1,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"left","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Stem"],"shape":["dot"],"color":["#899DA4"],"font.size":[20]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
+<p>and <code>tar_visnetwork()</code>.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="walkthrough.html#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_visnetwork</span>()</span></code></pre></div>
+<div id="htmlwidget-1795179ee5f6aee51fff" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1795179ee5f6aee51fff">{"x":{"nodes":{"name":["data","fit","hist","raw_data","raw_data_file","create_plot"],"type":["stem","stem","stem","stem","stem","function"],"status":["outdated","outdated","outdated","outdated","outdated","outdated"],"seconds":[null,null,null,null,null,null],"bytes":[null,null,null,null,null,null],"branches":[null,null,null,null,null,null],"id":["data","fit","hist","raw_data","raw_data_file","create_plot"],"label":["data","fit","hist","raw_data","raw_data_file","create_plot"],"font.size":[20,20,20,20,20,20],"level":[3,4,4,2,1,1],"color":["#5BBCD6","#5BBCD6","#5BBCD6","#5BBCD6","#5BBCD6","#5BBCD6"],"shape":["dot","dot","dot","dot","dot","triangle"]},"edges":{"from":["raw_data_file","data","create_plot","data","raw_data"],"to":["raw_data","fit","hist","hist","data"],"arrows":["to","to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":false,"hoverNearest":false,"degree":1,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"left","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Outdated","Stem","Function"],"color":["#5BBCD6","#899DA4","#899DA4"],"shape":["dot","dot","triangle"],"font.size":[20,20,20]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
+<p>Both graphing functions above visualize the underlying directed acyclic graph (DAG) and tell you how targets are connected. This DAG is indifferent to the order you write targets in <code>tar_pipeline()</code>. You will still get the same graph even if you rearrange them. This is because <code>targets</code> uses static code analysis to detect the dependencies of each target, and this process does not depend on target order. For details, visit the <a href="https://wlandau.github.io/targets-manual/practice.html#dependencies">dependency detection section of the best practices guide</a>.</p>
+</div>
+<div id="run-the-pipeline" class="section level2" number="2.4">
+<h2><span class="header-section-number">2.4</span> Run the pipeline</h2>
+<p><code>tar_make()</code> runs the workflow. It creates a fresh clean external R process, reads <code>_targets.R</code> to learn about the pipeline, runs the correct targets in the correct order given by the graph, and saves the necessary data to the <code>_targets/</code> data store.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="walkthrough.html#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
+<span id="cb8-2"><a href="walkthrough.html#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target raw_data_file</span></span>
+<span id="cb8-3"><a href="walkthrough.html#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target raw_data</span></span>
+<span id="cb8-4"><a href="walkthrough.html#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target data</span></span>
+<span id="cb8-5"><a href="walkthrough.html#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target fit</span></span>
+<span id="cb8-6"><a href="walkthrough.html#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target hist</span></span></code></pre></div>
+<p>The next time you run <code>tar_make()</code>, <code>targets</code> skips everything that is already up to date, which saves a lot of time in large projects with long runtimes.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="walkthrough.html#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
+<span id="cb9-2"><a href="walkthrough.html#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ skip target raw_data_file</span></span>
+<span id="cb9-3"><a href="walkthrough.html#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ skip target raw_data</span></span>
+<span id="cb9-4"><a href="walkthrough.html#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ skip target data</span></span>
+<span id="cb9-5"><a href="walkthrough.html#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ skip target fit</span></span>
+<span id="cb9-6"><a href="walkthrough.html#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ skip target hist</span></span>
+<span id="cb9-7"><a href="walkthrough.html#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ Already up to date.</span></span></code></pre></div>
+<p>You can use <code>tar_visnetwork()</code> and <code>tar_outdated()</code> to check ahead of time which targets are up to date.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="walkthrough.html#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_visnetwork</span>()</span></code></pre></div>
+<div id="htmlwidget-2de8300d84f83cc2e2ab" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-2de8300d84f83cc2e2ab">{"x":{"nodes":{"name":["data","fit","hist","raw_data","raw_data_file","create_plot"],"type":["stem","stem","stem","stem","stem","function"],"status":["uptodate","uptodate","uptodate","uptodate","uptodate","uptodate"],"seconds":[0.013,0.003,0.012,0.036,1.278,null],"bytes":[1507,1970,44771,1506,2890,null],"branches":[null,null,null,null,null,null],"id":["data","fit","hist","raw_data","raw_data_file","create_plot"],"label":["data","fit","hist","raw_data","raw_data_file","create_plot"],"font.size":[20,20,20,20,20,20],"level":[3,4,4,2,1,1],"color":["#0B775E","#0B775E","#0B775E","#0B775E","#0B775E","#0B775E"],"shape":["dot","dot","dot","dot","dot","triangle"]},"edges":{"from":["raw_data_file","data","create_plot","data","raw_data"],"to":["raw_data","fit","hist","hist","data"],"arrows":["to","to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":false,"hoverNearest":false,"degree":1,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"left","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Up to date","Stem","Function"],"color":["#0B775E","#899DA4","#899DA4"],"shape":["dot","dot","triangle"],"font.size":[20,20,20]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="walkthrough.html#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_outdated</span>()</span>
+<span id="cb11-2"><a href="walkthrough.html#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; character(0)</span></span></code></pre></div>
+</div>
+<div id="changes" class="section level2" number="2.5">
+<h2><span class="header-section-number">2.5</span> Changes</h2>
+<p>The <code>targets</code> package notices when you make changes to your workflow, and <code>tar_make()</code> only runs the targets that need to build. There are custom rules called “cues” that <code>targets</code> uses to decide whether a target needs to rerun. For the full details on cues, read the “Details” section of the <code>tar_cue()</code> help file. (Enter <code>?targets::tar_cue</code> into your R console.)</p>
+<div id="change-code" class="section level3" number="2.5.1">
+<h3><span class="header-section-number">2.5.1</span> Change code</h3>
+<p>If you change one of your functions, the targets that depend on it will no longer be up to date, and <code>tar_make()</code> will rebuild them. For example, let’s set the number of bins in our histogram.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="walkthrough.html#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Edit functions.R.</span></span>
+<span id="cb12-2"><a href="walkthrough.html#cb12-2" aria-hidden="true" tabindex="-1"></a>create_plot <span class="ot">&lt;-</span> <span class="cf">function</span>(data) {</span>
+<span id="cb12-3"><a href="walkthrough.html#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(data) <span class="sc">+</span></span>
+<span id="cb12-4"><a href="walkthrough.html#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x =</span> Ozone), <span class="at">bins =</span> <span class="dv">10</span>) <span class="sc">+</span> <span class="co"># Set number of bins.</span></span>
+<span id="cb12-5"><a href="walkthrough.html#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_gray</span>(<span class="dv">24</span>)</span>
+<span id="cb12-6"><a href="walkthrough.html#cb12-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p><code>targets</code> detects the change. <code>hist</code> is outdated (as would be any targets downstream of <code>hist</code>) and the others are still up to date.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="walkthrough.html#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_visnetwork</span>()</span></code></pre></div>
+<div id="htmlwidget-6abb9363fa710e33d8f9" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-6abb9363fa710e33d8f9">{"x":{"nodes":{"name":["data","fit","hist","raw_data","raw_data_file","create_plot"],"type":["stem","stem","stem","stem","stem","function"],"status":["uptodate","uptodate","outdated","uptodate","uptodate","outdated"],"seconds":[0.013,0.003,0.012,0.036,1.278,null],"bytes":[1507,1970,44771,1506,2890,null],"branches":[null,null,null,null,null,null],"id":["data","fit","hist","raw_data","raw_data_file","create_plot"],"label":["data","fit","hist","raw_data","raw_data_file","create_plot"],"font.size":[20,20,20,20,20,20],"level":[3,4,4,2,1,1],"color":["#0B775E","#0B775E","#5BBCD6","#0B775E","#0B775E","#5BBCD6"],"shape":["dot","dot","dot","dot","dot","triangle"]},"edges":{"from":["raw_data_file","data","create_plot","data","raw_data"],"to":["raw_data","fit","hist","hist","data"],"arrows":["to","to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":false,"hoverNearest":false,"degree":1,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"left","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Up to date","Outdated","Stem","Function"],"color":["#0B775E","#5BBCD6","#899DA4","#899DA4"],"shape":["dot","dot","dot","triangle"],"font.size":[20,20,20,20]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="walkthrough.html#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_outdated</span>()</span>
+<span id="cb14-2"><a href="walkthrough.html#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;hist&quot;</span></span></code></pre></div>
+<p>That means <code>tar_make()</code> reruns <code>hist</code> and nothing else.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="walkthrough.html#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
+<span id="cb15-2"><a href="walkthrough.html#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ skip target raw_data_file</span></span>
+<span id="cb15-3"><a href="walkthrough.html#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ skip target raw_data</span></span>
+<span id="cb15-4"><a href="walkthrough.html#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ skip target data</span></span>
+<span id="cb15-5"><a href="walkthrough.html#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ skip target fit</span></span>
+<span id="cb15-6"><a href="walkthrough.html#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target hist</span></span></code></pre></div>
+<p>We would see similar behavior if we changed the R expressions in any <code>tar_target()</code> calls in <code>_targets.R</code>.</p>
+</div>
+<div id="change-data" class="section level3" number="2.5.2">
+<h3><span class="header-section-number">2.5.2</span> Change data</h3>
+<p>If we change the data file <code>raw_data.csv</code>, <code>targets</code> notices the change. This is because <code>raw_data_file</code> is a dynamic file (i.e. <code>tar_target(format = "file")</code>) that returned <code>"raw_data.csv"</code>. Let’s try it out. Below, let’s use only the first 100 rows of the <code>airquality</code> dataset.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="walkthrough.html#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(<span class="fu">head</span>(airquality, <span class="at">n =</span> <span class="dv">100</span>), <span class="st">&quot;data/raw_data.csv&quot;</span>)</span></code></pre></div>
+<p>Sure enough, <code>raw_data_file</code> and everything downstream is out of date, so all our targets are outdated.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="walkthrough.html#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_visnetwork</span>()</span></code></pre></div>
+<div id="htmlwidget-2ccaba8fbc4aac229cea" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-2ccaba8fbc4aac229cea">{"x":{"nodes":{"name":["data","fit","hist","raw_data","raw_data_file","create_plot"],"type":["stem","stem","stem","stem","stem","function"],"status":["outdated","outdated","outdated","outdated","outdated","uptodate"],"seconds":[0.013,0.003,1.284,0.036,1.278,null],"bytes":[1507,1970,44780,1506,2890,null],"branches":[null,null,null,null,null,null],"id":["data","fit","hist","raw_data","raw_data_file","create_plot"],"label":["data","fit","hist","raw_data","raw_data_file","create_plot"],"font.size":[20,20,20,20,20,20],"level":[3,4,4,2,1,1],"color":["#5BBCD6","#5BBCD6","#5BBCD6","#5BBCD6","#5BBCD6","#0B775E"],"shape":["dot","dot","dot","dot","dot","triangle"]},"edges":{"from":["raw_data_file","data","create_plot","data","raw_data"],"to":["raw_data","fit","hist","hist","data"],"arrows":["to","to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":false,"hoverNearest":false,"degree":1,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"left","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Outdated","Up to date","Stem","Function"],"color":["#5BBCD6","#0B775E","#899DA4","#899DA4"],"shape":["dot","dot","dot","triangle"],"font.size":[20,20,20,20]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="walkthrough.html#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_outdated</span>()</span>
+<span id="cb18-2"><a href="walkthrough.html#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;raw_data&quot;      &quot;fit&quot;           &quot;hist&quot;          &quot;raw_data_file&quot;</span></span>
+<span id="cb18-3"><a href="walkthrough.html#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [5] &quot;data&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="walkthrough.html#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
+<span id="cb19-2"><a href="walkthrough.html#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target raw_data_file</span></span>
+<span id="cb19-3"><a href="walkthrough.html#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target raw_data</span></span>
+<span id="cb19-4"><a href="walkthrough.html#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target data</span></span>
+<span id="cb19-5"><a href="walkthrough.html#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target fit</span></span>
+<span id="cb19-6"><a href="walkthrough.html#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target hist</span></span></code></pre></div>
+</div>
+</div>
+<div id="read-your-data" class="section level2" number="2.6">
+<h2><span class="header-section-number">2.6</span> Read your data</h2>
+<p><code>targets</code> has a convenient functions <code>tar_read()</code> to read your data from the <code>_targets/</code> data store.</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="walkthrough.html#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(hist)</span></code></pre></div>
+<p>There is also a <code>tar_load()</code> function, which supports <a href="https://tidyselect.r-lib.org/"><code>tidyselect</code></a> verbs like <code>starts_with()</code></p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="walkthrough.html#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_load</span>(<span class="fu">starts_with</span>(<span class="st">&quot;fit&quot;</span>))</span>
+<span id="cb21-2"><a href="walkthrough.html#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(biglm)</span>
+<span id="cb21-3"><a href="walkthrough.html#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Loading required package: DBI</span></span>
+<span id="cb21-4"><a href="walkthrough.html#cb21-4" aria-hidden="true" tabindex="-1"></a>fit</span>
+<span id="cb21-5"><a href="walkthrough.html#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Large data regression model: biglm(Ozone ~ Wind + Temp, data)</span></span>
+<span id="cb21-6"><a href="walkthrough.html#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sample size =  100</span></span></code></pre></div>
+<p>The purpose of <code>tar_read()</code> and <code>tar_load()</code> is to make exploratory data analysis easy and convenient. Use these functions to verify the correctness of the output from the pipeline and come up with ideas for new targets if needed.</p>
+</div>
+<div id="read-metadata" class="section level2" number="2.7">
+<h2><span class="header-section-number">2.7</span> Read metadata</h2>
+<p>To read the build progress of your targets while <code>tar_make()</code> is running, you can open a new R session and run <code>tar_progress()</code>. It reads the spreadsheet in <code>_targets/meta/progress</code> and tells you which targets are running, built, errored, or cancelled.</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="walkthrough.html#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as.data.frame</span>(<span class="fu">tar_progress</span>())</span>
+<span id="cb22-2"><a href="walkthrough.html#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;            name progress</span></span>
+<span id="cb22-3"><a href="walkthrough.html#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 raw_data_file    built</span></span>
+<span id="cb22-4"><a href="walkthrough.html#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2      raw_data    built</span></span>
+<span id="cb22-5"><a href="walkthrough.html#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3          data    built</span></span>
+<span id="cb22-6"><a href="walkthrough.html#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4           fit    built</span></span>
+<span id="cb22-7"><a href="walkthrough.html#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5          hist    built</span></span></code></pre></div>
+<p>Likewise, the <code>tar_meta()</code> function reads <code>_targets/meta/meta</code> and tells you high-level information about the target’s settings, data, and results. The <code>warnings</code>, <code>error</code>, and <code>traceback</code> columns give you diagnostic information about targets with problems.</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="walkthrough.html#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as.data.frame</span>(<span class="fu">tar_meta</span>())</span>
+<span id="cb23-2"><a href="walkthrough.html#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;            name     type             data          command           depend</span></span>
+<span id="cb23-3"><a href="walkthrough.html#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1   create_plot function 658f2a44b31f63bb             &lt;NA&gt;             &lt;NA&gt;</span></span>
+<span id="cb23-4"><a href="walkthrough.html#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 raw_data_file     stem 2b16f490030787ce b6df0c34fc22d1b9 ef46db3751d8e999</span></span>
+<span id="cb23-5"><a href="walkthrough.html#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3      raw_data     stem 81f24e414a848be0 000ed0cc054f0d35 6ef08fe7f06c82ac</span></span>
+<span id="cb23-6"><a href="walkthrough.html#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4          data     stem 1e1d6c4923db1fa9 df3101ce91c63e21 1e037ea6a50b00ac</span></span>
+<span id="cb23-7"><a href="walkthrough.html#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5           fit     stem d01f8b0736dde4fe aa0df6c5dbd10537 fb68e10410f0f3c8</span></span>
+<span id="cb23-8"><a href="walkthrough.html#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6          hist     stem 68c45d373f81c549 68877181ab74e51e 39b2e88285ec367d</span></span>
+<span id="cb23-9"><a href="walkthrough.html#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;          seed                      path             time             size bytes</span></span>
+<span id="cb23-10"><a href="walkthrough.html#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1          NA                        NA             &lt;NA&gt;             &lt;NA&gt;    NA</span></span>
+<span id="cb23-11"><a href="walkthrough.html#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2  2110307107         data/raw_data.csv 63abfbbb257927e4 9fb65f8dffe0153b  1884</span></span>
+<span id="cb23-12"><a href="walkthrough.html#cb23-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3  -979620141 _targets/objects/raw_data 31d0b7a17565bd54 029e3f18865b911c  1152</span></span>
+<span id="cb23-13"><a href="walkthrough.html#cb23-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4  1588979285     _targets/objects/data 3fa6032f90e353aa a744f0f8f0be9d70  1156</span></span>
+<span id="cb23-14"><a href="walkthrough.html#cb23-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5  1780184594      _targets/objects/fit 7d50d8e4c06cb232 31f6a3e6158ce3a3  1608</span></span>
+<span id="cb23-15"><a href="walkthrough.html#cb23-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 -1026346201     _targets/objects/hist d32c4e2da67ec288 631abafa35c3f47a 44325</span></span>
+<span id="cb23-16"><a href="walkthrough.html#cb23-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   format iteration parent children seconds warnings error</span></span>
+<span id="cb23-17"><a href="walkthrough.html#cb23-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1   &lt;NA&gt;      &lt;NA&gt;     NA       NA      NA       NA    NA</span></span>
+<span id="cb23-18"><a href="walkthrough.html#cb23-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2   file    vector     NA       NA   1.241       NA    NA</span></span>
+<span id="cb23-19"><a href="walkthrough.html#cb23-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3    rds    vector     NA       NA   0.036       NA    NA</span></span>
+<span id="cb23-20"><a href="walkthrough.html#cb23-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4    rds    vector     NA       NA   0.014       NA    NA</span></span>
+<span id="cb23-21"><a href="walkthrough.html#cb23-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5    rds    vector     NA       NA   0.003       NA    NA</span></span>
+<span id="cb23-22"><a href="walkthrough.html#cb23-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6    rds    vector     NA       NA   0.013       NA    NA</span></span></code></pre></div>
+<p>The <code>_targets/meta/meta</code> spreadsheet file is critically important. Although <code>targets</code> can still work properly if files are missing from <code>_targets/objects</code>, the pipeline will error out if <code>_targets/meta/meta</code> is corrupted. If <code>tar_meta()</code> works, the project should be fine.</p>
+
+</div>
+</div>
+<div style = "background: #1C356D; color: white; padding: 10px 10px 10px 25px; font-size: 1em; width: 100%;">
+  Copyright Eli Lilly and Company
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="practice.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": null,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>
