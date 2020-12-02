@@ -56,6 +56,11 @@ jobs:
           key: bookdown-${{ hashFiles('**/*Rmd') }}
           restore-keys: bookdown-
 
+      - name: Build manual
+        run: |
+          bookdown::render_book(input = "index.Rmd", output_format = "bookdown::gitbook")
+        shell: Rscript {0}
+
       - name: Publish manual
         run: |
           ./inst/publish.sh
