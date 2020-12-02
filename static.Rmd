@@ -153,9 +153,7 @@ tar_pipeline(random_seed, targets)
 ```
 
 ```{r, paged.print = FALSE}
-tar_manifest() %>%
-  # "dimensions" has targets being dynamically mapped over:
-  mutate(dimensions = as.character(dimensions))
+tar_manifest()
 ```
 
 ```{r, paged.print = FALSE}
@@ -269,9 +267,7 @@ tar_pipeline(random_seed, mapped, combined)
 ```
 
 ```{r, paged.print = FALSE}
-tar_manifest() %>%
-  # "dimensions" has targets being dynamically mapped over:
-  mutate(dimensions = as.character(dimensions))
+tar_manifest()
 ```
 ```{r}
 tar_visnetwork(targets_only = TRUE)
@@ -322,8 +318,7 @@ tar_script({
 
 ```{r}
 library(dplyr)
-tar_manifest() %>%
-  mutate(dimensions = as.character(dimensions))
+tar_manifest()
 ```
 
 ```{r}
