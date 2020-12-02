@@ -9,7 +9,7 @@ library(targets)
 
 # Best practices for `targets`-powered projects {#practice}
 
-The [`targets`](https://github.com/wlandau/targets) package espouses a clean, organized, modular, function-oriented style of programming. Many data scientists and researchers initially find this style uncomfortable, not only because it can be unfamiliar, but also because may requires us to postpone our thinking about actual results and conclusions while we focus on the process of creating a new workflow. However, this up-front cost pays off. Data science projects become easier to extend, maintain, and share with collabotors, and they have longer shelf lives than otherwise. In other words, we increase reproducibility while decreasing technical debt. Once these patterns become habits, the pace of development quickens while still lending more trust and credibility to the results.
+The [`targets`](https://github.com/wlandau/targets) package espouses a clean, organized, modular, function-oriented style of programming. Many data scientists and researchers initially find this style uncomfortable, not only because it can be unfamiliar, but also because may requires us to postpone our thinking about actual results and conclusions while we focus on the process of creating a new workflow. However, this up-front cost pays off. Data science projects become easier to extend, maintain, and share with collaborators, and they have longer shelf lives than otherwise. In other words, we increase reproducibility while decreasing technical debt. Once these patterns become habits, the pace of development quickens while still lending more trust and credibility to the results.
 
 ## A move away from imperative scripts 
 
@@ -41,6 +41,12 @@ Functions are the most idiomatic way to express the modularity we need. They are
 1. Generate *human*-readable summaries of the model fit (plots and reports).
 
 Each of the functions in (1)-(5) typically calls custom inner functions to increase modularity even further. For examples, see the `functions.R` files in the example projects [listed here](https://wlandau.github.io/targets/index.html#examples).
+
+## Packages
+
+When it comes time to decide which targets to rerun or skip, the default behavior is to ignore changes to external R packages. Usually, local package libraries do not need to change very often, and it is best to maintain a reproducible project library using [`renv`](https://rstudio.github.io/renv/articles/renv.html).
+
+However, there are some situations where it makes sense to watch a package for changes. For example, you could be in the middle of developing a methodology package that serves as the focus of the pipeline, or you could implement the workflow itself as a package. In either case, you can tell `drake` to track changes using the `imports` argument to `tar_option_set()`. If you write `tar_option_set(imports = "package1")` in `_targets.R`, then `targets` will analyze the R objects in `package1` and automatically rerun the dependent targets when these objects change. These tracked objects include unexported functions internal to the package. You can track multiple packages this way, e.g. `tar_option_set(imports = c("package1", "package2"))`. In this case, the contents of `package1` override those of `package2` when there are name conflicts. Likewise, `tar_option_get("envir")` (usually the global environment) overrides both.
 
 ## Targets
 
