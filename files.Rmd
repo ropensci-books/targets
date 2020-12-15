@@ -188,9 +188,13 @@ tar_visnetwork()
 
 ![](./man/figures/knitr-graph.png)
 
-### Parameterized R Markdown
+## Parameterized R Markdown
 
-[`tarchetypes::tar_render()`](https://wlandau.github.io/tarchetypes/reference/tar_render.html) supports [parameterized R Markdown](https://rmarkdown.rstudio.com/developer_parameterized_reports.html), and parameters can be values of upstream targets in the pipeline. In the following pipeline:
+Functions in [`tarchetypes`](https://wlandau.github.io/tarchetypes) make it straightforward to use [parameterized R Markdown](https://rmarkdown.rstudio.com/developer_parameterized_reports.html) in a `targets` pipeline. The next two subsections walk through the major use cases.
+
+### Single parameter set
+
+In this scenario, the pipeline renders your [parameterized R Markdown](https://rmarkdown.rstudio.com/developer_parameterized_reports.html) report one time using a single set of parameters. These parameters can be upstream targets, global objects, or fixed values. Simply pass a `params` argument to [`tarchetypes::tar_render()`](https://wlandau.github.io/tarchetypes/reference/tar_render.html):
 
 ```{r, eval = FALSE}
 # _targets.R
@@ -226,3 +230,58 @@ print(params$your_param)
 ```
 
 See [these examples](https://wlandau.github.io/tarchetypes/reference/tar_render.html#examples) for a demonstration.
+
+### Multiple parameter sets
+
+In this scenario, you still have a single report, but you render it multiple times over multiple sets of [R Markdown parameters](https://rmarkdown.rstudio.com/developer_parameterized_reports.html). This time, use [`tarchetypes::tar_render_rep()`](https://wlandau.github.io/tarchetypes/reference/tar_render_rep.html) and write code to reference or generate a grid of parameters with one row per rendered report and one column per parameter. Optionally, you can also include an `output_file` column to control the file paths of the generated reports, and you can set the number of batches to reduce the overhead that would otherwise ensue from creating a large number of targets.
+
+```{r, eval = FALSE}
+# _targets.R
+library(targets)
+library(tarchetypes)
+library(tibble)
+tar_pipeline(
+  tar_target(x, "value_of_x"),
+  tar_render_rep(
+    report,
+    "report.Rmd",
+    params = tibble(
+      par = c("par_val_1", "par_val_2", "par_val_3", "par_val_4"),
+      output_file = c("f1.html", "f2.html", "f3.html", "f4.html")
+    ),
+    batches = 2
+  )
+)
+```
+
+where `report.Rmd` has the following YAML front matter:
+
+```yaml
+title: report
+output_format: html_document
+params:
+  par: "default value"
+```
+
+and the following R code chunk:
+
+```{r, eval = FALSE}
+print(params$par)
+print(tar_read(x))
+```
+
+`tar_render_rep()` creates multiple targets to set up the R Markdown part of the workflow, including a target for the grid of parameters and a [dynamic branching](#dynamic) target to iterate over the parameters in batches. In this case, we have two batches (dynamic branches) and each one renders the report twice.
+
+```{r, eval = FALSE}
+tar_make()
+#> ● run target x
+#> ● run target report_params
+#> ● run branch report_9e7470a1
+#> ● run branch report_457829de
+```
+
+The third output file `f3.html` is below, and the rest look similar.
+
+![](./man/figures/dynamic-rmarkdown-params.png)
+
+For more information, see [these examples](https://wlandau.github.io/tarchetypes/reference/tar_render_rep.html#examples).
