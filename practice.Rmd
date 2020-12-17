@@ -81,6 +81,48 @@ Not all of the objects from `tar_deps()` actually register as dependencies. When
 
 This process excludes many objects from dependency detection. For example, both `{` and `cols()` are excluded because they are defined in the environments of packages (`base` and `readr`, respectively). Functions and objects from packages are ignored unless you supply a package environment to the `envir` argument of `tar_option_set()` when you call it in `_targets.R`, e.g. `tar_option_set(envir = getNamespace("packageName"))`. You should only set `envir` if you write your own package to contain your whole data analysis project.
 
+## Monitoring
+
+If you are using `targets`, then you probably have an intense computation like Bayesian data analysis or machine learning. These tasks take a long time to run, and it is a good idea to monitor them. If you are running the work on your local machine, you can monitor parallel workers with a utility like `top` or `htop`. If you are using a traditional HPC scheduler like SLURM or SGE, you can check the status of the workers with `squeue`, `qstat`, or similar. But those tools do not always give you a high-level view of what the pipeline has done and which targets are going to run next. For that information, `targets` has options:
+
+1. `tar_progress()` returns a data frame describing the targets that started, finished running successfully, got canceled, or errored out.
+1. `tar_visnetwork()` shows this progress information in an interactive `visNetwork` widget. Set `outdated` to `FALSE` to get slightly more detailed progress information.
+1. `tar_watch()` launches an Shiny app that automatically refreshes the graph every few seconds. Try it out in the example below.
+
+```{r, eval = FALSE}
+# Define an example _targets.R file with a slow pipeline.
+library(targets)
+tar_script({
+  sleep_run <- function(...) {
+    Sys.sleep(10)
+  }
+  tar_pipeline(
+    tar_target(settings, sleep_run()),
+    tar_target(data1, sleep_run(settings)),
+    tar_target(data2, sleep_run(settings)),
+    tar_target(data3, sleep_run(settings)),
+    tar_target(model1, sleep_run(data1)),
+    tar_target(model2, sleep_run(data2)),
+    tar_target(model3, sleep_run(data3)),
+    tar_target(figure1, sleep_run(model1)),
+    tar_target(figure2, sleep_run(model2)),
+    tar_target(figure3, sleep_run(model3)),
+    tar_target(conclusions, sleep_run(c(figure1, figure2, figure3)))
+  )
+})
+
+# Run the pipeline in a separate R process.
+px <- tar_make(callr_function = callr::r_bg)
+
+# Right away, run the app in the main process.
+# Watch it refresh every 10 seconds.
+# New targets should appear built each time.
+tar_watch(seconds = 10, outdated = FALSE, targets_only = TRUE)
+```
+
+![](./man/figures/tar_watch.png)
+`tar_watch_ui()` and `tar_watch_server()` make this functionality available to other apps through a Shiny module.
+
 ## Debugging
 
 If one of your targets fails, first look up the error message in `tar_meta()`. If that does not help, try one of the following techniques.
