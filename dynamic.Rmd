@@ -150,7 +150,7 @@ There are many ways to slice up a stem for branching, and there are many ways to
 
 ### Vector
 
-`targets` uses vector iteration by default, and you can opt into this behavior by setting `iteration = "vector"` in `tar_target()`. In vector iteration, `targets` uses the [`vctrs`](https://vctrs.r-lib.org/) package to split stems and aggregate banches. That means `vctrs::vec_slice()` slices up stems like `x` for mapping, and `vctrs::vec_c()` aggregates patterns like `y` for operations like `tar_read()`.
+`targets` uses vector iteration by default, and you can opt into this behavior by setting `iteration = "vector"` in `tar_target()`. In vector iteration, `targets` uses the [`vctrs`](https://vctrs.r-lib.org/) package to split stems and aggregate branches. That means `vctrs::vec_slice()` slices up stems like `x` for mapping, and `vctrs::vec_c()` aggregates patterns like `y` for operations like `tar_read()`.
 
 For atomic vectors like in the example above, this behavior is already intuitive. But if we map over a data frame, each branch will get a row of the data frame due to vector iteration.
 
@@ -350,7 +350,11 @@ lapply(tar_read(subsets), as.data.frame)
 
 With dynamic branching, it is super easy to create an enormous number of targets. But when the number of targets starts to exceed a couple hundred, `tar_make()` slows down, and graphs from `tar_visnetwork()` start to become unmanageable. If that happens to you, consider batching your work into a smaller number of targets.
 
-The [`targets-stan`](https://github.com/wlandau/targets-stan) repository has an excellent example of batching. The goal of the pipeline is to validate a Bayesian model by simulating thousands of dataset, analyzing each with a Bayesian model, and assessing the overall accuracy of the inference. Rather than define a target for each dataset in model, the pipeline breaks up the work into batches, where each batch has multiple datasets or multiple analyses. Here is a version of the pipeline with 40 batches and 25 simulation reps per batch (1000 reps total in a pipeline of 82 targets).
+[Targetopia](https://wlandau.github.io/targetopia.html) packages usually have functions that support batching for various use cases. In [`stantargets`](https://wlandau.github.io/stantargets/), [`tar_stan_mcmc_rep_summary()`](https://wlandau.github.io/stantargets/articles/mcmc_rep.html) and friends automatically use batching behind the scenes. The user simply needs to select the number of batches and number of reps per batch. Each batch is a dynamic branch with multiple reps, and each rep fits the user's model once and computes summary statistics. 
+
+In [`tarchetypes`](https://wlandau.github.io/tarchetypes/), [tar_rep()`](https://wlandau.github.io/tarchetypes/reference/tar_rep.html) is a general-use target factory for dynamic branching. It allows you to repeat arbitrary code over multiple reps split into multiple batches. Each batch gets its own reproducible random number seed generated from the target name (as do all targets) and reps run sequentially within each batch, so the results are reproducible. 
+
+The [`targets-stan`](https://github.com/wlandau/targets-stan) repository has an example of batching implemented from scratch. The goal of the pipeline is to validate a Bayesian model by simulating thousands of dataset, analyzing each with a Bayesian model, and assessing the overall accuracy of the inference. Rather than define a target for each dataset in model, the pipeline breaks up the work into batches, where each batch has multiple datasets or multiple analyses. Here is a version of the pipeline with 40 batches and 25 simulation reps per batch (1000 reps total in a pipeline of 82 targets).
 
 ```{r, eval = FALSE}
 tar_pipeline(
