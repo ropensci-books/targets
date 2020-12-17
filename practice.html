@@ -170,12 +170,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.3" data-path="practice.html"><a href="practice.html#packages"><i class="fa fa-check"></i><b>3.3</b> Packages</a></li>
 <li class="chapter" data-level="3.4" data-path="practice.html"><a href="practice.html#targets"><i class="fa fa-check"></i><b>3.4</b> Targets</a></li>
 <li class="chapter" data-level="3.5" data-path="practice.html"><a href="practice.html#dependencies"><i class="fa fa-check"></i><b>3.5</b> Dependencies</a></li>
-<li class="chapter" data-level="3.6" data-path="practice.html"><a href="practice.html#debugging"><i class="fa fa-check"></i><b>3.6</b> Debugging</a>
+<li class="chapter" data-level="3.6" data-path="practice.html"><a href="practice.html#monitoring"><i class="fa fa-check"></i><b>3.6</b> Monitoring</a></li>
+<li class="chapter" data-level="3.7" data-path="practice.html"><a href="practice.html#debugging"><i class="fa fa-check"></i><b>3.7</b> Debugging</a>
 <ul>
-<li class="chapter" data-level="3.6.1" data-path="practice.html"><a href="practice.html#workspaces"><i class="fa fa-check"></i><b>3.6.1</b> Workspaces</a></li>
-<li class="chapter" data-level="3.6.2" data-path="practice.html"><a href="practice.html#interactive-debugging"><i class="fa fa-check"></i><b>3.6.2</b> Interactive debugging</a></li>
+<li class="chapter" data-level="3.7.1" data-path="practice.html"><a href="practice.html#workspaces"><i class="fa fa-check"></i><b>3.7.1</b> Workspaces</a></li>
+<li class="chapter" data-level="3.7.2" data-path="practice.html"><a href="practice.html#interactive-debugging"><i class="fa fa-check"></i><b>3.7.2</b> Interactive debugging</a></li>
 </ul></li>
-<li class="chapter" data-level="3.7" data-path="practice.html"><a href="practice.html#performance"><i class="fa fa-check"></i><b>3.7</b> Performance</a></li>
+<li class="chapter" data-level="3.8" data-path="practice.html"><a href="practice.html#performance"><i class="fa fa-check"></i><b>3.8</b> Performance</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="files.html"><a href="files.html"><i class="fa fa-check"></i><b>4</b> External files and literate programming</a>
 <ul>
@@ -324,61 +325,100 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ol>
 <p>This process excludes many objects from dependency detection. For example, both <code>{</code> and <code>cols()</code> are excluded because they are defined in the environments of packages (<code>base</code> and <code>readr</code>, respectively). Functions and objects from packages are ignored unless you supply a package environment to the <code>envir</code> argument of <code>tar_option_set()</code> when you call it in <code>_targets.R</code>, e.g. <code>tar_option_set(envir = getNamespace("packageName"))</code>. You should only set <code>envir</code> if you write your own package to contain your whole data analysis project.</p>
 </div>
-<div id="debugging" class="section level2" number="3.6">
-<h2><span class="header-section-number">3.6</span> Debugging</h2>
+<div id="monitoring" class="section level2" number="3.6">
+<h2><span class="header-section-number">3.6</span> Monitoring</h2>
+<p>If you are using <code>targets</code>, then you probably have an intense computation like Bayesian data analysis or machine learning. These tasks take a long time to run, and it is a good idea to monitor them. If you are running the work on your local machine, you can monitor parallel workers with a utility like <code>top</code> or <code>htop</code>. If you are using a traditional HPC scheduler like SLURM or SGE, you can check the status of the workers with <code>squeue</code>, <code>qstat</code>, or similar. But those tools do not always give you a high-level view of what the pipeline has done and which targets are going to run next. For that information, <code>targets</code> has options:</p>
+<ol style="list-style-type: decimal">
+<li><code>tar_progress()</code> returns a data frame describing the targets that started, finished running successfully, got canceled, or errored out.</li>
+<li><code>tar_visnetwork()</code> shows this progress information in an interactive <code>visNetwork</code> widget. Set <code>outdated</code> to <code>FALSE</code> to get slightly more detailed progress information.</li>
+<li><code>tar_watch()</code> launches an Shiny app that automatically refreshes the graph every few seconds. Try it out in the example below.</li>
+</ol>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="practice.html#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define an example _targets.R file with a slow pipeline.</span></span>
+<span id="cb26-2"><a href="practice.html#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb26-3"><a href="practice.html#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_script</span>({</span>
+<span id="cb26-4"><a href="practice.html#cb26-4" aria-hidden="true" tabindex="-1"></a>  sleep_run <span class="ot">&lt;-</span> <span class="cf">function</span>(...) {</span>
+<span id="cb26-5"><a href="practice.html#cb26-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Sys.sleep</span>(<span class="dv">10</span>)</span>
+<span id="cb26-6"><a href="practice.html#cb26-6" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb26-7"><a href="practice.html#cb26-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_pipeline</span>(</span>
+<span id="cb26-8"><a href="practice.html#cb26-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(settings, <span class="fu">sleep_run</span>()),</span>
+<span id="cb26-9"><a href="practice.html#cb26-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(data1, <span class="fu">sleep_run</span>(settings)),</span>
+<span id="cb26-10"><a href="practice.html#cb26-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(data2, <span class="fu">sleep_run</span>(settings)),</span>
+<span id="cb26-11"><a href="practice.html#cb26-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(data3, <span class="fu">sleep_run</span>(settings)),</span>
+<span id="cb26-12"><a href="practice.html#cb26-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(model1, <span class="fu">sleep_run</span>(data1)),</span>
+<span id="cb26-13"><a href="practice.html#cb26-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(model2, <span class="fu">sleep_run</span>(data2)),</span>
+<span id="cb26-14"><a href="practice.html#cb26-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(model3, <span class="fu">sleep_run</span>(data3)),</span>
+<span id="cb26-15"><a href="practice.html#cb26-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(figure1, <span class="fu">sleep_run</span>(model1)),</span>
+<span id="cb26-16"><a href="practice.html#cb26-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(figure2, <span class="fu">sleep_run</span>(model2)),</span>
+<span id="cb26-17"><a href="practice.html#cb26-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(figure3, <span class="fu">sleep_run</span>(model3)),</span>
+<span id="cb26-18"><a href="practice.html#cb26-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(conclusions, <span class="fu">sleep_run</span>(<span class="fu">c</span>(figure1, figure2, figure3)))</span>
+<span id="cb26-19"><a href="practice.html#cb26-19" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb26-20"><a href="practice.html#cb26-20" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb26-21"><a href="practice.html#cb26-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-22"><a href="practice.html#cb26-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Run the pipeline in a separate R process.</span></span>
+<span id="cb26-23"><a href="practice.html#cb26-23" aria-hidden="true" tabindex="-1"></a>px <span class="ot">&lt;-</span> <span class="fu">tar_make</span>(<span class="at">callr_function =</span> callr<span class="sc">::</span>r_bg)</span>
+<span id="cb26-24"><a href="practice.html#cb26-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-25"><a href="practice.html#cb26-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Right away, run the app in the main process.</span></span>
+<span id="cb26-26"><a href="practice.html#cb26-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Watch it refresh every 10 seconds.</span></span>
+<span id="cb26-27"><a href="practice.html#cb26-27" aria-hidden="true" tabindex="-1"></a><span class="co"># New targets should appear built each time.</span></span>
+<span id="cb26-28"><a href="practice.html#cb26-28" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_watch</span>(<span class="at">seconds =</span> <span class="dv">10</span>, <span class="at">outdated =</span> <span class="cn">FALSE</span>, <span class="at">targets_only =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p><img src="man/figures/tar_watch.png" />
+<code>tar_watch_ui()</code> and <code>tar_watch_server()</code> make this functionality available to other apps through a Shiny module.</p>
+</div>
+<div id="debugging" class="section level2" number="3.7">
+<h2><span class="header-section-number">3.7</span> Debugging</h2>
 <p>If one of your targets fails, first look up the error message in <code>tar_meta()</code>. If that does not help, try one of the following techniques.</p>
-<div id="workspaces" class="section level3" number="3.6.1">
-<h3><span class="header-section-number">3.6.1</span> Workspaces</h3>
+<div id="workspaces" class="section level3" number="3.7.1">
+<h3><span class="header-section-number">3.7.1</span> Workspaces</h3>
 <p>Workspaces are special lightweight reference files that allow <code>tar_workspace()</code> to recreate the runtime environment of a target. This lets you troubleshoot issues outside the pipeline in an interactive session. There are two ways to save a workspace file:</p>
 <ol style="list-style-type: decimal">
 <li>Set <code>error = "workspace"</code> in <code>tar_option_set()</code> or <code>tar_target()</code>. Then, <code>tar_make()</code> and friends will save a workspace file for every target that errors out.</li>
 <li>In the <code>workspaces</code> argument of <code>tar_option_set()</code>, specify the targets for which you want to save workspaces. Then, run <code>tar_make()</code> or similar. A workspace file will be saved for each existing target, regardless of whether the target runs or gets skipped in the pipeline.</li>
 </ol>
 <p>Here is an example of (1).</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="practice.html#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R file:</span></span>
-<span id="cb26-2"><a href="practice.html#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">tidyverse.quiet =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb26-3"><a href="practice.html#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb26-4"><a href="practice.html#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb26-5"><a href="practice.html#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">crayon.enabled =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb26-6"><a href="practice.html#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">error =</span> <span class="st">&quot;workspace&quot;</span>)</span>
-<span id="cb26-7"><a href="practice.html#cb26-7" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
-<span id="cb26-8"><a href="practice.html#cb26-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(x <span class="sc">&lt;</span> <span class="dv">4</span>)</span>
-<span id="cb26-9"><a href="practice.html#cb26-9" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb26-10"><a href="practice.html#cb26-10" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_pipeline</span>(</span>
-<span id="cb26-11"><a href="practice.html#cb26-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(x, <span class="fu">seq_len</span>(<span class="dv">4</span>)),</span>
-<span id="cb26-12"><a href="practice.html#cb26-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(y, <span class="fu">f</span>(x), <span class="at">pattern =</span> <span class="fu">map</span>(x)) <span class="co"># The branching chapter describes patterns.</span></span>
-<span id="cb26-13"><a href="practice.html#cb26-13" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="practice.html#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console:</span></span>
-<span id="cb27-2"><a href="practice.html#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
-<span id="cb27-3"><a href="practice.html#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target x</span></span>
-<span id="cb27-4"><a href="practice.html#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run branch y_29239c8a</span></span>
-<span id="cb27-5"><a href="practice.html#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run branch y_7cc32924</span></span>
-<span id="cb27-6"><a href="practice.html#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run branch y_bd602d50</span></span>
-<span id="cb27-7"><a href="practice.html#cb27-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run branch y_05f206d7</span></span>
-<span id="cb27-8"><a href="practice.html#cb27-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; x error branch y_05f206d7</span></span>
-<span id="cb27-9"><a href="practice.html#cb27-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● save workspace y_05f206d7</span></span>
-<span id="cb27-10"><a href="practice.html#cb27-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error : x &lt; 4 is not TRUE .</span></span>
-<span id="cb27-11"><a href="practice.html#cb27-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error: callr subprocess failed: x &lt; 4 is not TRUE .</span></span></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="practice.html#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R file:</span></span>
+<span id="cb27-2"><a href="practice.html#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">tidyverse.quiet =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb27-3"><a href="practice.html#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb27-4"><a href="practice.html#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb27-5"><a href="practice.html#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">crayon.enabled =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb27-6"><a href="practice.html#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">error =</span> <span class="st">&quot;workspace&quot;</span>)</span>
+<span id="cb27-7"><a href="practice.html#cb27-7" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb27-8"><a href="practice.html#cb27-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(x <span class="sc">&lt;</span> <span class="dv">4</span>)</span>
+<span id="cb27-9"><a href="practice.html#cb27-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb27-10"><a href="practice.html#cb27-10" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_pipeline</span>(</span>
+<span id="cb27-11"><a href="practice.html#cb27-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(x, <span class="fu">seq_len</span>(<span class="dv">4</span>)),</span>
+<span id="cb27-12"><a href="practice.html#cb27-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(y, <span class="fu">f</span>(x), <span class="at">pattern =</span> <span class="fu">map</span>(x)) <span class="co"># The branching chapter describes patterns.</span></span>
+<span id="cb27-13"><a href="practice.html#cb27-13" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="practice.html#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console:</span></span>
+<span id="cb28-2"><a href="practice.html#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
+<span id="cb28-3"><a href="practice.html#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target x</span></span>
+<span id="cb28-4"><a href="practice.html#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run branch y_29239c8a</span></span>
+<span id="cb28-5"><a href="practice.html#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run branch y_7cc32924</span></span>
+<span id="cb28-6"><a href="practice.html#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run branch y_bd602d50</span></span>
+<span id="cb28-7"><a href="practice.html#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run branch y_05f206d7</span></span>
+<span id="cb28-8"><a href="practice.html#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; x error branch y_05f206d7</span></span>
+<span id="cb28-9"><a href="practice.html#cb28-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● save workspace y_05f206d7</span></span>
+<span id="cb28-10"><a href="practice.html#cb28-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error : x &lt; 4 is not TRUE .</span></span>
+<span id="cb28-11"><a href="practice.html#cb28-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error: callr subprocess failed: x &lt; 4 is not TRUE .</span></span></code></pre></div>
 <p>One of the <code>y_*******</code> targets errored out.</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="practice.html#cb28-1" aria-hidden="true" tabindex="-1"></a>failed <span class="ot">&lt;-</span> <span class="fu">tar_meta</span>(<span class="at">fields =</span> error) <span class="sc">%&gt;%</span></span>
-<span id="cb28-2"><a href="practice.html#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb28-3"><a href="practice.html#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(name)</span>
-<span id="cb28-4"><a href="practice.html#cb28-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-5"><a href="practice.html#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(failed)</span>
-<span id="cb28-6"><a href="practice.html#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;y_05f206d7&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="practice.html#cb29-1" aria-hidden="true" tabindex="-1"></a>failed <span class="ot">&lt;-</span> <span class="fu">tar_meta</span>(<span class="at">fields =</span> error) <span class="sc">%&gt;%</span></span>
+<span id="cb29-2"><a href="practice.html#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb29-3"><a href="practice.html#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(name)</span>
+<span id="cb29-4"><a href="practice.html#cb29-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-5"><a href="practice.html#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(failed)</span>
+<span id="cb29-6"><a href="practice.html#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;y_05f206d7&quot;</span></span></code></pre></div>
 <p><code>tar_workspace()</code> reads the special metadata in the workspace file and then loads the target’s dependencies from various locations in <code>_targets/objects</code> and/or the <a href="cloud.html#cloud">cloud</a>. It also sets the random number generator seed to the seed of the target, loads the required packages, and runs <code>_targets.R</code> to load other global object dependencies such as functions.</p>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="practice.html#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_workspace</span>(y_05f206d7)</span></code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="practice.html#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_workspace</span>(y_05f206d7)</span></code></pre></div>
 <p>We now have the dependencies of <code>y_05f206d7</code> in memory, which allows you to try out any failed function calls interactively.</p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="practice.html#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(x)</span>
-<span id="cb30-2"><a href="practice.html#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 4</span></span>
-<span id="cb30-3"><a href="practice.html#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(x)</span>
-<span id="cb30-4"><a href="practice.html#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error in f(x) : x &lt; 4 is not TRUE</span></span></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="practice.html#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(x)</span>
+<span id="cb31-2"><a href="practice.html#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 4</span></span>
+<span id="cb31-3"><a href="practice.html#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(x)</span>
+<span id="cb31-4"><a href="practice.html#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error in f(x) : x &lt; 4 is not TRUE</span></span></code></pre></div>
 <p>In addition, current random number generator seed (<code>.Random.seed</code>) is also the value <code>y_05f206d7</code> started with.</p>
 <p>Remove all workspace files with:</p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="practice.html#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_destroy</span>(<span class="at">destroy =</span> <span class="st">&quot;workspaces&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="practice.html#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_destroy</span>(<span class="at">destroy =</span> <span class="st">&quot;workspaces&quot;</span>)</span></code></pre></div>
 </div>
-<div id="interactive-debugging" class="section level3" number="3.6.2">
-<h3><span class="header-section-number">3.6.2</span> Interactive debugging</h3>
+<div id="interactive-debugging" class="section level3" number="3.7.2">
+<h3><span class="header-section-number">3.7.2</span> Interactive debugging</h3>
 <p>Interactive debugging is a way to troubleshoot targets without saving or loading workspace files. Here are the steps.</p>
 <ol style="list-style-type: decimal">
 <li>In <code>_targets.R</code>, write a call to <code>tar_option_set()</code> with <code>debug</code> equal to the target name. Consider also setting <code>cue</code> equal to <code>tar_cue(mode = "never")</code> so <code>tar_make()</code> reaches the target you want to debug more quickly.</li>
@@ -388,41 +428,41 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Interactively run any R code that helps you troubleshoot the problem.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></li>
 </ol>
 <p>To try it out yourself, write the following <code>_targets.R</code> file.</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="practice.html#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
-<span id="cb32-2"><a href="practice.html#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb32-3"><a href="practice.html#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">debug =</span> <span class="st">&quot;b&quot;</span>)</span>
-<span id="cb32-4"><a href="practice.html#cb32-4" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="cf">function</span>(x) x <span class="sc">+</span> <span class="dv">1</span></span>
-<span id="cb32-5"><a href="practice.html#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_pipeline</span>(</span>
-<span id="cb32-6"><a href="practice.html#cb32-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(a, <span class="dv">1</span>),</span>
-<span id="cb32-7"><a href="practice.html#cb32-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(b, <span class="fu">f</span>(a))</span>
-<span id="cb32-8"><a href="practice.html#cb32-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="practice.html#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb33-2"><a href="practice.html#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb33-3"><a href="practice.html#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">debug =</span> <span class="st">&quot;b&quot;</span>)</span>
+<span id="cb33-4"><a href="practice.html#cb33-4" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="cf">function</span>(x) x <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb33-5"><a href="practice.html#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_pipeline</span>(</span>
+<span id="cb33-6"><a href="practice.html#cb33-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(a, <span class="dv">1</span>),</span>
+<span id="cb33-7"><a href="practice.html#cb33-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(b, <span class="fu">f</span>(a))</span>
+<span id="cb33-8"><a href="practice.html#cb33-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <p>Then, call <code>tar_make(callr_function = NULL)</code> to drop into a debugger at the command of <code>b</code>.</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="practice.html#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
-<span id="cb33-2"><a href="practice.html#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>(<span class="at">callr_function =</span> <span class="cn">NULL</span>)</span>
-<span id="cb33-3"><a href="practice.html#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target a</span></span>
-<span id="cb33-4"><a href="practice.html#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target b</span></span>
-<span id="cb33-5"><a href="practice.html#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Called from: eval(expr, envir)</span></span>
-<span id="cb33-6"><a href="practice.html#cb33-6" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="practice.html#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
+<span id="cb34-2"><a href="practice.html#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>(<span class="at">callr_function =</span> <span class="cn">NULL</span>)</span>
+<span id="cb34-3"><a href="practice.html#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target a</span></span>
+<span id="cb34-4"><a href="practice.html#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target b</span></span>
+<span id="cb34-5"><a href="practice.html#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Called from: eval(expr, envir)</span></span>
+<span id="cb34-6"><a href="practice.html#cb34-6" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span></span></code></pre></div>
 <p>When the debugger launches, run <code>targets::tar_name()</code> to confirm you are running the correct target.</p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="practice.html#cb34-1" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> targets<span class="sc">::</span><span class="fu">tar_name</span>()</span>
-<span id="cb34-2"><a href="practice.html#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;b&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="practice.html#cb35-1" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> targets<span class="sc">::</span><span class="fu">tar_name</span>()</span>
+<span id="cb35-2"><a href="practice.html#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;b&quot;</span></span></code></pre></div>
 <p>In the debugger, the dependency targets of <code>b</code> are available in the current environment, and the global objects and functions are available in the parent environment.</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="practice.html#cb35-1" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> <span class="fu">ls</span>()</span>
-<span id="cb35-2"><a href="practice.html#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;a&quot;</span></span>
-<span id="cb35-3"><a href="practice.html#cb35-3" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> a</span>
-<span id="cb35-4"><a href="practice.html#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 1</span></span>
-<span id="cb35-5"><a href="practice.html#cb35-5" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> <span class="fu">ls</span>(<span class="fu">parent.env</span>(<span class="fu">environment</span>()))</span>
-<span id="cb35-6"><a href="practice.html#cb35-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;f&quot;</span></span>
-<span id="cb35-7"><a href="practice.html#cb35-7" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> <span class="fu">f</span>(<span class="dv">1</span>)</span>
-<span id="cb35-8"><a href="practice.html#cb35-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 2</span></span></code></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="practice.html#cb36-1" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> <span class="fu">ls</span>()</span>
+<span id="cb36-2"><a href="practice.html#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;a&quot;</span></span>
+<span id="cb36-3"><a href="practice.html#cb36-3" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> a</span>
+<span id="cb36-4"><a href="practice.html#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 1</span></span>
+<span id="cb36-5"><a href="practice.html#cb36-5" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> <span class="fu">ls</span>(<span class="fu">parent.env</span>(<span class="fu">environment</span>()))</span>
+<span id="cb36-6"><a href="practice.html#cb36-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;f&quot;</span></span>
+<span id="cb36-7"><a href="practice.html#cb36-7" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> <span class="fu">f</span>(<span class="dv">1</span>)</span>
+<span id="cb36-8"><a href="practice.html#cb36-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 2</span></span></code></pre></div>
 <p>Press <code>n</code> or <code>c</code> to advance to the next line or breakpoint.</p>
-<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="practice.html#cb36-1" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> n</span>
-<span id="cb36-2"><a href="practice.html#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="practice.html#cb37-1" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> n</span>
+<span id="cb37-2"><a href="practice.html#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span></span></code></pre></div>
 <p>For more on debugging R code, visit <a href="https://rstats.wtf/debugging-r-code.html">this page</a>.</p>
 </div>
 </div>
-<div id="performance" class="section level2" number="3.7">
-<h2><span class="header-section-number">3.7</span> Performance</h2>
+<div id="performance" class="section level2" number="3.8">
+<h2><span class="header-section-number">3.8</span> Performance</h2>
 <p>If your pipeline has several thousand targets, functions like <code>tar_make()</code>, <code>tar_outdated()</code>, and <code>tar_visnetwork()</code> may take longer to run. There is an inevitable per-target runtime cost because package needs to check the code and data of each target individually. If this overhead becomes too much, consider batching your work into a smaller group of heavier targets. Using your custom functions, you can make each target perform multiple iterations of a task that was previously given to targets one at a time. For details and an example, please see the discussion on batching at the bottom of the <a href="dynamic.html#dynamic">dynamic branching chapter</a>.</p>
 <p>Alternatively, if you see slowness in your project, you can contribute to the package with a profiling study. These contributions are great because they help improve the package. Here are the recommended steps.</p>
 <ol style="list-style-type: decimal">
