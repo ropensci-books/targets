@@ -354,13 +354,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb26-19"><a href="practice.html#cb26-19" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb26-20"><a href="practice.html#cb26-20" aria-hidden="true" tabindex="-1"></a>})</span>
 <span id="cb26-21"><a href="practice.html#cb26-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-22"><a href="practice.html#cb26-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Run the pipeline in a separate R process.</span></span>
-<span id="cb26-23"><a href="practice.html#cb26-23" aria-hidden="true" tabindex="-1"></a>px <span class="ot">&lt;-</span> <span class="fu">tar_make</span>(<span class="at">callr_function =</span> callr<span class="sc">::</span>r_bg)</span>
-<span id="cb26-24"><a href="practice.html#cb26-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-25"><a href="practice.html#cb26-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Right away, run the app in the main process.</span></span>
-<span id="cb26-26"><a href="practice.html#cb26-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Watch it refresh every 10 seconds.</span></span>
-<span id="cb26-27"><a href="practice.html#cb26-27" aria-hidden="true" tabindex="-1"></a><span class="co"># New targets should appear built each time.</span></span>
-<span id="cb26-28"><a href="practice.html#cb26-28" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_watch</span>(<span class="at">seconds =</span> <span class="dv">10</span>, <span class="at">outdated =</span> <span class="cn">FALSE</span>, <span class="at">targets_only =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<span id="cb26-22"><a href="practice.html#cb26-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Launch the app in a background process.</span></span>
+<span id="cb26-23"><a href="practice.html#cb26-23" aria-hidden="true" tabindex="-1"></a><span class="co"># You may need to refresh the browser if the app is slow to start.</span></span>
+<span id="cb26-24"><a href="practice.html#cb26-24" aria-hidden="true" tabindex="-1"></a><span class="co"># The graph automatically refreshes every 10 seconds</span></span>
+<span id="cb26-25"><a href="practice.html#cb26-25" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_watch</span>(<span class="at">seconds =</span> <span class="dv">10</span>, <span class="at">outdated =</span> <span class="cn">FALSE</span>, <span class="at">targets_only =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb26-26"><a href="practice.html#cb26-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-27"><a href="practice.html#cb26-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Now run the pipeline and watch the graph change.</span></span>
+<span id="cb26-28"><a href="practice.html#cb26-28" aria-hidden="true" tabindex="-1"></a>px <span class="ot">&lt;-</span> <span class="fu">tar_make</span>()</span></code></pre></div>
 <p><img src="man/figures/tar_watch.png" />
 <code>tar_watch_ui()</code> and <code>tar_watch_server()</code> make this functionality available to other apps through a Shiny module.</p>
 </div>
