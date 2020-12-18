@@ -111,13 +111,13 @@ tar_script({
   )
 })
 
-# Run the pipeline in a separate R process.
-px <- tar_make(callr_function = callr::r_bg)
-
-# Right away, run the app in the main process.
-# Watch it refresh every 10 seconds.
-# New targets should appear built each time.
+# Launch the app in a background process.
+# You may need to refresh the browser if the app is slow to start.
+# The graph automatically refreshes every 10 seconds
 tar_watch(seconds = 10, outdated = FALSE, targets_only = TRUE)
+
+# Now run the pipeline and watch the graph change.
+px <- tar_make()
 ```
 
 ![](./man/figures/tar_watch.png)
