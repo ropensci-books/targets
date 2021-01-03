@@ -83,7 +83,7 @@ write_mean <- function(data) {
   writeLines(as.character(mean(data)), tmp)
   tmp
 }
-tar_pipeline(
+list(
   tar_target(data, rnorm(5), format = "aws_qs"),
   tar_target(mean_file, write_mean(data), format = "aws_file")
 )

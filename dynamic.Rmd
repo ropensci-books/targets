@@ -21,7 +21,7 @@ library(targets)
 library(tidyverse)
 tar_script({
   options(crayon.enabled = FALSE, tidyverse.quiet = TRUE)
-  tar_pipeline(
+  list(
     tar_target(w, c(1, 2)),
     tar_target(x, c(10, 20)),
     tar_target(y, w + x, pattern = map(w, x)),
@@ -72,7 +72,7 @@ These patterns are composable. Below, target `z` creates six branches, one for e
 ```{r}
 tar_script({
   options(crayon.enabled = FALSE)
-  tar_pipeline(
+  list(
     tar_target(w_comp, seq_len(2)),
     tar_target(x_comp, head(letters, 3)),
     tar_target(y_comp, head(LETTERS, 3)),
@@ -127,7 +127,7 @@ tar_pattern(
 Dynamic branching over files is tricky. A target with `format = "file"` treats the entire set of files as an irreducible bundle. That means in order to branch over files downstream, each file must already have its own branch.
 
 ```{r, eval = FALSE}
-tar_pipeline(
+list(
   tar_target(paths, c("a.csv", "b.csv")),
   tar_target(files, paths, format = "file", pattern = map(paths)),
   tar_target(data, read_csv(files), pattern = map(files))
@@ -138,7 +138,7 @@ The [`tar_files()`](https://wlandau.github.io/tarchetypes/reference/tar_files.ht
 
 ```{r, eval = FALSE}
 library(tarchetypes)
-tar_pipeline(
+list(
   tar_files(files, c("a.csv", "b.csv")),
   tar_target(data, read_csv(files), pattern = map(files))
 )
@@ -161,7 +161,7 @@ tar_script({
     print(x)
     x
   }
-  tar_pipeline(
+  list(
     tar_target(x, data.frame(a = c(1, 2), b = c("a", "b"))),
     tar_target(y, print_and_return(x), pattern = map(x))
   )
@@ -189,7 +189,7 @@ tar_script({
     print(x)
     x
   }
-  tar_pipeline(
+  list(
     tar_target(
       x,
       data.frame(a = c(1, 2), b = c("a", "b")),
@@ -240,7 +240,7 @@ tar_script({
 options(crayon.enabled = FALSE, tidyverse.quiet = TRUE)
 tar_option_set(packages = "tidyverse")
 
-tar_pipeline(
+list(
   tar_target(
     data,
     data.frame(
@@ -317,7 +317,7 @@ flip_order <- function(x) {
   ordered(x, levels = sort(unique(x), decreasing = TRUE))
 }
 
-tar_pipeline(
+list(
   tar_target(
     data,
     data.frame(
@@ -357,7 +357,7 @@ In [`tarchetypes`](https://wlandau.github.io/tarchetypes/), [tar_rep()`](https:/
 The [`targets-stan`](https://github.com/wlandau/targets-stan) repository has an example of batching implemented from scratch. The goal of the pipeline is to validate a Bayesian model by simulating thousands of dataset, analyzing each with a Bayesian model, and assessing the overall accuracy of the inference. Rather than define a target for each dataset in model, the pipeline breaks up the work into batches, where each batch has multiple datasets or multiple analyses. Here is a version of the pipeline with 40 batches and 25 simulation reps per batch (1000 reps total in a pipeline of 82 targets).
 
 ```{r, eval = FALSE}
-tar_pipeline(
+list(
   tar_target(model_file, compile_model("stan/model.stan"), format = "file"),
   tar_target(index_batch, seq_len(40)),
   tar_target(index_sim, seq_len(25)),

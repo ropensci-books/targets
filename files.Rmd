@@ -42,7 +42,7 @@ tar_script({
   path_to_data <- function() {
     "data/raw_data.csv"
   }
-  tar_pipeline(
+  list(
     tar_target(
       raw_data_file,
       path_to_data(),
@@ -74,7 +74,7 @@ tar_script({
   path_to_data <- function() {
     "data/raw_data.csv"
   }
-  tar_pipeline(
+  list(
     tar_target(
       raw_data_file,
       path_to_data(),
@@ -161,7 +161,7 @@ Because symbols `fit` and `hist` appear in the command, `targets` knows that `re
 library(targets)
 library(tarchetypes)
 source("R/functions.R")
-tar_pipeline(
+list(
   tar_target(
     raw_data_file,
     "data/raw_data.csv",
@@ -200,7 +200,7 @@ In this scenario, the pipeline renders your [parameterized R Markdown](https://r
 # _targets.R
 library(targets)
 library(tarchetypes)
-tar_pipeline(
+list(
   tar_target(data, data.frame(x = seq_len(26), y = letters))
   tar_render(report, "report.Rmd", params = list(your_param = data))
 )
@@ -240,7 +240,7 @@ In this scenario, you still have a single report, but you render it multiple tim
 library(targets)
 library(tarchetypes)
 library(tibble)
-tar_pipeline(
+list(
   tar_target(x, "value_of_x"),
   tar_render_rep(
     report,

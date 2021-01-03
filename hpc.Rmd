@@ -18,7 +18,7 @@ Practical real-world examples of high-performance computing in `targets` can be 
 
 ```{r, echo = FALSE}
 tar_script({
-  tar_pipeline(
+  list(
     tar_target(data, get_data()),
     tar_target(fast_fit, fit_small_model(data)),
     tar_target(slow_fit, fit_slow_model(data)),
@@ -54,7 +54,7 @@ When you write your `_targets.R` script, be sure to set the `clustermq.scheduler
 ```{r}
 # _targets.R
 options(clustermq.scheduler = "multicore")
-tar_pipeline(
+list(
   tar_target(data, get_data()),
   tar_target(fast_fit, fit_small_model(data)),
   tar_target(slow_fit, fit_slow_model(data)),
@@ -81,7 +81,7 @@ Supply the scheduler option and template file to the `clustermq.scheduler` and `
 ```{r}
 # _targets.R
 options(clustermq.scheduler = "sge", clustermq.template = "sge.tmpl")
-tar_pipeline(
+list(
   tar_target(data, get_data()),
   tar_target(fast_fit, fit_small_model(data)),
   tar_target(slow_fit, fit_slow_model(data)),
@@ -133,7 +133,10 @@ Then, supply the value of `num_cores` to the `resources` option from within `_ta
 ```{r}
 # _targets.R
 tar_option_set(resources = list(num_cores = 2))
-tar_pipeline(...)
+list(
+  tar_target(...),
+  ... # more targets
+)
 ```
 
 Finally, call `tar_make_clustermq()` normally.
@@ -170,7 +173,7 @@ To parallelize targets over multiple processes on your local machine, declare on
 # _targets.R
 library(future)
 plan(multisession)
-tar_pipeline(
+list(
   tar_target(data, get_data()),
   tar_target(fast_fit, fit_small_model(data)),
   tar_target(slow_fit, fit_slow_model(data)),
@@ -194,7 +197,7 @@ To run transient workers on a cluster, first install the [`future.batchtools`](h
 library(future)
 library(future.batchtools)
 plan(batchtools_sge, template = "sge.tmpl")
-tar_pipeline(
+list(
   tar_target(data, get_data()),
   tar_target(fast_fit, fit_small_model(data)),
   tar_target(slow_fit, fit_slow_model(data)),
@@ -241,7 +244,7 @@ then you can set the number of cores for individual targets. In the case below, 
 library(future)
 library(future.batchtools)
 plan(batchtools_sge, template = "sge.tmpl")
-tar_pipeline(
+list(
   tar_target(data, get_data()),
   tar_target(fast_fit, fit_small_model(data)),
   tar_target(slow_fit, fit_slow_model(data), resources = list(num_cores = 2)),

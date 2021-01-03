@@ -96,7 +96,7 @@ tar_script({
   sleep_run <- function(...) {
     Sys.sleep(10)
   }
-  tar_pipeline(
+  list(
     tar_target(settings, sleep_run()),
     tar_target(data1, sleep_run(settings)),
     tar_target(data2, sleep_run(settings)),
@@ -146,7 +146,7 @@ tar_option_set(error = "workspace")
 f <- function(x) {
   stopifnot(x < 4)
 }
-tar_pipeline(
+list(
   tar_target(x, seq_len(4)),
   tar_target(y, f(x), pattern = map(x)) # The branching chapter describes patterns.
 )
@@ -218,7 +218,7 @@ To try it out yourself, write the following `_targets.R` file.
 library(targets)
 tar_option_set(debug = "b")
 f <- function(x) x + 1
-tar_pipeline(
+list(
   tar_target(a, 1),
   tar_target(b, f(a))
 )

@@ -31,7 +31,7 @@ targets <- tar_map(
   tar_target(analysis, method_function(data_source, reps = 10)),
   tar_target(summary, summarize_analysis(analysis, data_source))
 )
-tar_pipeline(targets)
+list(targets)
 ```
 
 ```{r, echo = FALSE}
@@ -48,7 +48,7 @@ targets <- tar_map(
   tar_target(analysis, method_function(data_source, reps = 10)),
   tar_target(summary, summarize_analysis(analysis, data_source))
 )
-tar_pipeline(targets)
+list(targets)
 })
 ```
 
@@ -75,7 +75,7 @@ targets <- tar_map(
   tar_target(analysis, method_function(data_source, reps = 10)),
   tar_target(summary, summarize_analysis(analysis, data_source))
 )
-tar_pipeline(targets)
+list(targets)
 ```
 
 ```{r, echo = FALSE}
@@ -93,7 +93,7 @@ targets <- tar_map(
   tar_target(analysis, method_function(data_source, reps = 10)),
   tar_target(summary, summarize_analysis(analysis, data_source))
 )
-tar_pipeline(targets)
+list(targets)
 })
 ```
 
@@ -126,7 +126,7 @@ targets <- tar_map(
     pattern = map(analysis)
   )
 )
-tar_pipeline(random_seed, targets)
+list(random_seed, targets)
 ```
 
 ```{r, echo = FALSE}
@@ -148,7 +148,7 @@ targets <- tar_map(
     pattern = map(analysis)
   )
 )
-tar_pipeline(random_seed, targets)
+list(random_seed, targets)
 })
 ```
 
@@ -173,7 +173,7 @@ options(crayon.enabled = FALSE)
 target1 <- tar_target(head, head(mtcars, 1))
 target2 <- tar_target(tail, tail(mtcars, 1))
 target3 <- tar_combine(combined_target, target1, target2)
-tar_pipeline(target1, target2, target3)
+list(target1, target2, target3)
 ```
 
 ```{r, echo = FALSE}
@@ -185,7 +185,7 @@ options(crayon.enabled = FALSE)
 target1 <- tar_target(head_mtcars, head(mtcars, 1))
 target2 <- tar_target(tail_mtcars, tail(mtcars, 1))
 target3 <- tar_combine(combined_target, target1, target2)
-tar_pipeline(target1, target2, target3)
+list(target1, target2, target3)
 })
 ```
 
@@ -234,7 +234,7 @@ combined <- tar_combine(
   mapped[[2]],
   command = dplyr::bind_rows(!!!.x, .id = "method")
 )
-tar_pipeline(random_seed, mapped, combined)
+list(random_seed, mapped, combined)
 ```
 
 ```{r, echo = FALSE}
@@ -262,7 +262,7 @@ combined <- tar_combine(
   mapped[[2]],
   command = dplyr::bind_rows(!!!.x, .id = "method")
 )
-tar_pipeline(random_seed, mapped, combined)
+list(random_seed, mapped, combined)
 })
 ```
 
@@ -287,7 +287,7 @@ tar_script({
     datasets,
     ~tar_target_raw(.x, substitute(get_data(x), env = list(x = .x)))
   )
-  tar_pipeline(data_target_list)
+  list(data_target_list)
 })
 ```
 
@@ -312,7 +312,7 @@ tar_script({
       pattern = substitute(map(y), env = list(y = sym(letters[.x - 1])))
     )
   )
-  tar_pipeline(target_a, target_list)
+  list(target_a, target_list)
 })
 ```
 
