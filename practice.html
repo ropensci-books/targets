@@ -339,7 +339,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb26-4"><a href="practice.html#cb26-4" aria-hidden="true" tabindex="-1"></a>  sleep_run <span class="ot">&lt;-</span> <span class="cf">function</span>(...) {</span>
 <span id="cb26-5"><a href="practice.html#cb26-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Sys.sleep</span>(<span class="dv">10</span>)</span>
 <span id="cb26-6"><a href="practice.html#cb26-6" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb26-7"><a href="practice.html#cb26-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_pipeline</span>(</span>
+<span id="cb26-7"><a href="practice.html#cb26-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
 <span id="cb26-8"><a href="practice.html#cb26-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(settings, <span class="fu">sleep_run</span>()),</span>
 <span id="cb26-9"><a href="practice.html#cb26-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(data1, <span class="fu">sleep_run</span>(settings)),</span>
 <span id="cb26-10"><a href="practice.html#cb26-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(data2, <span class="fu">sleep_run</span>(settings)),</span>
@@ -384,7 +384,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb27-7"><a href="practice.html#cb27-7" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
 <span id="cb27-8"><a href="practice.html#cb27-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(x <span class="sc">&lt;</span> <span class="dv">4</span>)</span>
 <span id="cb27-9"><a href="practice.html#cb27-9" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb27-10"><a href="practice.html#cb27-10" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_pipeline</span>(</span>
+<span id="cb27-10"><a href="practice.html#cb27-10" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
 <span id="cb27-11"><a href="practice.html#cb27-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(x, <span class="fu">seq_len</span>(<span class="dv">4</span>)),</span>
 <span id="cb27-12"><a href="practice.html#cb27-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(y, <span class="fu">f</span>(x), <span class="at">pattern =</span> <span class="fu">map</span>(x)) <span class="co"># The branching chapter describes patterns.</span></span>
 <span id="cb27-13"><a href="practice.html#cb27-13" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
@@ -432,7 +432,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb33-2"><a href="practice.html#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
 <span id="cb33-3"><a href="practice.html#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">debug =</span> <span class="st">&quot;b&quot;</span>)</span>
 <span id="cb33-4"><a href="practice.html#cb33-4" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="cf">function</span>(x) x <span class="sc">+</span> <span class="dv">1</span></span>
-<span id="cb33-5"><a href="practice.html#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_pipeline</span>(</span>
+<span id="cb33-5"><a href="practice.html#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
 <span id="cb33-6"><a href="practice.html#cb33-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(a, <span class="dv">1</span>),</span>
 <span id="cb33-7"><a href="practice.html#cb33-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(b, <span class="fu">f</span>(a))</span>
 <span id="cb33-8"><a href="practice.html#cb33-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>

@@ -313,7 +313,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb131-6"><a href="cloud.html#cb131-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">writeLines</span>(<span class="fu">as.character</span>(<span class="fu">mean</span>(data)), tmp)</span>
 <span id="cb131-7"><a href="cloud.html#cb131-7" aria-hidden="true" tabindex="-1"></a>  tmp</span>
 <span id="cb131-8"><a href="cloud.html#cb131-8" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb131-9"><a href="cloud.html#cb131-9" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_pipeline</span>(</span>
+<span id="cb131-9"><a href="cloud.html#cb131-9" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
 <span id="cb131-10"><a href="cloud.html#cb131-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data, <span class="fu">rnorm</span>(<span class="dv">5</span>), <span class="at">format =</span> <span class="st">&quot;aws_qs&quot;</span>),</span>
 <span id="cb131-11"><a href="cloud.html#cb131-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(mean_file, <span class="fu">write_mean</span>(data), <span class="at">format =</span> <span class="st">&quot;aws_file&quot;</span>)</span>
 <span id="cb131-12"><a href="cloud.html#cb131-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
