@@ -211,7 +211,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="6.1" data-path="static.html"><a href="static.html#map"><i class="fa fa-check"></i><b>6.1</b> Map</a></li>
 <li class="chapter" data-level="6.2" data-path="static.html"><a href="static.html#combine"><i class="fa fa-check"></i><b>6.2</b> Combine</a></li>
-<li class="chapter" data-level="6.3" data-path="static.html"><a href="static.html#metaprogram"><i class="fa fa-check"></i><b>6.3</b> Metaprogram</a></li>
+<li class="chapter" data-level="6.3" data-path="static.html"><a href="static.html#metaprogramming"><i class="fa fa-check"></i><b>6.3</b> Metaprogramming</a></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="hpc.html"><a href="hpc.html"><i class="fa fa-check"></i><b>7</b> High-performance computing</a>
 <ul>
@@ -258,7 +258,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="9.2.7" data-path="drake.html"><a href="drake.html#dynamic-branching-with-dplyrgroup_by"><i class="fa fa-check"></i><b>9.2.7</b> Dynamic branching with <code>dplyr::group_by()</code></a></li>
 <li class="chapter" data-level="9.2.8" data-path="drake.html"><a href="drake.html#composable-dynamic-branching"><i class="fa fa-check"></i><b>9.2.8</b> Composable dynamic branching</a></li>
 <li class="chapter" data-level="9.2.9" data-path="drake.html"><a href="drake.html#improved-parallel-efficiency"><i class="fa fa-check"></i><b>9.2.9</b> Improved parallel efficiency</a></li>
-<li class="chapter" data-level="9.2.10" data-path="drake.html"><a href="drake.html#metaprogramming"><i class="fa fa-check"></i><b>9.2.10</b> Metaprogramming</a></li>
+<li class="chapter" data-level="9.2.10" data-path="drake.html"><a href="drake.html#metaprogramming-1"><i class="fa fa-check"></i><b>9.2.10</b> Metaprogramming</a></li>
 </ul></li>
 </ul></li>
 </ul>
@@ -296,26 +296,26 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="configure-your-local-machine" class="section level3" number="8.2.2">
 <h3><span class="header-section-number">8.2.2</span> Configure your local machine</h3>
 <p><code>targets</code> uses the <a href="https://github.com/cloudyr/aws.s3"><code>aws.s3</code></a> package behind the scenes. It is not a strict dependency of <code>targets</code>, so you will need to install it yourself.</p>
-<div class="sourceCode" id="cb137"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb137-1"><a href="cloud.html#cb137-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;aws.s3&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb134"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb134-1"><a href="cloud.html#cb134-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;aws.s3&quot;</span>)</span></code></pre></div>
 <p>Next, <code>aws.s3</code> needs an access ID, secret access key, and default region. Follow <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html#cli-configure-quickstart-creds">these steps</a> to generate the keys, and choose a region from <a href="https://docs.aws.amazon.com/general/latest/gr/s3.html">this table of endpoints</a>. Then, open the <code>.Renviron</code> file in your home directory with <code>usethis::edit_r_environ()</code> and store this information in <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html">special environment variables</a>. Here is an example <code>.Renviron</code> file.</p>
-<div class="sourceCode" id="cb138"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb138-1"><a href="cloud.html#cb138-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example .Renviron file</span></span>
-<span id="cb138-2"><a href="cloud.html#cb138-2" aria-hidden="true" tabindex="-1"></a>AWS_ACCESS_KEY_ID<span class="ot">=</span>AKIAIOSFODNN7EXAMPLE</span>
-<span id="cb138-3"><a href="cloud.html#cb138-3" aria-hidden="true" tabindex="-1"></a>AWS_SECRET_ACCESS_KEY<span class="ot">=</span>wJalrXUtnFEMI<span class="sc">/</span>K7MDENG<span class="sc">/</span>bPxRfiCYEXAMPLEKEY</span>
-<span id="cb138-4"><a href="cloud.html#cb138-4" aria-hidden="true" tabindex="-1"></a>AWS_DEFAULT_REGION<span class="ot">=</span>us<span class="sc">-</span>east<span class="dv">-1</span></span></code></pre></div>
+<div class="sourceCode" id="cb135"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb135-1"><a href="cloud.html#cb135-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example .Renviron file</span></span>
+<span id="cb135-2"><a href="cloud.html#cb135-2" aria-hidden="true" tabindex="-1"></a>AWS_ACCESS_KEY_ID<span class="ot">=</span>AKIAIOSFODNN7EXAMPLE</span>
+<span id="cb135-3"><a href="cloud.html#cb135-3" aria-hidden="true" tabindex="-1"></a>AWS_SECRET_ACCESS_KEY<span class="ot">=</span>wJalrXUtnFEMI<span class="sc">/</span>K7MDENG<span class="sc">/</span>bPxRfiCYEXAMPLEKEY</span>
+<span id="cb135-4"><a href="cloud.html#cb135-4" aria-hidden="true" tabindex="-1"></a>AWS_DEFAULT_REGION<span class="ot">=</span>us<span class="sc">-</span>east<span class="dv">-1</span></span></code></pre></div>
 <p>Restart your R session so the changes take effect. Your keys are sensitive personal information. You can print them in your private console to verify correctness, but otherwise please avoid saving them to any persistent documents other than <code>.Renviron</code>.</p>
-<div class="sourceCode" id="cb139"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb139-1"><a href="cloud.html#cb139-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.getenv</span>(<span class="st">&quot;AWS_ACCESS_KEY_ID&quot;</span>)</span>
-<span id="cb139-2"><a href="cloud.html#cb139-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;AKIAIOSFODNN7EXAMPLE&quot;</span></span>
-<span id="cb139-3"><a href="cloud.html#cb139-3" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.getenv</span>(<span class="st">&quot;AWS_SECRET_ACCESS_KEY&quot;</span>)</span>
-<span id="cb139-4"><a href="cloud.html#cb139-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY&quot;</span></span>
-<span id="cb139-5"><a href="cloud.html#cb139-5" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.getenv</span>(<span class="st">&quot;AWS_DEFAULT_REGION&quot;</span>)</span>
-<span id="cb139-6"><a href="cloud.html#cb139-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;us-east-1&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb136"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb136-1"><a href="cloud.html#cb136-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.getenv</span>(<span class="st">&quot;AWS_ACCESS_KEY_ID&quot;</span>)</span>
+<span id="cb136-2"><a href="cloud.html#cb136-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;AKIAIOSFODNN7EXAMPLE&quot;</span></span>
+<span id="cb136-3"><a href="cloud.html#cb136-3" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.getenv</span>(<span class="st">&quot;AWS_SECRET_ACCESS_KEY&quot;</span>)</span>
+<span id="cb136-4"><a href="cloud.html#cb136-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY&quot;</span></span>
+<span id="cb136-5"><a href="cloud.html#cb136-5" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.getenv</span>(<span class="st">&quot;AWS_DEFAULT_REGION&quot;</span>)</span>
+<span id="cb136-6"><a href="cloud.html#cb136-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;us-east-1&quot;</span></span></code></pre></div>
 </div>
 <div id="create-s3-buckets" class="section level3" number="8.2.3">
 <h3><span class="header-section-number">8.2.3</span> Create S3 buckets</h3>
 <p>Now, you are ready to create one or more <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingBucket.html">S3 buckets</a> for your <code>targets</code> pipeline. Each pipeline should have its own set of buckets. Create one through the web console or with <code>aws.s3::put_bucket()</code>.</p>
-<div class="sourceCode" id="cb140"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb140-1"><a href="cloud.html#cb140-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(aws.s3)</span>
-<span id="cb140-2"><a href="cloud.html#cb140-2" aria-hidden="true" tabindex="-1"></a><span class="fu">put_bucket</span>(<span class="st">&quot;my-test-bucket-25edb4956460647d&quot;</span>)</span>
-<span id="cb140-3"><a href="cloud.html#cb140-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
+<div class="sourceCode" id="cb137"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb137-1"><a href="cloud.html#cb137-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(aws.s3)</span>
+<span id="cb137-2"><a href="cloud.html#cb137-2" aria-hidden="true" tabindex="-1"></a><span class="fu">put_bucket</span>(<span class="st">&quot;my-test-bucket-25edb4956460647d&quot;</span>)</span>
+<span id="cb137-3"><a href="cloud.html#cb137-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
 <p>Sign in to <a href="https://s3.console.aws.amazon.com/s3" class="uri">https://s3.console.aws.amazon.com/s3</a> to verify that the bucket exists.</p>
 </div>
 <div id="configure-the-pipeline" class="section level3" number="8.2.4">
@@ -326,46 +326,46 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Supply AWS-powered storage formats to <code>tar_option_set()</code> and/or <code>tar_target()</code>. See the <a href="https://wlandau.github.io/targets/reference/tar_target.html#arguments"><code>tar_target()</code> help file</a> for the full list of formats.</li>
 </ol>
 <p>Your <code>_targets.R</code> file will look something like this.</p>
-<div class="sourceCode" id="cb141"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb141-1"><a href="cloud.html#cb141-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example _targets.R</span></span>
-<span id="cb141-2"><a href="cloud.html#cb141-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb141-3"><a href="cloud.html#cb141-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">resources =</span> <span class="fu">list</span>(<span class="at">bucket =</span> <span class="st">&quot;my-test-bucket-25edb4956460647d&quot;</span>))</span>
-<span id="cb141-4"><a href="cloud.html#cb141-4" aria-hidden="true" tabindex="-1"></a>write_mean <span class="ot">&lt;-</span> <span class="cf">function</span>(data) {</span>
-<span id="cb141-5"><a href="cloud.html#cb141-5" aria-hidden="true" tabindex="-1"></a>  tmp <span class="ot">&lt;-</span> <span class="fu">tempfile</span>()</span>
-<span id="cb141-6"><a href="cloud.html#cb141-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">writeLines</span>(<span class="fu">as.character</span>(<span class="fu">mean</span>(data)), tmp)</span>
-<span id="cb141-7"><a href="cloud.html#cb141-7" aria-hidden="true" tabindex="-1"></a>  tmp</span>
-<span id="cb141-8"><a href="cloud.html#cb141-8" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb141-9"><a href="cloud.html#cb141-9" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb141-10"><a href="cloud.html#cb141-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data, <span class="fu">rnorm</span>(<span class="dv">5</span>), <span class="at">format =</span> <span class="st">&quot;aws_qs&quot;</span>),</span>
-<span id="cb141-11"><a href="cloud.html#cb141-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(mean_file, <span class="fu">write_mean</span>(data), <span class="at">format =</span> <span class="st">&quot;aws_file&quot;</span>)</span>
-<span id="cb141-12"><a href="cloud.html#cb141-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb138"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb138-1"><a href="cloud.html#cb138-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example _targets.R</span></span>
+<span id="cb138-2"><a href="cloud.html#cb138-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb138-3"><a href="cloud.html#cb138-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">resources =</span> <span class="fu">list</span>(<span class="at">bucket =</span> <span class="st">&quot;my-test-bucket-25edb4956460647d&quot;</span>))</span>
+<span id="cb138-4"><a href="cloud.html#cb138-4" aria-hidden="true" tabindex="-1"></a>write_mean <span class="ot">&lt;-</span> <span class="cf">function</span>(data) {</span>
+<span id="cb138-5"><a href="cloud.html#cb138-5" aria-hidden="true" tabindex="-1"></a>  tmp <span class="ot">&lt;-</span> <span class="fu">tempfile</span>()</span>
+<span id="cb138-6"><a href="cloud.html#cb138-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">writeLines</span>(<span class="fu">as.character</span>(<span class="fu">mean</span>(data)), tmp)</span>
+<span id="cb138-7"><a href="cloud.html#cb138-7" aria-hidden="true" tabindex="-1"></a>  tmp</span>
+<span id="cb138-8"><a href="cloud.html#cb138-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb138-9"><a href="cloud.html#cb138-9" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb138-10"><a href="cloud.html#cb138-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data, <span class="fu">rnorm</span>(<span class="dv">5</span>), <span class="at">format =</span> <span class="st">&quot;aws_qs&quot;</span>),</span>
+<span id="cb138-11"><a href="cloud.html#cb138-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(mean_file, <span class="fu">write_mean</span>(data), <span class="at">format =</span> <span class="st">&quot;aws_file&quot;</span>)</span>
+<span id="cb138-12"><a href="cloud.html#cb138-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 </div>
 <div id="run-the-pipeline-1" class="section level3" number="8.2.5">
 <h3><span class="header-section-number">8.2.5</span> Run the pipeline</h3>
 <p>When you run the pipeline above with <a href="https://wlandau.github.io/targets/reference/tar_make.html"><code>tar_make()</code></a>, your local R session computes <code>rnorm(5)</code>, saves it to a temporary <a href="https://github.com/traversc/qs"><code>qs</code></a> file on disk, and then uploads it to a file called <code>_targets/objects/data</code> on your S3 bucket. Likewise for <code>mean_file</code>, but because the format is <code>"aws_file"</code>, you are responsible for supplying the path to the file that gets uploaded to <code>_targets/objects/mean_file</code>.</p>
-<div class="sourceCode" id="cb142"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb142-1"><a href="cloud.html#cb142-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
-<span id="cb142-2"><a href="cloud.html#cb142-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target data</span></span>
-<span id="cb142-3"><a href="cloud.html#cb142-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target mean_file</span></span></code></pre></div>
+<div class="sourceCode" id="cb139"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb139-1"><a href="cloud.html#cb139-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
+<span id="cb139-2"><a href="cloud.html#cb139-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target data</span></span>
+<span id="cb139-3"><a href="cloud.html#cb139-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target mean_file</span></span></code></pre></div>
 <p>And of course, your targets stay up to date if you make no changes.</p>
-<div class="sourceCode" id="cb143"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb143-1"><a href="cloud.html#cb143-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
-<span id="cb143-2"><a href="cloud.html#cb143-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✓ skip target data</span></span>
-<span id="cb143-3"><a href="cloud.html#cb143-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✓ skip target mean_file</span></span>
-<span id="cb143-4"><a href="cloud.html#cb143-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✓ Already up to date.</span></span></code></pre></div>
+<div class="sourceCode" id="cb140"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb140-1"><a href="cloud.html#cb140-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
+<span id="cb140-2"><a href="cloud.html#cb140-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✓ skip target data</span></span>
+<span id="cb140-3"><a href="cloud.html#cb140-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✓ skip target mean_file</span></span>
+<span id="cb140-4"><a href="cloud.html#cb140-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✓ Already up to date.</span></span></code></pre></div>
 </div>
 <div id="manage-the-data" class="section level3" number="8.2.6">
 <h3><span class="header-section-number">8.2.6</span> Manage the data</h3>
 <p>Log into <a href="https://s3.console.aws.amazon.com/s3" class="uri">https://s3.console.aws.amazon.com/s3</a>. You should see objects <code>_targets/objects/data</code> and <code>_targets/objects/mean_file</code> in your bucket. To download this data locally, use <code>tar_read()</code> and <code>tar_load()</code> like before. These functions download the data from the bucket and load it into R.</p>
-<div class="sourceCode" id="cb144"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb144-1"><a href="cloud.html#cb144-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(data)</span>
-<span id="cb144-2"><a href="cloud.html#cb144-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] -0.74654607 -0.59593497 -1.57229983  0.40915323  0.02579023</span></span></code></pre></div>
+<div class="sourceCode" id="cb141"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb141-1"><a href="cloud.html#cb141-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(data)</span>
+<span id="cb141-2"><a href="cloud.html#cb141-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] -0.74654607 -0.59593497 -1.57229983  0.40915323  0.02579023</span></span></code></pre></div>
 <p>The <code>"aws_file"</code> format is different from the other AWS-powered formats. <code>tar_read()</code> and <code>tar_load()</code> download the object to a temporary file and return the path so you can process it yourself.<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a></p>
-<div class="sourceCode" id="cb145"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb145-1"><a href="cloud.html#cb145-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_load</span>(mean_file)</span>
-<span id="cb145-2"><a href="cloud.html#cb145-2" aria-hidden="true" tabindex="-1"></a>mean_file</span>
-<span id="cb145-3"><a href="cloud.html#cb145-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;_targets/scratch/mean_fileff086e70876d&quot;</span></span></code></pre></div>
-<div class="sourceCode" id="cb146"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb146-1"><a href="cloud.html#cb146-1" aria-hidden="true" tabindex="-1"></a><span class="fu">readLines</span>(mean_file)</span>
-<span id="cb146-2"><a href="cloud.html#cb146-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;-0.495967480886693&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb142"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb142-1"><a href="cloud.html#cb142-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_load</span>(mean_file)</span>
+<span id="cb142-2"><a href="cloud.html#cb142-2" aria-hidden="true" tabindex="-1"></a>mean_file</span>
+<span id="cb142-3"><a href="cloud.html#cb142-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;_targets/scratch/mean_fileff086e70876d&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb143"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb143-1"><a href="cloud.html#cb143-1" aria-hidden="true" tabindex="-1"></a><span class="fu">readLines</span>(mean_file)</span>
+<span id="cb143-2"><a href="cloud.html#cb143-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;-0.495967480886693&quot;</span></span></code></pre></div>
 <p>When you are done with these temporary files and the pipeline is no longer running, you can safely remove everything in <code>_targets/scratch/</code>.</p>
-<div class="sourceCode" id="cb147"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb147-1"><a href="cloud.html#cb147-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unlink</span>(<span class="st">&quot;_targets/scratch/&quot;</span>, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb144"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb144-1"><a href="cloud.html#cb144-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unlink</span>(<span class="st">&quot;_targets/scratch/&quot;</span>, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 <p>Lastly, if you want to erase the whole project or start over from scratch, consider removing the S3 bucket to avoid incurring storage fees. The easiest way to do this is through the <a href="https://s3.console.aws.amazon.com/s3">S3 console</a>. You can alternatively call <code>aws.s3::delete_bucket()</code>, but you have to make sure the bucket is empty first.</p>
-<div class="sourceCode" id="cb148"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb148-1"><a href="cloud.html#cb148-1" aria-hidden="true" tabindex="-1"></a><span class="fu">delete_bucket</span>(<span class="st">&quot;my-test-bucket-25edb4956460647d&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb145"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb145-1"><a href="cloud.html#cb145-1" aria-hidden="true" tabindex="-1"></a><span class="fu">delete_bucket</span>(<span class="st">&quot;my-test-bucket-25edb4956460647d&quot;</span>)</span></code></pre></div>
 
 </div>
 </div>
