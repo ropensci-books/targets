@@ -29,9 +29,21 @@ tar_script({
 ```
 
 ```{r}
-tar_visnetwork()
+# _targets.R
+library(targets)
+list(
+  tar_target(data, get_data()),
+  tar_target(fast_fit, fit_small_model(data)),
+  tar_target(slow_fit, fit_slow_model(data)),
+  tar_target(plot_1, make_plot(fast_fit)),
+  tar_target(plot_2, make_plot(slow_fit))
+)
 ```
 
+```{r, eval = TRUE}
+# R console
+tar_visnetwork()
+```
 
 When we run this pipeline with high-performance computing, `targets` automatically knows to wait for `data` to finish running before moving on to the other targets. Once `data` is finished, it moves on to targets `fast_fit` and `slow_fit`. If `fast_fit` finishes before `slow_fit`, target `plot_1` begins even as `slow_fit` is still running. Unlike [`drake`](https://github.com/ropensci/drake), `targets` applies this behavior not only to stem targets, but also to branches of patterns.
 
