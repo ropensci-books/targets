@@ -16,7 +16,7 @@ The `targets` packages supports shorthand to create large pipelines. Dynamic bra
 
 To use dynamic branching, set the `pattern` argument of `tar_target()`. A pattern is a dynamic branching specification expressed in terms of functional programming. The following minimal example explores the mechanics of patterns (and examples of branching in real-world projects are [linked from here](https://wlandau.github.io/targets/index.html#examples)).
 
-```{r}
+```{r, echo = FALSE}
 library(targets)
 library(tidyverse)
 tar_script({
@@ -29,6 +29,19 @@ tar_script({
     tar_target(z2, length(y), pattern = map(y))
   )
 })
+```
+
+```{r, eval = FALSE}
+# _targets.R
+library(targets)
+library(tidyverse)
+list(
+  tar_target(w, c(1, 2)),
+  tar_target(x, c(10, 20)),
+  tar_target(y, w + x, pattern = map(w, x)),
+  tar_target(z, sum(y)),
+  tar_target(z2, length(y), pattern = map(y))
+)
 ```
 
 ```{r}
@@ -69,7 +82,7 @@ tar_read(z2)
 
 These patterns are composable. Below, target `z` creates six branches, one for each combination of `w` and (`x`, `y`) pair. The pattern `cross(w, map(x, y))` is equivalent to `tidyr::crossing(w, tidyr::nesting(x, y))`.
 
-```{r}
+```{r, echo = FALSE}
 tar_script({
   options(crayon.enabled = FALSE)
   list(
@@ -85,6 +98,21 @@ tar_script({
 })
 ```
 
+```{r, eval = FALSE}
+# _targets.R
+library(targets)
+list(
+  tar_target(w_comp, seq_len(2)),
+  tar_target(x_comp, head(letters, 3)),
+  tar_target(y_comp, head(LETTERS, 3)),
+  tar_target(
+    z_comp,
+    data.frame(w = w_comp, x = x_comp, y = y_comp),
+    pattern = cross(w_comp, map(x_comp, y_comp))
+  )
+)
+```
+
 ```{r}
 tar_make()
 ```
@@ -92,6 +120,88 @@ tar_make()
 ```{r}
 tar_read(z_comp)
 ```
+
+## Branch provenance
+
+Using `tar_branches()`, you can find out the dependency relationships among individual branches. In the example pipeline below, we can find out the branch of `y` that each branch of `z` depends on. 
+
+```{r, echo = FALSE}
+tar_script({
+  options(crayon.enabled = FALSE)
+  list(
+    tar_target(x, seq_len(3)),
+    tar_target(y, x + 1, pattern = map(x)),
+    tar_target(z, y + 1, pattern = map(y))
+  )
+})
+```
+
+```{r, eval = FALSE}
+# _targets.R
+library(targets)
+list(
+  tar_target(x, seq_len(3)),
+  tar_target(y, x + 1, pattern = map(x)),
+  tar_target(z, y + 1, pattern = map(y))
+)
+```
+
+```{r}
+tar_make()
+```
+
+```{r}
+branches <- tar_branches(z, map(y))
+branches
+```
+
+```{r}
+tar_read_raw(branches$y[2])
+```
+
+However, `tar_branches()` is not always helpful: for example, if we look at how `y` branches over `x`. `x` does not use dynamic branching, so `tar_branches()` does not return meaningful branch names.
+
+```{r}
+branches <- tar_branches(y, map(x))
+branches
+```
+
+```{r, error = TRUE}
+tar_read_raw(branches$x[2])
+```
+
+In situations like this, it is best to proactively write targets that keep track of information about their upstream branches. Data frames and `tibble`s are useful for this.
+
+```{r, echo = FALSE}
+tar_script({
+  library(tibble)
+  options(crayon.enabled = FALSE)
+  list(
+    tar_target(x, seq_len(3)),
+    tar_target(y, tibble(x = x, y = x + 1), pattern = map(x))
+  )
+})
+```
+
+```{r, eval = FALSE}
+# _targets.R
+library(targets)
+library(tibble)
+list(
+  tar_target(x, seq_len(3)),
+  tar_target(y, tibble(x = x, y = x + 1), pattern = map(x))
+)
+```
+
+```{r}
+tar_make()
+```
+
+```{r}
+tar_read(y)
+```
+
+## Testing patterns
 
 To check the correctness of a pattern without running the pipeline, use [`tar_pattern()`](https://wlandau.github.io/targets/reference/tar_pattern.html). Simply supply the pattern itself and the length of each dependency target. The branch names in the data frames below are made up, but they convey a high-level picture of the branching structure.
 
@@ -127,6 +237,8 @@ tar_pattern(
 Dynamic branching over files is tricky. A target with `format = "file"` treats the entire set of files as an irreducible bundle. That means in order to branch over files downstream, each file must already have its own branch.
 
 ```{r, eval = FALSE}
+# _targets.R
+library(targets)
 list(
   tar_target(paths, c("a.csv", "b.csv")),
   tar_target(files, paths, format = "file", pattern = map(paths)),
@@ -137,6 +249,8 @@ list(
 The [`tar_files()`](https://wlandau.github.io/tarchetypes/reference/tar_files.html) function from the [`tarchetypes`](https://github.com/wlandau/tarchetypes) package is shorthand for the first two targets above.
 
 ```{r, eval = FALSE}
+# _targets.R
+library(targets)
 library(tarchetypes)
 list(
   tar_files(files, c("a.csv", "b.csv")),
@@ -148,13 +262,13 @@ list(
 
 There are many ways to slice up a stem for branching, and there are many ways to aggregate the branches of a pattern.^[Slicing is always the same when we branch over an existing pattern. If we have `tar_target(y, x, pattern = map(x))` and `x` is another pattern, then each branch of `y` always gets a branch of `x` regardless of the iteration method. Likewise, the aggregation of stems does not depend on the iteration method because every stem is already aggregated.] The `iteration` argument of `tar_target()` controls the splitting and aggregation protocol on a target-by-target basis, and you can set the default for all targets with the analogous argument of `tar_option_set()`.
 
-### Vector
+### Vector iteration
 
 `targets` uses vector iteration by default, and you can opt into this behavior by setting `iteration = "vector"` in `tar_target()`. In vector iteration, `targets` uses the [`vctrs`](https://vctrs.r-lib.org/) package to split stems and aggregate branches. That means `vctrs::vec_slice()` slices up stems like `x` for mapping, and `vctrs::vec_c()` aggregates patterns like `y` for operations like `tar_read()`.
 
 For atomic vectors like in the example above, this behavior is already intuitive. But if we map over a data frame, each branch will get a row of the data frame due to vector iteration.
 
-```{r}
+```{r, echo = FALSE}
 tar_script({
   options(crayon.enabled = FALSE, tidyverse.quiet = TRUE)
   print_and_return <- function(x) {
@@ -168,6 +282,18 @@ tar_script({
 })
 ```
 
+```{r, eval = FALSE}
+library(targets)
+print_and_return <- function(x) {
+  print(x)
+  x
+}
+list(
+  tar_target(x, data.frame(a = c(1, 2), b = c("a", "b"))),
+  tar_target(y, print_and_return(x), pattern = map(x))
+)
+```
+
 ```{r}
 tar_make()
 ```
@@ -178,11 +304,11 @@ And since `y` also has iteration = `"vector"`, the aggregate of `y` is a single 
 tar_read(y)
 ```
 
-### List
+### List iteration
 
 List iteration splits and aggregates targets as simple lists. If target `x` has `"list"` iteration, all branches of downstream patterns will get `x[[1]]`, `x[[2]]`, and so on. (`vctrs::vec_slice()` behaves more like `[]` than `[[]]`.)
 
-```{r}
+```{r, echo = FALSE}
 tar_script({
   options(crayon.enabled = FALSE, tidyverse.quiet = TRUE)
   print_and_return <- function(x) {
@@ -201,6 +327,24 @@ tar_script({
 })
 ```
 
+```{r, eval = FALSE}
+# _targets.R
+library(targets)
+print_and_return <- function(x) {
+  print(x)
+  x
+}
+list(
+  tar_target(
+    x,
+    data.frame(a = c(1, 2), b = c("a", "b")),
+    iteration = "list"
+  ),
+  tar_target(y, print_and_return(x), pattern = map(x)),
+  tar_target(z, x, pattern = map(x), iteration = "list")
+)
+```
+
 ```{r}
 tar_make()
 ```
@@ -215,7 +359,7 @@ tar_read(y)
 tar_read(z)
 ```
 
-### Group
+### Group iteration
 
 Group iteration brings `dplyr::group_by()` functionality to patterns. This way, we can map or cross over custom subsets of rows. Consider the following data frame.
 
@@ -235,11 +379,10 @@ To map over the groups of rows defined by the `id` column, we
 
 Put together, the pipeline looks like this.
 
-```{r}
+```{r, echo = FALSE}
 tar_script({
 options(crayon.enabled = FALSE, tidyverse.quiet = TRUE)
 tar_option_set(packages = "tidyverse")
-
 list(
   tar_target(
     data,
@@ -259,6 +402,30 @@ list(
   )
 )
 })
+```
+
+```{r, eval = FALSE}
+# _targets.R
+library(targets)
+tar_option_set(packages = "tidyverse")
+list(
+  tar_target(
+    data,
+    data.frame(
+      x = seq_len(6),
+      id = rep(letters[seq_len(3)], each = 2)
+    ) %>%
+      group_by(id) %>%
+      tar_group(),
+    iteration = "group"
+  ),
+  tar_target(
+    subsets,
+    data,
+    pattern = map(data),
+    iteration = "list"
+  )
+)
 ```
 
 ```{r}
@@ -308,7 +475,7 @@ data.frame(
 
 Branches are arranged in increasing order with respect to the integers in `tar_group`.
 
-```{r}
+```{r, echo = FALSE}
 tar_script({
 options(crayon.enabled = FALSE, tidyverse.quiet = TRUE)
 tar_option_set(packages = "tidyverse")
@@ -336,6 +503,35 @@ list(
   )
 )
 })
+```
+
+```{r, eval = FALSE}
+# _targets.R
+library(targets)
+tar_option_set(packages = "tidyverse")
+
+flip_order <- function(x) {
+  ordered(x, levels = sort(unique(x), decreasing = TRUE))
+}
+
+list(
+  tar_target(
+    data,
+    data.frame(
+      x = seq_len(6),
+      id = flip_order(rep(letters[seq_len(3)], each = 2))
+    ) %>%
+      group_by(id) %>%
+      tar_group(),
+    iteration = "group"
+  ),
+  tar_target(
+    subsets,
+    data,
+    pattern = map(data),
+    iteration = "list"
+  )
+)
 ```
 
 ```{r}
