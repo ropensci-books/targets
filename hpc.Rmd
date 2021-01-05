@@ -5,7 +5,7 @@ knitr::opts_knit$set(root.dir = fs::dir_create(tempfile()))
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = FALSE)
 ```
 
-```{r, message = FALSE, warning = FALSE, echo = FALSE}
+```{r, message = FALSE, warning = FALSE, echo = FALSE, eval = TRUE}
 library(targets)
 ```
 
@@ -16,7 +16,7 @@ library(targets)
 
 Practical real-world examples of high-performance computing in `targets` can be found at the examples [linked from here](https://wlandau.github.io/targets/index.html#examples). But for the purposes of explaining the mechanics of the package, consider the following sketch of a pipeline.
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, eval = TRUE}
 tar_script({
   list(
     tar_target(data, get_data()),
