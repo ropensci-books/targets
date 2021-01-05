@@ -143,12 +143,16 @@ library(targets)
 library(tidyverse)
 options(crayon.enabled = FALSE)
 tar_option_set(error = "workspace")
-f <- function(x) {
-  stopifnot(x < 4)
+f <- function(arg, value) {
+  stopifnot(arg < 4)
 }
 list(
   tar_target(x, seq_len(4)),
-  tar_target(y, f(x), pattern = map(x)) # The branching chapter describes patterns.
+  tar_target(
+    y,
+    f(arg = x, value = "succeeded", a = 1, b = 2, key = "my_api_key"),
+    pattern = map(x) # The branching chapter describes patterns.
+  )
 )
 ```
 
@@ -183,33 +187,37 @@ print(failed)
 tar_workspace(y_05f206d7)
 ```
 
-We now have the dependencies of `y_05f206d7` in memory, which allows you to try out any failed function calls interactively.
+We now have the dependencies of `y_05f206d7` in memory, which allows you to try out any failed function calls in your local R session. ^[In addition, current random number generator seed (`.Random.seed`) is also the value `y_05f206d7` started with.] ^[When you are finished debugging, you can remove all workspace files with `tar_destroy(destroy = "workspaces")`.]
 
 ```{r, eval = FALSE}
 print(x)
 #> [1] 4
-f(x)
+f(arg = 0, value = "my_value", a = 1, b = 2, key = "my_api_key")
+#> [1] "my_value"
+f(arg = x, value = "my_value", a = 1, b = 2, key = "my_api_key")
 #> Error in f(x) : x < 4 is not TRUE
 ```
 
-
-In addition, current random number generator seed (`.Random.seed`) is also the value `y_05f206d7` started with.
-
-Remove all workspace files with:
+Keep in mind that that although the dependencies of `y_05f206d7` are in memory, the arguments of `f()` are not.
 
 ```{r, eval = FALSE}
-tar_destroy(destroy = "workspaces")
+arg
+#> Error: object 'arg' not found
+value
+#> Error: object 'value' not found
 ```
 
 ### Interactive debugging
 
-Interactive debugging is a way to troubleshoot targets without saving or loading workspace files. Here are the steps.
+Interactive debugging offers a [`browser()`](https://adv-r.hadley.nz/debugging.html#browser)-like debugging experience. Unlike workspaces, which most users access after the pipline finishes, interactive debugging lets you step through a target's command while the target is running. This approach is not feasible if the pipeline is running in a non-interactive process or requires resources that are only available on a remote compute node of a cluster. However, when possible, it may be more convenient than workspaces. In our example above, `tar_workspace()` automatically loaded a branch of the dependency `x`, but the user still needed to manually supply the rest of the arguments of `f()`. During interactive debugging, you will instead be able to call `debug(f)` and then press `c` to immediately drop into the function environment where the remaining variables are already defined.
+
+Follow these steps to use interactive debugging.
 
 1. In `_targets.R`, write a call to `tar_option_set()` with `debug` equal to the target name. Consider also setting `cue` equal to `tar_cue(mode = "never")` so `tar_make()` reaches the target you want to debug more quickly.
 1. Launch a fresh clean new interactive R session with the `_targets.R` script in your working directory.
 1. Run `targets::tar_make()` (or `targets::tar_make_clustermq()`, or `targets::tar_make_future()`) with `callr_function = NULL`.
 1. When `targets` reaches the target you selected to debug, your R session will start an interactive debugger, and you should see `Browse[1]>` in your console. Run `targets::tar_name()` to verify that you are debugging the correct target.
-1. Interactively run any R code that helps you troubleshoot the problem.^[Because of the way `targets` manages environments, `ls()` will not report all your global objects, but you should still be able to access them.]
+1. Interactively run any R code that helps you troubleshoot the problem. For example, if the target invokes a function `f()`, enter `debug(f)` and then `c` to immediately enter the function's calling environment where all its arguments are defined.
 
 To try it out yourself, write the following `_targets.R` file.
 
@@ -217,7 +225,7 @@ To try it out yourself, write the following `_targets.R` file.
 # _targets.R
 library(targets)
 tar_option_set(debug = "b")
-f <- function(x) x + 1
+f <- function(x, another_arg = 123) x + another_arg
 list(
   tar_target(a, 1),
   tar_target(b, f(a))
@@ -252,17 +260,23 @@ Browse[1]> a
 Browse[1]> ls(parent.env(environment()))
 #> [1] "f"
 Browse[1]> f(1)
-#> [1] 2
+#> [1] 124
 ```
 
-Press `n` or `c` to advance to the next line or breakpoint.
+Enter `debug(f)` to debug the function `f()`, and press `c` to enter the function's calling environment where `another_arg` is defined.
 
 ```{r, eval = FALSE}
-Browse[1]> n
->
+Browse[1]> debug(f)
+Browse[1]> c
+#> debugging in: f(a)
+#> debug at _targets.R#3: x + another_arg
+Browse[2]> ls()
+#> [1] "another_arg" "x"   
+Browse[2]> another_arg
+#> [1] 123
 ```
 
-For more on debugging R code, visit [this page](https://rstats.wtf/debugging-r-code.html).
+Visit [this page](https://rstats.wtf/debugging-r-code.html) for more information on debugging R code.
 
 ## Performance
 
