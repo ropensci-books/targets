@@ -29,7 +29,7 @@ _targets/
 └── scratch/ # tar_make() deletes this folder after it finishes.
 ```
 
-Spreadsheets `_targets/meta/meta` and `_targets/meta_progress` keep track of target metadata, and the `scratch/` directory contains temporary files which can be safely deleted after `tar_make()` finishes. The `_targets/objects/` folder contains the return values of the targets themselves.
+Spreadsheets `_targets/meta/meta` and `_targets/meta/progress` keep track of target metadata, and the `scratch/` directory contains temporary files which can be safely deleted after `tar_make()` finishes. The `_targets/objects/` folder contains the return values of the targets themselves.
 
 A typical target returns an R object: for example, a dataset with `tar_target(dataset, data.frame(x = rnorm(1000)), format = "fst")` or a fitted model `tar_target(model, biglm(ozone ~ temp + wind), format = "qs")`. When you run the pipeline, `targets` computes this object and saves it as a file in `_targets/objects/`. The file name in `_targets/objects/` is always the target name, and type of the file is determined by the `format` argument of `tar_target()`, and formats `"fst"` and `"qs"` are two of many choices explained in the help file of `tar_target()`. No matter what format you pick, `targets` watches the file for changes and recomputes the target in `tar_make()` if the the file gets corrupted (unless you suppress the file cue with `tar_target(cue = tar_cue(file = FALSE))`).
 
