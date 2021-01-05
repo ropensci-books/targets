@@ -178,6 +178,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.7.2" data-path="practice.html"><a href="practice.html#interactive-debugging"><i class="fa fa-check"></i><b>3.7.2</b> Interactive debugging</a></li>
 </ul></li>
 <li class="chapter" data-level="3.8" data-path="practice.html"><a href="practice.html#performance"><i class="fa fa-check"></i><b>3.8</b> Performance</a></li>
+<li class="chapter" data-level="3.9" data-path="practice.html"><a href="practice.html#cleaning-up"><i class="fa fa-check"></i><b>3.9</b> Cleaning up</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="files.html"><a href="files.html"><i class="fa fa-check"></i><b>4</b> External files and literate programming</a>
 <ul>
@@ -489,6 +490,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>When a web browser pops up with <code>pprof</code>, select the flame graph and screenshot it.</li>
 <li>Post the flame graph, along with any code and data you can share, to the <a href="https://github.com/wlandau/targets/issues"><code>targets</code> package issue tracker</a>. The maintainer will have a look and try to make the package faster for your use case if speedups are possible.</li>
 </ol>
+</div>
+<div id="cleaning-up" class="section level2" number="3.9">
+<h2><span class="header-section-number">3.9</span> Cleaning up</h2>
+<p>There are <a href="https://wlandau.github.io/targets/reference/index.html#section-clean">multiple functions</a> to help you manually remove data or force targets to rerun.</p>
+<ul>
+<li><a href="https://wlandau.github.io/targets/reference/tar_destroy.html"><code>tar_destroy()</code></a> is by far the most commonly used cleaning function. It removes the <code>_targets/</code> data store completely, deleting all the results from <a href="https://wlandau.github.io/targets/reference/tar_make.html"><code>tar_make()</code></a> except for external files. Use it if you intend to start the pipeline from scratch without any trace of a previous run.</li>
+<li><a href="https://wlandau.github.io/targets/reference/tar_prune.html"><code>tar_prune()</code></a> deletes the data and metadata of all the targets no longer present in your current <code>_targets.R</code> file. This is useful if you recently worked through multiple changes to your project and are now trying to discard irrelevant data while keeping the results that still matter.</li>
+<li><a href="https://wlandau.github.io/targets/reference/tar_delete.html"><code>tar_delete()</code></a> is more selective than <a href="https://wlandau.github.io/targets/reference/tar_destroy.html"><code>tar_destroy()</code></a> and <a href="https://wlandau.github.io/targets/reference/tar_prune.html"><code>tar_prune()</code></a>. It removes the individual data files of a given set of targets from <code>_targets/objects/</code> while leaving the metadata in <code>_targets/meta/meta</code> alone. If you have a small number of data-heavy targets you need to discard to conserve storage, this function can help.</li>
+<li><a href="https://wlandau.github.io/targets/reference/tar_invalidate.html"><code>tar_invalidate()</code></a> is the opposite of <a href="https://wlandau.github.io/targets/reference/tar_delete.html"><code>tar_delete()</code></a>: for the selected targets, it deletes the metadata in <code>_targets/meta/meta</code> but keeps the return values in <code>_targets/objects/</code>. After invalidation, you will still be able to locate the data files with <a href="https://wlandau.github.io/targets/reference/tar_path.html"><code>tar_path()</code></a> and manually salvage them in an emergency. However, <a href="https://wlandau.github.io/targets/reference/tar_load.html"><code>tar_load()</code></a> and <a href="https://wlandau.github.io/targets/reference/tar_read.html"><code>tar_read()</code></a> will not be able to read the data into R, and subesequent calls to <a href="https://wlandau.github.io/targets/reference/tar_make.html"><code>tar_make()</code></a> will attempt to rebuild those targets.</li>
+</ul>
 
 </div>
 </div>
