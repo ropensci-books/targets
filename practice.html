@@ -400,13 +400,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb27-4"><a href="practice.html#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb27-5"><a href="practice.html#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">crayon.enabled =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb27-6"><a href="practice.html#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">error =</span> <span class="st">&quot;workspace&quot;</span>)</span>
-<span id="cb27-7"><a href="practice.html#cb27-7" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
-<span id="cb27-8"><a href="practice.html#cb27-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(x <span class="sc">&lt;</span> <span class="dv">4</span>)</span>
+<span id="cb27-7"><a href="practice.html#cb27-7" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="cf">function</span>(arg, value) {</span>
+<span id="cb27-8"><a href="practice.html#cb27-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(arg <span class="sc">&lt;</span> <span class="dv">4</span>)</span>
 <span id="cb27-9"><a href="practice.html#cb27-9" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb27-10"><a href="practice.html#cb27-10" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
 <span id="cb27-11"><a href="practice.html#cb27-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(x, <span class="fu">seq_len</span>(<span class="dv">4</span>)),</span>
-<span id="cb27-12"><a href="practice.html#cb27-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(y, <span class="fu">f</span>(x), <span class="at">pattern =</span> <span class="fu">map</span>(x)) <span class="co"># The branching chapter describes patterns.</span></span>
-<span id="cb27-13"><a href="practice.html#cb27-13" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<span id="cb27-12"><a href="practice.html#cb27-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb27-13"><a href="practice.html#cb27-13" aria-hidden="true" tabindex="-1"></a>    y,</span>
+<span id="cb27-14"><a href="practice.html#cb27-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">f</span>(<span class="at">arg =</span> x, <span class="at">value =</span> <span class="st">&quot;succeeded&quot;</span>, <span class="at">a =</span> <span class="dv">1</span>, <span class="at">b =</span> <span class="dv">2</span>, <span class="at">key =</span> <span class="st">&quot;my_api_key&quot;</span>),</span>
+<span id="cb27-15"><a href="practice.html#cb27-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">pattern =</span> <span class="fu">map</span>(x) <span class="co"># The branching chapter describes patterns.</span></span>
+<span id="cb27-16"><a href="practice.html#cb27-16" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb27-17"><a href="practice.html#cb27-17" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="practice.html#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console:</span></span>
 <span id="cb28-2"><a href="practice.html#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
 <span id="cb28-3"><a href="practice.html#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target x</span></span>
@@ -427,30 +431,35 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb29-6"><a href="practice.html#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;y_05f206d7&quot;</span></span></code></pre></div>
 <p><code>tar_workspace()</code> reads the special metadata in the workspace file and then loads the target’s dependencies from various locations in <code>_targets/objects</code> and/or the <a href="cloud.html#cloud">cloud</a>. It also sets the random number generator seed to the seed of the target, loads the required packages, and runs <code>_targets.R</code> to load other global object dependencies such as functions.</p>
 <div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="practice.html#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_workspace</span>(y_05f206d7)</span></code></pre></div>
-<p>We now have the dependencies of <code>y_05f206d7</code> in memory, which allows you to try out any failed function calls interactively.</p>
+<p>We now have the dependencies of <code>y_05f206d7</code> in memory, which allows you to try out any failed function calls in your local R session. <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> <a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a></p>
 <div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="practice.html#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(x)</span>
 <span id="cb31-2"><a href="practice.html#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 4</span></span>
-<span id="cb31-3"><a href="practice.html#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(x)</span>
-<span id="cb31-4"><a href="practice.html#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error in f(x) : x &lt; 4 is not TRUE</span></span></code></pre></div>
-<p>In addition, current random number generator seed (<code>.Random.seed</code>) is also the value <code>y_05f206d7</code> started with.</p>
-<p>Remove all workspace files with:</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="practice.html#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_destroy</span>(<span class="at">destroy =</span> <span class="st">&quot;workspaces&quot;</span>)</span></code></pre></div>
+<span id="cb31-3"><a href="practice.html#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(<span class="at">arg =</span> <span class="dv">0</span>, <span class="at">value =</span> <span class="st">&quot;my_value&quot;</span>, <span class="at">a =</span> <span class="dv">1</span>, <span class="at">b =</span> <span class="dv">2</span>, <span class="at">key =</span> <span class="st">&quot;my_api_key&quot;</span>)</span>
+<span id="cb31-4"><a href="practice.html#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;my_value&quot;</span></span>
+<span id="cb31-5"><a href="practice.html#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(<span class="at">arg =</span> x, <span class="at">value =</span> <span class="st">&quot;my_value&quot;</span>, <span class="at">a =</span> <span class="dv">1</span>, <span class="at">b =</span> <span class="dv">2</span>, <span class="at">key =</span> <span class="st">&quot;my_api_key&quot;</span>)</span>
+<span id="cb31-6"><a href="practice.html#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error in f(x) : x &lt; 4 is not TRUE</span></span></code></pre></div>
+<p>Keep in mind that that although the dependencies of <code>y_05f206d7</code> are in memory, the arguments of <code>f()</code> are not.</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="practice.html#cb32-1" aria-hidden="true" tabindex="-1"></a>arg</span>
+<span id="cb32-2"><a href="practice.html#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error: object &#39;arg&#39; not found</span></span>
+<span id="cb32-3"><a href="practice.html#cb32-3" aria-hidden="true" tabindex="-1"></a>value</span>
+<span id="cb32-4"><a href="practice.html#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error: object &#39;value&#39; not found</span></span></code></pre></div>
 </div>
 <div id="interactive-debugging" class="section level3" number="3.7.2">
 <h3><span class="header-section-number">3.7.2</span> Interactive debugging</h3>
-<p>Interactive debugging is a way to troubleshoot targets without saving or loading workspace files. Here are the steps.</p>
+<p>Interactive debugging offers a <a href="https://adv-r.hadley.nz/debugging.html#browser"><code>browser()</code></a>-like debugging experience. Unlike workspaces, which most users access after the pipline finishes, interactive debugging lets you step through a target’s command while the target is running. This approach is not feasible if the pipeline is running in a non-interactive process or requires resources that are only available on a remote compute node of a cluster. However, when possible, it may be more convenient than workspaces. In our example above, <code>tar_workspace()</code> automatically loaded a branch of the dependency <code>x</code>, but the user still needed to manually supply the rest of the arguments of <code>f()</code>. During interactive debugging, you will instead be able to call <code>debug(f)</code> and then press <code>c</code> to immediately drop into the function environment where the remaining variables are already defined.</p>
+<p>Follow these steps to use interactive debugging.</p>
 <ol style="list-style-type: decimal">
 <li>In <code>_targets.R</code>, write a call to <code>tar_option_set()</code> with <code>debug</code> equal to the target name. Consider also setting <code>cue</code> equal to <code>tar_cue(mode = "never")</code> so <code>tar_make()</code> reaches the target you want to debug more quickly.</li>
 <li>Launch a fresh clean new interactive R session with the <code>_targets.R</code> script in your working directory.</li>
 <li>Run <code>targets::tar_make()</code> (or <code>targets::tar_make_clustermq()</code>, or <code>targets::tar_make_future()</code>) with <code>callr_function = NULL</code>.</li>
 <li>When <code>targets</code> reaches the target you selected to debug, your R session will start an interactive debugger, and you should see <code>Browse[1]&gt;</code> in your console. Run <code>targets::tar_name()</code> to verify that you are debugging the correct target.</li>
-<li>Interactively run any R code that helps you troubleshoot the problem.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></li>
+<li>Interactively run any R code that helps you troubleshoot the problem. For example, if the target invokes a function <code>f()</code>, enter <code>debug(f)</code> and then <code>c</code> to immediately enter the function’s calling environment where all its arguments are defined.</li>
 </ol>
 <p>To try it out yourself, write the following <code>_targets.R</code> file.</p>
 <div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="practice.html#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
 <span id="cb33-2"><a href="practice.html#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
 <span id="cb33-3"><a href="practice.html#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">debug =</span> <span class="st">&quot;b&quot;</span>)</span>
-<span id="cb33-4"><a href="practice.html#cb33-4" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="cf">function</span>(x) x <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb33-4"><a href="practice.html#cb33-4" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">another_arg =</span> <span class="dv">123</span>) x <span class="sc">+</span> another_arg</span>
 <span id="cb33-5"><a href="practice.html#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
 <span id="cb33-6"><a href="practice.html#cb33-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(a, <span class="dv">1</span>),</span>
 <span id="cb33-7"><a href="practice.html#cb33-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(b, <span class="fu">f</span>(a))</span>
@@ -473,11 +482,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb36-5"><a href="practice.html#cb36-5" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> <span class="fu">ls</span>(<span class="fu">parent.env</span>(<span class="fu">environment</span>()))</span>
 <span id="cb36-6"><a href="practice.html#cb36-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;f&quot;</span></span>
 <span id="cb36-7"><a href="practice.html#cb36-7" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> <span class="fu">f</span>(<span class="dv">1</span>)</span>
-<span id="cb36-8"><a href="practice.html#cb36-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 2</span></span></code></pre></div>
-<p>Press <code>n</code> or <code>c</code> to advance to the next line or breakpoint.</p>
-<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="practice.html#cb37-1" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> n</span>
-<span id="cb37-2"><a href="practice.html#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span></span></code></pre></div>
-<p>For more on debugging R code, visit <a href="https://rstats.wtf/debugging-r-code.html">this page</a>.</p>
+<span id="cb36-8"><a href="practice.html#cb36-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 124</span></span></code></pre></div>
+<p>Enter <code>debug(f)</code> to debug the function <code>f()</code>, and press <code>c</code> to enter the function’s calling environment where <code>another_arg</code> is defined.</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="practice.html#cb37-1" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> <span class="fu">debug</span>(f)</span>
+<span id="cb37-2"><a href="practice.html#cb37-2" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> c</span>
+<span id="cb37-3"><a href="practice.html#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; debugging in: f(a)</span></span>
+<span id="cb37-4"><a href="practice.html#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; debug at _targets.R#3: x + another_arg</span></span>
+<span id="cb37-5"><a href="practice.html#cb37-5" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">2</span>]<span class="sc">&gt;</span> <span class="fu">ls</span>()</span>
+<span id="cb37-6"><a href="practice.html#cb37-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;another_arg&quot; &quot;x&quot;   </span></span>
+<span id="cb37-7"><a href="practice.html#cb37-7" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">2</span>]<span class="sc">&gt;</span> another_arg</span>
+<span id="cb37-8"><a href="practice.html#cb37-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 123</span></span></code></pre></div>
+<p>Visit <a href="https://rstats.wtf/debugging-r-code.html">this page</a> for more information on debugging R code.</p>
 </div>
 </div>
 <div id="performance" class="section level2" number="3.8">
@@ -506,7 +521,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="footnotes">
 <hr />
 <ol start="1">
-<li id="fn1"><p>Because of the way <code>targets</code> manages environments, <code>ls()</code> will not report all your global objects, but you should still be able to access them.<a href="practice.html#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn1"><p>In addition, current random number generator seed (<code>.Random.seed</code>) is also the value <code>y_05f206d7</code> started with.<a href="practice.html#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>When you are finished debugging, you can remove all workspace files with <code>tar_destroy(destroy = "workspaces")</code>.<a href="practice.html#fnref2" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 <div style = "background: #1C356D; color: white; padding: 10px 10px 10px 25px; font-size: 1em; width: 100%;">
