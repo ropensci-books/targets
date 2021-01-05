@@ -273,54 +273,38 @@ tar_manifest()
 tar_visnetwork(targets_only = TRUE)
 ```
 
-## Metaprogram
+## Metaprogramming
 
-Custom metaprogramming is an alternative to built-in branching for large collections of targets. Metaprogramming can help you understand of the targets you start with, create informative target names, and construct complicated pipelines when layered on top of patterns.
+Custom metaprogramming is a more flexible alternative to [`tar_map()`](https://wlandau.github.io/tarchetypes/reference/tar_map.html) and [`tar_combine()`](https://wlandau.github.io/tarchetypes/reference/tar_combine.html). [`tar_eval()`](https://wlandau.github.io/tarchetypes/reference/tar_eval.html) from [`tarchetypes`](https://github.com/wlandau/tarchetypes) accepts an arbitrary expression and iteratively plugs in symbols. Below, we use it to branch over datasets. 
 
-In the example below, we define a target for each data source in a mock workflow. We use `tar_target_raw()` instead of `tar_target()` to avoid the non-standard evaluation, which lets us supply target names, expressions, and pattern specifications programmatically.
-
-```{r}
+```{r, echo = FALSE}
 tar_script({
-  suppressPackageStartupMessages(library(purrr))
-  datasets <- c("gapminder", "who", "imf")
-  data_target_list <- map(
-    datasets,
-    ~tar_target_raw(.x, substitute(get_data(x), env = list(x = .x)))
+  library(rlang)
+  library(tarchetypes)
+  string <- c("gapminder", "who", "imf")
+  symbol <- syms(string)
+  tar_eval(
+    tar_target(symbol, get_data(string)),
+    values = list(string = string, symbol = symbol)
   )
-  list(data_target_list)
 })
 ```
 
-`tar_manifest()` is especially important for checking the correctness of your metaprogramming.
+```{r, eval = FALSE}
+# _targets.R
+library(rlang)
+library(targets)
+library(tarchetypes)
+string <- c("gapminder", "who", "imf")
+symbol <- syms(string)
+tar_eval(
+  tar_target(symbol, get_data(string)),
+  values = list(string = string, symbol = symbol)
+)
+```
+
+[`tar_eval()`](https://wlandau.github.io/tarchetypes/reference/tar_eval.html) has fewer guardrails than [`tar_map()`](https://wlandau.github.io/tarchetypes/reference/tar_map.html) or [`tar_combine()`](https://wlandau.github.io/tarchetypes/reference/tar_combine.html), so [`tar_manifest()`](https://wlandau.github.io/targets/reference/tar_manifest.html) is especially important for checking the correctness of your metaprogramming.
 
 ```{r}
 tar_manifest(fields = "command")
-```
-
-We can define symbols with `rlang::sym()` and insert them into expressions with `substitute()`. It is straightforward to define entire chains of targets this way. The example below demonstrates how to work with symbols and use metaprogramming and patterns simultaneously.
-
-```{r}
-tar_script({
-  suppressPackageStartupMessages(library(purrr))
-  suppressPackageStartupMessages(library(rlang))
-  target_a <- tar_target(a, seq_len(2))
-  target_list <- map(
-    seq(2, 4),
-    ~tar_target_raw(
-      letters[.x],
-      substitute(identity(y), env = list(y = sym(letters[.x - 1]))),
-      pattern = substitute(map(y), env = list(y = sym(letters[.x - 1])))
-    )
-  )
-  list(target_a, target_list)
-})
-```
-
-```{r}
-library(dplyr)
-tar_manifest()
-```
-
-```{r}
-tar_glimpse()
 ```
