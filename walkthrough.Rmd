@@ -269,7 +269,7 @@ The purpose of `tar_read()` and `tar_load()` is to make exploratory data analysi
 To read the build progress of your targets while `tar_make()` is running, you can open a new R session and run `tar_progress()`. It reads the spreadsheet in `_targets/meta/progress` and tells you which targets are running, built, errored, or cancelled.
 
 ```{r}
-as.data.frame(tar_progress())
+tar_progress()
 ```
 
 Likewise, the `tar_meta()` function reads `_targets/meta/meta` and tells you high-level information about the target's settings, data, and results. The `warnings`, `error`, and `traceback` columns give you diagnostic information about targets with problems.
