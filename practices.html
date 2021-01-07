@@ -184,9 +184,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="5.1" data-path="practices.html"><a href="practices.html#how-to-define-good-targets"><i class="fa fa-check"></i><b>5.1</b> How to define good targets</a></li>
 <li class="chapter" data-level="5.2" data-path="practices.html"><a href="practices.html#dependencies"><i class="fa fa-check"></i><b>5.2</b> Dependencies</a></li>
 <li class="chapter" data-level="5.3" data-path="practices.html"><a href="practices.html#workflows-as-r-packages"><i class="fa fa-check"></i><b>5.3</b> Workflows as R packages</a></li>
-<li class="chapter" data-level="5.4" data-path="practices.html"><a href="practices.html#monitoring-the-pipeline"><i class="fa fa-check"></i><b>5.4</b> Monitoring the pipeline</a></li>
-<li class="chapter" data-level="5.5" data-path="practices.html"><a href="practices.html#performance"><i class="fa fa-check"></i><b>5.5</b> Performance</a></li>
-<li class="chapter" data-level="5.6" data-path="practices.html"><a href="practices.html#cleaning-up"><i class="fa fa-check"></i><b>5.6</b> Cleaning up</a></li>
+<li class="chapter" data-level="5.4" data-path="practices.html"><a href="practices.html#working-with-tools-outside-r"><i class="fa fa-check"></i><b>5.4</b> Working with tools outside R</a></li>
+<li class="chapter" data-level="5.5" data-path="practices.html"><a href="practices.html#monitoring-the-pipeline"><i class="fa fa-check"></i><b>5.5</b> Monitoring the pipeline</a></li>
+<li class="chapter" data-level="5.6" data-path="practices.html"><a href="practices.html#performance"><i class="fa fa-check"></i><b>5.6</b> Performance</a></li>
+<li class="chapter" data-level="5.7" data-path="practices.html"><a href="practices.html#cleaning-up"><i class="fa fa-check"></i><b>5.7</b> Cleaning up</a></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="files.html"><a href="files.html"><i class="fa fa-check"></i><b>6</b> External files and literate programming</a>
 <ul>
@@ -327,8 +328,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>When it comes time to decide which targets to rerun or skip, the default behavior is to ignore changes to external R packages. Usually, local package libraries do not need to change very often, and it is best to maintain a reproducible project library using <a href="https://rstudio.github.io/renv/articles/renv.html"><code>renv</code></a>.</p>
 <p>However, there are some situations where it makes sense to watch a package for changes. For example, you could be in the middle of developing a methodology package that serves as the focus of the pipeline, or you could implement the workflow itself as a package. In either case, you can tell <code>targets</code> to track changes using the <code>imports</code> argument to <code>tar_option_set()</code>. If you write <code>tar_option_set(imports = "package1")</code> in <code>_targets.R</code>, then <code>targets</code> will analyze the R objects in <code>package1</code> and automatically rerun the dependent targets when these objects change. These tracked objects include unexported functions internal to the package. You can track multiple packages this way, e.g. <code>tar_option_set(imports = c("package1", "package2"))</code>. In this case, the contents of <code>package1</code> override those of <code>package2</code> when there are name conflicts. Likewise, <code>tar_option_get("envir")</code> (usually the global environment) overrides both.</p>
 </div>
-<div id="monitoring-the-pipeline" class="section level2" number="5.4">
-<h2><span class="header-section-number">5.4</span> Monitoring the pipeline</h2>
+<div id="working-with-tools-outside-r" class="section level2" number="5.4">
+<h2><span class="header-section-number">5.4</span> Working with tools outside R</h2>
+<p><code>targets</code> lives and operates entirely within the R interpreter, so working with outside tools is a matter of finding the right functionality in R itself. <code>system2()</code> and <a href="https://processx.r-lib.org"><code>processx</code></a> can invoke system commands outside R, and you can include them in your targets’ R commands to run shell scripts, Python scripts, etc. There are also specialized R packages to retrieve data from remote sources and invoke web APIs, including <a href="https://github.com/ropensci/rnoaa"><code>rnoaa</code></a>, <a href="https://github.com/ropensci/ots"><code>ots</code></a>, and <a href="https://github.com/cloudyr/aws.s3"><code>aws.s3</code></a>.</p>
+</div>
+<div id="monitoring-the-pipeline" class="section level2" number="5.5">
+<h2><span class="header-section-number">5.5</span> Monitoring the pipeline</h2>
 <p>If you are using <code>targets</code>, then you probably have an intense computation like Bayesian data analysis or machine learning. These tasks take a long time to run, and it is a good idea to monitor them. If you are running the work on your local machine, you can monitor parallel workers with a utility like <code>top</code> or <code>htop</code>. If you are using a traditional HPC scheduler like SLURM or SGE, you can check the status of the workers with <code>squeue</code>, <code>qstat</code>, or similar. But those tools do not always give you a high-level view of what the pipeline has done and which targets are going to run next. For that information, <code>targets</code> has options:</p>
 <ol style="list-style-type: decimal">
 <li><code>tar_progress()</code> returns a data frame describing the targets that started, finished running successfully, got canceled, or errored out.</li>
@@ -366,8 +371,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><img src="man/figures/tar_watch.png" />
 <code>tar_watch_ui()</code> and <code>tar_watch_server()</code> make this functionality available to other apps through a Shiny module.</p>
 </div>
-<div id="performance" class="section level2" number="5.5">
-<h2><span class="header-section-number">5.5</span> Performance</h2>
+<div id="performance" class="section level2" number="5.6">
+<h2><span class="header-section-number">5.6</span> Performance</h2>
 <p>If your pipeline has several thousand targets, functions like <code>tar_make()</code>, <code>tar_outdated()</code>, and <code>tar_visnetwork()</code> may take longer to run. There is an inevitable per-target runtime cost because package needs to check the code and data of each target individually. If this overhead becomes too much, consider batching your work into a smaller group of heavier targets. Using your custom functions, you can make each target perform multiple iterations of a task that was previously given to targets one at a time. For details and an example, please see the discussion on batching at the bottom of the <a href="dynamic.html#dynamic">dynamic branching chapter</a>.</p>
 <p>Alternatively, if you see slowness in your project, you can contribute to the package with a profiling study. These contributions are great because they help improve the package. Here are the recommended steps.</p>
 <ol style="list-style-type: decimal">
@@ -377,8 +382,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Post the flame graph, along with any code and data you can share, to the <a href="https://github.com/wlandau/targets/issues"><code>targets</code> package issue tracker</a>. The maintainer will have a look and try to make the package faster for your use case if speedups are possible.</li>
 </ol>
 </div>
-<div id="cleaning-up" class="section level2" number="5.6">
-<h2><span class="header-section-number">5.6</span> Cleaning up</h2>
+<div id="cleaning-up" class="section level2" number="5.7">
+<h2><span class="header-section-number">5.7</span> Cleaning up</h2>
 <p>There are <a href="https://wlandau.github.io/targets/reference/index.html#section-clean">multiple functions</a> to help you manually remove data or force targets to rerun.</p>
 <ul>
 <li><a href="https://wlandau.github.io/targets/reference/tar_destroy.html"><code>tar_destroy()</code></a> is by far the most commonly used cleaning function. It removes the <code>_targets/</code> data store completely, deleting all the results from <a href="https://wlandau.github.io/targets/reference/tar_make.html"><code>tar_make()</code></a> except for external files. Use it if you intend to start the pipeline from scratch without any trace of a previous run.</li>
