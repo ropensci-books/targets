@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>The targets R Package User Manual</title>
+  <title>Chapter 4 Debugging | The targets R Package User Manual</title>
   <meta name="description" content="In-depth discussion of the major functionality of targets." />
   <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="The targets R Package User Manual" />
+  <meta property="og:title" content="Chapter 4 Debugging | The targets R Package User Manual" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://wlandau.github.io/targets-manual" />
   <meta property="og:image" content="https://wlandau.github.io/targets-manual/man/figures/logo.png" />
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="wlandau/targets-manual" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="The targets R Package User Manual" />
+  <meta name="twitter:title" content="Chapter 4 Debugging | The targets R Package User Manual" />
   
   <meta name="twitter:description" content="In-depth discussion of the major functionality of targets." />
   <meta name="twitter:image" content="https://wlandau.github.io/targets-manual/man/figures/logo.png" />
@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <link rel="apple-touch-icon-precomposed" sizes="120x120" href="man/figures/apple-touch-icon.png" />
   <link rel="shortcut icon" href="man/figures/favicon.ico" type="image/x-icon" />
-
-<link rel="next" href="walkthrough.html"/>
+<link rel="prev" href="functions.html"/>
+<link rel="next" href="practices.html"/>
 <script src="libs/header-attrs-2.6/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -289,41 +289,125 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="header">
-<h1 class="title">The targets R Package User Manual</h1>
-<p class="author"><em>Will Landau</em></p>
-<p class="author"><em>Copyright Eli Lilly and Company</em></p>
-</div>
-<div id="intro" class="section level1" number="1">
-<h1><span class="header-section-number">Chapter 1</span> Introduction</h1>
-<p>The <a href="https://github.com/wlandau/targets"><code>targets</code></a> package is a <a href="https://www.gnu.org/software/make/">Make</a>-like pipeline toolkit for Statistics and data science in R. With <a href="https://github.com/wlandau/targets"><code>targets</code></a>, you can maintain a reproducible workflow without repeating yourself. <a href="https://github.com/wlandau/targets"><code>targets</code></a> learns how your pipeline fits together, skips costly runtime for tasks that are already up to date, runs only the necessary computation, supports implicit parallel computing, abstracts files as R objects, and shows tangible evidence that the results match the underlying code and data.</p>
-<div id="motivation" class="section level2" number="1.1">
-<h2><span class="header-section-number">1.1</span> Motivation</h2>
-<p>Data analysis can be slow. A round of scientific computation can take several minutes, hours, or even days to complete. After it finishes, if you update your code or data, your hard-earned results may no longer be valid. Unchecked, this invalidation creates chronic <a href="https://en.wikipedia.org/wiki/Sisyphus">Sisyphean</a> loop:</p>
+<div id="debugging" class="section level1" number="4">
+<h1><span class="header-section-number">Chapter 4</span> Debugging</h1>
+<p>If one of your targets fails, first look up the error message in <code>tar_meta()</code>. If that does not help, try one of the following techniques.</p>
+<div id="workspaces" class="section level2" number="4.1">
+<h2><span class="header-section-number">4.1</span> Workspaces</h2>
+<p>Workspaces are special lightweight reference files that allow <code>tar_workspace()</code> to recreate the runtime environment of a target. This lets you troubleshoot issues outside the pipeline in an interactive session. There are two ways to save a workspace file:</p>
 <ol style="list-style-type: decimal">
-<li>Launch the code.</li>
-<li>Wait while it runs.</li>
-<li>Discover an issue.</li>
-<li>Restart from scratch.</li>
+<li>Set <code>error = "workspace"</code> in <code>tar_option_set()</code> or <code>tar_target()</code>. Then, <code>tar_make()</code> and friends will save a workspace file for every target that errors out.</li>
+<li>In the <code>workspaces</code> argument of <code>tar_option_set()</code>, specify the targets for which you want to save workspaces. Then, run <code>tar_make()</code> or similar. A workspace file will be saved for each existing target, regardless of whether the target runs or gets skipped in the pipeline.</li>
 </ol>
+<p>Here is an example of (1).</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="debugging.html#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R file:</span></span>
+<span id="cb36-2"><a href="debugging.html#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">tidyverse.quiet =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb36-3"><a href="debugging.html#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb36-4"><a href="debugging.html#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb36-5"><a href="debugging.html#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">crayon.enabled =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb36-6"><a href="debugging.html#cb36-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">error =</span> <span class="st">&quot;workspace&quot;</span>)</span>
+<span id="cb36-7"><a href="debugging.html#cb36-7" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="cf">function</span>(arg, value) {</span>
+<span id="cb36-8"><a href="debugging.html#cb36-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(arg <span class="sc">&lt;</span> <span class="dv">4</span>)</span>
+<span id="cb36-9"><a href="debugging.html#cb36-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb36-10"><a href="debugging.html#cb36-10" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb36-11"><a href="debugging.html#cb36-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(x, <span class="fu">seq_len</span>(<span class="dv">4</span>)),</span>
+<span id="cb36-12"><a href="debugging.html#cb36-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb36-13"><a href="debugging.html#cb36-13" aria-hidden="true" tabindex="-1"></a>    y,</span>
+<span id="cb36-14"><a href="debugging.html#cb36-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">f</span>(<span class="at">arg =</span> x, <span class="at">value =</span> <span class="st">&quot;succeeded&quot;</span>, <span class="at">a =</span> <span class="dv">1</span>, <span class="at">b =</span> <span class="dv">2</span>, <span class="at">key =</span> <span class="st">&quot;my_api_key&quot;</span>),</span>
+<span id="cb36-15"><a href="debugging.html#cb36-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">pattern =</span> <span class="fu">map</span>(x) <span class="co"># The branching chapter describes patterns.</span></span>
+<span id="cb36-16"><a href="debugging.html#cb36-16" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb36-17"><a href="debugging.html#cb36-17" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="debugging.html#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console:</span></span>
+<span id="cb37-2"><a href="debugging.html#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
+<span id="cb37-3"><a href="debugging.html#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target x</span></span>
+<span id="cb37-4"><a href="debugging.html#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run branch y_29239c8a</span></span>
+<span id="cb37-5"><a href="debugging.html#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run branch y_7cc32924</span></span>
+<span id="cb37-6"><a href="debugging.html#cb37-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run branch y_bd602d50</span></span>
+<span id="cb37-7"><a href="debugging.html#cb37-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run branch y_05f206d7</span></span>
+<span id="cb37-8"><a href="debugging.html#cb37-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; x error branch y_05f206d7</span></span>
+<span id="cb37-9"><a href="debugging.html#cb37-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● save workspace y_05f206d7</span></span>
+<span id="cb37-10"><a href="debugging.html#cb37-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error : x &lt; 4 is not TRUE .</span></span>
+<span id="cb37-11"><a href="debugging.html#cb37-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error: callr subprocess failed: x &lt; 4 is not TRUE .</span></span></code></pre></div>
+<p>One of the <code>y_*******</code> targets errored out.</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="debugging.html#cb38-1" aria-hidden="true" tabindex="-1"></a>failed <span class="ot">&lt;-</span> <span class="fu">tar_meta</span>(<span class="at">fields =</span> error) <span class="sc">%&gt;%</span></span>
+<span id="cb38-2"><a href="debugging.html#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb38-3"><a href="debugging.html#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(name)</span>
+<span id="cb38-4"><a href="debugging.html#cb38-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-5"><a href="debugging.html#cb38-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(failed)</span>
+<span id="cb38-6"><a href="debugging.html#cb38-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;y_05f206d7&quot;</span></span></code></pre></div>
+<p><code>tar_workspace()</code> reads the special metadata in the workspace file and then loads the target’s dependencies from various locations in <code>_targets/objects</code> and/or the <a href="cloud.html#cloud">cloud</a>. It also sets the random number generator seed to the seed of the target, loads the required packages, and runs <code>_targets.R</code> to load other global object dependencies such as functions.</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="debugging.html#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_workspace</span>(y_05f206d7)</span></code></pre></div>
+<p>We now have the dependencies of <code>y_05f206d7</code> in memory, which allows you to try out any failed function calls in your local R session. <a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> <a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a></p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="debugging.html#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(x)</span>
+<span id="cb40-2"><a href="debugging.html#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 4</span></span>
+<span id="cb40-3"><a href="debugging.html#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(<span class="at">arg =</span> <span class="dv">0</span>, <span class="at">value =</span> <span class="st">&quot;my_value&quot;</span>, <span class="at">a =</span> <span class="dv">1</span>, <span class="at">b =</span> <span class="dv">2</span>, <span class="at">key =</span> <span class="st">&quot;my_api_key&quot;</span>)</span>
+<span id="cb40-4"><a href="debugging.html#cb40-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;my_value&quot;</span></span>
+<span id="cb40-5"><a href="debugging.html#cb40-5" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(<span class="at">arg =</span> x, <span class="at">value =</span> <span class="st">&quot;my_value&quot;</span>, <span class="at">a =</span> <span class="dv">1</span>, <span class="at">b =</span> <span class="dv">2</span>, <span class="at">key =</span> <span class="st">&quot;my_api_key&quot;</span>)</span>
+<span id="cb40-6"><a href="debugging.html#cb40-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error in f(x) : x &lt; 4 is not TRUE</span></span></code></pre></div>
+<p>Keep in mind that that although the dependencies of <code>y_05f206d7</code> are in memory, the arguments of <code>f()</code> are not.</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="debugging.html#cb41-1" aria-hidden="true" tabindex="-1"></a>arg</span>
+<span id="cb41-2"><a href="debugging.html#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error: object &#39;arg&#39; not found</span></span>
+<span id="cb41-3"><a href="debugging.html#cb41-3" aria-hidden="true" tabindex="-1"></a>value</span>
+<span id="cb41-4"><a href="debugging.html#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error: object &#39;value&#39; not found</span></span></code></pre></div>
 </div>
-<div id="pipeline-toolkits" class="section level2" number="1.2">
-<h2><span class="header-section-number">1.2</span> Pipeline toolkits</h2>
-<p><a href="https://github.com/pditommaso/awesome-pipeline">Pipeline toolkits</a> like <a href="https://www.gnu.org/software/make/">GNU Make</a> break the cycle. They watch the dependency graph of the whole workflow and skip steps, or “targets”, whose code, data, and upstream dependencies have not changed since the last run of the pipeline. When all targets are up to date, this is evidence that the results match the underlying code and data, which helps us trust the results and confirm the computation is reproducible.</p>
-</div>
-<div id="the-targets-package" class="section level2" number="1.3">
-<h2><span class="header-section-number">1.3</span> The <code>targets</code> package</h2>
-<p>Unlike most <a href="https://github.com/pditommaso/awesome-pipeline">pipeline toolkits</a>, which are language agnostic or Python-focused, the <a href="https://github.com/wlandau/targets"><code>targets</code></a> package allows data scientists and researchers to work entirely within R. <a href="https://github.com/wlandau/targets"><code>targets</code></a> implicitly nudges users toward a clean, function-oriented programming style that fits the intent of the R language and helps practitioners maintain their data analysis projects.</p>
-</div>
-<div id="about-this-manual" class="section level2" number="1.4">
-<h2><span class="header-section-number">1.4</span> About this manual</h2>
-<p>This manual is a step-by-step user guide to <a href="https://github.com/wlandau/targets"><code>targets</code></a>. It <a href="walkthrough.html#walkthrough">walks through basic usage</a>, <a href="#practice">outlines general best practices</a>, dives deep into advanced features like <a href="hpc.html#hpc">high-performance computing</a>, and <a href="drake.html#drake">helps <code>drake</code> users transition to <code>targets</code></a>. See the <a href="https://wlandau.github.io/targets/index.html">documentation website</a> for most other major resources, including <a href="https://wlandau.github.io/targets/index.html#installation">installation instructions</a>, links to <a href="https://wlandau.github.io/targets/index.html#examples">example projects</a>, and a <a href="https://wlandau.github.io/targets/reference/index.html">reference page with all user-side functions</a>.</p>
-</div>
-<div id="what-about-drake" class="section level2" number="1.5">
-<h2><span class="header-section-number">1.5</span> What about <code>drake</code>?</h2>
-<p>The <a href="https://github.com/ropensci/drake"><code>drake</code></a> is an older R-focused pipeline toolkit, and <a href="https://github.com/wlandau/targets"><code>targets</code></a> is <a href="https://github.com/ropensci/drake"><code>drake</code></a>’s long-term successor. There is a <a href="drake.html#drake">special chapter</a> to explain why <a href="https://github.com/wlandau/targets"><code>targets</code></a> was created, what this means for <a href="https://github.com/ropensci/drake"><code>drake</code></a>’s future, advice for <a href="https://github.com/ropensci/drake"><code>drake</code></a> users transitioning to the <a href="https://github.com/wlandau/targets"><code>targets</code></a>, and the main technical advantages of <a href="https://github.com/wlandau/targets"><code>targets</code></a> over <a href="https://github.com/ropensci/drake"><code>drake</code></a>.</p>
+<div id="interactive-debugging" class="section level2" number="4.2">
+<h2><span class="header-section-number">4.2</span> Interactive debugging</h2>
+<p>Interactive debugging offers a <a href="https://adv-r.hadley.nz/debugging.html#browser"><code>browser()</code></a>-like debugging experience. Unlike workspaces, which most users access after the pipline finishes, interactive debugging lets you step through a target’s command while the target is running. This approach is not feasible if the pipeline is running in a non-interactive process or requires resources that are only available on a remote compute node of a cluster. However, when possible, it may be more convenient than workspaces. In our example above, <code>tar_workspace()</code> automatically loaded a branch of the dependency <code>x</code>, but the user still needed to manually supply the rest of the arguments of <code>f()</code>. During interactive debugging, you will instead be able to call <code>debug(f)</code> and then press <code>c</code> to immediately drop into the function environment where the remaining variables are already defined.</p>
+<p>Follow these steps to use interactive debugging.</p>
+<ol style="list-style-type: decimal">
+<li>In <code>_targets.R</code>, write a call to <code>tar_option_set()</code> with <code>debug</code> equal to the target name. Consider also setting <code>cue</code> equal to <code>tar_cue(mode = "never")</code> so <code>tar_make()</code> reaches the target you want to debug more quickly.</li>
+<li>Launch a fresh clean new interactive R session with the <code>_targets.R</code> script in your working directory.</li>
+<li>Run <code>targets::tar_make()</code> (or <code>targets::tar_make_clustermq()</code>, or <code>targets::tar_make_future()</code>) with <code>callr_function = NULL</code>.</li>
+<li>When <code>targets</code> reaches the target you selected to debug, your R session will start an interactive debugger, and you should see <code>Browse[1]&gt;</code> in your console. Run <code>targets::tar_name()</code> to verify that you are debugging the correct target.</li>
+<li>Interactively run any R code that helps you troubleshoot the problem. For example, if the target invokes a function <code>f()</code>, enter <code>debug(f)</code> and then <code>c</code> to immediately enter the function’s calling environment where all its arguments are defined.</li>
+</ol>
+<p>To try it out yourself, write the following <code>_targets.R</code> file.</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="debugging.html#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb42-2"><a href="debugging.html#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb42-3"><a href="debugging.html#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">debug =</span> <span class="st">&quot;b&quot;</span>)</span>
+<span id="cb42-4"><a href="debugging.html#cb42-4" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">another_arg =</span> <span class="dv">123</span>) x <span class="sc">+</span> another_arg</span>
+<span id="cb42-5"><a href="debugging.html#cb42-5" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb42-6"><a href="debugging.html#cb42-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(a, <span class="dv">1</span>),</span>
+<span id="cb42-7"><a href="debugging.html#cb42-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(b, <span class="fu">f</span>(a))</span>
+<span id="cb42-8"><a href="debugging.html#cb42-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<p>Then, call <code>tar_make(callr_function = NULL)</code> to drop into a debugger at the command of <code>b</code>.</p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="debugging.html#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
+<span id="cb43-2"><a href="debugging.html#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>(<span class="at">callr_function =</span> <span class="cn">NULL</span>)</span>
+<span id="cb43-3"><a href="debugging.html#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target a</span></span>
+<span id="cb43-4"><a href="debugging.html#cb43-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target b</span></span>
+<span id="cb43-5"><a href="debugging.html#cb43-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Called from: eval(expr, envir)</span></span>
+<span id="cb43-6"><a href="debugging.html#cb43-6" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span></span></code></pre></div>
+<p>When the debugger launches, run <code>targets::tar_name()</code> to confirm you are running the correct target.</p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="debugging.html#cb44-1" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> targets<span class="sc">::</span><span class="fu">tar_name</span>()</span>
+<span id="cb44-2"><a href="debugging.html#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;b&quot;</span></span></code></pre></div>
+<p>In the debugger, the dependency targets of <code>b</code> are available in the current environment, and the global objects and functions are available in the parent environment.</p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="debugging.html#cb45-1" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> <span class="fu">ls</span>()</span>
+<span id="cb45-2"><a href="debugging.html#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;a&quot;</span></span>
+<span id="cb45-3"><a href="debugging.html#cb45-3" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> a</span>
+<span id="cb45-4"><a href="debugging.html#cb45-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 1</span></span>
+<span id="cb45-5"><a href="debugging.html#cb45-5" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> <span class="fu">ls</span>(<span class="fu">parent.env</span>(<span class="fu">environment</span>()))</span>
+<span id="cb45-6"><a href="debugging.html#cb45-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;f&quot;</span></span>
+<span id="cb45-7"><a href="debugging.html#cb45-7" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> <span class="fu">f</span>(<span class="dv">1</span>)</span>
+<span id="cb45-8"><a href="debugging.html#cb45-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 124</span></span></code></pre></div>
+<p>Enter <code>debug(f)</code> to debug the function <code>f()</code>, and press <code>c</code> to enter the function’s calling environment where <code>another_arg</code> is defined.</p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="debugging.html#cb46-1" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> <span class="fu">debug</span>(f)</span>
+<span id="cb46-2"><a href="debugging.html#cb46-2" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> c</span>
+<span id="cb46-3"><a href="debugging.html#cb46-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; debugging in: f(a)</span></span>
+<span id="cb46-4"><a href="debugging.html#cb46-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; debug at _targets.R#3: x + another_arg</span></span>
+<span id="cb46-5"><a href="debugging.html#cb46-5" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">2</span>]<span class="sc">&gt;</span> <span class="fu">ls</span>()</span>
+<span id="cb46-6"><a href="debugging.html#cb46-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;another_arg&quot; &quot;x&quot;   </span></span>
+<span id="cb46-7"><a href="debugging.html#cb46-7" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">2</span>]<span class="sc">&gt;</span> another_arg</span>
+<span id="cb46-8"><a href="debugging.html#cb46-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 123</span></span></code></pre></div>
+<p>Visit <a href="https://rstats.wtf/debugging-r-code.html">this page</a> for more information on debugging R code.</p>
 
 </div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="2">
+<li id="fn2"><p>In addition, current random number generator seed (<code>.Random.seed</code>) is also the value <code>y_05f206d7</code> started with.<a href="debugging.html#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p>When you are finished debugging, you can remove all workspace files with <code>tar_destroy(destroy = "workspaces")</code>.<a href="debugging.html#fnref3" class="footnote-back">↩︎</a></p></li>
+</ol>
 </div>
 <div style = "background: #1C356D; color: white; padding: 10px 10px 10px 25px; font-size: 1em; width: 100%;">
   Copyright Eli Lilly and Company
@@ -333,8 +417,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-
-<a href="walkthrough.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="functions.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="practices.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -356,11 +440,11 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/wlandau/targets-manual/edit/main/index.Rmd",
+"link": "https://github.com/wlandau/targets-manual/edit/main/debugging.Rmd",
 "text": "Edit this chapter"
 },
 "history": {
-"link": "https://github.com/wlandau/targets-manual/commits/main/index.Rmd",
+"link": "https://github.com/wlandau/targets-manual/commits/main/debugging.Rmd",
 "text": "Chapter edit history"
 },
 "view": {

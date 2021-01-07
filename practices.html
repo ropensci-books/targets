@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>The targets R Package User Manual</title>
+  <title>Chapter 5 Best practices | The targets R Package User Manual</title>
   <meta name="description" content="In-depth discussion of the major functionality of targets." />
   <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="The targets R Package User Manual" />
+  <meta property="og:title" content="Chapter 5 Best practices | The targets R Package User Manual" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://wlandau.github.io/targets-manual" />
   <meta property="og:image" content="https://wlandau.github.io/targets-manual/man/figures/logo.png" />
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="wlandau/targets-manual" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="The targets R Package User Manual" />
+  <meta name="twitter:title" content="Chapter 5 Best practices | The targets R Package User Manual" />
   
   <meta name="twitter:description" content="In-depth discussion of the major functionality of targets." />
   <meta name="twitter:image" content="https://wlandau.github.io/targets-manual/man/figures/logo.png" />
@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <link rel="apple-touch-icon-precomposed" sizes="120x120" href="man/figures/apple-touch-icon.png" />
   <link rel="shortcut icon" href="man/figures/favicon.ico" type="image/x-icon" />
-
-<link rel="next" href="walkthrough.html"/>
+<link rel="prev" href="debugging.html"/>
+<link rel="next" href="files.html"/>
 <script src="libs/header-attrs-2.6/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -289,39 +289,103 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="header">
-<h1 class="title">The targets R Package User Manual</h1>
-<p class="author"><em>Will Landau</em></p>
-<p class="author"><em>Copyright Eli Lilly and Company</em></p>
-</div>
-<div id="intro" class="section level1" number="1">
-<h1><span class="header-section-number">Chapter 1</span> Introduction</h1>
-<p>The <a href="https://github.com/wlandau/targets"><code>targets</code></a> package is a <a href="https://www.gnu.org/software/make/">Make</a>-like pipeline toolkit for Statistics and data science in R. With <a href="https://github.com/wlandau/targets"><code>targets</code></a>, you can maintain a reproducible workflow without repeating yourself. <a href="https://github.com/wlandau/targets"><code>targets</code></a> learns how your pipeline fits together, skips costly runtime for tasks that are already up to date, runs only the necessary computation, supports implicit parallel computing, abstracts files as R objects, and shows tangible evidence that the results match the underlying code and data.</p>
-<div id="motivation" class="section level2" number="1.1">
-<h2><span class="header-section-number">1.1</span> Motivation</h2>
-<p>Data analysis can be slow. A round of scientific computation can take several minutes, hours, or even days to complete. After it finishes, if you update your code or data, your hard-earned results may no longer be valid. Unchecked, this invalidation creates chronic <a href="https://en.wikipedia.org/wiki/Sisyphus">Sisyphean</a> loop:</p>
+<div id="practices" class="section level1" number="5">
+<h1><span class="header-section-number">Chapter 5</span> Best practices</h1>
+<p>This chapter describes additional best practices for developing and maintaining <code>targets</code>-powered projects.</p>
+<div id="how-to-define-good-targets" class="section level2" number="5.1">
+<h2><span class="header-section-number">5.1</span> How to define good targets</h2>
+<p>Targets are imperative high-level steps of the workflow that run the work you define in your functions. Like functions, targets generally focus on datasets, analyses, and summaries. The <code>targets</code> package automatically skips targets that are already up to date, so you should strive to define targets that maximize time savings. Good targets usually</p>
 <ol style="list-style-type: decimal">
-<li>Launch the code.</li>
-<li>Wait while it runs.</li>
-<li>Discover an issue.</li>
-<li>Restart from scratch.</li>
+<li>Are large enough to subtract a decent amount of runtime when skipped.</li>
+<li>Are small enough that some targets can be skipped even if others need to run.</li>
+<li>Invoke no side effects such as modifications to the global environment. (But targets with <code>tar_target(format = "file")</code> can save files.)</li>
+<li>Return a single value that is
+<ol style="list-style-type: lower-roman">
+<li>Easy to understand and introspect.</li>
+<li>Meaningful to the project.</li>
+<li>Easy to save as a file, e.g. with <code>readRDS()</code>.</li>
+</ol></li>
+</ol>
+<p>Regarding the last point above, it is possible to customize the storage format of the target. For details, enter <code>?tar_target</code> in the console and scroll down to the description of the <code>format</code> argument.</p>
+</div>
+<div id="dependencies" class="section level2" number="5.2">
+<h2><span class="header-section-number">5.2</span> Dependencies</h2>
+<p>Adept pipeline construction requires an understanding of dependency detection. To identify the targets and global objects that each target depends on, the <code>targets</code> package uses static code analysis with <a href="https://CRAN.R-project.org/package=codetools"><code>codetools</code></a>, and you can emulate this process with <code>tar_deps()</code>. Let us look at the dependencies of the <code>raw_data</code> target.</p>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="practices.html#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_deps</span>(<span class="cf">function</span>() {</span>
+<span id="cb47-2"><a href="practices.html#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">read_csv</span>(raw_data_file, <span class="at">col_types =</span> <span class="fu">cols</span>())</span>
+<span id="cb47-3"><a href="practices.html#cb47-3" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+<p>The <code>raw_data</code> target depends on target <code>raw_data_file</code> because the command for <code>raw_data</code> mentions the symbol <code>raw_data_file</code>. Similarly, if we were to create a user-defined <code>read_csv()</code> function, the <code>raw_data</code> target would also depend on <code>read_csv()</code> and any other user-defined global functions and objects nested inside <code>read_csv()</code>. Changes to any of these objects would cause the <code>raw_data</code> target to rerun on the next <code>tar_make()</code>.</p>
+<p>Not all of the objects from <code>tar_deps()</code> actually register as dependencies. When it comes to detecting dependencies, <code>targets</code> only recognizes</p>
+<ol style="list-style-type: decimal">
+<li>Other targets (such as <code>raw_data_file</code>).</li>
+<li>Functions and objects in the main environment. This environment is almost always the global environment of the R process that runs <code>_targets.R</code>, so these dependencies are usually going to be the custom functions and objects you write yourself.</li>
+</ol>
+<p>This process excludes many objects from dependency detection. For example, both <code>{</code> and <code>cols()</code> are excluded because they are defined in the environments of packages (<code>base</code> and <code>readr</code>, respectively). Functions and objects from packages are ignored unless you supply a package environment to the <code>envir</code> argument of <code>tar_option_set()</code> when you call it in <code>_targets.R</code>, e.g. <code>tar_option_set(envir = getNamespace("packageName"))</code>. You should only set <code>envir</code> if you write your own package to contain your whole data analysis project.</p>
+</div>
+<div id="workflows-as-r-packages" class="section level2" number="5.3">
+<h2><span class="header-section-number">5.3</span> Workflows as R packages</h2>
+<p>When it comes time to decide which targets to rerun or skip, the default behavior is to ignore changes to external R packages. Usually, local package libraries do not need to change very often, and it is best to maintain a reproducible project library using <a href="https://rstudio.github.io/renv/articles/renv.html"><code>renv</code></a>.</p>
+<p>However, there are some situations where it makes sense to watch a package for changes. For example, you could be in the middle of developing a methodology package that serves as the focus of the pipeline, or you could implement the workflow itself as a package. In either case, you can tell <code>targets</code> to track changes using the <code>imports</code> argument to <code>tar_option_set()</code>. If you write <code>tar_option_set(imports = "package1")</code> in <code>_targets.R</code>, then <code>targets</code> will analyze the R objects in <code>package1</code> and automatically rerun the dependent targets when these objects change. These tracked objects include unexported functions internal to the package. You can track multiple packages this way, e.g. <code>tar_option_set(imports = c("package1", "package2"))</code>. In this case, the contents of <code>package1</code> override those of <code>package2</code> when there are name conflicts. Likewise, <code>tar_option_get("envir")</code> (usually the global environment) overrides both.</p>
+</div>
+<div id="monitoring-the-pipeline" class="section level2" number="5.4">
+<h2><span class="header-section-number">5.4</span> Monitoring the pipeline</h2>
+<p>If you are using <code>targets</code>, then you probably have an intense computation like Bayesian data analysis or machine learning. These tasks take a long time to run, and it is a good idea to monitor them. If you are running the work on your local machine, you can monitor parallel workers with a utility like <code>top</code> or <code>htop</code>. If you are using a traditional HPC scheduler like SLURM or SGE, you can check the status of the workers with <code>squeue</code>, <code>qstat</code>, or similar. But those tools do not always give you a high-level view of what the pipeline has done and which targets are going to run next. For that information, <code>targets</code> has options:</p>
+<ol style="list-style-type: decimal">
+<li><code>tar_progress()</code> returns a data frame describing the targets that started, finished running successfully, got canceled, or errored out.</li>
+<li><code>tar_visnetwork()</code> shows this progress information in an interactive <code>visNetwork</code> widget. Set <code>outdated</code> to <code>FALSE</code> to get slightly more detailed progress information.</li>
+<li><code>tar_watch()</code> launches an Shiny app that automatically refreshes the graph every few seconds. Try it out in the example below.</li>
+</ol>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="practices.html#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define an example _targets.R file with a slow pipeline.</span></span>
+<span id="cb48-2"><a href="practices.html#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb48-3"><a href="practices.html#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_script</span>({</span>
+<span id="cb48-4"><a href="practices.html#cb48-4" aria-hidden="true" tabindex="-1"></a>  sleep_run <span class="ot">&lt;-</span> <span class="cf">function</span>(...) {</span>
+<span id="cb48-5"><a href="practices.html#cb48-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Sys.sleep</span>(<span class="dv">10</span>)</span>
+<span id="cb48-6"><a href="practices.html#cb48-6" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb48-7"><a href="practices.html#cb48-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb48-8"><a href="practices.html#cb48-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(settings, <span class="fu">sleep_run</span>()),</span>
+<span id="cb48-9"><a href="practices.html#cb48-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(data1, <span class="fu">sleep_run</span>(settings)),</span>
+<span id="cb48-10"><a href="practices.html#cb48-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(data2, <span class="fu">sleep_run</span>(settings)),</span>
+<span id="cb48-11"><a href="practices.html#cb48-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(data3, <span class="fu">sleep_run</span>(settings)),</span>
+<span id="cb48-12"><a href="practices.html#cb48-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(model1, <span class="fu">sleep_run</span>(data1)),</span>
+<span id="cb48-13"><a href="practices.html#cb48-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(model2, <span class="fu">sleep_run</span>(data2)),</span>
+<span id="cb48-14"><a href="practices.html#cb48-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(model3, <span class="fu">sleep_run</span>(data3)),</span>
+<span id="cb48-15"><a href="practices.html#cb48-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(figure1, <span class="fu">sleep_run</span>(model1)),</span>
+<span id="cb48-16"><a href="practices.html#cb48-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(figure2, <span class="fu">sleep_run</span>(model2)),</span>
+<span id="cb48-17"><a href="practices.html#cb48-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(figure3, <span class="fu">sleep_run</span>(model3)),</span>
+<span id="cb48-18"><a href="practices.html#cb48-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(conclusions, <span class="fu">sleep_run</span>(<span class="fu">c</span>(figure1, figure2, figure3)))</span>
+<span id="cb48-19"><a href="practices.html#cb48-19" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb48-20"><a href="practices.html#cb48-20" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb48-21"><a href="practices.html#cb48-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-22"><a href="practices.html#cb48-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Launch the app in a background process.</span></span>
+<span id="cb48-23"><a href="practices.html#cb48-23" aria-hidden="true" tabindex="-1"></a><span class="co"># You may need to refresh the browser if the app is slow to start.</span></span>
+<span id="cb48-24"><a href="practices.html#cb48-24" aria-hidden="true" tabindex="-1"></a><span class="co"># The graph automatically refreshes every 10 seconds</span></span>
+<span id="cb48-25"><a href="practices.html#cb48-25" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_watch</span>(<span class="at">seconds =</span> <span class="dv">10</span>, <span class="at">outdated =</span> <span class="cn">FALSE</span>, <span class="at">targets_only =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb48-26"><a href="practices.html#cb48-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-27"><a href="practices.html#cb48-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Now run the pipeline and watch the graph change.</span></span>
+<span id="cb48-28"><a href="practices.html#cb48-28" aria-hidden="true" tabindex="-1"></a>px <span class="ot">&lt;-</span> <span class="fu">tar_make</span>()</span></code></pre></div>
+<p><img src="man/figures/tar_watch.png" />
+<code>tar_watch_ui()</code> and <code>tar_watch_server()</code> make this functionality available to other apps through a Shiny module.</p>
+</div>
+<div id="performance" class="section level2" number="5.5">
+<h2><span class="header-section-number">5.5</span> Performance</h2>
+<p>If your pipeline has several thousand targets, functions like <code>tar_make()</code>, <code>tar_outdated()</code>, and <code>tar_visnetwork()</code> may take longer to run. There is an inevitable per-target runtime cost because package needs to check the code and data of each target individually. If this overhead becomes too much, consider batching your work into a smaller group of heavier targets. Using your custom functions, you can make each target perform multiple iterations of a task that was previously given to targets one at a time. For details and an example, please see the discussion on batching at the bottom of the <a href="dynamic.html#dynamic">dynamic branching chapter</a>.</p>
+<p>Alternatively, if you see slowness in your project, you can contribute to the package with a profiling study. These contributions are great because they help improve the package. Here are the recommended steps.</p>
+<ol style="list-style-type: decimal">
+<li>Install the <a href="https://github.com/r-prof/proffer"><code>proffer</code></a> R package and its dependencies.</li>
+<li>Run <code>proffer::pprof(tar_make(callr_function = NULL))</code> on your project.</li>
+<li>When a web browser pops up with <code>pprof</code>, select the flame graph and screenshot it.</li>
+<li>Post the flame graph, along with any code and data you can share, to the <a href="https://github.com/wlandau/targets/issues"><code>targets</code> package issue tracker</a>. The maintainer will have a look and try to make the package faster for your use case if speedups are possible.</li>
 </ol>
 </div>
-<div id="pipeline-toolkits" class="section level2" number="1.2">
-<h2><span class="header-section-number">1.2</span> Pipeline toolkits</h2>
-<p><a href="https://github.com/pditommaso/awesome-pipeline">Pipeline toolkits</a> like <a href="https://www.gnu.org/software/make/">GNU Make</a> break the cycle. They watch the dependency graph of the whole workflow and skip steps, or “targets”, whose code, data, and upstream dependencies have not changed since the last run of the pipeline. When all targets are up to date, this is evidence that the results match the underlying code and data, which helps us trust the results and confirm the computation is reproducible.</p>
-</div>
-<div id="the-targets-package" class="section level2" number="1.3">
-<h2><span class="header-section-number">1.3</span> The <code>targets</code> package</h2>
-<p>Unlike most <a href="https://github.com/pditommaso/awesome-pipeline">pipeline toolkits</a>, which are language agnostic or Python-focused, the <a href="https://github.com/wlandau/targets"><code>targets</code></a> package allows data scientists and researchers to work entirely within R. <a href="https://github.com/wlandau/targets"><code>targets</code></a> implicitly nudges users toward a clean, function-oriented programming style that fits the intent of the R language and helps practitioners maintain their data analysis projects.</p>
-</div>
-<div id="about-this-manual" class="section level2" number="1.4">
-<h2><span class="header-section-number">1.4</span> About this manual</h2>
-<p>This manual is a step-by-step user guide to <a href="https://github.com/wlandau/targets"><code>targets</code></a>. It <a href="walkthrough.html#walkthrough">walks through basic usage</a>, <a href="#practice">outlines general best practices</a>, dives deep into advanced features like <a href="hpc.html#hpc">high-performance computing</a>, and <a href="drake.html#drake">helps <code>drake</code> users transition to <code>targets</code></a>. See the <a href="https://wlandau.github.io/targets/index.html">documentation website</a> for most other major resources, including <a href="https://wlandau.github.io/targets/index.html#installation">installation instructions</a>, links to <a href="https://wlandau.github.io/targets/index.html#examples">example projects</a>, and a <a href="https://wlandau.github.io/targets/reference/index.html">reference page with all user-side functions</a>.</p>
-</div>
-<div id="what-about-drake" class="section level2" number="1.5">
-<h2><span class="header-section-number">1.5</span> What about <code>drake</code>?</h2>
-<p>The <a href="https://github.com/ropensci/drake"><code>drake</code></a> is an older R-focused pipeline toolkit, and <a href="https://github.com/wlandau/targets"><code>targets</code></a> is <a href="https://github.com/ropensci/drake"><code>drake</code></a>’s long-term successor. There is a <a href="drake.html#drake">special chapter</a> to explain why <a href="https://github.com/wlandau/targets"><code>targets</code></a> was created, what this means for <a href="https://github.com/ropensci/drake"><code>drake</code></a>’s future, advice for <a href="https://github.com/ropensci/drake"><code>drake</code></a> users transitioning to the <a href="https://github.com/wlandau/targets"><code>targets</code></a>, and the main technical advantages of <a href="https://github.com/wlandau/targets"><code>targets</code></a> over <a href="https://github.com/ropensci/drake"><code>drake</code></a>.</p>
+<div id="cleaning-up" class="section level2" number="5.6">
+<h2><span class="header-section-number">5.6</span> Cleaning up</h2>
+<p>There are <a href="https://wlandau.github.io/targets/reference/index.html#section-clean">multiple functions</a> to help you manually remove data or force targets to rerun.</p>
+<ul>
+<li><a href="https://wlandau.github.io/targets/reference/tar_destroy.html"><code>tar_destroy()</code></a> is by far the most commonly used cleaning function. It removes the <code>_targets/</code> data store completely, deleting all the results from <a href="https://wlandau.github.io/targets/reference/tar_make.html"><code>tar_make()</code></a> except for external files. Use it if you intend to start the pipeline from scratch without any trace of a previous run.</li>
+<li><a href="https://wlandau.github.io/targets/reference/tar_prune.html"><code>tar_prune()</code></a> deletes the data and metadata of all the targets no longer present in your current <code>_targets.R</code> file. This is useful if you recently worked through multiple changes to your project and are now trying to discard irrelevant data while keeping the results that still matter.</li>
+<li><a href="https://wlandau.github.io/targets/reference/tar_delete.html"><code>tar_delete()</code></a> is more selective than <a href="https://wlandau.github.io/targets/reference/tar_destroy.html"><code>tar_destroy()</code></a> and <a href="https://wlandau.github.io/targets/reference/tar_prune.html"><code>tar_prune()</code></a>. It removes the individual data files of a given set of targets from <code>_targets/objects/</code> while leaving the metadata in <code>_targets/meta/meta</code> alone. If you have a small number of data-heavy targets you need to discard to conserve storage, this function can help.</li>
+<li><a href="https://wlandau.github.io/targets/reference/tar_invalidate.html"><code>tar_invalidate()</code></a> is the opposite of <a href="https://wlandau.github.io/targets/reference/tar_delete.html"><code>tar_delete()</code></a>: for the selected targets, it deletes the metadata in <code>_targets/meta/meta</code> but keeps the return values in <code>_targets/objects/</code>. After invalidation, you will still be able to locate the data files with <a href="https://wlandau.github.io/targets/reference/tar_path.html"><code>tar_path()</code></a> and manually salvage them in an emergency. However, <a href="https://wlandau.github.io/targets/reference/tar_load.html"><code>tar_load()</code></a> and <a href="https://wlandau.github.io/targets/reference/tar_read.html"><code>tar_read()</code></a> will not be able to read the data into R, and subesequent calls to <a href="https://wlandau.github.io/targets/reference/tar_make.html"><code>tar_make()</code></a> will attempt to rebuild those targets.</li>
+</ul>
 
 </div>
 </div>
@@ -333,8 +397,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-
-<a href="walkthrough.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="debugging.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="files.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -356,11 +420,11 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/wlandau/targets-manual/edit/main/index.Rmd",
+"link": "https://github.com/wlandau/targets-manual/edit/main/practices.Rmd",
 "text": "Edit this chapter"
 },
 "history": {
-"link": "https://github.com/wlandau/targets-manual/commits/main/index.Rmd",
+"link": "https://github.com/wlandau/targets-manual/commits/main/practices.Rmd",
 "text": "Chapter edit history"
 },
 "view": {
