@@ -35,7 +35,14 @@ A typical target returns an R object: for example, a dataset with `tar_target(da
 
 ## External input files
 
-To reproducibly track an external input file, you need to define a new target and choose `format = "file"` in `tar_target()`. Targets with the `"file"` format are called dynamic files, and these targets are unusual because their return values do not get saved in the `_targets/objects/` folder. Rather, they expect you to return a character vector files and directories, which gets stored in the `_targets/meta` spreadsheet, and then `targets` watches the data at those paths for changes. The first two targets of the [minimal example](https://github.com/wlandau/targets-minimal) demonstrate this technique.
+To reproducibly track an external input file, you need to define a new target that has
+
+1. A command that returns the file path as a character vector, and 
+2. `format = "file"` in `tar_target()`.
+
+When the target runs in the pipeline, the returned character vector gets recorded in `_targets/meta`, and `targets` watches the data file and invalidates the target when that file changes. To track multiple files or directories this way, simply define a multi-element character vector where each element is a path.
+
+The first two targets of the [minimal example](https://github.com/wlandau/targets-minimal) demonstrate how to track an input file.
 
 ```{r}
 tar_script({
@@ -56,7 +63,7 @@ tar_script({
 })
 ```
 
-Above, `raw_data_file` is the dynamic file target. The file `data/raw_data.csv` exists before we ever run the pipeline, and the R expresion for the target returns the character vector `"data/raw_data.csv"`. (We use the `path_to_data()` function to demonstrate that you need not literally write `"data/raw_data.csv"` as long as the path is returned somehow.)
+Above, `raw_data_file` is the dynamic file target. The file `data/raw_data.csv` exists before we ever run the pipeline, and the R expression for the target returns the character vector `"data/raw_data.csv"`. (We use the `path_to_data()` function to demonstrate that you need not literally write `"data/raw_data.csv"` as long as the path is returned somehow.)
 
 All subsequent targets that depend on the file must reference the file using the symbol `raw_data_file`. This allows `targets`' automatic static code analysis routines to detect which targets depend on the file. Because the `raw_data` target literally mentions the symbol `raw_data_file`, `targets` knows `raw_data` depends on `raw_data_file`. This ensures that
 
