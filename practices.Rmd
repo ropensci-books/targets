@@ -1,0 +1,114 @@
+```{r, message = FALSE, warning = FALSE, echo = FALSE}
+knitr::opts_knit$set(root.dir = fs::dir_create(tempfile()))
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+```{r, message = FALSE, warning = FALSE, echo = FALSE}
+library(targets)
+```
+
+# Best practices {#practices}
+
+This chapter describes additional best practices for developing and maintaining `targets`-powered projects.
+
+## How to define good targets
+
+Targets are imperative high-level steps of the workflow that run the work you define in your functions. Like functions, targets generally focus on datasets, analyses, and summaries. The `targets` package automatically skips targets that are already up to date, so you should strive to define targets that maximize time savings. Good targets usually
+
+1. Are large enough to subtract a decent amount of runtime when skipped.
+1. Are small enough that some targets can be skipped even if others need to run.
+1. Invoke no side effects such as modifications to the global environment. (But targets with `tar_target(format = "file")` can save files.)
+1. Return a single value that is
+    i. Easy to understand and introspect.
+    i. Meaningful to the project.
+    i. Easy to save as a file, e.g. with `readRDS()`.
+
+Regarding the last point above, it is possible to customize the storage format of the target. For details, enter `?tar_target` in the console and scroll down to the description of the `format` argument.
+
+## Dependencies
+
+Adept pipeline construction requires an understanding of dependency detection. To identify the targets and global objects that each target depends on, the `targets` package uses static code analysis with [`codetools`](https://CRAN.R-project.org/package=codetools), and you can emulate this process with `tar_deps()`. Let us look at the dependencies of the `raw_data` target.
+
+```{r}
+tar_deps(function() {
+  read_csv(raw_data_file, col_types = cols())
+})
+```
+
+The `raw_data` target depends on target `raw_data_file` because the command for `raw_data` mentions the symbol `raw_data_file`. Similarly, if we were to create a user-defined `read_csv()` function, the `raw_data` target would also depend on `read_csv()` and any other user-defined global functions and objects nested inside `read_csv()`. Changes to any of these objects would cause the `raw_data` target to rerun on the next `tar_make()`.
+
+Not all of the objects from `tar_deps()` actually register as dependencies. When it comes to detecting dependencies, `targets` only recognizes
+
+1. Other targets (such as `raw_data_file`).
+1. Functions and objects in the main environment. This environment is almost always the global environment of the R process that runs `_targets.R`, so these dependencies are usually going to be the custom functions and objects you write yourself.
+
+This process excludes many objects from dependency detection. For example, both `{` and `cols()` are excluded because they are defined in the environments of packages (`base` and `readr`, respectively). Functions and objects from packages are ignored unless you supply a package environment to the `envir` argument of `tar_option_set()` when you call it in `_targets.R`, e.g. `tar_option_set(envir = getNamespace("packageName"))`. You should only set `envir` if you write your own package to contain your whole data analysis project.
+
+## Workflows as R packages
+
+When it comes time to decide which targets to rerun or skip, the default behavior is to ignore changes to external R packages. Usually, local package libraries do not need to change very often, and it is best to maintain a reproducible project library using [`renv`](https://rstudio.github.io/renv/articles/renv.html).
+
+However, there are some situations where it makes sense to watch a package for changes. For example, you could be in the middle of developing a methodology package that serves as the focus of the pipeline, or you could implement the workflow itself as a package. In either case, you can tell `targets` to track changes using the `imports` argument to `tar_option_set()`. If you write `tar_option_set(imports = "package1")` in `_targets.R`, then `targets` will analyze the R objects in `package1` and automatically rerun the dependent targets when these objects change. These tracked objects include unexported functions internal to the package. You can track multiple packages this way, e.g. `tar_option_set(imports = c("package1", "package2"))`. In this case, the contents of `package1` override those of `package2` when there are name conflicts. Likewise, `tar_option_get("envir")` (usually the global environment) overrides both.
+
+## Monitoring the pipeline
+
+If you are using `targets`, then you probably have an intense computation like Bayesian data analysis or machine learning. These tasks take a long time to run, and it is a good idea to monitor them. If you are running the work on your local machine, you can monitor parallel workers with a utility like `top` or `htop`. If you are using a traditional HPC scheduler like SLURM or SGE, you can check the status of the workers with `squeue`, `qstat`, or similar. But those tools do not always give you a high-level view of what the pipeline has done and which targets are going to run next. For that information, `targets` has options:
+
+1. `tar_progress()` returns a data frame describing the targets that started, finished running successfully, got canceled, or errored out.
+1. `tar_visnetwork()` shows this progress information in an interactive `visNetwork` widget. Set `outdated` to `FALSE` to get slightly more detailed progress information.
+1. `tar_watch()` launches an Shiny app that automatically refreshes the graph every few seconds. Try it out in the example below.
+
+```{r, eval = FALSE}
+# Define an example _targets.R file with a slow pipeline.
+library(targets)
+tar_script({
+  sleep_run <- function(...) {
+    Sys.sleep(10)
+  }
+  list(
+    tar_target(settings, sleep_run()),
+    tar_target(data1, sleep_run(settings)),
+    tar_target(data2, sleep_run(settings)),
+    tar_target(data3, sleep_run(settings)),
+    tar_target(model1, sleep_run(data1)),
+    tar_target(model2, sleep_run(data2)),
+    tar_target(model3, sleep_run(data3)),
+    tar_target(figure1, sleep_run(model1)),
+    tar_target(figure2, sleep_run(model2)),
+    tar_target(figure3, sleep_run(model3)),
+    tar_target(conclusions, sleep_run(c(figure1, figure2, figure3)))
+  )
+})
+
+# Launch the app in a background process.
+# You may need to refresh the browser if the app is slow to start.
+# The graph automatically refreshes every 10 seconds
+tar_watch(seconds = 10, outdated = FALSE, targets_only = TRUE)
+
+# Now run the pipeline and watch the graph change.
+px <- tar_make()
+```
+
+![](./man/figures/tar_watch.png)
+`tar_watch_ui()` and `tar_watch_server()` make this functionality available to other apps through a Shiny module.
+
+
+## Performance
+
+If your pipeline has several thousand targets, functions like `tar_make()`, `tar_outdated()`, and `tar_visnetwork()` may take longer to run. There is an inevitable per-target runtime cost because package needs to check the code and data of each target individually. If this overhead becomes too much, consider batching your work into a smaller group of heavier targets. Using your custom functions, you can make each target perform multiple iterations of a task that was previously given to targets one at a time. For details and an example, please see the discussion on batching at the bottom of the [dynamic branching chapter](#dynamic).
+
+Alternatively, if you see slowness in your project, you can contribute to the package with a profiling study. These contributions are great because they help improve the package. Here are the recommended steps.
+
+1. Install the [`proffer`](https://github.com/r-prof/proffer) R package and its dependencies.
+1. Run `proffer::pprof(tar_make(callr_function = NULL))` on your project.
+1. When a web browser pops up with `pprof`, select the flame graph and screenshot it.
+1. Post the flame graph, along with any code and data you can share, to the [`targets` package issue tracker](https://github.com/wlandau/targets/issues). The maintainer will have a look and try to make the package faster for your use case if speedups are possible.
+
+## Cleaning up
+
+There are [multiple functions](https://wlandau.github.io/targets/reference/index.html#section-clean) to help you manually remove data or force targets to rerun.
+
+* [`tar_destroy()`](https://wlandau.github.io/targets/reference/tar_destroy.html) is by far the most commonly used cleaning function. It removes the `_targets/` data store completely, deleting all the results from [`tar_make()`](https://wlandau.github.io/targets/reference/tar_make.html) except for external files. Use it if you intend to start the pipeline from scratch without any trace of a previous run.
+* [`tar_prune()`](https://wlandau.github.io/targets/reference/tar_prune.html) deletes the data and metadata of all the targets no longer present in your current `_targets.R` file. This is useful if you recently worked through multiple changes to your project and are now trying to discard irrelevant data while keeping the results that still matter.
+* [`tar_delete()`](https://wlandau.github.io/targets/reference/tar_delete.html) is more selective than [`tar_destroy()`](https://wlandau.github.io/targets/reference/tar_destroy.html) and [`tar_prune()`](https://wlandau.github.io/targets/reference/tar_prune.html). It removes the individual data files of a given set of targets from `_targets/objects/` while leaving the metadata in `_targets/meta/meta` alone. If you have a small number of data-heavy targets you need to discard to conserve storage, this function can help.
+* [`tar_invalidate()`](https://wlandau.github.io/targets/reference/tar_invalidate.html) is the opposite of [`tar_delete()`](https://wlandau.github.io/targets/reference/tar_delete.html): for the selected targets, it deletes the metadata in `_targets/meta/meta` but keeps the return values in `_targets/objects/`. After invalidation, you will still be able to locate the data files with [`tar_path()`](https://wlandau.github.io/targets/reference/tar_path.html) and manually salvage them in an emergency. However, [`tar_load()`](https://wlandau.github.io/targets/reference/tar_load.html) and [`tar_read()`](https://wlandau.github.io/targets/reference/tar_read.html) will not be able to read the data into R, and subesequent calls to [`tar_make()`](https://wlandau.github.io/targets/reference/tar_make.html) will attempt to rebuild those targets.
