@@ -105,6 +105,8 @@ tar_manifest()
 tar_visnetwork(targets_only = TRUE)
 ```
 
+## Dynamic-within-static branching
+
 You can even combine together static and dynamic branching. The static `tar_map()` is an excellent outer layer on top of targets with patterns. The following is a sketch of a pipeline that runs each of two data analysis methods 10 times, once per random seed. Static branching iterates over the method functions, while dynamic branching iterates over the seeds. `tar_map()` creates new patterns as well as new commands. So below, the summary methods map over the analysis methods both statically and dynamically.
 
 ```{r, eval = FALSE}
