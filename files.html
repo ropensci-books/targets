@@ -311,7 +311,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="external-input-files" class="section level2" number="6.2">
 <h2><span class="header-section-number">6.2</span> External input files</h2>
-<p>To reproducibly track an external input file, you need to define a new target and choose <code>format = "file"</code> in <code>tar_target()</code>. Targets with the <code>"file"</code> format are called dynamic files, and these targets are unusual because their return values do not get saved in the <code>_targets/objects/</code> folder. Rather, they expect you to return a character vector files and directories, which gets stored in the <code>_targets/meta</code> spreadsheet, and then <code>targets</code> watches the data at those paths for changes. The first two targets of the <a href="https://github.com/wlandau/targets-minimal">minimal example</a> demonstrate this technique.</p>
+<p>To reproducibly track an external input file, you need to define a new target that has</p>
+<ol style="list-style-type: decimal">
+<li>A command that returns the file path as a character vector, and</li>
+<li><code>format = "file"</code> in <code>tar_target()</code>.</li>
+</ol>
+<p>When the target runs in the pipeline, the returned character vector gets recorded in <code>_targets/meta</code>, and <code>targets</code> watches the data file and invalidates the target when that file changes. To track multiple files or directories this way, simply define a multi-element character vector where each element is a path.</p>
+<p>The first two targets of the <a href="https://github.com/wlandau/targets-minimal">minimal example</a> demonstrate how to track an input file.</p>
 <div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="files.html#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_script</span>({</span>
 <span id="cb50-2"><a href="files.html#cb50-2" aria-hidden="true" tabindex="-1"></a>  path_to_data <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
 <span id="cb50-3"><a href="files.html#cb50-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;data/raw_data.csv&quot;</span></span>
@@ -328,7 +334,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb50-14"><a href="files.html#cb50-14" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb50-15"><a href="files.html#cb50-15" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb50-16"><a href="files.html#cb50-16" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
-<p>Above, <code>raw_data_file</code> is the dynamic file target. The file <code>data/raw_data.csv</code> exists before we ever run the pipeline, and the R expresion for the target returns the character vector <code>"data/raw_data.csv"</code>. (We use the <code>path_to_data()</code> function to demonstrate that you need not literally write <code>"data/raw_data.csv"</code> as long as the path is returned somehow.)</p>
+<p>Above, <code>raw_data_file</code> is the dynamic file target. The file <code>data/raw_data.csv</code> exists before we ever run the pipeline, and the R expression for the target returns the character vector <code>"data/raw_data.csv"</code>. (We use the <code>path_to_data()</code> function to demonstrate that you need not literally write <code>"data/raw_data.csv"</code> as long as the path is returned somehow.)</p>
 <p>All subsequent targets that depend on the file must reference the file using the symbol <code>raw_data_file</code>. This allows <code>targets</code>’ automatic static code analysis routines to detect which targets depend on the file. Because the <code>raw_data</code> target literally mentions the symbol <code>raw_data_file</code>, <code>targets</code> knows <code>raw_data</code> depends on <code>raw_data_file</code>. This ensures that</p>
 <ol style="list-style-type: decimal">
 <li><code>raw_data_file</code> gets processed before <code>raw_data</code>, and</li>
