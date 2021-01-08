@@ -16,9 +16,9 @@ Sometimes, a pipeline contains more targets than a user can comfortably type by 
 
 `targets` supports two types of branching: dynamic branching and [static branching](#static). Some projects are better suited to dynamic branching, while others benefit more from [static branching](#static) or a combination of both. Some users understand dynamic branching more easily because it avoids metaprogramming, while others prefer [static branching](#static) because `tar_manifest()` and `tar_visnetwork()` provide immediate feedback. Except for the [section on dynamic-within-static branching](static.html#dynamic-within-static-branching), you can read the two chapters on branching in any order (or skip them) depending on your needs.
 
-## When to use dynamic branching
+## Abort dynamic branching
 
-Dynamic branching defines new targets (i.e. branches) while the pipeline is running, and those definitions can be based on prior results from upstream targets. Relative to [static branching](#static), dynamic branching is better suited to iterating over a larger number of very similar tasks (but can act as an inner layer inside [static branching](#static), as the next chapter demonstrates).
+Dynamic branching is the act of defining new targets (i.e. branches) while the pipeline is running. Prior to launching the pipeline, the user does not necessarily know which branches will spawn or how many branches there will be, and each branch's inputs are determined at the last minute. Relative to [static branching](#static), dynamic branching is better suited to iterating over a larger number of very similar tasks (but can act as an inner layer inside [static branching](#static), as the next chapter demonstrates).
 
 ## Patterns
 
