@@ -42,7 +42,7 @@ To reproducibly track an external input file, you need to define a new target th
 
 When the target runs in the pipeline, the returned character vector gets recorded in `_targets/meta`, and `targets` watches the data file and invalidates the target when that file changes. To track multiple files or directories this way, simply define a multi-element character vector where each element is a path.
 
-The first two targets of the [minimal example](https://github.com/wlandau/targets-minimal) demonstrate how to track an input file.
+The first two targets of the [minimal example](https://github.com/ropensci/targets-minimal) demonstrate how to track an input file.
 
 ```{r}
 tar_script({
@@ -124,7 +124,7 @@ save_plot_and_return_path <- function() {
 
 ## Literate programming
 
-R Markdown reports are a little more challenging because they often depend on upstream targets. To integrate an R Markdown report with a `targets` pipeline, you must use `tar_read()` and `tar_load()` in active code chunks to explicitly name the targets that the report depends on. (Do not use `tar_read_raw()` or `tar_load_raw()` for this.) The report from the [minimal example](https://github.com/wlandau/targets-minimal) looks like this.
+R Markdown reports are a little more challenging because they often depend on upstream targets. To integrate an R Markdown report with a `targets` pipeline, you must use `tar_read()` and `tar_load()` in active code chunks to explicitly name the targets that the report depends on. (Do not use `tar_read_raw()` or `tar_load_raw()` for this.) The report from the [minimal example](https://github.com/ropensci/targets-minimal) looks like this.
 
 ![](./man/figures/knitr-source.png)
 
