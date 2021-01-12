@@ -56,7 +56,7 @@ tar_script({
 
 # Walkthrough {#walkthrough}
 
-This chapter walks through a minimal example of a [`targets`](https://github.com/ropensci/targets)-powered data analysis project. The source code is available [here](https://github.com/ropensci/targets-minimal), and it has a free [RStudio Cloud workspace](https://rstudio.cloud/project/1430691) where you can try the code in your web browser. The [documentation website](https://wlandau.github.io/targets/index.html#examples) links to other examples.
+This chapter walks through a minimal example of a [`targets`](https://github.com/ropensci/targets)-powered data analysis project. The source code is available [here](https://github.com/ropensci/targets-minimal), and it has a free [RStudio Cloud workspace](https://rstudio.cloud/project/1430691) where you can try the code in your web browser. The [documentation website](https://docs.ropensci.org/targets/index.html#examples) links to other examples.
 
 ## About this minimal example
 
@@ -94,7 +94,7 @@ create_plot <- function(data) {
 }
 ```
 
-Whereas files `raw_data.csv` and `functions.R` are typical user-defined components of a [project-oriented workflow](https://rstats.wtf/project-oriented-workflow.html), `_targets.R` file is special. Every [`targets`](https://github.com/ropensci/targets) workflow needs a file called `_targets.R` in the project's [root directory](https://martinctc.github.io/blog/rstudio-projects-and-working-directories-a-beginner%27s-guide/). Functions [`tar_script()`](https://wlandau.github.io/targets/reference/tar_script.html) and [`tar_edit()`](https://wlandau.github.io/targets/reference/tar_edit.html) can help you create one. Ours looks looks like this:
+Whereas files `raw_data.csv` and `functions.R` are typical user-defined components of a [project-oriented workflow](https://rstats.wtf/project-oriented-workflow.html), `_targets.R` file is special. Every [`targets`](https://github.com/ropensci/targets) workflow needs a file called `_targets.R` in the project's [root directory](https://martinctc.github.io/blog/rstudio-projects-and-working-directories-a-beginner%27s-guide/). Functions [`tar_script()`](https://docs.ropensci.org/targets/reference/tar_script.html) and [`tar_edit()`](https://docs.ropensci.org/targets/reference/tar_edit.html) can help you create one. Ours looks looks like this:
 
 ```{r, eval = FALSE}
 # _targets.R
@@ -150,7 +150,7 @@ and `tar_visnetwork()`.
 tar_visnetwork()
 ```
 
-Both graphing functions above visualize the underlying directed acyclic graph (DAG) and tell you how targets are connected. This DAG is indifferent to the order of targets in your pipeline. You will still get the same graph even if you rearrange them. This is because `targets` uses static code analysis to detect the dependencies of each target, and this process does not depend on target order. For details, visit the [dependency detection section of the best practices guide](https://wlandau.github.io/targets-manual/practice.html#dependencies).
+Both graphing functions above visualize the underlying directed acyclic graph (DAG) and tell you how targets are connected. This DAG is indifferent to the order of targets in your pipeline. You will still get the same graph even if you rearrange them. This is because `targets` uses static code analysis to detect the dependencies of each target, and this process does not depend on target order. For details, visit the [dependency detection section of the best practices guide](https://books.ropensci.org/targets/practice.html#dependencies).
 
 ## Run the pipeline
 

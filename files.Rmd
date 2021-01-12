@@ -9,7 +9,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 library(targets)
 ```
 
-The `targets` package automatically stores data and automatically responds to changed files to keep your targets up to date. The chapter below explains how to leverage this reproducibility for external datasets, external output files, and literate programming artifacts such as R Markdown reports. Real-world applications of these techniques are [linked from here](https://wlandau.github.io/targets/index.html#examples).
+The `targets` package automatically stores data and automatically responds to changed files to keep your targets up to date. The chapter below explains how to leverage this reproducibility for external datasets, external output files, and literate programming artifacts such as R Markdown reports. Real-world applications of these techniques are [linked from here](https://docs.ropensci.org/targets/index.html#examples).
 
 ## Internal files
 
@@ -132,7 +132,7 @@ Above, the report depends on targets `fit` and `hist`. The use of `tar_read()` a
 
 ![](./man/figures/knitr-ide.png)
 
-To connect the target with the pipeline, we define a special kind of target using `tar_render()` from the [`tarchetypes`](https://github.com/wlandau/tarchetypes) package instead of the usual `tar_target()`, which
+To connect the target with the pipeline, we define a special kind of target using `tar_render()` from the [`tarchetypes`](https://github.com/ropensci/tarchetypes) package instead of the usual `tar_target()`, which
 
 1. Finds all the `tar_load()`/`tar_read()` dependencies in the report and inserts them into the target's command. This enforces the proper dependency relationships. (`tar_load_raw()` and `tar_read_raw()` are ignored because those dependencies cannot be resolved with static code analysis.) 
 1. Sets `format = "file"` (see `tar_target()`) so `targets` watches the files at the returned paths.
@@ -197,11 +197,11 @@ tar_visnetwork()
 
 ## Parameterized R Markdown
 
-Functions in [`tarchetypes`](https://wlandau.github.io/tarchetypes) make it straightforward to use [parameterized R Markdown](https://rmarkdown.rstudio.com/developer_parameterized_reports.html) in a `targets` pipeline. The next two subsections walk through the major use cases.
+Functions in [`tarchetypes`](https://docs.ropensci.org/tarchetypes) make it straightforward to use [parameterized R Markdown](https://rmarkdown.rstudio.com/developer_parameterized_reports.html) in a `targets` pipeline. The next two subsections walk through the major use cases.
 
 ### Single parameter set
 
-In this scenario, the pipeline renders your [parameterized R Markdown](https://rmarkdown.rstudio.com/developer_parameterized_reports.html) report one time using a single set of parameters. These parameters can be upstream targets, global objects, or fixed values. Simply pass a `params` argument to [`tarchetypes::tar_render()`](https://wlandau.github.io/tarchetypes/reference/tar_render.html):
+In this scenario, the pipeline renders your [parameterized R Markdown](https://rmarkdown.rstudio.com/developer_parameterized_reports.html) report one time using a single set of parameters. These parameters can be upstream targets, global objects, or fixed values. Simply pass a `params` argument to [`tarchetypes::tar_render()`](https://docs.ropensci.org/tarchetypes/reference/tar_render.html):
 
 ```{r, eval = FALSE}
 # _targets.R
@@ -236,11 +236,11 @@ and the following code chunk:
 print(params$your_param)
 ```
 
-See [these examples](https://wlandau.github.io/tarchetypes/reference/tar_render.html#examples) for a demonstration.
+See [these examples](https://docs.ropensci.org/tarchetypes/reference/tar_render.html#examples) for a demonstration.
 
 ### Multiple parameter sets
 
-In this scenario, you still have a single report, but you render it multiple times over multiple sets of [R Markdown parameters](https://rmarkdown.rstudio.com/developer_parameterized_reports.html). This time, use [`tarchetypes::tar_render_rep()`](https://wlandau.github.io/tarchetypes/reference/tar_render_rep.html) and write code to reference or generate a grid of parameters with one row per rendered report and one column per parameter. Optionally, you can also include an `output_file` column to control the file paths of the generated reports, and you can set the number of batches to reduce the overhead that would otherwise ensue from creating a large number of targets.
+In this scenario, you still have a single report, but you render it multiple times over multiple sets of [R Markdown parameters](https://rmarkdown.rstudio.com/developer_parameterized_reports.html). This time, use [`tarchetypes::tar_render_rep()`](https://docs.ropensci.org/tarchetypes/reference/tar_render_rep.html) and write code to reference or generate a grid of parameters with one row per rendered report and one column per parameter. Optionally, you can also include an `output_file` column to control the file paths of the generated reports, and you can set the number of batches to reduce the overhead that would otherwise ensue from creating a large number of targets.
 
 ```{r, eval = FALSE}
 # _targets.R
@@ -291,4 +291,4 @@ The third output file `f3.html` is below, and the rest look similar.
 
 ![](./man/figures/dynamic-rmarkdown-params.png)
 
-For more information, see [these examples](https://wlandau.github.io/tarchetypes/reference/tar_render_rep.html#examples).
+For more information, see [these examples](https://docs.ropensci.org/tarchetypes/reference/tar_render_rep.html#examples).
