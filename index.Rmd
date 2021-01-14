@@ -12,9 +12,9 @@ output:
     includes:
       in_header: [google_analytics.html]
       after_body: footer.html
-url: "https://wlandau.github.io/targets-manual"
+url: "https://books.ropensci.org/targets"
 description: "In-depth discussion of the major functionality of targets."
-github-repo: "wlandau/targets-manual"
+github-repo: "ropensci-books/targets"
 cover-image: /man/figures/logo.png
 apple-touch-icon: "man/figures/apple-touch-icon.png"
 apple-touch-icon-size: 120
@@ -29,7 +29,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 
 # Introduction {#intro}
 
-The [`targets`](https://github.com/wlandau/targets) package is a [Make](https://www.gnu.org/software/make/)-like pipeline toolkit for Statistics and data science in R. With [`targets`](https://github.com/wlandau/targets), you can maintain a reproducible workflow without repeating yourself. [`targets`](https://github.com/wlandau/targets) learns how your pipeline fits together, skips costly runtime for tasks that are already up to date, runs only the necessary computation, supports implicit parallel computing, abstracts files as R objects, and shows tangible evidence that the results match the underlying code and data.
+The [`targets`](https://github.com/ropensci/targets) package is a [Make](https://www.gnu.org/software/make/)-like pipeline toolkit for Statistics and data science in R. With [`targets`](https://github.com/ropensci/targets), you can maintain a reproducible workflow without repeating yourself. [`targets`](https://github.com/ropensci/targets) learns how your pipeline fits together, skips costly runtime for tasks that are already up to date, runs only the necessary computation, supports implicit parallel computing, abstracts files as R objects, and shows tangible evidence that the results match the underlying code and data.
 
 ## Motivation
 
@@ -46,12 +46,12 @@ Data analysis can be slow. A round of scientific computation can take several mi
 
 ## The `targets` package
 
-Unlike most [pipeline toolkits](https://github.com/pditommaso/awesome-pipeline), which are language agnostic or Python-focused, the [`targets`](https://github.com/wlandau/targets) package allows data scientists and researchers to work entirely within R. [`targets`](https://github.com/wlandau/targets) implicitly nudges users toward a clean, function-oriented programming style that fits the intent of the R language and helps practitioners maintain their data analysis projects.
+Unlike most [pipeline toolkits](https://github.com/pditommaso/awesome-pipeline), which are language agnostic or Python-focused, the [`targets`](https://github.com/ropensci/targets) package allows data scientists and researchers to work entirely within R. [`targets`](https://github.com/ropensci/targets) implicitly nudges users toward a clean, function-oriented programming style that fits the intent of the R language and helps practitioners maintain their data analysis projects.
 
 ## About this manual
 
-This manual is a step-by-step user guide to [`targets`](https://github.com/wlandau/targets). It [walks through basic usage](#walkthrough), [outlines general best practices](#practice), dives deep into advanced features like [high-performance computing](#hpc), and [helps `drake` users transition to `targets`](#drake). See the [documentation website](https://wlandau.github.io/targets/index.html) for most other major resources, including [installation instructions](https://wlandau.github.io/targets/index.html#installation), links to [example projects](https://wlandau.github.io/targets/index.html#examples), and a [reference page with all user-side functions](https://wlandau.github.io/targets/reference/index.html). 
+This manual is a step-by-step user guide to [`targets`](https://github.com/ropensci/targets). It [walks through basic usage](#walkthrough), [outlines general best practices](#practice), dives deep into advanced features like [high-performance computing](#hpc), and [helps `drake` users transition to `targets`](#drake). See the [documentation website](https://docs.ropensci.org/targets/index.html) for most other major resources, including [installation instructions](https://docs.ropensci.org/targets/index.html#installation), links to [example projects](https://docs.ropensci.org/targets/index.html#examples), and a [reference page with all user-side functions](https://docs.ropensci.org/targets/reference/index.html). 
 
 ## What about `drake`?
 
-The [`drake`](https://github.com/ropensci/drake) is an older R-focused pipeline toolkit, and [`targets`](https://github.com/wlandau/targets) is [`drake`](https://github.com/ropensci/drake)'s long-term successor. There is a [special chapter](#drake) to explain why [`targets`](https://github.com/wlandau/targets) was created, what this means for [`drake`](https://github.com/ropensci/drake)'s future, advice for [`drake`](https://github.com/ropensci/drake) users transitioning to the [`targets`](https://github.com/wlandau/targets), and the main technical advantages of [`targets`](https://github.com/wlandau/targets) over [`drake`](https://github.com/ropensci/drake).
+The [`drake`](https://github.com/ropensci/drake) is an older R-focused pipeline toolkit, and [`targets`](https://github.com/ropensci/targets) is [`drake`](https://github.com/ropensci/drake)'s long-term successor. There is a [special chapter](#drake) to explain why [`targets`](https://github.com/ropensci/targets) was created, what this means for [`drake`](https://github.com/ropensci/drake)'s future, advice for [`drake`](https://github.com/ropensci/drake) users transitioning to the [`targets`](https://github.com/ropensci/targets), and the main technical advantages of [`targets`](https://github.com/ropensci/targets) over [`drake`](https://github.com/ropensci/drake).

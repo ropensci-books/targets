@@ -7,8 +7,8 @@ labels: "type: trouble"
 
 ## Prework
 
-* [ ] I understand and agree to this repository's [code of conduct](https://github.com/wlandau/targets-manual/blob/main/CODE_OF_CONDUCT.md).
-* [ ] I understand and agree to `targets`' [contributing guidelines](https://github.com/wlandau/targets-manual/blob/main/CONTRIBUTING.md).
+* [ ] I understand and agree to this repository's [code of conduct](https://ropensci.org/code-of-conduct/).
+* [ ] I understand and agree to `targets`' [contributing guidelines](https://github.com/ropensci-boooks/targets-manual/blob/main/CONTRIBUTING.md).
 
 ## Description
 

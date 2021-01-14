@@ -70,7 +70,7 @@ Sign in to <https://s3.console.aws.amazon.com/s3> to verify that the bucket exis
 To connect your pipeline with S3,
 
 1. Supply your bucket name to `resources` in `tar_option_set()`. To use different buckets for different targets, set `resources` directly in `tar_target()`.
-1. Supply AWS-powered storage formats to `tar_option_set()` and/or `tar_target()`. See the [`tar_target()` help file](https://wlandau.github.io/targets/reference/tar_target.html#arguments) for the full list of formats.
+1. Supply AWS-powered storage formats to `tar_option_set()` and/or `tar_target()`. See the [`tar_target()` help file](https://docs.ropensci.org/targets/reference/tar_target.html#arguments) for the full list of formats.
 
 Your `_targets.R` file will look something like this.
 
@@ -91,7 +91,7 @@ list(
 
 ### Run the pipeline
 
-When you run the pipeline above with [`tar_make()`](https://wlandau.github.io/targets/reference/tar_make.html), your local R session computes `rnorm(5)`, saves it to a temporary [`qs`](https://github.com/traversc/qs) file on disk, and then uploads it to a file called `_targets/objects/data` on your S3 bucket. Likewise for `mean_file`, but because the format is `"aws_file"`, you are responsible for supplying the path to the file that gets uploaded to `_targets/objects/mean_file`.
+When you run the pipeline above with [`tar_make()`](https://docs.ropensci.org/targets/reference/tar_make.html), your local R session computes `rnorm(5)`, saves it to a temporary [`qs`](https://github.com/traversc/qs) file on disk, and then uploads it to a file called `_targets/objects/data` on your S3 bucket. Likewise for `mean_file`, but because the format is `"aws_file"`, you are responsible for supplying the path to the file that gets uploaded to `_targets/objects/mean_file`.
 
 ```{r, eval = FALSE}
 tar_make()
