@@ -10,16 +10,16 @@
 
   <meta property="og:title" content="Chapter 7 Dynamic branching | The targets R Package User Manual" />
   <meta property="og:type" content="book" />
-  <meta property="og:url" content="https://wlandau.github.io/targets-manual" />
-  <meta property="og:image" content="https://wlandau.github.io/targets-manual/man/figures/logo.png" />
+  <meta property="og:url" content="https://books.ropensci.org/targets" />
+  <meta property="og:image" content="https://books.ropensci.org/targets/man/figures/logo.png" />
   <meta property="og:description" content="In-depth discussion of the major functionality of targets." />
-  <meta name="github-repo" content="wlandau/targets-manual" />
+  <meta name="github-repo" content="ropensci-books/targets" />
 
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content="Chapter 7 Dynamic branching | The targets R Package User Manual" />
   
   <meta name="twitter:description" content="In-depth discussion of the major functionality of targets." />
-  <meta name="twitter:image" content="https://wlandau.github.io/targets-manual/man/figures/logo.png" />
+  <meta name="twitter:image" content="https://books.ropensci.org/targets/man/figures/logo.png" />
 
 <meta name="author" content="Will Landau" />
 <meta name="author" content="Copyright Eli Lilly and Company" />
@@ -70,6 +70,7 @@
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
 pre.sourceCode { margin: 0; }
 @media screen {
@@ -308,7 +309,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="patterns" class="section level2" number="7.3">
 <h2><span class="header-section-number">7.3</span> Patterns</h2>
-<p>To use dynamic branching, set the <code>pattern</code> argument of <code>tar_target()</code>. A pattern is a dynamic branching specification expressed in terms of functional programming. The following minimal example explores the mechanics of patterns (and examples of branching in real-world projects are <a href="https://wlandau.github.io/targets/index.html#examples">linked from here</a>).</p>
+<p>To use dynamic branching, set the <code>pattern</code> argument of <code>tar_target()</code>. A pattern is a dynamic branching specification expressed in terms of functional programming. The following minimal example explores the mechanics of patterns (and examples of branching in real-world projects are <a href="https://docs.ropensci.org/targets/index.html#examples">linked from here</a>).</p>
 <div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb67-1"><a href="dynamic.html#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
 <span id="cb67-2"><a href="dynamic.html#cb67-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
 <span id="cb67-3"><a href="dynamic.html#cb67-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
@@ -385,7 +386,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="testing-patterns" class="section level2" number="7.6">
 <h2><span class="header-section-number">7.6</span> Testing patterns</h2>
-<p>To check the correctness of a pattern without running the pipeline, use <a href="https://wlandau.github.io/targets/reference/tar_pattern.html"><code>tar_pattern()</code></a>. Simply supply the pattern itself and the length of each dependency target. The branch names in the data frames below are made up, but they convey a high-level picture of the branching structure.</p>
+<p>To check the correctness of a pattern without running the pipeline, use <a href="https://docs.ropensci.org/targets/reference/tar_pattern.html"><code>tar_pattern()</code></a>. Simply supply the pattern itself and the length of each dependency target. The branch names in the data frames below are made up, but they convey a high-level picture of the branching structure.</p>
 <div class="sourceCode" id="cb85"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb85-1"><a href="dynamic.html#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_pattern</span>(</span>
 <span id="cb85-2"><a href="dynamic.html#cb85-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cross</span>(w_comp, <span class="fu">map</span>(x_comp, y_comp)),</span>
 <span id="cb85-3"><a href="dynamic.html#cb85-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">w_comp =</span> <span class="dv">2</span>,</span>
@@ -415,7 +416,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb88-5"><a href="dynamic.html#cb88-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(files, paths, <span class="at">format =</span> <span class="st">&quot;file&quot;</span>, <span class="at">pattern =</span> <span class="fu">map</span>(paths)),</span>
 <span id="cb88-6"><a href="dynamic.html#cb88-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data, <span class="fu">read_csv</span>(files), <span class="at">pattern =</span> <span class="fu">map</span>(files))</span>
 <span id="cb88-7"><a href="dynamic.html#cb88-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<p>The <a href="https://wlandau.github.io/tarchetypes/reference/tar_files.html"><code>tar_files()</code></a> function from the <a href="https://github.com/wlandau/tarchetypes"><code>tarchetypes</code></a> package is shorthand for the first two targets above.</p>
+<p>The <a href="https://docs.ropensci.org/tarchetypes/reference/tar_files.html"><code>tar_files()</code></a> function from the <a href="https://github.com/ropensci/tarchetypes"><code>tarchetypes</code></a> package is shorthand for the first two targets above.</p>
 <div class="sourceCode" id="cb89"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb89-1"><a href="dynamic.html#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
 <span id="cb89-2"><a href="dynamic.html#cb89-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
 <span id="cb89-3"><a href="dynamic.html#cb89-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
@@ -565,8 +566,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">7.9</span> Batching</h2>
 <p>With dynamic branching, it is super easy to create an enormous number of targets. But when the number of targets starts to exceed a couple hundred, <code>tar_make()</code> slows down, and graphs from <code>tar_visnetwork()</code> start to become unmanageable. If that happens to you, consider batching your work into a smaller number of targets.</p>
 <p><a href="https://wlandau.github.io/targetopia.html">Targetopia</a> packages usually have functions that support batching for various use cases. In <a href="https://wlandau.github.io/stantargets/"><code>stantargets</code></a>, <a href="https://wlandau.github.io/stantargets/articles/mcmc_rep.html"><code>tar_stan_mcmc_rep_summary()</code></a> and friends automatically use batching behind the scenes. The user simply needs to select the number of batches and number of reps per batch. Each batch is a dynamic branch with multiple reps, and each rep fits the user’s model once and computes summary statistics.</p>
-<p>In <a href="https://wlandau.github.io/tarchetypes/"><code>tarchetypes</code></a>, <a href="https://wlandau.github.io/tarchetypes/reference/tar_rep.html">tar_rep()`</a> is a general-use target factory for dynamic branching. It allows you to repeat arbitrary code over multiple reps split into multiple batches. Each batch gets its own reproducible random number seed generated from the target name (as do all targets) and reps run sequentially within each batch, so the results are reproducible.</p>
-<p>The <a href="https://github.com/wlandau/targets-stan"><code>targets-stan</code></a> repository has an example of batching implemented from scratch. The goal of the pipeline is to validate a Bayesian model by simulating thousands of dataset, analyzing each with a Bayesian model, and assessing the overall accuracy of the inference. Rather than define a target for each dataset in model, the pipeline breaks up the work into batches, where each batch has multiple datasets or multiple analyses. Here is a version of the pipeline with 40 batches and 25 simulation reps per batch (1000 reps total in a pipeline of 82 targets).</p>
+<p>In <a href="https://docs.ropensci.org/tarchetypes/"><code>tarchetypes</code></a>, <a href="https://docs.ropensci.org/tarchetypes/reference/tar_rep.html">tar_rep()`</a> is a general-use target factory for dynamic branching. It allows you to repeat arbitrary code over multiple reps split into multiple batches. Each batch gets its own reproducible random number seed generated from the target name (as do all targets) and reps run sequentially within each batch, so the results are reproducible.</p>
+<p>The <a href="https://github.com/ropensci/targets-stan"><code>targets-stan</code></a> repository has an example of batching implemented from scratch. The goal of the pipeline is to validate a Bayesian model by simulating thousands of dataset, analyzing each with a Bayesian model, and assessing the overall accuracy of the inference. Rather than define a target for each dataset in model, the pipeline breaks up the work into batches, where each batch has multiple datasets or multiple analyses. Here is a version of the pipeline with 40 batches and 25 simulation reps per batch (1000 reps total in a pipeline of 82 targets).</p>
 <div class="sourceCode" id="cb107"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb107-1"><a href="dynamic.html#cb107-1" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
 <span id="cb107-2"><a href="dynamic.html#cb107-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(model_file, <span class="fu">compile_model</span>(<span class="st">&quot;stan/model.stan&quot;</span>), <span class="at">format =</span> <span class="st">&quot;file&quot;</span>),</span>
 <span id="cb107-3"><a href="dynamic.html#cb107-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(index_batch, <span class="fu">seq_len</span>(<span class="dv">40</span>)),</span>
@@ -622,11 +623,11 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/wlandau/targets-manual/edit/main/dynamic.Rmd",
+"link": "https://github.com/ropensci-books/targets/edit/main/dynamic.Rmd",
 "text": "Edit this chapter"
 },
 "history": {
-"link": "https://github.com/wlandau/targets-manual/commits/main/dynamic.Rmd",
+"link": "https://github.com/ropensci-books/targets/commits/main/dynamic.Rmd",
 "text": "Chapter edit history"
 },
 "view": {

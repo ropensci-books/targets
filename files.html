@@ -10,16 +10,16 @@
 
   <meta property="og:title" content="Chapter 6 External files and literate programming | The targets R Package User Manual" />
   <meta property="og:type" content="book" />
-  <meta property="og:url" content="https://wlandau.github.io/targets-manual" />
-  <meta property="og:image" content="https://wlandau.github.io/targets-manual/man/figures/logo.png" />
+  <meta property="og:url" content="https://books.ropensci.org/targets" />
+  <meta property="og:image" content="https://books.ropensci.org/targets/man/figures/logo.png" />
   <meta property="og:description" content="In-depth discussion of the major functionality of targets." />
-  <meta name="github-repo" content="wlandau/targets-manual" />
+  <meta name="github-repo" content="ropensci-books/targets" />
 
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content="Chapter 6 External files and literate programming | The targets R Package User Manual" />
   
   <meta name="twitter:description" content="In-depth discussion of the major functionality of targets." />
-  <meta name="twitter:image" content="https://wlandau.github.io/targets-manual/man/figures/logo.png" />
+  <meta name="twitter:image" content="https://books.ropensci.org/targets/man/figures/logo.png" />
 
 <meta name="author" content="Will Landau" />
 <meta name="author" content="Copyright Eli Lilly and Company" />
@@ -70,6 +70,7 @@
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
 pre.sourceCode { margin: 0; }
 @media screen {
@@ -297,7 +298,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="files" class="section level1" number="6">
 <h1><span class="header-section-number">Chapter 6</span> External files and literate programming</h1>
-<p>The <code>targets</code> package automatically stores data and automatically responds to changed files to keep your targets up to date. The chapter below explains how to leverage this reproducibility for external datasets, external output files, and literate programming artifacts such as R Markdown reports. Real-world applications of these techniques are <a href="https://wlandau.github.io/targets/index.html#examples">linked from here</a>.</p>
+<p>The <code>targets</code> package automatically stores data and automatically responds to changed files to keep your targets up to date. The chapter below explains how to leverage this reproducibility for external datasets, external output files, and literate programming artifacts such as R Markdown reports. Real-world applications of these techniques are <a href="https://docs.ropensci.org/targets/index.html#examples">linked from here</a>.</p>
 <div id="internal-files" class="section level2" number="6.1">
 <h2><span class="header-section-number">6.1</span> Internal files</h2>
 <p>Each project’s data lives in the <code>_targets/</code> folder in the root directory (where you call <code>tar_make()</code>). The files in the <code>_targets/</code> look like this:</p>
@@ -323,7 +324,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><code>format = "file"</code> in <code>tar_target()</code>.</li>
 </ol>
 <p>When the target runs in the pipeline, the returned character vector gets recorded in <code>_targets/meta</code>, and <code>targets</code> watches the data file and invalidates the target when that file changes. To track multiple files or directories this way, simply define a multi-element character vector where each element is a path.</p>
-<p>The first two targets of the <a href="https://github.com/wlandau/targets-minimal">minimal example</a> demonstrate how to track an input file.</p>
+<p>The first two targets of the <a href="https://github.com/ropensci/targets-minimal">minimal example</a> demonstrate how to track an input file.</p>
 <div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="files.html#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_script</span>({</span>
 <span id="cb50-2"><a href="files.html#cb50-2" aria-hidden="true" tabindex="-1"></a>  path_to_data <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
 <span id="cb50-3"><a href="files.html#cb50-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;data/raw_data.csv&quot;</span></span>
@@ -384,11 +385,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="literate-programming" class="section level2" number="6.4">
 <h2><span class="header-section-number">6.4</span> Literate programming</h2>
-<p>R Markdown reports are a little more challenging because they often depend on upstream targets. To integrate an R Markdown report with a <code>targets</code> pipeline, you must use <code>tar_read()</code> and <code>tar_load()</code> in active code chunks to explicitly name the targets that the report depends on. (Do not use <code>tar_read_raw()</code> or <code>tar_load_raw()</code> for this.) The report from the <a href="https://github.com/wlandau/targets-minimal">minimal example</a> looks like this.</p>
+<p>R Markdown reports are a little more challenging because they often depend on upstream targets. To integrate an R Markdown report with a <code>targets</code> pipeline, you must use <code>tar_read()</code> and <code>tar_load()</code> in active code chunks to explicitly name the targets that the report depends on. (Do not use <code>tar_read_raw()</code> or <code>tar_load_raw()</code> for this.) The report from the <a href="https://github.com/ropensci/targets-minimal">minimal example</a> looks like this.</p>
 <p><img src="man/figures/knitr-source.png" /></p>
 <p>Above, the report depends on targets <code>fit</code> and <code>hist</code>. The use of <code>tar_read()</code> and <code>tar_load()</code> allows us to run the report outside the pipeline. (Again, do not use <code>tar_read_raw()</code> or <code>tar_load_raw()</code> for this.) As long as <code>_targets/</code> folder has data on the required targets from a previous <code>tar_make()</code>, you can open the RStudio IDE, edit the report, and click the Knit button like you would for any other R Markdown report.</p>
 <p><img src="man/figures/knitr-ide.png" /></p>
-<p>To connect the target with the pipeline, we define a special kind of target using <code>tar_render()</code> from the <a href="https://github.com/wlandau/tarchetypes"><code>tarchetypes</code></a> package instead of the usual <code>tar_target()</code>, which</p>
+<p>To connect the target with the pipeline, we define a special kind of target using <code>tar_render()</code> from the <a href="https://github.com/ropensci/tarchetypes"><code>tarchetypes</code></a> package instead of the usual <code>tar_target()</code>, which</p>
 <ol style="list-style-type: decimal">
 <li>Finds all the <code>tar_load()</code>/<code>tar_read()</code> dependencies in the report and inserts them into the target’s command. This enforces the proper dependency relationships. (<code>tar_load_raw()</code> and <code>tar_read_raw()</code> are ignored because those dependencies cannot be resolved with static code analysis.)</li>
 <li>Sets <code>format = "file"</code> (see <code>tar_target()</code>) so <code>targets</code> watches the files at the returned paths.</li>
@@ -428,10 +429,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="parameterized-r-markdown" class="section level2" number="6.5">
 <h2><span class="header-section-number">6.5</span> Parameterized R Markdown</h2>
-<p>Functions in <a href="https://wlandau.github.io/tarchetypes"><code>tarchetypes</code></a> make it straightforward to use <a href="https://rmarkdown.rstudio.com/developer_parameterized_reports.html">parameterized R Markdown</a> in a <code>targets</code> pipeline. The next two subsections walk through the major use cases.</p>
+<p>Functions in <a href="https://docs.ropensci.org/tarchetypes"><code>tarchetypes</code></a> make it straightforward to use <a href="https://rmarkdown.rstudio.com/developer_parameterized_reports.html">parameterized R Markdown</a> in a <code>targets</code> pipeline. The next two subsections walk through the major use cases.</p>
 <div id="single-parameter-set" class="section level3" number="6.5.1">
 <h3><span class="header-section-number">6.5.1</span> Single parameter set</h3>
-<p>In this scenario, the pipeline renders your <a href="https://rmarkdown.rstudio.com/developer_parameterized_reports.html">parameterized R Markdown</a> report one time using a single set of parameters. These parameters can be upstream targets, global objects, or fixed values. Simply pass a <code>params</code> argument to <a href="https://wlandau.github.io/tarchetypes/reference/tar_render.html"><code>tarchetypes::tar_render()</code></a>:</p>
+<p>In this scenario, the pipeline renders your <a href="https://rmarkdown.rstudio.com/developer_parameterized_reports.html">parameterized R Markdown</a> report one time using a single set of parameters. These parameters can be upstream targets, global objects, or fixed values. Simply pass a <code>params</code> argument to <a href="https://docs.ropensci.org/tarchetypes/reference/tar_render.html"><code>tarchetypes::tar_render()</code></a>:</p>
 <div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="files.html#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
 <span id="cb59-2"><a href="files.html#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
 <span id="cb59-3"><a href="files.html#cb59-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
@@ -450,11 +451,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb61-6"><a href="files.html#cb61-6" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code></pre></div>
 <p>and the following code chunk:</p>
 <div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="files.html#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(params<span class="sc">$</span>your_param)</span></code></pre></div>
-<p>See <a href="https://wlandau.github.io/tarchetypes/reference/tar_render.html#examples">these examples</a> for a demonstration.</p>
+<p>See <a href="https://docs.ropensci.org/tarchetypes/reference/tar_render.html#examples">these examples</a> for a demonstration.</p>
 </div>
 <div id="multiple-parameter-sets" class="section level3" number="6.5.2">
 <h3><span class="header-section-number">6.5.2</span> Multiple parameter sets</h3>
-<p>In this scenario, you still have a single report, but you render it multiple times over multiple sets of <a href="https://rmarkdown.rstudio.com/developer_parameterized_reports.html">R Markdown parameters</a>. This time, use <a href="https://wlandau.github.io/tarchetypes/reference/tar_render_rep.html"><code>tarchetypes::tar_render_rep()</code></a> and write code to reference or generate a grid of parameters with one row per rendered report and one column per parameter. Optionally, you can also include an <code>output_file</code> column to control the file paths of the generated reports, and you can set the number of batches to reduce the overhead that would otherwise ensue from creating a large number of targets.</p>
+<p>In this scenario, you still have a single report, but you render it multiple times over multiple sets of <a href="https://rmarkdown.rstudio.com/developer_parameterized_reports.html">R Markdown parameters</a>. This time, use <a href="https://docs.ropensci.org/tarchetypes/reference/tar_render_rep.html"><code>tarchetypes::tar_render_rep()</code></a> and write code to reference or generate a grid of parameters with one row per rendered report and one column per parameter. Optionally, you can also include an <code>output_file</code> column to control the file paths of the generated reports, and you can set the number of batches to reduce the overhead that would otherwise ensue from creating a large number of targets.</p>
 <div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="files.html#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
 <span id="cb63-2"><a href="files.html#cb63-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
 <span id="cb63-3"><a href="files.html#cb63-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
@@ -487,7 +488,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb66-5"><a href="files.html#cb66-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run branch report_457829de</span></span></code></pre></div>
 <p>The third output file <code>f3.html</code> is below, and the rest look similar.</p>
 <p><img src="man/figures/dynamic-rmarkdown-params.png" /></p>
-<p>For more information, see <a href="https://wlandau.github.io/tarchetypes/reference/tar_render_rep.html#examples">these examples</a>.</p>
+<p>For more information, see <a href="https://docs.ropensci.org/tarchetypes/reference/tar_render_rep.html#examples">these examples</a>.</p>
 
 </div>
 </div>
@@ -523,11 +524,11 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/wlandau/targets-manual/edit/main/files.Rmd",
+"link": "https://github.com/ropensci-books/targets/edit/main/files.Rmd",
 "text": "Edit this chapter"
 },
 "history": {
-"link": "https://github.com/wlandau/targets-manual/commits/main/files.Rmd",
+"link": "https://github.com/ropensci-books/targets/commits/main/files.Rmd",
 "text": "Chapter edit history"
 },
 "view": {

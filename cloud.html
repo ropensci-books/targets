@@ -10,16 +10,16 @@
 
   <meta property="og:title" content="Chapter 10 Cloud integration | The targets R Package User Manual" />
   <meta property="og:type" content="book" />
-  <meta property="og:url" content="https://wlandau.github.io/targets-manual" />
-  <meta property="og:image" content="https://wlandau.github.io/targets-manual/man/figures/logo.png" />
+  <meta property="og:url" content="https://books.ropensci.org/targets" />
+  <meta property="og:image" content="https://books.ropensci.org/targets/man/figures/logo.png" />
   <meta property="og:description" content="In-depth discussion of the major functionality of targets." />
-  <meta name="github-repo" content="wlandau/targets-manual" />
+  <meta name="github-repo" content="ropensci-books/targets" />
 
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content="Chapter 10 Cloud integration | The targets R Package User Manual" />
   
   <meta name="twitter:description" content="In-depth discussion of the major functionality of targets." />
-  <meta name="twitter:image" content="https://wlandau.github.io/targets-manual/man/figures/logo.png" />
+  <meta name="twitter:image" content="https://books.ropensci.org/targets/man/figures/logo.png" />
 
 <meta name="author" content="Will Landau" />
 <meta name="author" content="Copyright Eli Lilly and Company" />
@@ -70,6 +70,7 @@
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
 pre.sourceCode { margin: 0; }
 @media screen {
@@ -340,7 +341,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>To connect your pipeline with S3,</p>
 <ol style="list-style-type: decimal">
 <li>Supply your bucket name to <code>resources</code> in <code>tar_option_set()</code>. To use different buckets for different targets, set <code>resources</code> directly in <code>tar_target()</code>.</li>
-<li>Supply AWS-powered storage formats to <code>tar_option_set()</code> and/or <code>tar_target()</code>. See the <a href="https://wlandau.github.io/targets/reference/tar_target.html#arguments"><code>tar_target()</code> help file</a> for the full list of formats.</li>
+<li>Supply AWS-powered storage formats to <code>tar_option_set()</code> and/or <code>tar_target()</code>. See the <a href="https://docs.ropensci.org/targets/reference/tar_target.html#arguments"><code>tar_target()</code> help file</a> for the full list of formats.</li>
 </ol>
 <p>Your <code>_targets.R</code> file will look something like this.</p>
 <div class="sourceCode" id="cb149"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb149-1"><a href="cloud.html#cb149-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example _targets.R</span></span>
@@ -358,7 +359,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="run-the-pipeline-1" class="section level3" number="10.2.5">
 <h3><span class="header-section-number">10.2.5</span> Run the pipeline</h3>
-<p>When you run the pipeline above with <a href="https://wlandau.github.io/targets/reference/tar_make.html"><code>tar_make()</code></a>, your local R session computes <code>rnorm(5)</code>, saves it to a temporary <a href="https://github.com/traversc/qs"><code>qs</code></a> file on disk, and then uploads it to a file called <code>_targets/objects/data</code> on your S3 bucket. Likewise for <code>mean_file</code>, but because the format is <code>"aws_file"</code>, you are responsible for supplying the path to the file that gets uploaded to <code>_targets/objects/mean_file</code>.</p>
+<p>When you run the pipeline above with <a href="https://docs.ropensci.org/targets/reference/tar_make.html"><code>tar_make()</code></a>, your local R session computes <code>rnorm(5)</code>, saves it to a temporary <a href="https://github.com/traversc/qs"><code>qs</code></a> file on disk, and then uploads it to a file called <code>_targets/objects/data</code> on your S3 bucket. Likewise for <code>mean_file</code>, but because the format is <code>"aws_file"</code>, you are responsible for supplying the path to the file that gets uploaded to <code>_targets/objects/mean_file</code>.</p>
 <div class="sourceCode" id="cb150"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb150-1"><a href="cloud.html#cb150-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
 <span id="cb150-2"><a href="cloud.html#cb150-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target data</span></span>
 <span id="cb150-3"><a href="cloud.html#cb150-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target mean_file</span></span></code></pre></div>
@@ -424,11 +425,11 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/wlandau/targets-manual/edit/main/cloud.Rmd",
+"link": "https://github.com/ropensci-books/targets/edit/main/cloud.Rmd",
 "text": "Edit this chapter"
 },
 "history": {
-"link": "https://github.com/wlandau/targets-manual/commits/main/cloud.Rmd",
+"link": "https://github.com/ropensci-books/targets/commits/main/cloud.Rmd",
 "text": "Chapter edit history"
 },
 "view": {

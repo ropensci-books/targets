@@ -10,16 +10,16 @@
 
   <meta property="og:title" content="Chapter 11 What about drake? | The targets R Package User Manual" />
   <meta property="og:type" content="book" />
-  <meta property="og:url" content="https://wlandau.github.io/targets-manual" />
-  <meta property="og:image" content="https://wlandau.github.io/targets-manual/man/figures/logo.png" />
+  <meta property="og:url" content="https://books.ropensci.org/targets" />
+  <meta property="og:image" content="https://books.ropensci.org/targets/man/figures/logo.png" />
   <meta property="og:description" content="In-depth discussion of the major functionality of targets." />
-  <meta name="github-repo" content="wlandau/targets-manual" />
+  <meta name="github-repo" content="ropensci-books/targets" />
 
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content="Chapter 11 What about drake? | The targets R Package User Manual" />
   
   <meta name="twitter:description" content="In-depth discussion of the major functionality of targets." />
-  <meta name="twitter:image" content="https://wlandau.github.io/targets-manual/man/figures/logo.png" />
+  <meta name="twitter:image" content="https://books.ropensci.org/targets/man/figures/logo.png" />
 
 <meta name="author" content="Will Landau" />
 <meta name="author" content="Copyright Eli Lilly and Company" />
@@ -70,6 +70,7 @@
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
 pre.sourceCode { margin: 0; }
 @media screen {
@@ -297,8 +298,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="drake" class="section level1" number="11">
 <h1><span class="header-section-number">Chapter 11</span> What about <code>drake</code>?</h1>
-<p>The <a href="https://github.com/ropensci/drake"><code>drake</code></a> package is an older and more established R-focused pipeline toolkit. It is has become a key piece of the R ecosystem, and development and support will continue. Future efforts will focus on the issues that bring the most concrete value to users: requested features, performance improvements for known inefficiencies, bug fixes, documentation, education, and prompt one-on-one help. Existing <a href="https://github.com/ropensci/drake"><code>drake</code></a>-powered projects can safely continue to use <a href="https://github.com/ropensci/drake"><code>drake</code></a>, and there is no urgency to migrate to <a href="https://github.com/wlandau/targets"><code>targets</code></a>.</p>
-<p>However, nearly four years of community feedback have exposed major user-side limitations regarding data management, collaboration, dynamic branching, and parallel efficiency. Unfortunately, these limitations are permanent. Solutions in <a href="https://github.com/ropensci/drake"><code>drake</code></a> itself would make the package incompatible with existing projects that use it, and the internal architecture is too copious, elaborate, and mature for such extreme refactoring. That is why <a href="https://github.com/wlandau/targets"><code>targets</code></a> was created. The <a href="https://github.com/wlandau/targets"><code>targets</code></a> package borrows from past learnings, user suggestions, discussions, complaints, success stories, and feature requests, and it improves the user experience in ways that will never be possible in <a href="https://github.com/ropensci/drake"><code>drake</code></a>.</p>
+<p>The <a href="https://github.com/ropensci/drake"><code>drake</code></a> package is an older and more established R-focused pipeline toolkit. It is has become a key piece of the R ecosystem, and development and support will continue. Future efforts will focus on the issues that bring the most concrete value to users: requested features, performance improvements for known inefficiencies, bug fixes, documentation, education, and prompt one-on-one help. Existing <a href="https://github.com/ropensci/drake"><code>drake</code></a>-powered projects can safely continue to use <a href="https://github.com/ropensci/drake"><code>drake</code></a>, and there is no urgency to migrate to <a href="https://github.com/ropensci/targets"><code>targets</code></a>.</p>
+<p>However, nearly four years of community feedback have exposed major user-side limitations regarding data management, collaboration, dynamic branching, and parallel efficiency. Unfortunately, these limitations are permanent. Solutions in <a href="https://github.com/ropensci/drake"><code>drake</code></a> itself would make the package incompatible with existing projects that use it, and the internal architecture is too copious, elaborate, and mature for such extreme refactoring. That is why <a href="https://github.com/ropensci/targets"><code>targets</code></a> was created. The <a href="https://github.com/ropensci/targets"><code>targets</code></a> package borrows from past learnings, user suggestions, discussions, complaints, success stories, and feature requests, and it improves the user experience in ways that will never be possible in <a href="https://github.com/ropensci/drake"><code>drake</code></a>.</p>
 <div id="transitioning-to-targets" class="section level2" number="11.1">
 <h2><span class="header-section-number">11.1</span> Transitioning to <code>targets</code></h2>
 <p>If you know <a href="https://github.com/ropensci/drake"><code>drake</code></a>, then you already almost know <code>targets</code>. The programming style is similar, and most functions in <code>targets</code> have counterparts in <a href="https://github.com/ropensci/drake"><code>drake</code></a>.</p>
@@ -316,79 +317,79 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <tbody>
 <tr class="odd">
 <td><a href="https://docs.ropensci.org/drake/reference/use_drake.html"><code>use_drake()</code></a>, <a href="https://docs.ropensci.org/drake/reference/drake_script.html"><code>drake_script()</code></a></td>
-<td><a href="https://wlandau.github.io/targets/reference/tar_script.html"><code>tar_script()</code></a></td>
+<td><a href="https://docs.ropensci.org/targets/reference/tar_script.html"><code>tar_script()</code></a></td>
 </tr>
 <tr class="even">
 <td><a href="https://docs.ropensci.org/drake/reference/drake_plan.html"><code>drake_plan()</code></a></td>
-<td><a href="https://wlandau.github.io/targets/reference/tar_manifest.html"><code>tar_manifest()</code></a>, <a href="https://wlandau.github.io/tarchetypes/reference/tar_plan.html"><code>tarchetypes::tar_plan()</code></a></td>
+<td><a href="https://docs.ropensci.org/targets/reference/tar_manifest.html"><code>tar_manifest()</code></a>, <a href="https://docs.ropensci.org/tarchetypes/reference/tar_plan.html"><code>tarchetypes::tar_plan()</code></a></td>
 </tr>
 <tr class="odd">
 <td><a href="https://docs.ropensci.org/drake/reference/target.html"><code>target()</code></a></td>
-<td><a href="https://wlandau.github.io/targets/reference/tar_target.html"><code>tar_target()</code></a>, <a href="https://wlandau.github.io/targets/reference/tar_target_raw.html"><code>tar_target_raw()</code></a></td>
+<td><a href="https://docs.ropensci.org/targets/reference/tar_target.html"><code>tar_target()</code></a>, <a href="https://docs.ropensci.org/targets/reference/tar_target_raw.html"><code>tar_target_raw()</code></a></td>
 </tr>
 <tr class="even">
 <td><a href="https://docs.ropensci.org/drake/reference/drake_config.html"><code>drake_config()</code></a></td>
-<td><a href="https://wlandau.github.io/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
+<td><a href="https://docs.ropensci.org/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
 </tr>
 <tr class="odd">
 <td><a href="https://docs.ropensci.org/drake/reference/outdated.html"><code>outdated()</code></a>, <a href="https://docs.ropensci.org/drake/reference/r_make.html"><code>r_outdated()</code></a></td>
-<td><a href="https://wlandau.github.io/targets/reference/tar_outdated.html"><code>tar_outdated()</code></a></td>
+<td><a href="https://docs.ropensci.org/targets/reference/tar_outdated.html"><code>tar_outdated()</code></a></td>
 </tr>
 <tr class="even">
 <td><a href="https://docs.ropensci.org/drake/reference/vis_drake_graph.html"><code>vis_drake_graph()</code></a>, <a href="https://docs.ropensci.org/drake/reference/r_make.html"><code>r_vis_drake_graph()</code></a></td>
-<td><a href="https://wlandau.github.io/targets/reference/tar_visnetwork.html"><code>tar_visnetwork()</code></a>, <a href="https://wlandau.github.io/targets/reference/tar_glimpse.html"><code>tar_glimpse()</code></a></td>
+<td><a href="https://docs.ropensci.org/targets/reference/tar_visnetwork.html"><code>tar_visnetwork()</code></a>, <a href="https://docs.ropensci.org/targets/reference/tar_glimpse.html"><code>tar_glimpse()</code></a></td>
 </tr>
 <tr class="odd">
 <td><a href="https://docs.ropensci.org/drake/reference/drake_graph_info.html"><code>drake_graph_info()</code></a>, <a href="https://docs.ropensci.org/drake/reference/r_make.html"><code>r_drake_graph_info()</code></a></td>
-<td><a href="https://wlandau.github.io/targets/reference/tar_network.html"><code>tar_network()</code></a></td>
+<td><a href="https://docs.ropensci.org/targets/reference/tar_network.html"><code>tar_network()</code></a></td>
 </tr>
 <tr class="even">
 <td><a href="https://docs.ropensci.org/drake/reference/make.html"><code>make()</code></a>, <a href="https://docs.ropensci.org/drake/reference/r_make.html"><code>r_make()</code></a></td>
-<td><a href="https://wlandau.github.io/targets/reference/tar_make.html"><code>tar_make()</code></a>, <a href="https://wlandau.github.io/targets/reference/tar_make_clustermq.html"><code>tar_make_clustermq()</code></a>, <a href="https://wlandau.github.io/targets/reference/tar_make_future.html"><code>tar_make_future()</code></a></td>
+<td><a href="https://docs.ropensci.org/targets/reference/tar_make.html"><code>tar_make()</code></a>, <a href="https://docs.ropensci.org/targets/reference/tar_make_clustermq.html"><code>tar_make_clustermq()</code></a>, <a href="https://docs.ropensci.org/targets/reference/tar_make_future.html"><code>tar_make_future()</code></a></td>
 </tr>
 <tr class="odd">
 <td><a href="https://docs.ropensci.org/drake/reference/readd.html"><code>loadd()</code></a></td>
-<td><a href="https://wlandau.github.io/targets/reference/tar_load.html"><code>tar_load()</code></a></td>
+<td><a href="https://docs.ropensci.org/targets/reference/tar_load.html"><code>tar_load()</code></a></td>
 </tr>
 <tr class="even">
 <td><a href="https://docs.ropensci.org/drake/reference/readd.html"><code>readd()</code></a></td>
-<td><a href="https://wlandau.github.io/targets/reference/tar_read.html"><code>tar_read()</code></a></td>
+<td><a href="https://docs.ropensci.org/targets/reference/tar_read.html"><code>tar_read()</code></a></td>
 </tr>
 <tr class="odd">
 <td><a href="https://docs.ropensci.org/drake/reference/diagnose.html"><code>diagnose()</code></a>, <a href="https://docs.ropensci.org/drake/reference/build_times.html"><code>build_times()</code></a>, <a href="https://docs.ropensci.org/drake/reference/cached.html"><code>cached()</code></a>, <a href="https://docs.ropensci.org/drake/reference/drake_cache_log.html"><code>drake_cache_log()</code></a></td>
-<td><a href="https://wlandau.github.io/targets/reference/tar_meta.html"><code>tar_meta()</code></a></td>
+<td><a href="https://docs.ropensci.org/targets/reference/tar_meta.html"><code>tar_meta()</code></a></td>
 </tr>
 <tr class="even">
 <td><a href="https://docs.ropensci.org/drake/reference/drake_progress.html"><code>drake_progress()</code></a>, <a href="https://docs.ropensci.org/drake/reference/drake_running.html"><code>drake_running()</code></a>, <a href="https://docs.ropensci.org/drake/reference/drake_done.html"><code>drake_done()</code></a>, <a href="https://docs.ropensci.org/drake/reference/drake_failed.html"><code>drake_failed()</code></a>, <a href="https://docs.ropensci.org/drake/reference/drake_cancelled.html"><code>drake_cancelled()</code></a></td>
-<td><a href="https://wlandau.github.io/targets/reference/tar_progress.html"><code>tar_progress()</code></a></td>
+<td><a href="https://docs.ropensci.org/targets/reference/tar_progress.html"><code>tar_progress()</code></a></td>
 </tr>
 <tr class="odd">
 <td><a href="https://docs.ropensci.org/drake/reference/clean.html"><code>clean()</code></a></td>
-<td><a href="https://wlandau.github.io/targets/reference/tar_deduplicate.html"><code>tar_deduplicate()</code></a>, <a href="https://wlandau.github.io/targets/reference/tar_delete.html"><code>tar_delete()</code></a>, <a href="https://wlandau.github.io/targets/reference/tar_destroy.html"><code>tar_destroy()</code></a>, <a href="https://wlandau.github.io/targets/reference/tar_invalidate.html"><code>tar_invalidate()</code></a></td>
+<td><a href="https://docs.ropensci.org/targets/reference/tar_deduplicate.html"><code>tar_deduplicate()</code></a>, <a href="https://docs.ropensci.org/targets/reference/tar_delete.html"><code>tar_delete()</code></a>, <a href="https://docs.ropensci.org/targets/reference/tar_destroy.html"><code>tar_destroy()</code></a>, <a href="https://docs.ropensci.org/targets/reference/tar_invalidate.html"><code>tar_invalidate()</code></a></td>
 </tr>
 <tr class="even">
 <td><a href="https://docs.ropensci.org/drake/reference/drake_gc.html"><code>drake_gc()</code></a></td>
-<td><a href="https://wlandau.github.io/targets/reference/tar_prune.html"><code>tar_prune()</code></a></td>
+<td><a href="https://docs.ropensci.org/targets/reference/tar_prune.html"><code>tar_prune()</code></a></td>
 </tr>
 <tr class="odd">
 <td><a href="https://docs.ropensci.org/drake/reference/id_chr.html"><code>id_chr()</code></a></td>
-<td><a href="https://wlandau.github.io/targets/reference/tar_name.html"><code>tar_name()</code></a>, <a href="https://wlandau.github.io/targets/reference/tar_path.html"><code>tar_path()</code></a></td>
+<td><a href="https://docs.ropensci.org/targets/reference/tar_name.html"><code>tar_name()</code></a>, <a href="https://docs.ropensci.org/targets/reference/tar_path.html"><code>tar_path()</code></a></td>
 </tr>
 <tr class="even">
 <td><a href="https://docs.ropensci.org/drake/reference/knitr_in.html"><code>knitr_in()</code></a></td>
-<td><a href="https://wlandau.github.io/tarchetypes/reference/tar_render.html"><code>tarchetypes::tar_render()</code></a></td>
+<td><a href="https://docs.ropensci.org/tarchetypes/reference/tar_render.html"><code>tarchetypes::tar_render()</code></a></td>
 </tr>
 <tr class="odd">
 <td><a href="https://docs.ropensci.org/drake/reference/cancel.html"><code>cancel()</code></a>, <a href="https://docs.ropensci.org/drake/reference/cancel_if.html"><code>cancel_if()</code></a></td>
-<td><a href="https://wlandau.github.io/targets/reference/tar_cancel.html"><code>tar_cancel()</code></a></td>
+<td><a href="https://docs.ropensci.org/targets/reference/tar_cancel.html"><code>tar_cancel()</code></a></td>
 </tr>
 <tr class="even">
 <td><a href="https://docs.ropensci.org/drake/reference/trigger.html"><code>trigger()</code></a></td>
-<td><a href="https://wlandau.github.io/targets/reference/tar_cue.html"><code>tar_cue()</code></a></td>
+<td><a href="https://docs.ropensci.org/targets/reference/tar_cue.html"><code>tar_cue()</code></a></td>
 </tr>
 <tr class="odd">
 <td><a href="https://docs.ropensci.org/drake/reference/drake_example.html"><code>drake_example()</code></a>, <a href="https://docs.ropensci.org/drake/reference/drake_examples.html"><code>drake_example()</code></a>, <a href="https://docs.ropensci.org/drake/reference/load_mtcars_example.html"><code>load_mtcars_example()</code></a>, <a href="https://docs.ropensci.org/drake/reference/clean_mtcars_example.html"><code>clean_mtcars_example()</code></a></td>
-<td>Unsupported. Example <code>targets</code> pipelines are in individual repositories <a href="https://wlandau.github.io/targets/index.html#examples">linked from here</a>.</td>
+<td>Unsupported. Example <code>targets</code> pipelines are in individual repositories <a href="https://docs.ropensci.org/targets/index.html#examples">linked from here</a>.</td>
 </tr>
 <tr class="even">
 <td><a href="https://docs.ropensci.org/drake/reference/drake_build.html"><code>drake_build()</code></a></td>
@@ -396,15 +397,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </tr>
 <tr class="odd">
 <td><a href="https://docs.ropensci.org/drake/reference/drake_debug.html"><code>drake_debug()</code></a></td>
-<td><a href="https://wlandau.github.io/targets-manual/practice.html#debugging">Read here</a> to learn about interactive debugging in <code>targets</code>.</td>
+<td><a href="https://books.ropensci.org/targets/practice.html#debugging">Read here</a> to learn about interactive debugging in <code>targets</code>.</td>
 </tr>
 <tr class="even">
 <td><a href="https://docs.ropensci.org/drake/reference/drake_history.html"><code>drake_history()</code></a>, <a href="https://docs.ropensci.org/drake/reference/recoverable.html"><code>recoverable()</code></a></td>
-<td>Unsupported in <code>targets</code>. Instead of trying to manage history and data recovery directly, <a href="https://github.com/wlandau/targets"><code>targets</code></a> maintains a much lighter/friendlier data store to make it easier to use external data versioning tools instead.</td>
+<td>Unsupported in <code>targets</code>. Instead of trying to manage history and data recovery directly, <a href="https://github.com/ropensci/targets"><code>targets</code></a> maintains a much lighter/friendlier data store to make it easier to use external data versioning tools instead.</td>
 </tr>
 <tr class="odd">
 <td><a href="https://docs.ropensci.org/drake/reference/missed.html"><code>missed()</code></a>, <a href="https://docs.ropensci.org/drake/reference/tracked.html"><code>tracked()</code></a>, <a href="https://docs.ropensci.org/drake/reference/deps_code.html"><code>deps_code()</code></a>, <a href="https://docs.ropensci.org/drake/reference/deps_target.html"><code>deps_target()</code></a>, <a href="https://docs.ropensci.org/drake/reference/deps_knitr.html"><code>deps_knitr()</code></a>, <a href="https://docs.ropensci.org/drake/reference/deps_profile.html"><code>deps_profile()</code></a></td>
-<td>Unsupported in <code>targets</code> because dependency detection is <a href="https://wlandau.github.io/targets-manual/practice.html#dependencies">far easier to understand than in <code>drake</code></a>.</td>
+<td>Unsupported in <code>targets</code> because dependency detection is <a href="https://books.ropensci.org/targets/practice.html#dependencies">far easier to understand than in <code>drake</code></a>.</td>
 </tr>
 <tr class="even">
 <td><a href="https://docs.ropensci.org/drake/reference/drake_hpc_template_file.html"><code>drake_hpc_template_file()</code></a>, <a href="https://docs.ropensci.org/drake/reference/drake_hpc_template_files.html"><code>drake_hpc_template_files()</code></a></td>
@@ -412,7 +413,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </tr>
 <tr class="odd">
 <td><a href="https://docs.ropensci.org/drake/reference/drake_cache.html"><code>drake_cache()</code></a>, <a href="https://docs.ropensci.org/drake/reference/new_cache.html"><code>new_cache()</code></a>, <a href="https://docs.ropensci.org/drake/reference/find_cache.html"><code>find_cache()</code></a>.</td>
-<td>Unsupported because <a href="https://github.com/wlandau/targets"><code>targets</code></a> is far more strict and paternalistic about data/file management.</td>
+<td>Unsupported because <a href="https://github.com/ropensci/targets"><code>targets</code></a> is far more strict and paternalistic about data/file management.</td>
 </tr>
 <tr class="even">
 <td><a href="https://docs.ropensci.org/drake/reference/rescue_cache.html"><code>rescue_cache()</code></a>, <a href="https://docs.ropensci.org/drake/reference/which_clean.html"><code>which_clean()</code></a>, <a href="https://docs.ropensci.org/drake/reference/cached_planned.html"><code>cache_planned()</code></a>, <a href="https://docs.ropensci.org/drake/reference/cached_unplanned.html"><code>cache_unplanned()</code></a></td>
@@ -424,7 +425,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </tr>
 <tr class="even">
 <td><a href="https://docs.ropensci.org/drake/reference/read_drake_seed.html"><code>read_drake_seed()</code></a></td>
-<td>Superfluous because <code>targets</code> always uses the same global seed. <a href="https://wlandau.github.io/targets/reference/tar_meta.html"><code>tar_meta()</code></a> shows all the target-level seeds.</td>
+<td>Superfluous because <code>targets</code> always uses the same global seed. <a href="https://docs.ropensci.org/targets/reference/tar_meta.html"><code>tar_meta()</code></a> shows all the target-level seeds.</td>
 </tr>
 <tr class="odd">
 <td><a href="https://docs.ropensci.org/drake/reference/show_source.html"><code>show_source()</code></a></td>
@@ -432,11 +433,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </tr>
 <tr class="even">
 <td><a href="https://docs.ropensci.org/drake/reference/drake_tempfile.html"><code>drake_tempfile()</code></a></td>
-<td>Superfluous in <code>targets</code> because there is no special <code>disk.frame</code> storage format. (<a href="https://wlandau.github.io/targets-manual/files.html#external-output-files">Dynamic file targets</a> are much better for managing <code>disk.frame</code>s.)</td>
+<td>Superfluous in <code>targets</code> because there is no special <code>disk.frame</code> storage format. (<a href="https://books.ropensci.org/targets/files.html#external-output-files">Dynamic file targets</a> are much better for managing <code>disk.frame</code>s.)</td>
 </tr>
 <tr class="odd">
 <td><a href="https://docs.ropensci.org/drake/reference/file_store.html"><code>file_store()</code></a></td>
-<td>Superfluous in <code>targets</code> because <a href="https://wlandau.github.io/targets-manual/files.html">all files are dynamic files</a> and there is no longer a need to Base32-encode any file names.</td>
+<td>Superfluous in <code>targets</code> because <a href="https://books.ropensci.org/targets/files.html">all files are dynamic files</a> and there is no longer a need to Base32-encode any file names.</td>
 </tr>
 </tbody>
 </table>
@@ -455,63 +456,63 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <tbody>
 <tr class="odd">
 <td><code>targets</code></td>
-<td><code>names</code> in <a href="https://wlandau.github.io/targets/reference/tar_make.html"><code>tar_make()</code></a> etc.</td>
+<td><code>names</code> in <a href="https://docs.ropensci.org/targets/reference/tar_make.html"><code>tar_make()</code></a> etc.</td>
 </tr>
 <tr class="even">
 <td><code>envir</code></td>
-<td><code>envir</code> in <a href="https://wlandau.github.io/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
+<td><code>envir</code> in <a href="https://docs.ropensci.org/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
 </tr>
 <tr class="odd">
 <td><code>verbose</code></td>
-<td><code>reporter</code> in <a href="https://wlandau.github.io/targets/reference/tar_make.html"><code>tar_make()</code></a> etc.</td>
+<td><code>reporter</code> in <a href="https://docs.ropensci.org/targets/reference/tar_make.html"><code>tar_make()</code></a> etc.</td>
 </tr>
 <tr class="even">
 <td><code>parallelism</code></td>
-<td>Choice of function: <a href="https://wlandau.github.io/targets/reference/tar_make.html"><code>tar_make()</code></a> vs <a href="https://wlandau.github.io/targets/reference/tar_make_clustermq.html"><code>tar_make_clustermq()</code></a> vs <a href="https://wlandau.github.io/targets/reference/tar_make_future.html"><code>tar_make_future()</code></a></td>
+<td>Choice of function: <a href="https://docs.ropensci.org/targets/reference/tar_make.html"><code>tar_make()</code></a> vs <a href="https://docs.ropensci.org/targets/reference/tar_make_clustermq.html"><code>tar_make_clustermq()</code></a> vs <a href="https://docs.ropensci.org/targets/reference/tar_make_future.html"><code>tar_make_future()</code></a></td>
 </tr>
 <tr class="odd">
 <td><code>jobs</code></td>
-<td><code>workers</code> in <a href="https://wlandau.github.io/targets/reference/tar_make_clustermq.html"><code>tar_make_clustermq()</code></a> and <a href="https://wlandau.github.io/targets/reference/tar_make_future.html"><code>tar_make_future()</code></a></td>
+<td><code>workers</code> in <a href="https://docs.ropensci.org/targets/reference/tar_make_clustermq.html"><code>tar_make_clustermq()</code></a> and <a href="https://docs.ropensci.org/targets/reference/tar_make_future.html"><code>tar_make_future()</code></a></td>
 </tr>
 <tr class="even">
 <td><code>packages</code></td>
-<td><code>packages</code> in <a href="https://wlandau.github.io/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://wlandau.github.io/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
+<td><code>packages</code> in <a href="https://docs.ropensci.org/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://docs.ropensci.org/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
 </tr>
 <tr class="odd">
 <td><code>lib_loc</code></td>
-<td><code>library</code> in <a href="https://wlandau.github.io/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://wlandau.github.io/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
+<td><code>library</code> in <a href="https://docs.ropensci.org/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://docs.ropensci.org/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
 </tr>
 <tr class="even">
 <td><code>trigger</code></td>
-<td><code>cue</code> in <a href="https://wlandau.github.io/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://wlandau.github.io/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
+<td><code>cue</code> in <a href="https://docs.ropensci.org/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://docs.ropensci.org/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
 </tr>
 <tr class="odd">
 <td><code>caching</code></td>
-<td><code>storage</code> and <code>retrieval</code> in <a href="https://wlandau.github.io/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://wlandau.github.io/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
+<td><code>storage</code> and <code>retrieval</code> in <a href="https://docs.ropensci.org/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://docs.ropensci.org/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
 </tr>
 <tr class="even">
 <td><code>keep_going</code></td>
-<td><code>error</code> in <a href="https://wlandau.github.io/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://wlandau.github.io/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
+<td><code>error</code> in <a href="https://docs.ropensci.org/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://docs.ropensci.org/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
 </tr>
 <tr class="odd">
 <td><code>memory_strategy</code></td>
-<td><code>memory</code> in <a href="https://wlandau.github.io/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://wlandau.github.io/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
+<td><code>memory</code> in <a href="https://docs.ropensci.org/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://docs.ropensci.org/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
 </tr>
 <tr class="even">
 <td><code>garbage_collection</code></td>
-<td><code>garbage_collection</code> in <a href="https://wlandau.github.io/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://wlandau.github.io/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
+<td><code>garbage_collection</code> in <a href="https://docs.ropensci.org/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://docs.ropensci.org/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
 </tr>
 <tr class="odd">
 <td><code>template</code></td>
-<td><code>resources</code> in <a href="https://wlandau.github.io/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://wlandau.github.io/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
+<td><code>resources</code> in <a href="https://docs.ropensci.org/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://docs.ropensci.org/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
 </tr>
 <tr class="even">
 <td><code>curl_handles</code></td>
-<td><code>handle</code> element of <code>resources</code> argument of <a href="https://wlandau.github.io/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://wlandau.github.io/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
+<td><code>handle</code> element of <code>resources</code> argument of <a href="https://docs.ropensci.org/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://docs.ropensci.org/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
 </tr>
 <tr class="odd">
 <td><code>format</code></td>
-<td><code>format</code> in <a href="https://wlandau.github.io/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://wlandau.github.io/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
+<td><code>format</code> in <a href="https://docs.ropensci.org/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://docs.ropensci.org/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
 </tr>
 </tbody>
 </table>
@@ -530,31 +531,31 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <tbody>
 <tr class="odd">
 <td><code>format</code></td>
-<td><code>format</code> argument of <a href="https://wlandau.github.io/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://wlandau.github.io/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
+<td><code>format</code> argument of <a href="https://docs.ropensci.org/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://docs.ropensci.org/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
 </tr>
 <tr class="even">
 <td><code>dynamic</code></td>
-<td><code>pattern</code> argument of <a href="https://wlandau.github.io/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://wlandau.github.io/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
+<td><code>pattern</code> argument of <a href="https://docs.ropensci.org/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://docs.ropensci.org/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
 </tr>
 <tr class="odd">
 <td><code>transform</code></td>
-<td><a href="https://wlandau.github.io/tarchetypes/reference/index.html#section-branching">static branching functions in <code>tarchetypes</code></a> such as <a href="https://wlandau.github.io/tarchetypes/reference/tar_map.html"><code>tar_map()</code></a> and <a href="https://wlandau.github.io/tarchetypes/reference/tar_combine.html"><code>tar_combine()</code></a></td>
+<td><a href="https://docs.ropensci.org/tarchetypes/reference/index.html#section-branching">static branching functions in <code>tarchetypes</code></a> such as <a href="https://docs.ropensci.org/tarchetypes/reference/tar_map.html"><code>tar_map()</code></a> and <a href="https://docs.ropensci.org/tarchetypes/reference/tar_combine.html"><code>tar_combine()</code></a></td>
 </tr>
 <tr class="even">
 <td><code>trigger</code></td>
-<td><code>cue</code> argument of <a href="https://wlandau.github.io/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://wlandau.github.io/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
+<td><code>cue</code> argument of <a href="https://docs.ropensci.org/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://docs.ropensci.org/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
 </tr>
 <tr class="odd">
 <td><code>hpc</code></td>
-<td><code>deployment</code> argument of <a href="https://wlandau.github.io/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://wlandau.github.io/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
+<td><code>deployment</code> argument of <a href="https://docs.ropensci.org/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://docs.ropensci.org/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
 </tr>
 <tr class="even">
 <td><code>resources</code></td>
-<td><code>resources</code> argument of <a href="https://wlandau.github.io/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://wlandau.github.io/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
+<td><code>resources</code> argument of <a href="https://docs.ropensci.org/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://docs.ropensci.org/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
 </tr>
 <tr class="odd">
 <td><code>caching</code></td>
-<td><code>storage</code> and <code>retrieval</code> arguments of <a href="https://wlandau.github.io/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://wlandau.github.io/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
+<td><code>storage</code> and <code>retrieval</code> arguments of <a href="https://docs.ropensci.org/targets/reference/tar_target.html"><code>tar_target()</code></a> and <a href="https://docs.ropensci.org/targets/reference/tar_option_set.html"><code>tar_option_set()</code></a></td>
 </tr>
 </tbody>
 </table>
@@ -569,15 +570,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Similar to the above, <code>make()</code> does not find the intended functions and global objects if it is called in a different environment. Edge cases like <a href="https://github.com/ropensci/drake/issues/874">this one</a> and <a href="https://github.com/ropensci/drake/issues/527">this one</a> continue to surprise users.</li>
 <li><a href="https://github.com/ropensci/drake"><code>drake</code></a> is extremely flexible about the location of the <code>.drake/</code> cache. When a user calls <code>readd()</code>, <code>loadd()</code>, <code>make()</code>, and similar functions, <a href="https://github.com/ropensci/drake"><code>drake</code></a> searches up through the parent directories until it finds a <code>.drake/</code> folder. This flexibility seldom helps, and it creates uncertainty and inconsistency when it comes to initializing and accessing projects, especially if there are multiple projects with nested file systems.</li>
 </ol>
-<p>The <a href="https://github.com/wlandau/targets"><code>targets</code></a> package solves all these issues by design. Functions <code>tar_make()</code>, <code>tar_make_clustermq()</code>, and <code>tar_make_future()</code> all create fresh new R sessions by default. They all require a <code>_targets.R</code> configuration file in the project root (working directory of the <code>tar_make()</code> call) so that the functions, global objects, and settings are all populated in the exact same way each session, leading to less frustration, greater consistency, and greater reproducibility. In addition, the <code>_targets/</code> data store always lives in the project root.</p>
+<p>The <a href="https://github.com/ropensci/targets"><code>targets</code></a> package solves all these issues by design. Functions <code>tar_make()</code>, <code>tar_make_clustermq()</code>, and <code>tar_make_future()</code> all create fresh new R sessions by default. They all require a <code>_targets.R</code> configuration file in the project root (working directory of the <code>tar_make()</code> call) so that the functions, global objects, and settings are all populated in the exact same way each session, leading to less frustration, greater consistency, and greater reproducibility. In addition, the <code>_targets/</code> data store always lives in the project root.</p>
 </div>
 <div id="enhanced-debugging-support" class="section level3" number="11.2.2">
 <h3><span class="header-section-number">11.2.2</span> Enhanced debugging support</h3>
-<p><a href="https://github.com/wlandau/targets"><code>targets</code></a> has enhanced debugging support. With the <code>workspaces</code> argument to <code>tar_option_set()</code>, users can locally recreate the conditions under which a target runs. This includes packages, global functions and objects, and the random number generator seed. Similarly, <code>tar_option_set(error = "workspace")</code> automatically saves debugging workspaces for targets that encounter errors. The <code>debug</code> option lets users enter an interactive debugger for a given target while the pipeline is running. And unlike <code>drake</code>, all debugging features are fully compatible with dynamic branching.</p>
+<p><a href="https://github.com/ropensci/targets"><code>targets</code></a> has enhanced debugging support. With the <code>workspaces</code> argument to <code>tar_option_set()</code>, users can locally recreate the conditions under which a target runs. This includes packages, global functions and objects, and the random number generator seed. Similarly, <code>tar_option_set(error = "workspace")</code> automatically saves debugging workspaces for targets that encounter errors. The <code>debug</code> option lets users enter an interactive debugger for a given target while the pipeline is running. And unlike <code>drake</code>, all debugging features are fully compatible with dynamic branching.</p>
 </div>
 <div id="improved-tracking-of-package-functions" class="section level3" number="11.2.3">
 <h3><span class="header-section-number">11.2.3</span> Improved tracking of package functions</h3>
-<p>By default, <a href="https://github.com/wlandau/targets"><code>targets</code></a> ignores changes to functions inside external packages. However, if a workflow centers on a custom package with methodology under development, users can make <a href="https://github.com/wlandau/targets"><code>targets</code></a> automatically watch the package’s functions for changes. Simply supply the names of the relevant packages to the <code>imports</code> argument of <code>tar_option_set()</code>. Unlike <a href="https://github.com/ropensci/drake"><code>drake</code></a>, <a href="https://github.com/wlandau/targets"><code>targets</code></a> can track multiple packages this way, and the internal mechanism is much safer.</p>
+<p>By default, <a href="https://github.com/ropensci/targets"><code>targets</code></a> ignores changes to functions inside external packages. However, if a workflow centers on a custom package with methodology under development, users can make <a href="https://github.com/ropensci/targets"><code>targets</code></a> automatically watch the package’s functions for changes. Simply supply the names of the relevant packages to the <code>imports</code> argument of <code>tar_option_set()</code>. Unlike <a href="https://github.com/ropensci/drake"><code>drake</code></a>, <a href="https://github.com/ropensci/targets"><code>targets</code></a> can track multiple packages this way, and the internal mechanism is much safer.</p>
 </div>
 <div id="lighter-friendlier-data-management" class="section level3" number="11.2.4">
 <h3><span class="header-section-number">11.2.4</span> Lighter, friendlier data management</h3>
@@ -601,7 +602,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ├───── recover/
 ├───── session/
 └── scratch/ # This folder should be temporary, but it gets egregiously large.</code></pre>
-<p>The <a href="https://github.com/wlandau/targets"><code>targets</code></a> takes a friendlier, more transparent, less mysterious approach to data management. Its data store is a visible <code>_targets</code> folder, and it contains far fewer files: a spreadsheet of metadata, a spreadsheet of target progress, and one informatively named data file for each target. It is much easier to understand the data management process, identify and diagnose problems, place projects under version control, and avoid consuming unnecessary storage resources. Sketch:</p>
+<p>The <a href="https://github.com/ropensci/targets"><code>targets</code></a> takes a friendlier, more transparent, less mysterious approach to data management. Its data store is a visible <code>_targets</code> folder, and it contains far fewer files: a spreadsheet of metadata, a spreadsheet of target progress, and one informatively named data file for each target. It is much easier to understand the data management process, identify and diagnose problems, place projects under version control, and avoid consuming unnecessary storage resources. Sketch:</p>
 <pre><code>_targets/
 ├── meta/
 ├───── meta
@@ -615,7 +616,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="cloud-storage" class="section level3" number="11.2.5">
 <h3><span class="header-section-number">11.2.5</span> Cloud storage</h3>
-<p>Thanks to the simplified data store and simplified internals, <a href="https://github.com/wlandau/targets"><code>targets</code></a> can automatically upload data to the Amazon S3 bucket of your choice. Simply configure <a href="https://github.com/cloudyr/aws.s3"><code>aws.s3</code></a>, create a bucket, and select one of the AWS-powered storage formats. Then, <a href="https://github.com/wlandau/targets"><code>targets</code></a> will automatically upload the return values to the cloud.</p>
+<p>Thanks to the simplified data store and simplified internals, <a href="https://github.com/ropensci/targets"><code>targets</code></a> can automatically upload data to the Amazon S3 bucket of your choice. Simply configure <a href="https://github.com/cloudyr/aws.s3"><code>aws.s3</code></a>, create a bucket, and select one of the AWS-powered storage formats. Then, <a href="https://github.com/ropensci/targets"><code>targets</code></a> will automatically upload the return values to the cloud.</p>
 <div class="sourceCode" id="cb159"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb159-1"><a href="drake.html#cb159-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
 <span id="cb159-2"><a href="drake.html#cb159-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">resources =</span> <span class="fu">list</span>(<span class="at">bucket =</span> <span class="st">&quot;my-bucket-name&quot;</span>))</span>
 <span id="cb159-3"><a href="drake.html#cb159-3" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
@@ -628,13 +629,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="show-status-of-functions-and-global-objects" class="section level3" number="11.2.6">
 <h3><span class="header-section-number">11.2.6</span> Show status of functions and global objects</h3>
 <p><a href="https://github.com/ropensci/drake"><code>drake</code></a> has several utilities that inform users which targets are up to date and which need to rerun. However, those utilities are limited by how <a href="https://github.com/ropensci/drake"><code>drake</code></a> manages functions and other global objects. Whenever <a href="https://github.com/ropensci/drake"><code>drake</code></a> inspects globals, it stores their values in its cache and loses track of their previous state from the last run of the pipeline. As a result, it has trouble informing users exactly why a given target is out of date. And because the system for tracking global objects is tightly coupled with the cache, this limitation is permanent.</p>
-<p>In <a href="https://github.com/wlandau/targets"><code>targets</code></a>, the metadata management system only updates information on global objects when the pipeline actually runs. This makes it possible to understand which specific changes to your code could have invalided your targets. In large projects with long runtimes, this feature contributes significantly to reproducibility and peace of mind.</p>
+<p>In <a href="https://github.com/ropensci/targets"><code>targets</code></a>, the metadata management system only updates information on global objects when the pipeline actually runs. This makes it possible to understand which specific changes to your code could have invalided your targets. In large projects with long runtimes, this feature contributes significantly to reproducibility and peace of mind.</p>
 <p><img src="man/figures/drake-graph.png" /></p>
 </div>
 <div id="dynamic-branching-with-dplyrgroup_by" class="section level3" number="11.2.7">
 <h3><span class="header-section-number">11.2.7</span> Dynamic branching with <code>dplyr::group_by()</code></h3>
 <p><a href="https://books.ropensci.org/drake/dynamic.html">Dynamic branching</a> was an architecturally difficult fit in <a href="https://github.com/ropensci/drake"><code>drake</code></a>, and it can only support one single (<a href="https://github.com/r-lib/vctrs"><code>vctrs</code></a>-based) method of slicing and aggregation for processing sub-targets. This limitation has frustrated members of the community, as discussed <a href="https://github.com/ropensci/drake/issues/1087">here</a> and <a href="https://github.com/ropensci/drake/issues/1170">here</a>.</p>
-<p><a href="https://github.com/wlandau/targets"><code>targets</code></a>, on the other hand, is more flexible regarding slicing and aggregation. When it branches over an object, it can iterate over vectors, lists, and even data frames grouped with <code>dplyr::group_by()</code>. To branch over chunks of a data frame, our data frame target needs to have a special <code>tar_group</code> column. We can create this column in our target’s return value with the <code>tar_group()</code> function.</p>
+<p><a href="https://github.com/ropensci/targets"><code>targets</code></a>, on the other hand, is more flexible regarding slicing and aggregation. When it branches over an object, it can iterate over vectors, lists, and even data frames grouped with <code>dplyr::group_by()</code>. To branch over chunks of a data frame, our data frame target needs to have a special <code>tar_group</code> column. We can create this column in our target’s return value with the <code>tar_group()</code> function.</p>
 <div class="sourceCode" id="cb161"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb161-1"><a href="drake.html#cb161-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
 <span id="cb161-2"><a href="drake.html#cb161-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
 <span id="cb161-3"><a href="drake.html#cb161-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
@@ -663,7 +664,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="composable-dynamic-branching" class="section level3" number="11.2.8">
 <h3><span class="header-section-number">11.2.8</span> Composable dynamic branching</h3>
-<p>Because the design of <a href="https://github.com/wlandau/targets"><code>targets</code></a> is fundamentally dynamic, users can create complicated dynamic branching patterns that are never going to be possible in <code>drake</code>. Below, target <code>z</code> creates six branches, one for each combination of <code>w</code> and tuple (<code>x</code>, <code>y</code>). The pattern <code>cross(w, map(x, y))</code> is equivalent to <code>tidyr::crossing(w, tidyr::nesting(x, y))</code>.</p>
+<p>Because the design of <a href="https://github.com/ropensci/targets"><code>targets</code></a> is fundamentally dynamic, users can create complicated dynamic branching patterns that are never going to be possible in <code>drake</code>. Below, target <code>z</code> creates six branches, one for each combination of <code>w</code> and tuple (<code>x</code>, <code>y</code>). The pattern <code>cross(w, map(x, y))</code> is equivalent to <code>tidyr::crossing(w, tidyr::nesting(x, y))</code>.</p>
 <div class="sourceCode" id="cb164"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb164-1"><a href="drake.html#cb164-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
 <span id="cb164-2"><a href="drake.html#cb164-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
 <span id="cb164-3"><a href="drake.html#cb164-3" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
@@ -682,13 +683,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3><span class="header-section-number">11.2.9</span> Improved parallel efficiency</h3>
 <p><a href="https://books.ropensci.org/drake/dynamic.html">Dynamic branching</a> in <a href="https://github.com/ropensci/drake"><code>drake</code></a> is staged. In other words, all the sub-targets of a dynamic target must complete before the pipeline moves on to downstream targets. The diagram below illustrates this behavior in a pipeline with a dynamic target B that maps over another dynamic target A. For thousands of dynamic sub-targets with highly variable runtimes, this behavior consumes unnecessary runtime and computing resources. And because <a href="https://github.com/ropensci/drake"><code>drake</code></a>’s architecture was designed at a fundamental level for static branching only, this limitation is permanent.</p>
 <p><img src="man/figures/drake-dynamic-drake.png" /></p>
-<p>By contrast, the internal data structures in <a href="https://github.com/wlandau/targets"><code>targets</code></a> are dynamic by design, which allows for a dynamic branching model with more flexibility and parallel efficiency. Branches can always start as soon as their upstream dependencies complete, even if some of those upstream dependencies are branches. This behavior reduces runtime and reduces consumption of computing resources.</p>
+<p>By contrast, the internal data structures in <a href="https://github.com/ropensci/targets"><code>targets</code></a> are dynamic by design, which allows for a dynamic branching model with more flexibility and parallel efficiency. Branches can always start as soon as their upstream dependencies complete, even if some of those upstream dependencies are branches. This behavior reduces runtime and reduces consumption of computing resources.</p>
 <p><img src="man/figures/drake-dynamic-targets.png" /></p>
 </div>
 <div id="metaprogramming-1" class="section level3" number="11.2.10">
 <h3><span class="header-section-number">11.2.10</span> Metaprogramming</h3>
 <p>In <a href="https://github.com/ropensci/drake"><code>drake</code></a>, pipelines are defined with the <code>drake_plan()</code> function. <code>drake_plan()</code> supports an elaborate domain specific language that diffuses user-supplied R expressions. This makes it convenient to assign commands to targets in the vast majority of cases, but it also obstructs custom metaprogramming by users (<a href="https://github.com/ropensci/drake/issues/1251">example here</a>). Granted, it is possible to completely circumvent <code>drake_plan()</code> and create the whole data frame from scratch, but this is hardly ideal and seldom done in practice.</p>
-<p>The <a href="https://github.com/wlandau/targets"><code>targets</code></a> package tries to make customization easier. Relative to <a href="https://github.com/ropensci/drake"><code>drake</code></a>, <a href="https://github.com/wlandau/targets"><code>targets</code></a> takes a decentralized approach to setting up pipelines, moving as much custom configuration as possible to the target level rather than the whole pipeline level. In addition, the <code>tar_target_raw()</code> function avoids non-standard evaluation while mirroring <code>tar_target()</code> in all other respects. All this makes it much easier to create <a href="https://wlandau.github.io/targets-manual/static.html#metaprogram">custom metaprogrammed pipelines</a> and <a href="https://github.com/wlandau/tarchetypes">target archetypes</a> while avoiding an elaborate domain specific language for <a href="https://books.ropensci.org/drake/static.html">static branching</a>, which was extremely difficult to understand and error prone in <a href="https://github.com/ropensci/drake"><code>drake</code></a>. The <a href="https://wlandau.github.io/targetopia.html">R Targetopia</a> is an emerging ecosystem of workflow frameworks that take full advantage of this customization and democratize reproducible pipelines.</p>
+<p>The <a href="https://github.com/ropensci/targets"><code>targets</code></a> package tries to make customization easier. Relative to <a href="https://github.com/ropensci/drake"><code>drake</code></a>, <a href="https://github.com/ropensci/targets"><code>targets</code></a> takes a decentralized approach to setting up pipelines, moving as much custom configuration as possible to the target level rather than the whole pipeline level. In addition, the <code>tar_target_raw()</code> function avoids non-standard evaluation while mirroring <code>tar_target()</code> in all other respects. All this makes it much easier to create <a href="https://books.ropensci.org/targets/static.html#metaprogram">custom metaprogrammed pipelines</a> and <a href="https://github.com/ropensci/tarchetypes">target archetypes</a> while avoiding an elaborate domain specific language for <a href="https://books.ropensci.org/drake/static.html">static branching</a>, which was extremely difficult to understand and error prone in <a href="https://github.com/ropensci/drake"><code>drake</code></a>. The <a href="https://wlandau.github.io/targetopia.html">R Targetopia</a> is an emerging ecosystem of workflow frameworks that take full advantage of this customization and democratize reproducible pipelines.</p>
 
 </div>
 </div>
@@ -734,11 +735,11 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/wlandau/targets-manual/edit/main/drake.Rmd",
+"link": "https://github.com/ropensci-books/targets/edit/main/drake.Rmd",
 "text": "Edit this chapter"
 },
 "history": {
-"link": "https://github.com/wlandau/targets-manual/commits/main/drake.Rmd",
+"link": "https://github.com/ropensci-books/targets/commits/main/drake.Rmd",
 "text": "Chapter edit history"
 },
 "view": {

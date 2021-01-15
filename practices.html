@@ -10,16 +10,16 @@
 
   <meta property="og:title" content="Chapter 5 Best practices | The targets R Package User Manual" />
   <meta property="og:type" content="book" />
-  <meta property="og:url" content="https://wlandau.github.io/targets-manual" />
-  <meta property="og:image" content="https://wlandau.github.io/targets-manual/man/figures/logo.png" />
+  <meta property="og:url" content="https://books.ropensci.org/targets" />
+  <meta property="og:image" content="https://books.ropensci.org/targets/man/figures/logo.png" />
   <meta property="og:description" content="In-depth discussion of the major functionality of targets." />
-  <meta name="github-repo" content="wlandau/targets-manual" />
+  <meta name="github-repo" content="ropensci-books/targets" />
 
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content="Chapter 5 Best practices | The targets R Package User Manual" />
   
   <meta name="twitter:description" content="In-depth discussion of the major functionality of targets." />
-  <meta name="twitter:image" content="https://wlandau.github.io/targets-manual/man/figures/logo.png" />
+  <meta name="twitter:image" content="https://books.ropensci.org/targets/man/figures/logo.png" />
 
 <meta name="author" content="Will Landau" />
 <meta name="author" content="Copyright Eli Lilly and Company" />
@@ -70,6 +70,7 @@
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
 pre.sourceCode { margin: 0; }
 @media screen {
@@ -384,17 +385,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Install the <a href="https://github.com/r-prof/proffer"><code>proffer</code></a> R package and its dependencies.</li>
 <li>Run <code>proffer::pprof(tar_make(callr_function = NULL))</code> on your project.</li>
 <li>When a web browser pops up with <code>pprof</code>, select the flame graph and screenshot it.</li>
-<li>Post the flame graph, along with any code and data you can share, to the <a href="https://github.com/wlandau/targets/issues"><code>targets</code> package issue tracker</a>. The maintainer will have a look and try to make the package faster for your use case if speedups are possible.</li>
+<li>Post the flame graph, along with any code and data you can share, to the <a href="https://github.com/ropensci/targets/issues"><code>targets</code> package issue tracker</a>. The maintainer will have a look and try to make the package faster for your use case if speedups are possible.</li>
 </ol>
 </div>
 <div id="cleaning-up" class="section level2" number="5.7">
 <h2><span class="header-section-number">5.7</span> Cleaning up</h2>
-<p>There are <a href="https://wlandau.github.io/targets/reference/index.html#section-clean">multiple functions</a> to help you manually remove data or force targets to rerun.</p>
+<p>There are <a href="https://docs.ropensci.org/targets/reference/index.html#section-clean">multiple functions</a> to help you manually remove data or force targets to rerun.</p>
 <ul>
-<li><a href="https://wlandau.github.io/targets/reference/tar_destroy.html"><code>tar_destroy()</code></a> is by far the most commonly used cleaning function. It removes the <code>_targets/</code> data store completely, deleting all the results from <a href="https://wlandau.github.io/targets/reference/tar_make.html"><code>tar_make()</code></a> except for external files. Use it if you intend to start the pipeline from scratch without any trace of a previous run.</li>
-<li><a href="https://wlandau.github.io/targets/reference/tar_prune.html"><code>tar_prune()</code></a> deletes the data and metadata of all the targets no longer present in your current <code>_targets.R</code> file. This is useful if you recently worked through multiple changes to your project and are now trying to discard irrelevant data while keeping the results that still matter.</li>
-<li><a href="https://wlandau.github.io/targets/reference/tar_delete.html"><code>tar_delete()</code></a> is more selective than <a href="https://wlandau.github.io/targets/reference/tar_destroy.html"><code>tar_destroy()</code></a> and <a href="https://wlandau.github.io/targets/reference/tar_prune.html"><code>tar_prune()</code></a>. It removes the individual data files of a given set of targets from <code>_targets/objects/</code> while leaving the metadata in <code>_targets/meta/meta</code> alone. If you have a small number of data-heavy targets you need to discard to conserve storage, this function can help.</li>
-<li><a href="https://wlandau.github.io/targets/reference/tar_invalidate.html"><code>tar_invalidate()</code></a> is the opposite of <a href="https://wlandau.github.io/targets/reference/tar_delete.html"><code>tar_delete()</code></a>: for the selected targets, it deletes the metadata in <code>_targets/meta/meta</code> but keeps the return values in <code>_targets/objects/</code>. After invalidation, you will still be able to locate the data files with <a href="https://wlandau.github.io/targets/reference/tar_path.html"><code>tar_path()</code></a> and manually salvage them in an emergency. However, <a href="https://wlandau.github.io/targets/reference/tar_load.html"><code>tar_load()</code></a> and <a href="https://wlandau.github.io/targets/reference/tar_read.html"><code>tar_read()</code></a> will not be able to read the data into R, and subesequent calls to <a href="https://wlandau.github.io/targets/reference/tar_make.html"><code>tar_make()</code></a> will attempt to rebuild those targets.</li>
+<li><a href="https://docs.ropensci.org/targets/reference/tar_destroy.html"><code>tar_destroy()</code></a> is by far the most commonly used cleaning function. It removes the <code>_targets/</code> data store completely, deleting all the results from <a href="https://docs.ropensci.org/targets/reference/tar_make.html"><code>tar_make()</code></a> except for external files. Use it if you intend to start the pipeline from scratch without any trace of a previous run.</li>
+<li><a href="https://docs.ropensci.org/targets/reference/tar_prune.html"><code>tar_prune()</code></a> deletes the data and metadata of all the targets no longer present in your current <code>_targets.R</code> file. This is useful if you recently worked through multiple changes to your project and are now trying to discard irrelevant data while keeping the results that still matter.</li>
+<li><a href="https://docs.ropensci.org/targets/reference/tar_delete.html"><code>tar_delete()</code></a> is more selective than <a href="https://docs.ropensci.org/targets/reference/tar_destroy.html"><code>tar_destroy()</code></a> and <a href="https://docs.ropensci.org/targets/reference/tar_prune.html"><code>tar_prune()</code></a>. It removes the individual data files of a given set of targets from <code>_targets/objects/</code> while leaving the metadata in <code>_targets/meta/meta</code> alone. If you have a small number of data-heavy targets you need to discard to conserve storage, this function can help.</li>
+<li><a href="https://docs.ropensci.org/targets/reference/tar_invalidate.html"><code>tar_invalidate()</code></a> is the opposite of <a href="https://docs.ropensci.org/targets/reference/tar_delete.html"><code>tar_delete()</code></a>: for the selected targets, it deletes the metadata in <code>_targets/meta/meta</code> but keeps the return values in <code>_targets/objects/</code>. After invalidation, you will still be able to locate the data files with <a href="https://docs.ropensci.org/targets/reference/tar_path.html"><code>tar_path()</code></a> and manually salvage them in an emergency. However, <a href="https://docs.ropensci.org/targets/reference/tar_load.html"><code>tar_load()</code></a> and <a href="https://docs.ropensci.org/targets/reference/tar_read.html"><code>tar_read()</code></a> will not be able to read the data into R, and subesequent calls to <a href="https://docs.ropensci.org/targets/reference/tar_make.html"><code>tar_make()</code></a> will attempt to rebuild those targets.</li>
 </ul>
 
 </div>
@@ -430,11 +431,11 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/wlandau/targets-manual/edit/main/practices.Rmd",
+"link": "https://github.com/ropensci-books/targets/edit/main/practices.Rmd",
 "text": "Edit this chapter"
 },
 "history": {
-"link": "https://github.com/wlandau/targets-manual/commits/main/practices.Rmd",
+"link": "https://github.com/ropensci-books/targets/commits/main/practices.Rmd",
 "text": "Chapter edit history"
 },
 "view": {
