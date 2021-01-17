@@ -25,7 +25,7 @@ Static branching is the act of defining a group of targets in bulk before the pi
 
 [`tar_map()`](https://docs.ropensci.org/tarchetypes/reference/tar_map.html) from the [`tarchetypes`](https://github.com/ropensci/tarchetypes) package creates copies of existing target objects, where each new command is a variation on the original. In the example below, we have a data analysis workflow that iterates over datasets and analysis methods. The `values` data frame has the operational parameters of each data analysis, and `tar_map()` creates one new target per row.
 
-```{r, eval = FALSE}
+```{r, echo = TRUE, eval = FALSE}
 # _targets.R file:
 library(targets)
 library(tarchetypes)
@@ -42,33 +42,35 @@ targets <- tar_map(
 list(targets)
 ```
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, eval = TRUE}
 tar_script({
-library(targets)
-library(tarchetypes)
-library(tibble)
-values <- tibble(
-  method_function = rlang::syms(c("method1", "method2")),
-  data_source = c("NIH", "NIAID")
-)
-targets <- tar_map(
-  values = values,
-  tar_target(analysis, method_function(data_source, reps = 10)),
-  tar_target(summary, summarize_analysis(analysis, data_source))
-)
-list(targets)
+  library(targets)
+  library(tarchetypes)
+  library(tibble)
+  values <- tibble(
+    method_function = rlang::syms(c("method1", "method2")),
+    data_source = c("NIH", "NIAID")
+  )
+  targets <- tar_map(
+    values = values,
+    tar_target(analysis, method_function(data_source, reps = 10)),
+    tar_target(summary, summarize_analysis(analysis, data_source))
+  )
+  list(targets)
 })
 ```
 
-```{r, paged.print = FALSE}
+```{r, paged.print = FALSE, eval = TRUE}
 tar_manifest()
 ```
+
 ```{r}
 tar_visnetwork(targets_only = TRUE)
 ```
+
 For shorter target names, use the `names` argument of `tar_map()`. And for more combinations of settings, use `tidyr::expand_grid()` on `values`.
 
-```{r, eval = FALSE}
+```{r, eval = FALSE, echo = TRUE}
 # _targets.R file:
 library(targets)
 library(tarchetypes)
@@ -86,29 +88,30 @@ targets <- tar_map(
 list(targets)
 ```
 
-```{r, echo = FALSE}
+```{r, eval = TRUE, echo = FALSE}
 tar_script({
-library(targets)
-library(tarchetypes)
-library(tidyr)
-values <- expand_grid(
-  method_function = rlang::syms(c("method1", "method2")),
-  data_source = c("NIH", "NIAID")
-)
-targets <- tar_map(
-  values = values,
-  names = "data_source", 
-  tar_target(analysis, method_function(data_source, reps = 10)),
-  tar_target(summary, summarize_analysis(analysis, data_source))
-)
-list(targets)
+  library(targets)
+  library(tarchetypes)
+  library(tidyr)
+  values <- expand_grid(
+    method_function = rlang::syms(c("method1", "method2")),
+    data_source = c("NIH", "NIAID")
+  )
+  targets <- tar_map(
+    values = values,
+    names = "data_source", 
+    tar_target(analysis, method_function(data_source, reps = 10)),
+    tar_target(summary, summarize_analysis(analysis, data_source))
+  )
+  list(targets)
 })
 ```
 
-```{r, paged.print = FALSE}
+```{r, paged.print = FALSE, eval = TRUE}
 tar_manifest()
 ```
-```{r}
+
+```{r, eval = TRUE}
 # You may need to zoom out on this interactive graph to see all 8 targets.
 tar_visnetwork(targets_only = TRUE)
 ```
@@ -117,12 +120,12 @@ tar_visnetwork(targets_only = TRUE)
 
 You can even combine together static and dynamic branching. The static `tar_map()` is an excellent outer layer on top of targets with patterns. The following is a sketch of a pipeline that runs each of two data analysis methods 10 times, once per random seed. Static branching iterates over the method functions, while dynamic branching iterates over the seeds. `tar_map()` creates new patterns as well as new commands. So below, the summary methods map over the analysis methods both statically and dynamically.
 
-```{r, eval = FALSE}
+```{r, eval = FALSE, echo = TRUE}
 # _targets.R file:
 library(targets)
 library(tarchetypes)
 library(tibble)
-random_seed <- tar_target(random_seed, seq_len(10))
+random_seed_target <- tar_target(random_seed, seq_len(10))
 targets <- tar_map(
   values = tibble(method_function = rlang::syms(c("method1", "method2"))),
   tar_target(
@@ -136,37 +139,37 @@ targets <- tar_map(
     pattern = map(analysis)
   )
 )
-list(random_seed, targets)
+list(random_seed_target, targets)
 ```
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, eval = TRUE}
 tar_script({
-library(targets)
-library(tarchetypes)
-library(tibble)
-random_seed <- tar_target(random_seed, seq_len(10))
-targets <- tar_map(
-  values = tibble(method_function = rlang::syms(c("method1", "method2"))),
-  tar_target(
-    analysis,
-    method_function("NIH", seed = random_seed),
-    pattern = map(random_seed)
-  ),
-  tar_target(
-    summary,
-    summarize_analysis(analysis),
-    pattern = map(analysis)
+  library(targets)
+  library(tarchetypes)
+  library(tibble)
+  random_seed_target <- tar_target(random_seed, seq_len(10))
+  targets <- tar_map(
+    values = tibble(method_function = rlang::syms(c("method1", "method2"))),
+    tar_target(
+      analysis,
+      method_function("NIH", seed = random_seed),
+      pattern = map(random_seed)
+    ),
+    tar_target(
+      summary,
+      summarize_analysis(analysis),
+      pattern = map(analysis)
+    )
   )
-)
-list(random_seed, targets)
+  list(random_seed_target, targets)
 })
 ```
 
-```{r, paged.print = FALSE}
+```{r, eval = TRUE, paged.print = FALSE}
 tar_manifest()
 ```
 
-```{r, paged.print = FALSE}
+```{r, eval = TRUE, paged.print = FALSE}
 tar_visnetwork(targets_only = TRUE)
 ```
 
@@ -174,7 +177,7 @@ tar_visnetwork(targets_only = TRUE)
 
 [`tar_combine()`](https://docs.ropensci.org/tarchetypes/reference/tar_combine.html) from the [`tarchetypes`](https://github.com/ropensci/tarchetypes) package creates a new target to aggregate the results of upstream targets. In the simple example below, our combined target simply aggregates the rows returned from two other targets.
 
-```{r, eval = FALSE}
+```{r, eval = FALSE, echo = TRUE}
 # _targets.R file:
 library(targets)
 library(tarchetypes)
@@ -186,32 +189,32 @@ target3 <- tar_combine(combined_target, target1, target2)
 list(target1, target2, target3)
 ```
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, eval = TRUE}
 tar_script({
-library(targets)
-library(tarchetypes)
-library(tibble)
-options(crayon.enabled = FALSE)
-target1 <- tar_target(head_mtcars, head(mtcars, 1))
-target2 <- tar_target(tail_mtcars, tail(mtcars, 1))
-target3 <- tar_combine(combined_target, target1, target2)
-list(target1, target2, target3)
+  library(targets)
+  library(tarchetypes)
+  library(tibble)
+  options(crayon.enabled = FALSE)
+  target1 <- tar_target(head_mtcars, head(mtcars, 1))
+  target2 <- tar_target(tail_mtcars, tail(mtcars, 1))
+  target3 <- tar_combine(combined_target, target1, target2)
+  list(target1, target2, target3)
 })
 ```
 
-```{r}
+```{r, eval = TRUE}
 tar_manifest()
 ```
 
-```{r}
+```{r, eval = TRUE}
 tar_visnetwork(targets_only = TRUE)
 ```
 
-```{r}
+```{r, eval = TRUE}
 tar_make()
 ```
 
-```{r}
+```{r, eval = TRUE}
 tar_read(combined_target)
 ```
 
@@ -219,7 +222,7 @@ To use `tar_combine()` and `tar_map()` together in more complicated situations, 
 
 
 
-```{r, eval = FALSE}
+```{r, eval = FALSE, echo = TRUE}
 # _targets.R file:
 library(targets)
 library(tarchetypes)
@@ -247,39 +250,40 @@ combined <- tar_combine(
 list(random_seed, mapped, combined)
 ```
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, eval = TRUE}
 tar_script({
-library(targets)
-library(tarchetypes)
-library(tibble)
-random_seed <- tar_target(random_seed, seq_len(10))
-mapped <- tar_map(
-  unlist = FALSE, # Return a nested list from tar_map()
-  values = tibble(method_function = rlang::syms(c("method1", "method2"))),
-  tar_target(
-    analysis,
-    method_function("NIH", seed = random_seed),
-    pattern = map(random_seed)
-  ),
-  tar_target(
-    summary,
-    summarize_analysis(analysis),
-    pattern = map(analysis)
+  library(targets)
+  library(tarchetypes)
+  library(tibble)
+  random_seed <- tar_target(random_seed, seq_len(10))
+  mapped <- tar_map(
+    unlist = FALSE, # Return a nested list from tar_map()
+    values = tibble(method_function = rlang::syms(c("method1", "method2"))),
+    tar_target(
+      analysis,
+      method_function("NIH", seed = random_seed),
+      pattern = map(random_seed)
+    ),
+    tar_target(
+      summary,
+      summarize_analysis(analysis),
+      pattern = map(analysis)
+    )
   )
-)
-combined <- tar_combine(
-  combined_summaries,
-  mapped[[2]],
-  command = dplyr::bind_rows(!!!.x, .id = "method")
-)
-list(random_seed, mapped, combined)
+  combined <- tar_combine(
+    combined_summaries,
+    mapped[[2]],
+    command = dplyr::bind_rows(!!!.x, .id = "method")
+  )
+  list(random_seed, mapped, combined)
 })
 ```
 
-```{r, paged.print = FALSE}
+```{r, paged.print = FALSE, eval = TRUE}
 tar_manifest()
 ```
-```{r}
+
+```{r, eval = TRUE}
 tar_visnetwork(targets_only = TRUE)
 ```
 
@@ -287,20 +291,7 @@ tar_visnetwork(targets_only = TRUE)
 
 Custom metaprogramming is a more flexible alternative to [`tar_map()`](https://docs.ropensci.org/tarchetypes/reference/tar_map.html) and [`tar_combine()`](https://docs.ropensci.org/tarchetypes/reference/tar_combine.html). [`tar_eval()`](https://docs.ropensci.org/tarchetypes/reference/tar_eval.html) from [`tarchetypes`](https://github.com/ropensci/tarchetypes) accepts an arbitrary expression and iteratively plugs in symbols. Below, we use it to branch over datasets. 
 
-```{r, echo = FALSE}
-tar_script({
-  library(rlang)
-  library(tarchetypes)
-  string <- c("gapminder", "who", "imf")
-  symbol <- syms(string)
-  tar_eval(
-    tar_target(symbol, get_data(string)),
-    values = list(string = string, symbol = symbol)
-  )
-})
-```
-
-```{r, eval = FALSE}
+```{r, eval = FALSE, echo = TRUE}
 # _targets.R
 library(rlang)
 library(targets)
@@ -313,8 +304,21 @@ tar_eval(
 )
 ```
 
+```{r, echo = FALSE, eval = TRUE}
+tar_script({
+  library(rlang)
+  library(tarchetypes)
+  string <- c("gapminder", "who", "imf")
+  symbol <- syms(string)
+  tar_eval(
+    tar_target(symbol, get_data(string)),
+    values = list(string = string, symbol = symbol)
+  )
+})
+```
+
 [`tar_eval()`](https://docs.ropensci.org/tarchetypes/reference/tar_eval.html) has fewer guardrails than [`tar_map()`](https://docs.ropensci.org/tarchetypes/reference/tar_map.html) or [`tar_combine()`](https://docs.ropensci.org/tarchetypes/reference/tar_combine.html), so [`tar_manifest()`](https://docs.ropensci.org/targets/reference/tar_manifest.html) is especially important for checking the correctness of your metaprogramming.
 
-```{r}
-tar_manifest(fields = "command")
+```{r, eval = TRUE}
+tar_manifest(fields = command)
 ```
