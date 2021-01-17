@@ -398,8 +398,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb46-5"><a href="functions.html#cb46-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">packages =</span> <span class="fu">c</span>(<span class="st">&quot;biglm&quot;</span>, <span class="st">&quot;tidyverse&quot;</span>))</span>
 <span id="cb46-6"><a href="functions.html#cb46-6" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
 <span id="cb46-7"><a href="functions.html#cb46-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(raw_data_file, <span class="st">&quot;data/raw_data.csv&quot;</span>,<span class="at">format =</span> <span class="st">&quot;file&quot;</span>),</span>
-<span id="cb46-8"><a href="functions.html#cb46-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data, <span class="fu">read_and_clean</span>(raw_data_file))</span>
-<span id="cb46-9"><a href="functions.html#cb46-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(fit, <span class="fu">fit_model</span>(data))</span>
+<span id="cb46-8"><a href="functions.html#cb46-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data, <span class="fu">read_and_clean</span>(raw_data_file)),</span>
+<span id="cb46-9"><a href="functions.html#cb46-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(fit, <span class="fu">fit_model</span>(data)),</span>
 <span id="cb46-10"><a href="functions.html#cb46-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(hist, <span class="fu">create_plot</span>(data))</span>
 <span id="cb46-11"><a href="functions.html#cb46-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 
