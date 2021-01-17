@@ -153,8 +153,8 @@ options(tidyverse.quiet = TRUE)
 tar_option_set(packages = c("biglm", "tidyverse"))
 list(
   tar_target(raw_data_file, "data/raw_data.csv",format = "file"),
-  tar_target(data, read_and_clean(raw_data_file))
-  tar_target(fit, fit_model(data))
+  tar_target(data, read_and_clean(raw_data_file)),
+  tar_target(fit, fit_model(data)),
   tar_target(hist, create_plot(data))
 )
 ```
