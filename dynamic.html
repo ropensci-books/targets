@@ -205,7 +205,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7" data-path="dynamic.html"><a href="dynamic.html"><i class="fa fa-check"></i><b>7</b> Dynamic branching</a>
 <ul>
 <li class="chapter" data-level="7.1" data-path="dynamic.html"><a href="dynamic.html#branching"><i class="fa fa-check"></i><b>7.1</b> Branching</a></li>
-<li class="chapter" data-level="7.2" data-path="dynamic.html"><a href="dynamic.html#abort-dynamic-branching"><i class="fa fa-check"></i><b>7.2</b> Abort dynamic branching</a></li>
+<li class="chapter" data-level="7.2" data-path="dynamic.html"><a href="dynamic.html#about-dynamic-branching"><i class="fa fa-check"></i><b>7.2</b> About dynamic branching</a></li>
 <li class="chapter" data-level="7.3" data-path="dynamic.html"><a href="dynamic.html#patterns"><i class="fa fa-check"></i><b>7.3</b> Patterns</a></li>
 <li class="chapter" data-level="7.4" data-path="dynamic.html"><a href="dynamic.html#pattern-construction"><i class="fa fa-check"></i><b>7.4</b> Pattern construction</a></li>
 <li class="chapter" data-level="7.5" data-path="dynamic.html"><a href="dynamic.html#branch-provenance"><i class="fa fa-check"></i><b>7.5</b> Branch provenance</a></li>
@@ -303,8 +303,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Sometimes, a pipeline contains more targets than a user can comfortably type by hand. For projects with hundreds of targets, branching can make the <code>_targets.R</code> file more concise and easier to read and maintain.</p>
 <p><code>targets</code> supports two types of branching: dynamic branching and <a href="static.html#static">static branching</a>. Some projects are better suited to dynamic branching, while others benefit more from <a href="static.html#static">static branching</a> or a combination of both. Some users understand dynamic branching more easily because it avoids metaprogramming, while others prefer <a href="static.html#static">static branching</a> because <code>tar_manifest()</code> and <code>tar_visnetwork()</code> provide immediate feedback. Except for the <a href="static.html#dynamic-within-static-branching">section on dynamic-within-static branching</a>, you can read the two chapters on branching in any order (or skip them) depending on your needs.</p>
 </div>
-<div id="abort-dynamic-branching" class="section level2" number="7.2">
-<h2><span class="header-section-number">7.2</span> Abort dynamic branching</h2>
+<div id="about-dynamic-branching" class="section level2" number="7.2">
+<h2><span class="header-section-number">7.2</span> About dynamic branching</h2>
 <p>Dynamic branching is the act of defining new targets (i.e. branches) while the pipeline is running. Prior to launching the pipeline, the user does not necessarily know which branches will spawn or how many branches there will be, and each branch’s inputs are determined at the last minute. Relative to <a href="static.html#static">static branching</a>, dynamic branching is better suited to iterating over a larger number of very similar tasks (but can act as an inner layer inside <a href="static.html#static">static branching</a>, as the next chapter demonstrates).</p>
 </div>
 <div id="patterns" class="section level2" number="7.3">
