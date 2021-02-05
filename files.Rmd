@@ -163,11 +163,13 @@ save_plot_and_return_path <- function() {
 
 ## Literate programming
 
-R Markdown reports are a little more challenging because they often depend on upstream targets. To integrate an R Markdown report with a `targets` pipeline, you must use `tar_read()` and `tar_load()` in active code chunks to explicitly name the targets that the report depends on. (Do not use `tar_read_raw()` or `tar_load_raw()` for this.) The report from the [minimal example](https://github.com/ropensci/targets-minimal) looks like this.
+An R Markdown report should be lightweight: mostly prose, minimal code, fast execution, and no output other than the rendered HTML/PDF document. In other words, R Markdown reports are just targets that document prior results. The bulk of the computation should have already happened upstream, and the most of the code chunks in the report itself should be terse calls to `tar_read()` and `tar_load()`.
+
+The report from the [minimal example](https://github.com/ropensci/targets-minimal) looks like this:
 
 ![](./man/figures/knitr-source.png)
 
-Above, the report depends on targets `fit` and `hist`. The use of `tar_read()` and `tar_load()` allows us to run the report outside the pipeline. (Again, do not use `tar_read_raw()` or `tar_load_raw()` for this.) As long as `_targets/` folder has data on the required targets from a previous `tar_make()`, you can open the RStudio IDE, edit the report, and click the Knit button like you would for any other R Markdown report.
+Above, the report depends on targets `fit` and `hist`. The use of `tar_read()` and `tar_load()` allows us to run the report outside the pipeline.  As long as `_targets/` folder has data on the required targets from a previous `tar_make()`, you can open the RStudio IDE, edit the report, and click the Knit button like you would for any other R Markdown report.
 
 ![](./man/figures/knitr-ide.png)
 
