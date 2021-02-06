@@ -251,12 +251,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="10.1" data-path="cloud.html"><a href="cloud.html#compute"><i class="fa fa-check"></i><b>10.1</b> Compute</a></li>
 <li class="chapter" data-level="10.2" data-path="cloud.html"><a href="cloud.html#storage"><i class="fa fa-check"></i><b>10.2</b> Storage</a>
 <ul>
-<li class="chapter" data-level="10.2.1" data-path="cloud.html"><a href="cloud.html#get-started-with-the-amazon-s3-web-console"><i class="fa fa-check"></i><b>10.2.1</b> Get started with the Amazon S3 web console</a></li>
-<li class="chapter" data-level="10.2.2" data-path="cloud.html"><a href="cloud.html#configure-your-local-machine"><i class="fa fa-check"></i><b>10.2.2</b> Configure your local machine</a></li>
-<li class="chapter" data-level="10.2.3" data-path="cloud.html"><a href="cloud.html#create-s3-buckets"><i class="fa fa-check"></i><b>10.2.3</b> Create S3 buckets</a></li>
-<li class="chapter" data-level="10.2.4" data-path="cloud.html"><a href="cloud.html#configure-the-pipeline"><i class="fa fa-check"></i><b>10.2.4</b> Configure the pipeline</a></li>
-<li class="chapter" data-level="10.2.5" data-path="cloud.html"><a href="cloud.html#run-the-pipeline-1"><i class="fa fa-check"></i><b>10.2.5</b> Run the pipeline</a></li>
-<li class="chapter" data-level="10.2.6" data-path="cloud.html"><a href="cloud.html#manage-the-data"><i class="fa fa-check"></i><b>10.2.6</b> Manage the data</a></li>
+<li class="chapter" data-level="10.2.1" data-path="cloud.html"><a href="cloud.html#communicate-with-your-collaborators"><i class="fa fa-check"></i><b>10.2.1</b> Communicate with your collaborators</a></li>
+<li class="chapter" data-level="10.2.2" data-path="cloud.html"><a href="cloud.html#get-started-with-the-amazon-s3-web-console"><i class="fa fa-check"></i><b>10.2.2</b> Get started with the Amazon S3 web console</a></li>
+<li class="chapter" data-level="10.2.3" data-path="cloud.html"><a href="cloud.html#configure-your-local-machine"><i class="fa fa-check"></i><b>10.2.3</b> Configure your local machine</a></li>
+<li class="chapter" data-level="10.2.4" data-path="cloud.html"><a href="cloud.html#create-s3-buckets"><i class="fa fa-check"></i><b>10.2.4</b> Create S3 buckets</a></li>
+<li class="chapter" data-level="10.2.5" data-path="cloud.html"><a href="cloud.html#configure-the-pipeline"><i class="fa fa-check"></i><b>10.2.5</b> Configure the pipeline</a></li>
+<li class="chapter" data-level="10.2.6" data-path="cloud.html"><a href="cloud.html#run-the-pipeline-1"><i class="fa fa-check"></i><b>10.2.6</b> Run the pipeline</a></li>
+<li class="chapter" data-level="10.2.7" data-path="cloud.html"><a href="cloud.html#manage-the-data"><i class="fa fa-check"></i><b>10.2.7</b> Manage the data</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="11" data-path="drake.html"><a href="drake.html"><i class="fa fa-check"></i><b>11</b> What about <code>drake</code>?</a>
@@ -307,12 +308,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="storage" class="section level2" number="10.2">
 <h2><span class="header-section-number">10.2</span> Storage</h2>
 <p><code>targets</code> supports cloud storage on a target-by-target basis using <a href="https://aws.amazon.com/s3/">Amazon Simple Storage Service, or S3</a>. After a target completes, the return value is uploaded to a user-defined S3 bucket <a href="https://docs.aws.amazon.com/AmazonS3/latest/user-guide/create-bucket.html">S3 bucket</a>. Follow these steps to get started.</p>
-<div id="get-started-with-the-amazon-s3-web-console" class="section level3" number="10.2.1">
-<h3><span class="header-section-number">10.2.1</span> Get started with the Amazon S3 web console</h3>
+<div id="communicate-with-your-collaborators" class="section level3" number="10.2.1">
+<h3><span class="header-section-number">10.2.1</span> Communicate with your collaborators</h3>
+<p>An S3 bucket can be a shared file space. If you have access to someone else’s bucket, running their pipeline risks overwriting their cloud data. It is best if you and your colleagues decide in advance who will write to the bucket at any given time.</p>
+</div>
+<div id="get-started-with-the-amazon-s3-web-console" class="section level3" number="10.2.2">
+<h3><span class="header-section-number">10.2.2</span> Get started with the Amazon S3 web console</h3>
 <p>If you do not already have an Amazon Web Services account, sign up for the free tier at <a href="https://aws.amazon.com/free" class="uri">https://aws.amazon.com/free</a>. Then, follow <a href="https://docs.aws.amazon.com/AmazonS3/latest/gsg/GetStartedWithS3.html">these step-by-step instructions</a> to practice using Amazon S3 through the web console at <a href="https://console.aws.amazon.com/s3/" class="uri">https://console.aws.amazon.com/s3/</a>.</p>
 </div>
-<div id="configure-your-local-machine" class="section level3" number="10.2.2">
-<h3><span class="header-section-number">10.2.2</span> Configure your local machine</h3>
+<div id="configure-your-local-machine" class="section level3" number="10.2.3">
+<h3><span class="header-section-number">10.2.3</span> Configure your local machine</h3>
 <p><code>targets</code> uses the <a href="https://github.com/cloudyr/aws.s3"><code>aws.s3</code></a> package behind the scenes. It is not a strict dependency of <code>targets</code>, so you will need to install it yourself.</p>
 <div class="sourceCode" id="cb145"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb145-1"><a href="cloud.html#cb145-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;aws.s3&quot;</span>)</span></code></pre></div>
 <p>Next, <code>aws.s3</code> needs an access ID, secret access key, and default region. Follow <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html#cli-configure-quickstart-creds">these steps</a> to generate the keys, and choose a region from <a href="https://docs.aws.amazon.com/general/latest/gr/s3.html">this table of endpoints</a>. Then, open the <code>.Renviron</code> file in your home directory with <code>usethis::edit_r_environ()</code> and store this information in <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html">special environment variables</a>. Here is an example <code>.Renviron</code> file.</p>
@@ -328,16 +333,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb147-5"><a href="cloud.html#cb147-5" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.getenv</span>(<span class="st">&quot;AWS_DEFAULT_REGION&quot;</span>)</span>
 <span id="cb147-6"><a href="cloud.html#cb147-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;us-east-1&quot;</span></span></code></pre></div>
 </div>
-<div id="create-s3-buckets" class="section level3" number="10.2.3">
-<h3><span class="header-section-number">10.2.3</span> Create S3 buckets</h3>
+<div id="create-s3-buckets" class="section level3" number="10.2.4">
+<h3><span class="header-section-number">10.2.4</span> Create S3 buckets</h3>
 <p>Now, you are ready to create one or more <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingBucket.html">S3 buckets</a> for your <code>targets</code> pipeline. Each pipeline should have its own set of buckets. Create one through the web console or with <code>aws.s3::put_bucket()</code>.</p>
 <div class="sourceCode" id="cb148"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb148-1"><a href="cloud.html#cb148-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(aws.s3)</span>
 <span id="cb148-2"><a href="cloud.html#cb148-2" aria-hidden="true" tabindex="-1"></a><span class="fu">put_bucket</span>(<span class="st">&quot;my-test-bucket-25edb4956460647d&quot;</span>)</span>
 <span id="cb148-3"><a href="cloud.html#cb148-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
 <p>Sign in to <a href="https://s3.console.aws.amazon.com/s3" class="uri">https://s3.console.aws.amazon.com/s3</a> to verify that the bucket exists.</p>
 </div>
-<div id="configure-the-pipeline" class="section level3" number="10.2.4">
-<h3><span class="header-section-number">10.2.4</span> Configure the pipeline</h3>
+<div id="configure-the-pipeline" class="section level3" number="10.2.5">
+<h3><span class="header-section-number">10.2.5</span> Configure the pipeline</h3>
 <p>To connect your pipeline with S3,</p>
 <ol style="list-style-type: decimal">
 <li>Supply your bucket name to <code>resources</code> in <code>tar_option_set()</code>. To use different buckets for different targets, set <code>resources</code> directly in <code>tar_target()</code>.</li>
@@ -357,8 +362,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb149-11"><a href="cloud.html#cb149-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(mean_file, <span class="fu">write_mean</span>(data), <span class="at">format =</span> <span class="st">&quot;aws_file&quot;</span>)</span>
 <span id="cb149-12"><a href="cloud.html#cb149-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 </div>
-<div id="run-the-pipeline-1" class="section level3" number="10.2.5">
-<h3><span class="header-section-number">10.2.5</span> Run the pipeline</h3>
+<div id="run-the-pipeline-1" class="section level3" number="10.2.6">
+<h3><span class="header-section-number">10.2.6</span> Run the pipeline</h3>
 <p>When you run the pipeline above with <a href="https://docs.ropensci.org/targets/reference/tar_make.html"><code>tar_make()</code></a>, your local R session computes <code>rnorm(5)</code>, saves it to a temporary <a href="https://github.com/traversc/qs"><code>qs</code></a> file on disk, and then uploads it to a file called <code>_targets/objects/data</code> on your S3 bucket. Likewise for <code>mean_file</code>, but because the format is <code>"aws_file"</code>, you are responsible for supplying the path to the file that gets uploaded to <code>_targets/objects/mean_file</code>.</p>
 <div class="sourceCode" id="cb150"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb150-1"><a href="cloud.html#cb150-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
 <span id="cb150-2"><a href="cloud.html#cb150-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target data</span></span>
@@ -369,8 +374,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb151-3"><a href="cloud.html#cb151-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✓ skip target mean_file</span></span>
 <span id="cb151-4"><a href="cloud.html#cb151-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✓ Already up to date.</span></span></code></pre></div>
 </div>
-<div id="manage-the-data" class="section level3" number="10.2.6">
-<h3><span class="header-section-number">10.2.6</span> Manage the data</h3>
+<div id="manage-the-data" class="section level3" number="10.2.7">
+<h3><span class="header-section-number">10.2.7</span> Manage the data</h3>
 <p>Log into <a href="https://s3.console.aws.amazon.com/s3" class="uri">https://s3.console.aws.amazon.com/s3</a>. You should see objects <code>_targets/objects/data</code> and <code>_targets/objects/mean_file</code> in your bucket. To download this data locally, use <code>tar_read()</code> and <code>tar_load()</code> like before. These functions download the data from the bucket and load it into R.</p>
 <div class="sourceCode" id="cb152"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb152-1"><a href="cloud.html#cb152-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(data)</span>
 <span id="cb152-2"><a href="cloud.html#cb152-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] -0.74654607 -0.59593497 -1.57229983  0.40915323  0.02579023</span></span></code></pre></div>
