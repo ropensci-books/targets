@@ -9,7 +9,7 @@ library(targets)
 
 # Debugging {#debugging}
 
-If one of your targets fails, first look up the error message in `tar_meta()`. If that does not help, try one of the following techniques.
+If one of your targets fails, first look at the error message, which you can find in the R console or the output of `tar_meta()`. To investigate further, you could insert a `browser()` statement into one of your custom functions that you suspect is problematic and then run `tar_make()` with `callr_function = NULL`. That should open an [interactive debugger](https://rstats.wtf/debugging-r-code.html) to help you find where the error is coming from. If neither technique suits you, consider the built-in debugging features described below.
 
 ## Workspaces
 
