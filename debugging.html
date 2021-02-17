@@ -300,7 +300,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="debugging" class="section level1" number="3">
 <h1><span class="header-section-number">Chapter 3</span> Debugging</h1>
-<p>If one of your targets fails, first look up the error message in <code>tar_meta()</code>. If that does not help, try one of the following techniques.</p>
+<p>If one of your targets fails, first look at the error message, which you can find in the R console or the output of <code>tar_meta()</code>. To investigate further, you could insert a <code>browser()</code> statement into one of your custom functions that you suspect is problematic and then run <code>tar_make()</code> with <code>callr_function = NULL</code>. That should open an <a href="https://rstats.wtf/debugging-r-code.html">interactive debugger</a> to help you find where the error is coming from. If neither technique suits you, consider the built-in debugging features described below.</p>
 <div id="workspaces" class="section level2" number="3.1">
 <h2><span class="header-section-number">3.1</span> Workspaces</h2>
 <p>Workspaces are special lightweight reference files that allow <code>tar_workspace()</code> to recreate the runtime environment of a target. This lets you troubleshoot issues outside the pipeline in an interactive session. There are two ways to save a workspace file:</p>
