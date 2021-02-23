@@ -33,7 +33,7 @@
   <link rel="shortcut icon" href="man/figures/favicon.ico" type="image/x-icon" />
 <link rel="prev" href="functions.html"/>
 <link rel="next" href="files.html"/>
-<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/header-attrs-2.7/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -335,6 +335,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">5.3</span> Workflows as R packages</h2>
 <p>When it comes time to decide which targets to rerun or skip, the default behavior is to ignore changes to external R packages. Usually, local package libraries do not need to change very often, and it is best to maintain a reproducible project library using <a href="https://rstudio.github.io/renv/articles/renv.html"><code>renv</code></a>.</p>
 <p>However, there are some situations where it makes sense to watch a package for changes. For example, you could be in the middle of developing a methodology package that serves as the focus of the pipeline, or you could implement the workflow itself as a package. In either case, you can tell <code>targets</code> to track changes using the <code>imports</code> argument to <code>tar_option_set()</code>. If you write <code>tar_option_set(imports = "package1")</code> in <code>_targets.R</code>, then <code>targets</code> will analyze the R objects in <code>package1</code> and automatically rerun the dependent targets when these objects change. These tracked objects include unexported functions internal to the package. You can track multiple packages this way, e.g. <code>tar_option_set(imports = c("package1", "package2"))</code>. In this case, the contents of <code>package1</code> override those of <code>package2</code> when there are name conflicts. Likewise, <code>tar_option_get("envir")</code> (usually the global environment) overrides both.</p>
+<p>While the <code>imports</code> option tells <code>targets</code> what to scan, it does not actually load any packages. So in practice, please set the <code>packages</code> option as well, e.g. <code>tar_option_set(imports = "package1", packages = c("package1", "tidyverse"))</code>. <code>imports</code> and <code>packages</code> operate independently so that you have complete control over which packages load first (in case of conflicts).<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a></p>
 </div>
 <div id="working-with-tools-outside-r" class="section level2" number="5.4">
 <h2><span class="header-section-number">5.4</span> Working with tools outside R</h2>
@@ -401,6 +402,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 
 </div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="4">
+<li id="fn4"><p>Complicated package conflicts may require more work to untangle. If you use <a href="https://github.com/r-lib/conflicted">conflicted</a>, please create a project-level <code>.Rprofile</code> file and call <a href="https://conflicted.r-lib.org/reference/conflict_prefer.html">conflict_prefer()</a> from there. <code>.Rprofile</code> is safer than <code>_targets.R</code> for this because it ensures the appropriate global options get set on remote workers as well as the main process.<a href="practices.html#fnref4" class="footnote-back">↩︎</a></p></li>
+</ol>
 </div>
 <div style = "background: #1C356D; color: white; padding: 10px 10px 10px 25px; font-size: 1em; width: 100%;">
   Copyright Eli Lilly and Company

@@ -33,7 +33,7 @@
   <link rel="shortcut icon" href="man/figures/favicon.ico" type="image/x-icon" />
 <link rel="prev" href="files.html"/>
 <link rel="next" href="static.html"/>
-<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/header-attrs-2.7/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -429,7 +429,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="iteration" class="section level2" number="7.8">
 <h2><span class="header-section-number">7.8</span> Iteration</h2>
-<p>There are many ways to slice up a stem for branching, and there are many ways to aggregate the branches of a pattern.<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a> The <code>iteration</code> argument of <code>tar_target()</code> controls the splitting and aggregation protocol on a target-by-target basis, and you can set the default for all targets with the analogous argument of <code>tar_option_set()</code>.</p>
+<p>There are many ways to slice up a stem for branching, and there are many ways to aggregate the branches of a pattern.<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a> The <code>iteration</code> argument of <code>tar_target()</code> controls the splitting and aggregation protocol on a target-by-target basis, and you can set the default for all targets with the analogous argument of <code>tar_option_set()</code>.</p>
 <div id="vector-iteration" class="section level3" number="7.8.1">
 <h3><span class="header-section-number">7.8.1</span> Vector iteration</h3>
 <p><code>targets</code> uses vector iteration by default, and you can opt into this behavior by setting <code>iteration = "vector"</code> in <code>tar_target()</code>. In vector iteration, <code>targets</code> uses the <a href="https://vctrs.r-lib.org/"><code>vctrs</code></a> package to split stems and aggregate branches. That means <code>vctrs::vec_slice()</code> slices up stems like <code>x</code> for mapping, and <code>vctrs::vec_c()</code> aggregates patterns like <code>y</code> for operations like <code>tar_read()</code>.</p>
@@ -590,8 +590,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div class="footnotes">
 <hr />
-<ol start="4">
-<li id="fn4"><p>Slicing is always the same when we branch over an existing pattern. If we have <code>tar_target(y, x, pattern = map(x))</code> and <code>x</code> is another pattern, then each branch of <code>y</code> always gets a branch of <code>x</code> regardless of the iteration method. Likewise, the aggregation of stems does not depend on the iteration method because every stem is already aggregated.<a href="dynamic.html#fnref4" class="footnote-back">↩︎</a></p></li>
+<ol start="5">
+<li id="fn5"><p>Slicing is always the same when we branch over an existing pattern. If we have <code>tar_target(y, x, pattern = map(x))</code> and <code>x</code> is another pattern, then each branch of <code>y</code> always gets a branch of <code>x</code> regardless of the iteration method. Likewise, the aggregation of stems does not depend on the iteration method because every stem is already aggregated.<a href="dynamic.html#fnref5" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 <div style = "background: #1C356D; color: white; padding: 10px 10px 10px 25px; font-size: 1em; width: 100%;">
