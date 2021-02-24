@@ -22,7 +22,7 @@ tar_meta(fields = warnings, complete_only = TRUE)
 
 ## Environment browser
 
-By default, `tar_make()` runs in a reproducible background process, so [`debug()`](https://rstats.wtf/debugging-r-code.html) and [`browser()`](https://rstats.wtf/debugging-r-code.html) do not interrupt the pipeline. To use the environment browser your the main session, restart R and supply `callr_function = NULL` to `tar_make()`. `callr_function = NULL` risks invalidating your hard-earned results. Only use it after you have just restarted R, and only use it for debugging purposes.
+By default, `tar_make()` runs in a reproducible background process, so [`debug()`](https://rstats.wtf/debugging-r-code.html) and [`browser()`](https://rstats.wtf/debugging-r-code.html) do not interrupt the pipeline. To use the environment browser your the main session, restart R and supply `callr_function = NULL` to `tar_make()`. `callr_function = NULL` risks invalidating your hard-earned results, so only use it after you have just restarted R and only use it for debugging.
 
 ```{r, eval = FALSE}
 # Restart R first...
