@@ -9,11 +9,99 @@ library(targets)
 
 # Debugging {#debugging}
 
-If one of your targets fails, first look at the error message, which you can find in the R console or the output of `tar_meta()`. To investigate further, you could insert a `browser()` statement into one of your custom functions that you suspect is problematic and then run `tar_make()` with `callr_function = NULL`. That should open an [interactive debugger](https://rstats.wtf/debugging-r-code.html) to help you find where the error is coming from. If neither technique suits you, consider the built-in debugging features described below.
+Under the default settings, conventional debugging tools such as `traceback()`, [`debug()`](https://rstats.wtf/debugging-r-code.html), [`browser()`](https://rstats.wtf/debugging-r-code.html) and [other popular debugging techniques](https://rstats.wtf/debugging-r-code.html) may not provide useful information on why a given target is failing. This chapter demonstrates special debugging techniques to help troubleshoot errors.
+
+## Error messages
+
+The metadata in `_targets/meta/meta` contains error messages and warning messages from when each target last ran. `tar_meta()` can retrieve these clues.
+
+```{r, eval = FALSE}
+tar_meta(fields = error, complete_only = TRUE)
+tar_meta(fields = warnings, complete_only = TRUE)
+```
+
+## Environment browser
+
+By default, `tar_make()` runs in a reproducible background process, so [`debug()`](https://rstats.wtf/debugging-r-code.html) and [`browser()`](https://rstats.wtf/debugging-r-code.html) do not interrupt the pipeline. To use the environment browser your the main session, restart R and supply `callr_function = NULL` to `tar_make()`. `callr_function = NULL` risks invalidating your hard-earned results. Only use it after you have just restarted R, and only use it for debugging purposes.
+
+```{r, eval = FALSE}
+# Restart R first...
+debug(custom_function_called_from_a_target)
+tar_make(names = target_to_debug, callr_function = NULL)
+#> debugging in: custom_function_called_from_a_target()
+#> Browse[1]>
+```
+
+## The debug option
+
+`targets` has a more convenient way to launch the environment browser from inside a target:
+
+1. In `_targets.R`, write a call to `tar_option_set()` with `debug` equal to the target name. Consider also setting `cue` equal to `tar_cue(mode = "never")` so `tar_make()` reaches the target you want to debug more quickly.
+1. Launch a fresh clean new interactive R session with the `_targets.R` script in your working directory.
+1. Run `targets::tar_make()` (or `targets::tar_make_clustermq()`, or `targets::tar_make_future()`) with `callr_function = NULL`.
+1. When `targets` reaches the target you selected to debug, your R session will start an interactive debugger, and you should see `Browse[1]>` in your console. Run `targets::tar_name()` to verify that you are debugging the correct target.
+1. Interactively run any R code that helps you troubleshoot the problem. For example, if the target invokes a function `f()`, enter `debug(f)` and then `c` to immediately enter the function's calling environment where all its arguments are defined.
+
+To try it out yourself, write the following `_targets.R` file.
+
+```{r, eval = FALSE}
+# _targets.R
+library(targets)
+tar_option_set(debug = "b")
+f <- function(x, another_arg = 123) x + another_arg
+list(
+  tar_target(a, 1),
+  tar_target(b, f(a))
+)
+```
+
+Then, call `tar_make(callr_function = NULL)` to drop into a debugger at the command of `b`. 
+
+```{r, eval = FALSE}
+# R console
+tar_make(callr_function = NULL)
+#> ● run target a
+#> ● run target b
+#> Called from: eval(expr, envir)
+Browse[1]>
+```
+
+When the debugger launches, run `targets::tar_name()` to confirm you are running the correct target.
+
+```{r, eval = FALSE}
+Browse[1]> targets::tar_name()
+#> [1] "b"
+```
+
+In the debugger, the dependency targets of `b` are available in the current environment, and the global objects and functions are available in the parent environment.
+
+```{r, eval = FALSE}
+Browse[1]> ls()
+#> [1] "a"
+Browse[1]> a
+#> [1] 1
+Browse[1]> ls(parent.env(environment()))
+#> [1] "f"
+Browse[1]> f(1)
+#> [1] 124
+```
+
+Enter `debug(f)` to debug the function `f()`, and press `c` to enter the function's calling environment where `another_arg` is defined.
+
+```{r, eval = FALSE}
+Browse[1]> debug(f)
+Browse[1]> c
+#> debugging in: f(a)
+#> debug at _targets.R#3: x + another_arg
+Browse[2]> ls()
+#> [1] "another_arg" "x"   
+Browse[2]> another_arg
+#> [1] 123
+```
 
 ## Workspaces
 
-Workspaces are special lightweight reference files that allow `tar_workspace()` to recreate the runtime environment of a target. This lets you troubleshoot issues outside the pipeline in an interactive session. There are two ways to save a workspace file:
+Workspaces are a persistent alternative to the environment browser. A workspace is a special lightweight reference file that lists the elements of a target's runtime environment. Using `tar_workspace()`, you can recover a target's workspace and locally debug it even if the pipeline is not running. If you tell `targets` to record workspaces in advance, you can preempt errors and debug later at your convenience. Here is how:
 
 1. Set `error = "workspace"` in `tar_option_set()` or `tar_target()`. Then, `tar_make()` and friends will save a workspace file for every target that errors out.
 1. In the `workspaces` argument of `tar_option_set()`, specify the targets for which you want to save workspaces. Then, run `tar_make()` or similar. A workspace file will be saved for each existing target, regardless of whether the target runs or gets skipped in the pipeline.
@@ -91,73 +179,6 @@ value
 #> Error: object 'value' not found
 ```
 
-## Interactive debugging
+## Tradeoffs
 
-Interactive debugging offers a [`browser()`](https://adv-r.hadley.nz/debugging.html#browser)-like debugging experience. Unlike workspaces, which most users access after the pipline finishes, interactive debugging lets you step through a target's command while the target is running. This approach is not feasible if the pipeline is running in a non-interactive process or requires resources that are only available on a remote compute node of a cluster. However, when possible, it may be more convenient than workspaces. In our example above, `tar_workspace()` automatically loaded a branch of the dependency `x`, but the user still needed to manually supply the rest of the arguments of `f()`. During interactive debugging, you will instead be able to call `debug(f)` and then press `c` to immediately drop into the function environment where the remaining variables are already defined.
-
-Follow these steps to use interactive debugging.
-
-1. In `_targets.R`, write a call to `tar_option_set()` with `debug` equal to the target name. Consider also setting `cue` equal to `tar_cue(mode = "never")` so `tar_make()` reaches the target you want to debug more quickly.
-1. Launch a fresh clean new interactive R session with the `_targets.R` script in your working directory.
-1. Run `targets::tar_make()` (or `targets::tar_make_clustermq()`, or `targets::tar_make_future()`) with `callr_function = NULL`.
-1. When `targets` reaches the target you selected to debug, your R session will start an interactive debugger, and you should see `Browse[1]>` in your console. Run `targets::tar_name()` to verify that you are debugging the correct target.
-1. Interactively run any R code that helps you troubleshoot the problem. For example, if the target invokes a function `f()`, enter `debug(f)` and then `c` to immediately enter the function's calling environment where all its arguments are defined.
-
-To try it out yourself, write the following `_targets.R` file.
-
-```{r, eval = FALSE}
-# _targets.R
-library(targets)
-tar_option_set(debug = "b")
-f <- function(x, another_arg = 123) x + another_arg
-list(
-  tar_target(a, 1),
-  tar_target(b, f(a))
-)
-```
-
-Then, call `tar_make(callr_function = NULL)` to drop into a debugger at the command of `b`. 
-
-```{r, eval = FALSE}
-# R console
-tar_make(callr_function = NULL)
-#> ● run target a
-#> ● run target b
-#> Called from: eval(expr, envir)
-Browse[1]>
-```
-
-When the debugger launches, run `targets::tar_name()` to confirm you are running the correct target.
-
-```{r, eval = FALSE}
-Browse[1]> targets::tar_name()
-#> [1] "b"
-```
-
-In the debugger, the dependency targets of `b` are available in the current environment, and the global objects and functions are available in the parent environment.
-
-```{r, eval = FALSE}
-Browse[1]> ls()
-#> [1] "a"
-Browse[1]> a
-#> [1] 1
-Browse[1]> ls(parent.env(environment()))
-#> [1] "f"
-Browse[1]> f(1)
-#> [1] 124
-```
-
-Enter `debug(f)` to debug the function `f()`, and press `c` to enter the function's calling environment where `another_arg` is defined.
-
-```{r, eval = FALSE}
-Browse[1]> debug(f)
-Browse[1]> c
-#> debugging in: f(a)
-#> debug at _targets.R#3: x + another_arg
-Browse[2]> ls()
-#> [1] "another_arg" "x"   
-Browse[2]> another_arg
-#> [1] 123
-```
-
-Visit [this page](https://rstats.wtf/debugging-r-code.html) for more information on debugging R code.
+For small to medium-sized workloads, the environment browser and the debug option are usually the best choices. These techniques immediately direct control to prewritten function calls and get you as close to the error as possible. However, this may not always be feasible in [large distributed workloads](#hpc), e.g. `tar_make_clustermq()`, where most of your targets are not even running on the same computer as your main R process. For those complicated situations where it is not possible to access the R interpreter, workspaces are ideal because they store a persistent reproducible runtime state that you can recover locally.
