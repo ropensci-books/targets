@@ -214,13 +214,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7.5" data-path="dynamic.html"><a href="dynamic.html#branch-provenance"><i class="fa fa-check"></i><b>7.5</b> Branch provenance</a></li>
 <li class="chapter" data-level="7.6" data-path="dynamic.html"><a href="dynamic.html#testing-patterns"><i class="fa fa-check"></i><b>7.6</b> Testing patterns</a></li>
 <li class="chapter" data-level="7.7" data-path="dynamic.html"><a href="dynamic.html#dynamic-branching-over-files"><i class="fa fa-check"></i><b>7.7</b> Dynamic branching over files</a></li>
-<li class="chapter" data-level="7.8" data-path="dynamic.html"><a href="dynamic.html#iteration"><i class="fa fa-check"></i><b>7.8</b> Iteration</a>
+<li class="chapter" data-level="7.8" data-path="dynamic.html"><a href="dynamic.html#dynamic-branching-over-rows"><i class="fa fa-check"></i><b>7.8</b> Dynamic branching over rows</a></li>
+<li class="chapter" data-level="7.9" data-path="dynamic.html"><a href="dynamic.html#grouped-data-frames"><i class="fa fa-check"></i><b>7.9</b> Grouped data frames</a></li>
+<li class="chapter" data-level="7.10" data-path="dynamic.html"><a href="dynamic.html#iteration"><i class="fa fa-check"></i><b>7.10</b> Iteration</a>
 <ul>
-<li class="chapter" data-level="7.8.1" data-path="dynamic.html"><a href="dynamic.html#vector-iteration"><i class="fa fa-check"></i><b>7.8.1</b> Vector iteration</a></li>
-<li class="chapter" data-level="7.8.2" data-path="dynamic.html"><a href="dynamic.html#list-iteration"><i class="fa fa-check"></i><b>7.8.2</b> List iteration</a></li>
-<li class="chapter" data-level="7.8.3" data-path="dynamic.html"><a href="dynamic.html#group-iteration"><i class="fa fa-check"></i><b>7.8.3</b> Group iteration</a></li>
+<li class="chapter" data-level="7.10.1" data-path="dynamic.html"><a href="dynamic.html#vector-iteration"><i class="fa fa-check"></i><b>7.10.1</b> Vector iteration</a></li>
+<li class="chapter" data-level="7.10.2" data-path="dynamic.html"><a href="dynamic.html#list-iteration"><i class="fa fa-check"></i><b>7.10.2</b> List iteration</a></li>
+<li class="chapter" data-level="7.10.3" data-path="dynamic.html"><a href="dynamic.html#group-iteration"><i class="fa fa-check"></i><b>7.10.3</b> Group iteration</a></li>
 </ul></li>
-<li class="chapter" data-level="7.9" data-path="dynamic.html"><a href="dynamic.html#batching"><i class="fa fa-check"></i><b>7.9</b> Batching</a></li>
+<li class="chapter" data-level="7.11" data-path="dynamic.html"><a href="dynamic.html#batching"><i class="fa fa-check"></i><b>7.11</b> Batching</a></li>
 </ul></li>
 <li class="chapter" data-level="8" data-path="static.html"><a href="static.html"><i class="fa fa-check"></i><b>8</b> Static branching</a>
 <ul>
@@ -430,164 +432,218 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb91-6"><a href="dynamic.html#cb91-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data, <span class="fu">read_csv</span>(files), <span class="at">pattern =</span> <span class="fu">map</span>(files))</span>
 <span id="cb91-7"><a href="dynamic.html#cb91-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 </div>
-<div id="iteration" class="section level2" number="7.8">
-<h2><span class="header-section-number">7.8</span> Iteration</h2>
+<div id="dynamic-branching-over-rows" class="section level2" number="7.8">
+<h2><span class="header-section-number">7.8</span> Dynamic branching over rows</h2>
+</div>
+<div id="grouped-data-frames" class="section level2" number="7.9">
+<h2><span class="header-section-number">7.9</span> Grouped data frames</h2>
+<p><code>tarchetypes</code> &gt;= 0.1.0 has helpers for easy branching over subsets of data frames:</p>
+<ul>
+<li><code>tar_group_by()</code>: define row groups using <code>dplyr::group_by()</code> semantics.</li>
+<li><code>tar_group_select()</code>: define row groups using <code>tidyselect</code> semantics.</li>
+<li><code>tar_group_count()</code>: define a given number row groups.</li>
+<li><code>tar_group_size()</code>: define row groups of a given size.</li>
+</ul>
+<p>If you define a target with one of these functions, all downstream dynamic targets will automatically branch over the row groups.</p>
+<div class="sourceCode" id="cb92"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb92-1"><a href="dynamic.html#cb92-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R file:</span></span>
+<span id="cb92-2"><a href="dynamic.html#cb92-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb92-3"><a href="dynamic.html#cb92-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
+<span id="cb92-4"><a href="dynamic.html#cb92-4" aria-hidden="true" tabindex="-1"></a>produce_data <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb92-5"><a href="dynamic.html#cb92-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expand.grid</span>(<span class="at">var1 =</span> <span class="fu">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>), <span class="at">var2 =</span> <span class="fu">c</span>(<span class="st">&quot;c&quot;</span>, <span class="st">&quot;d&quot;</span>), <span class="at">rep =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>))</span>
+<span id="cb92-6"><a href="dynamic.html#cb92-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb92-7"><a href="dynamic.html#cb92-7" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb92-8"><a href="dynamic.html#cb92-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_group_by</span>(data, <span class="fu">produce_data</span>(), var1, var2),</span>
+<span id="cb92-9"><a href="dynamic.html#cb92-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(group, data, <span class="at">pattern =</span> <span class="fu">map</span>(data))</span>
+<span id="cb92-10"><a href="dynamic.html#cb92-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb93"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb93-1"><a href="dynamic.html#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console:</span></span>
+<span id="cb93-2"><a href="dynamic.html#cb93-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb93-3"><a href="dynamic.html#cb93-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
+<span id="cb93-4"><a href="dynamic.html#cb93-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target data</span></span>
+<span id="cb93-5"><a href="dynamic.html#cb93-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run branch group_e9b1e0d0</span></span>
+<span id="cb93-6"><a href="dynamic.html#cb93-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run branch group_8e74a2e8</span></span>
+<span id="cb93-7"><a href="dynamic.html#cb93-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run branch group_9ea8aadc</span></span>
+<span id="cb93-8"><a href="dynamic.html#cb93-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run branch group_5126e4df</span></span>
+<span id="cb93-9"><a href="dynamic.html#cb93-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● end pipeline</span></span>
+<span id="cb93-10"><a href="dynamic.html#cb93-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb93-11"><a href="dynamic.html#cb93-11" aria-hidden="true" tabindex="-1"></a><span class="co"># First row group:</span></span>
+<span id="cb93-12"><a href="dynamic.html#cb93-12" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(group, <span class="at">branches =</span> <span class="dv">1</span>)</span>
+<span id="cb93-13"><a href="dynamic.html#cb93-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 x 4</span></span>
+<span id="cb93-14"><a href="dynamic.html#cb93-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # Groups:   var1, var2 [1]</span></span>
+<span id="cb93-15"><a href="dynamic.html#cb93-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   var1  var2    rep tar_group</span></span>
+<span id="cb93-16"><a href="dynamic.html#cb93-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;fct&gt; &lt;fct&gt; &lt;dbl&gt;     &lt;int&gt;</span></span>
+<span id="cb93-17"><a href="dynamic.html#cb93-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 a     c         1         1</span></span>
+<span id="cb93-18"><a href="dynamic.html#cb93-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 a     c         2         1</span></span>
+<span id="cb93-19"><a href="dynamic.html#cb93-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 a     c         3         1</span></span>
+<span id="cb93-20"><a href="dynamic.html#cb93-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb93-21"><a href="dynamic.html#cb93-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Second row group:</span></span>
+<span id="cb93-22"><a href="dynamic.html#cb93-22" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(group, <span class="at">branches =</span> <span class="dv">2</span>)</span>
+<span id="cb93-23"><a href="dynamic.html#cb93-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 x 4</span></span>
+<span id="cb93-24"><a href="dynamic.html#cb93-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # Groups:   var1, var2 [1]</span></span>
+<span id="cb93-25"><a href="dynamic.html#cb93-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   var1  var2    rep tar_group</span></span>
+<span id="cb93-26"><a href="dynamic.html#cb93-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;fct&gt; &lt;fct&gt; &lt;dbl&gt;     &lt;int&gt;</span></span>
+<span id="cb93-27"><a href="dynamic.html#cb93-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 a     d         1         2</span></span>
+<span id="cb93-28"><a href="dynamic.html#cb93-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 a     d         2         2</span></span>
+<span id="cb93-29"><a href="dynamic.html#cb93-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 a     d         3         2</span></span></code></pre></div>
+<p>For more information on how the row grouping mechanism works, see the section on “group” iteration below.</p>
+</div>
+<div id="iteration" class="section level2" number="7.10">
+<h2><span class="header-section-number">7.10</span> Iteration</h2>
 <p>There are many ways to slice up a stem for branching, and there are many ways to aggregate the branches of a pattern.<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a> The <code>iteration</code> argument of <code>tar_target()</code> controls the splitting and aggregation protocol on a target-by-target basis, and you can set the default for all targets with the analogous argument of <code>tar_option_set()</code>.</p>
-<div id="vector-iteration" class="section level3" number="7.8.1">
-<h3><span class="header-section-number">7.8.1</span> Vector iteration</h3>
+<div id="vector-iteration" class="section level3" number="7.10.1">
+<h3><span class="header-section-number">7.10.1</span> Vector iteration</h3>
 <p><code>targets</code> uses vector iteration by default, and you can opt into this behavior by setting <code>iteration = "vector"</code> in <code>tar_target()</code>. In vector iteration, <code>targets</code> uses the <a href="https://vctrs.r-lib.org/"><code>vctrs</code></a> package to split stems and aggregate branches. That means <code>vctrs::vec_slice()</code> slices up stems like <code>x</code> for mapping, and <code>vctrs::vec_c()</code> aggregates patterns like <code>y</code> for operations like <code>tar_read()</code>.</p>
 <p>For atomic vectors like in the example above, this behavior is already intuitive. But if we map over a data frame, each branch will get a row of the data frame due to vector iteration.</p>
-<div class="sourceCode" id="cb92"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb92-1"><a href="dynamic.html#cb92-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb92-2"><a href="dynamic.html#cb92-2" aria-hidden="true" tabindex="-1"></a>print_and_return <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
-<span id="cb92-3"><a href="dynamic.html#cb92-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(x)</span>
-<span id="cb92-4"><a href="dynamic.html#cb92-4" aria-hidden="true" tabindex="-1"></a>  x</span>
-<span id="cb92-5"><a href="dynamic.html#cb92-5" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb92-6"><a href="dynamic.html#cb92-6" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb92-7"><a href="dynamic.html#cb92-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(x, <span class="fu">data.frame</span>(<span class="at">a =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="at">b =</span> <span class="fu">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>))),</span>
-<span id="cb92-8"><a href="dynamic.html#cb92-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(y, <span class="fu">print_and_return</span>(x), <span class="at">pattern =</span> <span class="fu">map</span>(x))</span>
-<span id="cb92-9"><a href="dynamic.html#cb92-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<div class="sourceCode" id="cb93"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb93-1"><a href="dynamic.html#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb94"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb94-1"><a href="dynamic.html#cb94-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb94-2"><a href="dynamic.html#cb94-2" aria-hidden="true" tabindex="-1"></a>print_and_return <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb94-3"><a href="dynamic.html#cb94-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(x)</span>
+<span id="cb94-4"><a href="dynamic.html#cb94-4" aria-hidden="true" tabindex="-1"></a>  x</span>
+<span id="cb94-5"><a href="dynamic.html#cb94-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb94-6"><a href="dynamic.html#cb94-6" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb94-7"><a href="dynamic.html#cb94-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(x, <span class="fu">data.frame</span>(<span class="at">a =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="at">b =</span> <span class="fu">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>))),</span>
+<span id="cb94-8"><a href="dynamic.html#cb94-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(y, <span class="fu">print_and_return</span>(x), <span class="at">pattern =</span> <span class="fu">map</span>(x))</span>
+<span id="cb94-9"><a href="dynamic.html#cb94-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb95"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb95-1"><a href="dynamic.html#cb95-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span></code></pre></div>
 <p>And since <code>y</code> also has iteration = <code>"vector"</code>, the aggregate of <code>y</code> is a single data frame of all the rows.</p>
-<div class="sourceCode" id="cb94"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb94-1"><a href="dynamic.html#cb94-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(y)</span></code></pre></div>
+<div class="sourceCode" id="cb96"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb96-1"><a href="dynamic.html#cb96-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(y)</span></code></pre></div>
 </div>
-<div id="list-iteration" class="section level3" number="7.8.2">
-<h3><span class="header-section-number">7.8.2</span> List iteration</h3>
+<div id="list-iteration" class="section level3" number="7.10.2">
+<h3><span class="header-section-number">7.10.2</span> List iteration</h3>
 <p>List iteration splits and aggregates targets as simple lists. If target <code>x</code> has <code>"list"</code> iteration, all branches of downstream patterns will get <code>x[[1]]</code>, <code>x[[2]]</code>, and so on. (<code>vctrs::vec_slice()</code> behaves more like <code>[]</code> than <code>[[]]</code>.)</p>
-<div class="sourceCode" id="cb95"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb95-1"><a href="dynamic.html#cb95-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
-<span id="cb95-2"><a href="dynamic.html#cb95-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb95-3"><a href="dynamic.html#cb95-3" aria-hidden="true" tabindex="-1"></a>print_and_return <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
-<span id="cb95-4"><a href="dynamic.html#cb95-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(x)</span>
-<span id="cb95-5"><a href="dynamic.html#cb95-5" aria-hidden="true" tabindex="-1"></a>  x</span>
-<span id="cb95-6"><a href="dynamic.html#cb95-6" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb95-7"><a href="dynamic.html#cb95-7" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb95-8"><a href="dynamic.html#cb95-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
-<span id="cb95-9"><a href="dynamic.html#cb95-9" aria-hidden="true" tabindex="-1"></a>    x,</span>
-<span id="cb95-10"><a href="dynamic.html#cb95-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.frame</span>(<span class="at">a =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="at">b =</span> <span class="fu">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>)),</span>
-<span id="cb95-11"><a href="dynamic.html#cb95-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">iteration =</span> <span class="st">&quot;list&quot;</span></span>
-<span id="cb95-12"><a href="dynamic.html#cb95-12" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb95-13"><a href="dynamic.html#cb95-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(y, <span class="fu">print_and_return</span>(x), <span class="at">pattern =</span> <span class="fu">map</span>(x)),</span>
-<span id="cb95-14"><a href="dynamic.html#cb95-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(z, x, <span class="at">pattern =</span> <span class="fu">map</span>(x), <span class="at">iteration =</span> <span class="st">&quot;list&quot;</span>)</span>
-<span id="cb95-15"><a href="dynamic.html#cb95-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<div class="sourceCode" id="cb96"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb96-1"><a href="dynamic.html#cb96-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb97-1"><a href="dynamic.html#cb97-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb97-2"><a href="dynamic.html#cb97-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb97-3"><a href="dynamic.html#cb97-3" aria-hidden="true" tabindex="-1"></a>print_and_return <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb97-4"><a href="dynamic.html#cb97-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(x)</span>
+<span id="cb97-5"><a href="dynamic.html#cb97-5" aria-hidden="true" tabindex="-1"></a>  x</span>
+<span id="cb97-6"><a href="dynamic.html#cb97-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb97-7"><a href="dynamic.html#cb97-7" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb97-8"><a href="dynamic.html#cb97-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb97-9"><a href="dynamic.html#cb97-9" aria-hidden="true" tabindex="-1"></a>    x,</span>
+<span id="cb97-10"><a href="dynamic.html#cb97-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.frame</span>(<span class="at">a =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="at">b =</span> <span class="fu">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>)),</span>
+<span id="cb97-11"><a href="dynamic.html#cb97-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">iteration =</span> <span class="st">&quot;list&quot;</span></span>
+<span id="cb97-12"><a href="dynamic.html#cb97-12" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb97-13"><a href="dynamic.html#cb97-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(y, <span class="fu">print_and_return</span>(x), <span class="at">pattern =</span> <span class="fu">map</span>(x)),</span>
+<span id="cb97-14"><a href="dynamic.html#cb97-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(z, x, <span class="at">pattern =</span> <span class="fu">map</span>(x), <span class="at">iteration =</span> <span class="st">&quot;list&quot;</span>)</span>
+<span id="cb97-15"><a href="dynamic.html#cb97-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb98"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb98-1"><a href="dynamic.html#cb98-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span></code></pre></div>
 <p>Aggregation also happens differently. In this case, the vector iteration in <code>y</code> is not ideal, and the list iteration in <code>z</code> gives us more sensible output.</p>
-<div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb97-1"><a href="dynamic.html#cb97-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(y)</span></code></pre></div>
-<div class="sourceCode" id="cb98"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb98-1"><a href="dynamic.html#cb98-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(z)</span></code></pre></div>
+<div class="sourceCode" id="cb99"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb99-1"><a href="dynamic.html#cb99-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(y)</span></code></pre></div>
+<div class="sourceCode" id="cb100"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb100-1"><a href="dynamic.html#cb100-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(z)</span></code></pre></div>
 </div>
-<div id="group-iteration" class="section level3" number="7.8.3">
-<h3><span class="header-section-number">7.8.3</span> Group iteration</h3>
+<div id="group-iteration" class="section level3" number="7.10.3">
+<h3><span class="header-section-number">7.10.3</span> Group iteration</h3>
 <p>Group iteration brings <code>dplyr::group_by()</code> functionality to patterns. This way, we can map or cross over custom subsets of rows. Consider the following data frame.</p>
-<div class="sourceCode" id="cb99"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb99-1"><a href="dynamic.html#cb99-1" aria-hidden="true" tabindex="-1"></a>object <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb99-2"><a href="dynamic.html#cb99-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">seq_len</span>(<span class="dv">6</span>),</span>
-<span id="cb99-3"><a href="dynamic.html#cb99-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> <span class="fu">rep</span>(letters[<span class="fu">seq_len</span>(<span class="dv">3</span>)], <span class="at">each =</span> <span class="dv">2</span>)</span>
-<span id="cb99-4"><a href="dynamic.html#cb99-4" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb99-5"><a href="dynamic.html#cb99-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb99-6"><a href="dynamic.html#cb99-6" aria-hidden="true" tabindex="-1"></a>object</span></code></pre></div>
+<div class="sourceCode" id="cb101"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb101-1"><a href="dynamic.html#cb101-1" aria-hidden="true" tabindex="-1"></a>object <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb101-2"><a href="dynamic.html#cb101-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">seq_len</span>(<span class="dv">6</span>),</span>
+<span id="cb101-3"><a href="dynamic.html#cb101-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> <span class="fu">rep</span>(letters[<span class="fu">seq_len</span>(<span class="dv">3</span>)], <span class="at">each =</span> <span class="dv">2</span>)</span>
+<span id="cb101-4"><a href="dynamic.html#cb101-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb101-5"><a href="dynamic.html#cb101-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb101-6"><a href="dynamic.html#cb101-6" aria-hidden="true" tabindex="-1"></a>object</span></code></pre></div>
 <p>To map over the groups of rows defined by the <code>id</code> column, we</p>
 <ol style="list-style-type: decimal">
 <li>Use <code>group_by()</code> and <code>tar_group()</code> to define the groups of rows, and</li>
 <li>Use <code>iteration = "group"</code> in <code>tar_target()</code> to tell downstream patterns to use the row groups.</li>
 </ol>
 <p>Put together, the pipeline looks like this.</p>
-<div class="sourceCode" id="cb100"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb100-1"><a href="dynamic.html#cb100-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
-<span id="cb100-2"><a href="dynamic.html#cb100-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb100-3"><a href="dynamic.html#cb100-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">packages =</span> <span class="st">&quot;tidyverse&quot;</span>)</span>
-<span id="cb100-4"><a href="dynamic.html#cb100-4" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb100-5"><a href="dynamic.html#cb100-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
-<span id="cb100-6"><a href="dynamic.html#cb100-6" aria-hidden="true" tabindex="-1"></a>    data,</span>
-<span id="cb100-7"><a href="dynamic.html#cb100-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.frame</span>(</span>
-<span id="cb100-8"><a href="dynamic.html#cb100-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="fu">seq_len</span>(<span class="dv">6</span>),</span>
-<span id="cb100-9"><a href="dynamic.html#cb100-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">id =</span> <span class="fu">rep</span>(letters[<span class="fu">seq_len</span>(<span class="dv">3</span>)], <span class="at">each =</span> <span class="dv">2</span>)</span>
-<span id="cb100-10"><a href="dynamic.html#cb100-10" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
-<span id="cb100-11"><a href="dynamic.html#cb100-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">group_by</span>(id) <span class="sc">%&gt;%</span></span>
-<span id="cb100-12"><a href="dynamic.html#cb100-12" aria-hidden="true" tabindex="-1"></a>      <span class="fu">tar_group</span>(),</span>
-<span id="cb100-13"><a href="dynamic.html#cb100-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">iteration =</span> <span class="st">&quot;group&quot;</span></span>
-<span id="cb100-14"><a href="dynamic.html#cb100-14" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb100-15"><a href="dynamic.html#cb100-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
-<span id="cb100-16"><a href="dynamic.html#cb100-16" aria-hidden="true" tabindex="-1"></a>    subsets,</span>
-<span id="cb100-17"><a href="dynamic.html#cb100-17" aria-hidden="true" tabindex="-1"></a>    data,</span>
-<span id="cb100-18"><a href="dynamic.html#cb100-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">pattern =</span> <span class="fu">map</span>(data),</span>
-<span id="cb100-19"><a href="dynamic.html#cb100-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">iteration =</span> <span class="st">&quot;list&quot;</span></span>
-<span id="cb100-20"><a href="dynamic.html#cb100-20" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb100-21"><a href="dynamic.html#cb100-21" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<div class="sourceCode" id="cb101"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb101-1"><a href="dynamic.html#cb101-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span></code></pre></div>
-<div class="sourceCode" id="cb102"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb102-1"><a href="dynamic.html#cb102-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(<span class="fu">tar_read</span>(subsets), as.data.frame)</span></code></pre></div>
+<div class="sourceCode" id="cb102"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb102-1"><a href="dynamic.html#cb102-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb102-2"><a href="dynamic.html#cb102-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb102-3"><a href="dynamic.html#cb102-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">packages =</span> <span class="st">&quot;tidyverse&quot;</span>)</span>
+<span id="cb102-4"><a href="dynamic.html#cb102-4" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb102-5"><a href="dynamic.html#cb102-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb102-6"><a href="dynamic.html#cb102-6" aria-hidden="true" tabindex="-1"></a>    data,</span>
+<span id="cb102-7"><a href="dynamic.html#cb102-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.frame</span>(</span>
+<span id="cb102-8"><a href="dynamic.html#cb102-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="fu">seq_len</span>(<span class="dv">6</span>),</span>
+<span id="cb102-9"><a href="dynamic.html#cb102-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">id =</span> <span class="fu">rep</span>(letters[<span class="fu">seq_len</span>(<span class="dv">3</span>)], <span class="at">each =</span> <span class="dv">2</span>)</span>
+<span id="cb102-10"><a href="dynamic.html#cb102-10" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb102-11"><a href="dynamic.html#cb102-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">group_by</span>(id) <span class="sc">%&gt;%</span></span>
+<span id="cb102-12"><a href="dynamic.html#cb102-12" aria-hidden="true" tabindex="-1"></a>      <span class="fu">tar_group</span>(),</span>
+<span id="cb102-13"><a href="dynamic.html#cb102-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">iteration =</span> <span class="st">&quot;group&quot;</span></span>
+<span id="cb102-14"><a href="dynamic.html#cb102-14" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb102-15"><a href="dynamic.html#cb102-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb102-16"><a href="dynamic.html#cb102-16" aria-hidden="true" tabindex="-1"></a>    subsets,</span>
+<span id="cb102-17"><a href="dynamic.html#cb102-17" aria-hidden="true" tabindex="-1"></a>    data,</span>
+<span id="cb102-18"><a href="dynamic.html#cb102-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">pattern =</span> <span class="fu">map</span>(data),</span>
+<span id="cb102-19"><a href="dynamic.html#cb102-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">iteration =</span> <span class="st">&quot;list&quot;</span></span>
+<span id="cb102-20"><a href="dynamic.html#cb102-20" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb102-21"><a href="dynamic.html#cb102-21" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb103"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb103-1"><a href="dynamic.html#cb103-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb104-1"><a href="dynamic.html#cb104-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(<span class="fu">tar_read</span>(subsets), as.data.frame)</span></code></pre></div>
 <p>Row groups are defined in the special <code>tar_group</code> column created by <code>tar_group()</code>.</p>
-<div class="sourceCode" id="cb103"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb103-1"><a href="dynamic.html#cb103-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
-<span id="cb103-2"><a href="dynamic.html#cb103-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">seq_len</span>(<span class="dv">6</span>),</span>
-<span id="cb103-3"><a href="dynamic.html#cb103-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> <span class="fu">rep</span>(letters[<span class="fu">seq_len</span>(<span class="dv">3</span>)], <span class="at">each =</span> <span class="dv">2</span>)</span>
-<span id="cb103-4"><a href="dynamic.html#cb103-4" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb103-5"><a href="dynamic.html#cb103-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(id) <span class="sc">%&gt;%</span></span>
-<span id="cb103-6"><a href="dynamic.html#cb103-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_group</span>()</span></code></pre></div>
-<p><code>tar_group()</code> creates this column based on the orderings of the grouping variables supplied to <code>dplyr::group_by()</code>, not the order of the rows in the data.</p>
-<div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb104-1"><a href="dynamic.html#cb104-1" aria-hidden="true" tabindex="-1"></a>flip_order <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
-<span id="cb104-2"><a href="dynamic.html#cb104-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ordered</span>(x, <span class="at">levels =</span> <span class="fu">sort</span>(<span class="fu">unique</span>(x), <span class="at">decreasing =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb104-3"><a href="dynamic.html#cb104-3" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb104-4"><a href="dynamic.html#cb104-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb104-5"><a href="dynamic.html#cb104-5" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
-<span id="cb104-6"><a href="dynamic.html#cb104-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">seq_len</span>(<span class="dv">6</span>),</span>
-<span id="cb104-7"><a href="dynamic.html#cb104-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> <span class="fu">flip_order</span>(<span class="fu">rep</span>(letters[<span class="fu">seq_len</span>(<span class="dv">3</span>)], <span class="at">each =</span> <span class="dv">2</span>))</span>
-<span id="cb104-8"><a href="dynamic.html#cb104-8" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb104-9"><a href="dynamic.html#cb104-9" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(id) <span class="sc">%&gt;%</span></span>
-<span id="cb104-10"><a href="dynamic.html#cb104-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_group</span>()</span></code></pre></div>
-<p>The ordering in <code>tar_group</code> agrees with the ordering shown by <code>dplyr::group_keys()</code>.</p>
 <div class="sourceCode" id="cb105"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb105-1"><a href="dynamic.html#cb105-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
 <span id="cb105-2"><a href="dynamic.html#cb105-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">seq_len</span>(<span class="dv">6</span>),</span>
-<span id="cb105-3"><a href="dynamic.html#cb105-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> <span class="fu">flip_order</span>(<span class="fu">rep</span>(letters[<span class="fu">seq_len</span>(<span class="dv">3</span>)], <span class="at">each =</span> <span class="dv">2</span>))</span>
+<span id="cb105-3"><a href="dynamic.html#cb105-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> <span class="fu">rep</span>(letters[<span class="fu">seq_len</span>(<span class="dv">3</span>)], <span class="at">each =</span> <span class="dv">2</span>)</span>
 <span id="cb105-4"><a href="dynamic.html#cb105-4" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
 <span id="cb105-5"><a href="dynamic.html#cb105-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(id) <span class="sc">%&gt;%</span></span>
-<span id="cb105-6"><a href="dynamic.html#cb105-6" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_keys</span>()</span></code></pre></div>
-<p>Branches are arranged in increasing order with respect to the integers in <code>tar_group</code>.</p>
-<div class="sourceCode" id="cb106"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb106-1"><a href="dynamic.html#cb106-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
-<span id="cb106-2"><a href="dynamic.html#cb106-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb106-3"><a href="dynamic.html#cb106-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">packages =</span> <span class="st">&quot;tidyverse&quot;</span>)</span>
+<span id="cb105-6"><a href="dynamic.html#cb105-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_group</span>()</span></code></pre></div>
+<p><code>tar_group()</code> creates this column based on the orderings of the grouping variables supplied to <code>dplyr::group_by()</code>, not the order of the rows in the data.</p>
+<div class="sourceCode" id="cb106"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb106-1"><a href="dynamic.html#cb106-1" aria-hidden="true" tabindex="-1"></a>flip_order <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb106-2"><a href="dynamic.html#cb106-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ordered</span>(x, <span class="at">levels =</span> <span class="fu">sort</span>(<span class="fu">unique</span>(x), <span class="at">decreasing =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb106-3"><a href="dynamic.html#cb106-3" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb106-4"><a href="dynamic.html#cb106-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb106-5"><a href="dynamic.html#cb106-5" aria-hidden="true" tabindex="-1"></a>flip_order <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
-<span id="cb106-6"><a href="dynamic.html#cb106-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ordered</span>(x, <span class="at">levels =</span> <span class="fu">sort</span>(<span class="fu">unique</span>(x), <span class="at">decreasing =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb106-7"><a href="dynamic.html#cb106-7" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb106-8"><a href="dynamic.html#cb106-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb106-9"><a href="dynamic.html#cb106-9" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb106-10"><a href="dynamic.html#cb106-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
-<span id="cb106-11"><a href="dynamic.html#cb106-11" aria-hidden="true" tabindex="-1"></a>    data,</span>
-<span id="cb106-12"><a href="dynamic.html#cb106-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.frame</span>(</span>
-<span id="cb106-13"><a href="dynamic.html#cb106-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="fu">seq_len</span>(<span class="dv">6</span>),</span>
-<span id="cb106-14"><a href="dynamic.html#cb106-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">id =</span> <span class="fu">flip_order</span>(<span class="fu">rep</span>(letters[<span class="fu">seq_len</span>(<span class="dv">3</span>)], <span class="at">each =</span> <span class="dv">2</span>))</span>
-<span id="cb106-15"><a href="dynamic.html#cb106-15" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
-<span id="cb106-16"><a href="dynamic.html#cb106-16" aria-hidden="true" tabindex="-1"></a>      <span class="fu">group_by</span>(id) <span class="sc">%&gt;%</span></span>
-<span id="cb106-17"><a href="dynamic.html#cb106-17" aria-hidden="true" tabindex="-1"></a>      <span class="fu">tar_group</span>(),</span>
-<span id="cb106-18"><a href="dynamic.html#cb106-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">iteration =</span> <span class="st">&quot;group&quot;</span></span>
-<span id="cb106-19"><a href="dynamic.html#cb106-19" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb106-20"><a href="dynamic.html#cb106-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
-<span id="cb106-21"><a href="dynamic.html#cb106-21" aria-hidden="true" tabindex="-1"></a>    subsets,</span>
-<span id="cb106-22"><a href="dynamic.html#cb106-22" aria-hidden="true" tabindex="-1"></a>    data,</span>
-<span id="cb106-23"><a href="dynamic.html#cb106-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">pattern =</span> <span class="fu">map</span>(data),</span>
-<span id="cb106-24"><a href="dynamic.html#cb106-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">iteration =</span> <span class="st">&quot;list&quot;</span></span>
-<span id="cb106-25"><a href="dynamic.html#cb106-25" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb106-26"><a href="dynamic.html#cb106-26" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<div class="sourceCode" id="cb107"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb107-1"><a href="dynamic.html#cb107-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span></code></pre></div>
-<div class="sourceCode" id="cb108"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb108-1"><a href="dynamic.html#cb108-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(<span class="fu">tar_read</span>(subsets), as.data.frame)</span></code></pre></div>
+<span id="cb106-5"><a href="dynamic.html#cb106-5" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
+<span id="cb106-6"><a href="dynamic.html#cb106-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">seq_len</span>(<span class="dv">6</span>),</span>
+<span id="cb106-7"><a href="dynamic.html#cb106-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> <span class="fu">flip_order</span>(<span class="fu">rep</span>(letters[<span class="fu">seq_len</span>(<span class="dv">3</span>)], <span class="at">each =</span> <span class="dv">2</span>))</span>
+<span id="cb106-8"><a href="dynamic.html#cb106-8" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb106-9"><a href="dynamic.html#cb106-9" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(id) <span class="sc">%&gt;%</span></span>
+<span id="cb106-10"><a href="dynamic.html#cb106-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_group</span>()</span></code></pre></div>
+<p>The ordering in <code>tar_group</code> agrees with the ordering shown by <code>dplyr::group_keys()</code>.</p>
+<div class="sourceCode" id="cb107"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb107-1"><a href="dynamic.html#cb107-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
+<span id="cb107-2"><a href="dynamic.html#cb107-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">seq_len</span>(<span class="dv">6</span>),</span>
+<span id="cb107-3"><a href="dynamic.html#cb107-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> <span class="fu">flip_order</span>(<span class="fu">rep</span>(letters[<span class="fu">seq_len</span>(<span class="dv">3</span>)], <span class="at">each =</span> <span class="dv">2</span>))</span>
+<span id="cb107-4"><a href="dynamic.html#cb107-4" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb107-5"><a href="dynamic.html#cb107-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(id) <span class="sc">%&gt;%</span></span>
+<span id="cb107-6"><a href="dynamic.html#cb107-6" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_keys</span>()</span></code></pre></div>
+<p>Branches are arranged in increasing order with respect to the integers in <code>tar_group</code>.</p>
+<div class="sourceCode" id="cb108"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb108-1"><a href="dynamic.html#cb108-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb108-2"><a href="dynamic.html#cb108-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb108-3"><a href="dynamic.html#cb108-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">packages =</span> <span class="st">&quot;tidyverse&quot;</span>)</span>
+<span id="cb108-4"><a href="dynamic.html#cb108-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb108-5"><a href="dynamic.html#cb108-5" aria-hidden="true" tabindex="-1"></a>flip_order <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb108-6"><a href="dynamic.html#cb108-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ordered</span>(x, <span class="at">levels =</span> <span class="fu">sort</span>(<span class="fu">unique</span>(x), <span class="at">decreasing =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb108-7"><a href="dynamic.html#cb108-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb108-8"><a href="dynamic.html#cb108-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb108-9"><a href="dynamic.html#cb108-9" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb108-10"><a href="dynamic.html#cb108-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb108-11"><a href="dynamic.html#cb108-11" aria-hidden="true" tabindex="-1"></a>    data,</span>
+<span id="cb108-12"><a href="dynamic.html#cb108-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.frame</span>(</span>
+<span id="cb108-13"><a href="dynamic.html#cb108-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="fu">seq_len</span>(<span class="dv">6</span>),</span>
+<span id="cb108-14"><a href="dynamic.html#cb108-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">id =</span> <span class="fu">flip_order</span>(<span class="fu">rep</span>(letters[<span class="fu">seq_len</span>(<span class="dv">3</span>)], <span class="at">each =</span> <span class="dv">2</span>))</span>
+<span id="cb108-15"><a href="dynamic.html#cb108-15" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb108-16"><a href="dynamic.html#cb108-16" aria-hidden="true" tabindex="-1"></a>      <span class="fu">group_by</span>(id) <span class="sc">%&gt;%</span></span>
+<span id="cb108-17"><a href="dynamic.html#cb108-17" aria-hidden="true" tabindex="-1"></a>      <span class="fu">tar_group</span>(),</span>
+<span id="cb108-18"><a href="dynamic.html#cb108-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">iteration =</span> <span class="st">&quot;group&quot;</span></span>
+<span id="cb108-19"><a href="dynamic.html#cb108-19" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb108-20"><a href="dynamic.html#cb108-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb108-21"><a href="dynamic.html#cb108-21" aria-hidden="true" tabindex="-1"></a>    subsets,</span>
+<span id="cb108-22"><a href="dynamic.html#cb108-22" aria-hidden="true" tabindex="-1"></a>    data,</span>
+<span id="cb108-23"><a href="dynamic.html#cb108-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">pattern =</span> <span class="fu">map</span>(data),</span>
+<span id="cb108-24"><a href="dynamic.html#cb108-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">iteration =</span> <span class="st">&quot;list&quot;</span></span>
+<span id="cb108-25"><a href="dynamic.html#cb108-25" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb108-26"><a href="dynamic.html#cb108-26" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb109"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb109-1"><a href="dynamic.html#cb109-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb110"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb110-1"><a href="dynamic.html#cb110-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(<span class="fu">tar_read</span>(subsets), as.data.frame)</span></code></pre></div>
 </div>
 </div>
-<div id="batching" class="section level2" number="7.9">
-<h2><span class="header-section-number">7.9</span> Batching</h2>
+<div id="batching" class="section level2" number="7.11">
+<h2><span class="header-section-number">7.11</span> Batching</h2>
 <p>With dynamic branching, it is super easy to create an enormous number of targets. But when the number of targets starts to exceed a couple hundred, <code>tar_make()</code> slows down, and graphs from <code>tar_visnetwork()</code> start to become unmanageable. If that happens to you, consider batching your work into a smaller number of targets.</p>
 <p><a href="https://wlandau.github.io/targetopia.html">Targetopia</a> packages usually have functions that support batching for various use cases. In <a href="https://wlandau.github.io/stantargets/"><code>stantargets</code></a>, <a href="https://wlandau.github.io/stantargets/articles/mcmc_rep.html"><code>tar_stan_mcmc_rep_summary()</code></a> and friends automatically use batching behind the scenes. The user simply needs to select the number of batches and number of reps per batch. Each batch is a dynamic branch with multiple reps, and each rep fits the user’s model once and computes summary statistics.</p>
 <p>In <a href="https://docs.ropensci.org/tarchetypes/"><code>tarchetypes</code></a>, <a href="https://docs.ropensci.org/tarchetypes/reference/tar_rep.html">tar_rep()`</a> is a general-use target factory for dynamic branching. It allows you to repeat arbitrary code over multiple reps split into multiple batches. Each batch gets its own reproducible random number seed generated from the target name (as do all targets) and reps run sequentially within each batch, so the results are reproducible.</p>
 <p>The <a href="https://github.com/ropensci/targets-stan"><code>targets-stan</code></a> repository has an example of batching implemented from scratch. The goal of the pipeline is to validate a Bayesian model by simulating thousands of dataset, analyzing each with a Bayesian model, and assessing the overall accuracy of the inference. Rather than define a target for each dataset in model, the pipeline breaks up the work into batches, where each batch has multiple datasets or multiple analyses. Here is a version of the pipeline with 40 batches and 25 simulation reps per batch (1000 reps total in a pipeline of 82 targets).</p>
-<div class="sourceCode" id="cb109"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb109-1"><a href="dynamic.html#cb109-1" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb109-2"><a href="dynamic.html#cb109-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(model_file, <span class="fu">compile_model</span>(<span class="st">&quot;stan/model.stan&quot;</span>), <span class="at">format =</span> <span class="st">&quot;file&quot;</span>),</span>
-<span id="cb109-3"><a href="dynamic.html#cb109-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(index_batch, <span class="fu">seq_len</span>(<span class="dv">40</span>)),</span>
-<span id="cb109-4"><a href="dynamic.html#cb109-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(index_sim, <span class="fu">seq_len</span>(<span class="dv">25</span>)),</span>
-<span id="cb109-5"><a href="dynamic.html#cb109-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
-<span id="cb109-6"><a href="dynamic.html#cb109-6" aria-hidden="true" tabindex="-1"></a>    data_continuous,</span>
-<span id="cb109-7"><a href="dynamic.html#cb109-7" aria-hidden="true" tabindex="-1"></a>    purrr<span class="sc">::</span><span class="fu">map_dfr</span>(index_sim, <span class="sc">~</span><span class="fu">simulate_data_continuous</span>()),</span>
-<span id="cb109-8"><a href="dynamic.html#cb109-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">pattern =</span> <span class="fu">map</span>(index_batch)</span>
-<span id="cb109-9"><a href="dynamic.html#cb109-9" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb109-10"><a href="dynamic.html#cb109-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
-<span id="cb109-11"><a href="dynamic.html#cb109-11" aria-hidden="true" tabindex="-1"></a>    fit_continuous,</span>
-<span id="cb109-12"><a href="dynamic.html#cb109-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">map_sims</span>(data_continuous, <span class="at">model_file =</span> model_file),</span>
-<span id="cb109-13"><a href="dynamic.html#cb109-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">pattern =</span> <span class="fu">map</span>(data_continuous)</span>
-<span id="cb109-14"><a href="dynamic.html#cb109-14" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb109-15"><a href="dynamic.html#cb109-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb111"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb111-1"><a href="dynamic.html#cb111-1" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb111-2"><a href="dynamic.html#cb111-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(model_file, <span class="fu">compile_model</span>(<span class="st">&quot;stan/model.stan&quot;</span>), <span class="at">format =</span> <span class="st">&quot;file&quot;</span>),</span>
+<span id="cb111-3"><a href="dynamic.html#cb111-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(index_batch, <span class="fu">seq_len</span>(<span class="dv">40</span>)),</span>
+<span id="cb111-4"><a href="dynamic.html#cb111-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(index_sim, <span class="fu">seq_len</span>(<span class="dv">25</span>)),</span>
+<span id="cb111-5"><a href="dynamic.html#cb111-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb111-6"><a href="dynamic.html#cb111-6" aria-hidden="true" tabindex="-1"></a>    data_continuous,</span>
+<span id="cb111-7"><a href="dynamic.html#cb111-7" aria-hidden="true" tabindex="-1"></a>    purrr<span class="sc">::</span><span class="fu">map_dfr</span>(index_sim, <span class="sc">~</span><span class="fu">simulate_data_continuous</span>()),</span>
+<span id="cb111-8"><a href="dynamic.html#cb111-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">pattern =</span> <span class="fu">map</span>(index_batch)</span>
+<span id="cb111-9"><a href="dynamic.html#cb111-9" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb111-10"><a href="dynamic.html#cb111-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb111-11"><a href="dynamic.html#cb111-11" aria-hidden="true" tabindex="-1"></a>    fit_continuous,</span>
+<span id="cb111-12"><a href="dynamic.html#cb111-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">map_sims</span>(data_continuous, <span class="at">model_file =</span> model_file),</span>
+<span id="cb111-13"><a href="dynamic.html#cb111-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">pattern =</span> <span class="fu">map</span>(data_continuous)</span>
+<span id="cb111-14"><a href="dynamic.html#cb111-14" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb111-15"><a href="dynamic.html#cb111-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 
 </div>
 </div>
