@@ -266,6 +266,58 @@ list(
 )
 ```
 
+## Dynamic branching over rows
+
+## Grouped data frames
+
+`tarchetypes` >= 0.1.0 has helpers for easy branching over subsets of data frames:
+
+* `tar_group_by()`: define row groups using `dplyr::group_by()` semantics.
+* `tar_group_select()`: define row groups using `tidyselect` semantics.
+* `tar_group_count()`: define a given number row groups.
+* `tar_group_size()`: define row groups of a given size.
+
+If you define a target with one of these functions, all downstream dynamic targets will automatically branch over the row groups.
+
+```{r, echo = FALSE, eval = TRUE}
+targets::tar_script({
+  produce_data <- function() {
+    expand.grid(var1 = c("a", "b"), var2 = c("c", "d"), rep = c(1, 2, 3))
+  }
+  list(
+    tarchetypes::tar_group_by(data, produce_data(), var1, var2),
+    tar_target(group, data, pattern = map(data))
+  )
+})
+```
+
+```{r, eval = FALSE}
+# _targets.R file:
+library(targets)
+library(tarchetypes)
+produce_data <- function() {
+  expand.grid(var1 = c("a", "b"), var2 = c("c", "d"), rep = c(1, 2, 3))
+}
+list(
+  tar_group_by(data, produce_data(), var1, var2),
+  tar_target(group, data, pattern = map(data))
+)
+```
+
+```{r, eval = TRUE}
+# R console:
+library(targets)
+tar_make()
+
+# First row group:
+tar_read(group, branches = 1)
+
+# Second row group:
+tar_read(group, branches = 2)
+```
+
+For more information on how the row grouping mechanism works, see the section on "group" iteration below.
+
 ## Iteration
 
 There are many ways to slice up a stem for branching, and there are many ways to aggregate the branches of a pattern.^[Slicing is always the same when we branch over an existing pattern. If we have `tar_target(y, x, pattern = map(x))` and `x` is another pattern, then each branch of `y` always gets a branch of `x` regardless of the iteration method. Likewise, the aggregation of stems does not depend on the iteration method because every stem is already aggregated.] The `iteration` argument of `tar_target()` controls the splitting and aggregation protocol on a target-by-target basis, and you can set the default for all targets with the analogous argument of `tar_option_set()`.
