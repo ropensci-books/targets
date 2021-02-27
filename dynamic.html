@@ -213,16 +213,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7.4" data-path="dynamic.html"><a href="dynamic.html#pattern-construction"><i class="fa fa-check"></i><b>7.4</b> Pattern construction</a></li>
 <li class="chapter" data-level="7.5" data-path="dynamic.html"><a href="dynamic.html#branch-provenance"><i class="fa fa-check"></i><b>7.5</b> Branch provenance</a></li>
 <li class="chapter" data-level="7.6" data-path="dynamic.html"><a href="dynamic.html#testing-patterns"><i class="fa fa-check"></i><b>7.6</b> Testing patterns</a></li>
-<li class="chapter" data-level="7.7" data-path="dynamic.html"><a href="dynamic.html#dynamic-branching-over-files"><i class="fa fa-check"></i><b>7.7</b> Dynamic branching over files</a></li>
-<li class="chapter" data-level="7.8" data-path="dynamic.html"><a href="dynamic.html#dynamic-branching-over-rows"><i class="fa fa-check"></i><b>7.8</b> Dynamic branching over rows</a></li>
-<li class="chapter" data-level="7.9" data-path="dynamic.html"><a href="dynamic.html#grouped-data-frames"><i class="fa fa-check"></i><b>7.9</b> Grouped data frames</a></li>
-<li class="chapter" data-level="7.10" data-path="dynamic.html"><a href="dynamic.html#iteration"><i class="fa fa-check"></i><b>7.10</b> Iteration</a>
+<li class="chapter" data-level="7.7" data-path="dynamic.html"><a href="dynamic.html#branching-over-files"><i class="fa fa-check"></i><b>7.7</b> Branching over files</a></li>
+<li class="chapter" data-level="7.8" data-path="dynamic.html"><a href="dynamic.html#branching-over-rows"><i class="fa fa-check"></i><b>7.8</b> Branching over rows</a></li>
+<li class="chapter" data-level="7.9" data-path="dynamic.html"><a href="dynamic.html#iteration"><i class="fa fa-check"></i><b>7.9</b> Iteration</a>
 <ul>
-<li class="chapter" data-level="7.10.1" data-path="dynamic.html"><a href="dynamic.html#vector-iteration"><i class="fa fa-check"></i><b>7.10.1</b> Vector iteration</a></li>
-<li class="chapter" data-level="7.10.2" data-path="dynamic.html"><a href="dynamic.html#list-iteration"><i class="fa fa-check"></i><b>7.10.2</b> List iteration</a></li>
-<li class="chapter" data-level="7.10.3" data-path="dynamic.html"><a href="dynamic.html#group-iteration"><i class="fa fa-check"></i><b>7.10.3</b> Group iteration</a></li>
+<li class="chapter" data-level="7.9.1" data-path="dynamic.html"><a href="dynamic.html#vector-iteration"><i class="fa fa-check"></i><b>7.9.1</b> Vector iteration</a></li>
+<li class="chapter" data-level="7.9.2" data-path="dynamic.html"><a href="dynamic.html#list-iteration"><i class="fa fa-check"></i><b>7.9.2</b> List iteration</a></li>
+<li class="chapter" data-level="7.9.3" data-path="dynamic.html"><a href="dynamic.html#group-iteration"><i class="fa fa-check"></i><b>7.9.3</b> Group iteration</a></li>
 </ul></li>
-<li class="chapter" data-level="7.11" data-path="dynamic.html"><a href="dynamic.html#batching"><i class="fa fa-check"></i><b>7.11</b> Batching</a></li>
+<li class="chapter" data-level="7.10" data-path="dynamic.html"><a href="dynamic.html#batching"><i class="fa fa-check"></i><b>7.10</b> Batching</a></li>
 </ul></li>
 <li class="chapter" data-level="8" data-path="static.html"><a href="static.html"><i class="fa fa-check"></i><b>8</b> Static branching</a>
 <ul>
@@ -413,8 +412,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb89-5"><a href="dynamic.html#cb89-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">y_comp =</span> <span class="dv">3</span></span>
 <span id="cb89-6"><a href="dynamic.html#cb89-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 </div>
-<div id="dynamic-branching-over-files" class="section level2" number="7.7">
-<h2><span class="header-section-number">7.7</span> Dynamic branching over files</h2>
+<div id="branching-over-files" class="section level2" number="7.7">
+<h2><span class="header-section-number">7.7</span> Branching over files</h2>
 <p>Dynamic branching over files is tricky. A target with <code>format = "file"</code> treats the entire set of files as an irreducible bundle. That means in order to branch over files downstream, each file must already have its own branch.</p>
 <div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb90-1"><a href="dynamic.html#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
 <span id="cb90-2"><a href="dynamic.html#cb90-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
@@ -432,11 +431,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb91-6"><a href="dynamic.html#cb91-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data, <span class="fu">read_csv</span>(files), <span class="at">pattern =</span> <span class="fu">map</span>(files))</span>
 <span id="cb91-7"><a href="dynamic.html#cb91-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 </div>
-<div id="dynamic-branching-over-rows" class="section level2" number="7.8">
-<h2><span class="header-section-number">7.8</span> Dynamic branching over rows</h2>
-</div>
-<div id="grouped-data-frames" class="section level2" number="7.9">
-<h2><span class="header-section-number">7.9</span> Grouped data frames</h2>
+<div id="branching-over-rows" class="section level2" number="7.8">
+<h2><span class="header-section-number">7.8</span> Branching over rows</h2>
 <p><code>tarchetypes</code> &gt;= 0.1.0 has helpers for easy branching over subsets of data frames:</p>
 <ul>
 <li><code>tar_group_by()</code>: define row groups using <code>dplyr::group_by()</code> semantics.</li>
@@ -486,11 +482,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb93-29"><a href="dynamic.html#cb93-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 a     d         3         2</span></span></code></pre></div>
 <p>For more information on how the row grouping mechanism works, see the section on “group” iteration below.</p>
 </div>
-<div id="iteration" class="section level2" number="7.10">
-<h2><span class="header-section-number">7.10</span> Iteration</h2>
+<div id="iteration" class="section level2" number="7.9">
+<h2><span class="header-section-number">7.9</span> Iteration</h2>
 <p>There are many ways to slice up a stem for branching, and there are many ways to aggregate the branches of a pattern.<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a> The <code>iteration</code> argument of <code>tar_target()</code> controls the splitting and aggregation protocol on a target-by-target basis, and you can set the default for all targets with the analogous argument of <code>tar_option_set()</code>.</p>
-<div id="vector-iteration" class="section level3" number="7.10.1">
-<h3><span class="header-section-number">7.10.1</span> Vector iteration</h3>
+<div id="vector-iteration" class="section level3" number="7.9.1">
+<h3><span class="header-section-number">7.9.1</span> Vector iteration</h3>
 <p><code>targets</code> uses vector iteration by default, and you can opt into this behavior by setting <code>iteration = "vector"</code> in <code>tar_target()</code>. In vector iteration, <code>targets</code> uses the <a href="https://vctrs.r-lib.org/"><code>vctrs</code></a> package to split stems and aggregate branches. That means <code>vctrs::vec_slice()</code> slices up stems like <code>x</code> for mapping, and <code>vctrs::vec_c()</code> aggregates patterns like <code>y</code> for operations like <code>tar_read()</code>.</p>
 <p>For atomic vectors like in the example above, this behavior is already intuitive. But if we map over a data frame, each branch will get a row of the data frame due to vector iteration.</p>
 <div class="sourceCode" id="cb94"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb94-1"><a href="dynamic.html#cb94-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
@@ -506,8 +502,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>And since <code>y</code> also has iteration = <code>"vector"</code>, the aggregate of <code>y</code> is a single data frame of all the rows.</p>
 <div class="sourceCode" id="cb96"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb96-1"><a href="dynamic.html#cb96-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(y)</span></code></pre></div>
 </div>
-<div id="list-iteration" class="section level3" number="7.10.2">
-<h3><span class="header-section-number">7.10.2</span> List iteration</h3>
+<div id="list-iteration" class="section level3" number="7.9.2">
+<h3><span class="header-section-number">7.9.2</span> List iteration</h3>
 <p>List iteration splits and aggregates targets as simple lists. If target <code>x</code> has <code>"list"</code> iteration, all branches of downstream patterns will get <code>x[[1]]</code>, <code>x[[2]]</code>, and so on. (<code>vctrs::vec_slice()</code> behaves more like <code>[]</code> than <code>[[]]</code>.)</p>
 <div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb97-1"><a href="dynamic.html#cb97-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
 <span id="cb97-2"><a href="dynamic.html#cb97-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
@@ -529,8 +525,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb99"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb99-1"><a href="dynamic.html#cb99-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(y)</span></code></pre></div>
 <div class="sourceCode" id="cb100"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb100-1"><a href="dynamic.html#cb100-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(z)</span></code></pre></div>
 </div>
-<div id="group-iteration" class="section level3" number="7.10.3">
-<h3><span class="header-section-number">7.10.3</span> Group iteration</h3>
+<div id="group-iteration" class="section level3" number="7.9.3">
+<h3><span class="header-section-number">7.9.3</span> Group iteration</h3>
 <p>Group iteration brings <code>dplyr::group_by()</code> functionality to patterns. This way, we can map or cross over custom subsets of rows. Consider the following data frame.</p>
 <div class="sourceCode" id="cb101"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb101-1"><a href="dynamic.html#cb101-1" aria-hidden="true" tabindex="-1"></a>object <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
 <span id="cb101-2"><a href="dynamic.html#cb101-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">seq_len</span>(<span class="dv">6</span>),</span>
@@ -623,8 +619,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb110"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb110-1"><a href="dynamic.html#cb110-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(<span class="fu">tar_read</span>(subsets), as.data.frame)</span></code></pre></div>
 </div>
 </div>
-<div id="batching" class="section level2" number="7.11">
-<h2><span class="header-section-number">7.11</span> Batching</h2>
+<div id="batching" class="section level2" number="7.10">
+<h2><span class="header-section-number">7.10</span> Batching</h2>
 <p>With dynamic branching, it is super easy to create an enormous number of targets. But when the number of targets starts to exceed a couple hundred, <code>tar_make()</code> slows down, and graphs from <code>tar_visnetwork()</code> start to become unmanageable. If that happens to you, consider batching your work into a smaller number of targets.</p>
 <p><a href="https://wlandau.github.io/targetopia.html">Targetopia</a> packages usually have functions that support batching for various use cases. In <a href="https://wlandau.github.io/stantargets/"><code>stantargets</code></a>, <a href="https://wlandau.github.io/stantargets/articles/mcmc_rep.html"><code>tar_stan_mcmc_rep_summary()</code></a> and friends automatically use batching behind the scenes. The user simply needs to select the number of batches and number of reps per batch. Each batch is a dynamic branch with multiple reps, and each rep fits the user’s model once and computes summary statistics.</p>
 <p>In <a href="https://docs.ropensci.org/tarchetypes/"><code>tarchetypes</code></a>, <a href="https://docs.ropensci.org/tarchetypes/reference/tar_rep.html">tar_rep()`</a> is a general-use target factory for dynamic branching. It allows you to repeat arbitrary code over multiple reps split into multiple batches. Each batch gets its own reproducible random number seed generated from the target name (as do all targets) and reps run sequentially within each batch, so the results are reproducible.</p>
