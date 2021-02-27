@@ -44,13 +44,24 @@ Not all of the objects from `tar_deps()` actually register as dependencies. When
 
 This process excludes many objects from dependency detection. For example, both `{` and `cols()` are excluded because they are defined in the environments of packages (`base` and `readr`, respectively). Functions and objects from packages are ignored unless you supply a package environment to the `envir` argument of `tar_option_set()` when you call it in `_targets.R`, e.g. `tar_option_set(envir = getNamespace("packageName"))`. You should only set `envir` if you write your own package to contain your whole data analysis project.
 
+## Loading and configuring R packages
+
+For most pipelines, it is straightforward to load the R packages that your targets need in order to run.
+
+1. Call `library()` at the top of `_targets.R` to load each package the conventional way, or
+2. Name the required packages using the `packages` argument of `tar_option_set()`. 
+
+(2) is often faster, especially for utilities like `tar_visnetwork()`, because it avoids loading packages unless absolutely necessary.
+
+Some package management workflows are more complicated. If your use special configuration with [conflicted](https://github.com/r-lib/conflicted), [`box`](https://klmr.me/box/), [`import`](https://import.rticulate.org/), or similar utility, please do your configuration inside a project-level `.Rprofile` file instead of the `_targets.R` file. In addition, if you use distributed workers inside external containers (Docker, Singularity, AWS AMI, etc.) make sure each container has a copy of this same `.Rprofile` file where the R worker process spawns. This approach is ensures that all remote workers are configured the same way as the local main process.
+
 ## Workflows as R packages
 
 When it comes time to decide which targets to rerun or skip, the default behavior is to ignore changes to external R packages. Usually, local package libraries do not need to change very often, and it is best to maintain a reproducible project library using [`renv`](https://rstudio.github.io/renv/articles/renv.html).
 
 However, there are some situations where it makes sense to watch a package for changes. For example, you could be in the middle of developing a methodology package that serves as the focus of the pipeline, or you could implement the workflow itself as a package. In either case, you can tell `targets` to track changes using the `imports` argument to `tar_option_set()`. If you write `tar_option_set(imports = "package1")` in `_targets.R`, then `targets` will analyze the R objects in `package1` and automatically rerun the dependent targets when these objects change. These tracked objects include unexported functions internal to the package. You can track multiple packages this way, e.g. `tar_option_set(imports = c("package1", "package2"))`. In this case, the contents of `package1` override those of `package2` when there are name conflicts. Likewise, `tar_option_get("envir")` (usually the global environment) overrides both.
 
-While the `imports` option tells `targets` what to scan, it does not actually load any packages. So in practice, please set the `packages` option as well, e.g. `tar_option_set(imports = "package1", packages = c("package1", "tidyverse"))`. `imports` and `packages` operate independently so that you have complete control over which packages load first (in case of conflicts).^[Complicated package conflicts may require more work to untangle. If you use [conflicted](https://github.com/r-lib/conflicted), please create a project-level `.Rprofile` file and call [conflict_prefer()](https://conflicted.r-lib.org/reference/conflict_prefer.html) from there. `.Rprofile` is safer than `_targets.R` for this because it ensures the appropriate global options get set on remote workers as well as the main process.]
+While the `imports` option tells `targets` what to scan, it does not actually load any packages. So in practice, please set the `packages` option as well, e.g. `tar_option_set(imports = "package1", packages = c("package1", "tidyverse"))`. `imports` and `packages` operate independently so that you have complete control over which packages load first (in case of conflicts).
 
 ## Working with tools outside R
 
