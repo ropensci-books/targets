@@ -187,11 +187,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="5.1" data-path="practices.html"><a href="practices.html#how-to-define-good-targets"><i class="fa fa-check"></i><b>5.1</b> How to define good targets</a></li>
 <li class="chapter" data-level="5.2" data-path="practices.html"><a href="practices.html#dependencies"><i class="fa fa-check"></i><b>5.2</b> Dependencies</a></li>
-<li class="chapter" data-level="5.3" data-path="practices.html"><a href="practices.html#workflows-as-r-packages"><i class="fa fa-check"></i><b>5.3</b> Workflows as R packages</a></li>
-<li class="chapter" data-level="5.4" data-path="practices.html"><a href="practices.html#working-with-tools-outside-r"><i class="fa fa-check"></i><b>5.4</b> Working with tools outside R</a></li>
-<li class="chapter" data-level="5.5" data-path="practices.html"><a href="practices.html#monitoring-the-pipeline"><i class="fa fa-check"></i><b>5.5</b> Monitoring the pipeline</a></li>
-<li class="chapter" data-level="5.6" data-path="practices.html"><a href="practices.html#performance"><i class="fa fa-check"></i><b>5.6</b> Performance</a></li>
-<li class="chapter" data-level="5.7" data-path="practices.html"><a href="practices.html#cleaning-up"><i class="fa fa-check"></i><b>5.7</b> Cleaning up</a></li>
+<li class="chapter" data-level="5.3" data-path="practices.html"><a href="practices.html#loading-and-configuring-r-packages"><i class="fa fa-check"></i><b>5.3</b> Loading and configuring R packages</a></li>
+<li class="chapter" data-level="5.4" data-path="practices.html"><a href="practices.html#workflows-as-r-packages"><i class="fa fa-check"></i><b>5.4</b> Workflows as R packages</a></li>
+<li class="chapter" data-level="5.5" data-path="practices.html"><a href="practices.html#working-with-tools-outside-r"><i class="fa fa-check"></i><b>5.5</b> Working with tools outside R</a></li>
+<li class="chapter" data-level="5.6" data-path="practices.html"><a href="practices.html#monitoring-the-pipeline"><i class="fa fa-check"></i><b>5.6</b> Monitoring the pipeline</a></li>
+<li class="chapter" data-level="5.7" data-path="practices.html"><a href="practices.html#performance"><i class="fa fa-check"></i><b>5.7</b> Performance</a></li>
+<li class="chapter" data-level="5.8" data-path="practices.html"><a href="practices.html#cleaning-up"><i class="fa fa-check"></i><b>5.8</b> Cleaning up</a></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="files.html"><a href="files.html"><i class="fa fa-check"></i><b>6</b> External files and literate programming</a>
 <ul>
@@ -484,7 +485,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="iteration" class="section level2" number="7.9">
 <h2><span class="header-section-number">7.9</span> Iteration</h2>
-<p>There are many ways to slice up a stem for branching, and there are many ways to aggregate the branches of a pattern.<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a> The <code>iteration</code> argument of <code>tar_target()</code> controls the splitting and aggregation protocol on a target-by-target basis, and you can set the default for all targets with the analogous argument of <code>tar_option_set()</code>.</p>
+<p>There are many ways to slice up a stem for branching, and there are many ways to aggregate the branches of a pattern.<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a> The <code>iteration</code> argument of <code>tar_target()</code> controls the splitting and aggregation protocol on a target-by-target basis, and you can set the default for all targets with the analogous argument of <code>tar_option_set()</code>.</p>
 <div id="vector-iteration" class="section level3" number="7.9.1">
 <h3><span class="header-section-number">7.9.1</span> Vector iteration</h3>
 <p><code>targets</code> uses vector iteration by default, and you can opt into this behavior by setting <code>iteration = "vector"</code> in <code>tar_target()</code>. In vector iteration, <code>targets</code> uses the <a href="https://vctrs.r-lib.org/"><code>vctrs</code></a> package to split stems and aggregate branches. That means <code>vctrs::vec_slice()</code> slices up stems like <code>x</code> for mapping, and <code>vctrs::vec_c()</code> aggregates patterns like <code>y</code> for operations like <code>tar_read()</code>.</p>
@@ -645,8 +646,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div class="footnotes">
 <hr />
-<ol start="5">
-<li id="fn5"><p>Slicing is always the same when we branch over an existing pattern. If we have <code>tar_target(y, x, pattern = map(x))</code> and <code>x</code> is another pattern, then each branch of <code>y</code> always gets a branch of <code>x</code> regardless of the iteration method. Likewise, the aggregation of stems does not depend on the iteration method because every stem is already aggregated.<a href="dynamic.html#fnref5" class="footnote-back">↩︎</a></p></li>
+<ol start="4">
+<li id="fn4"><p>Slicing is always the same when we branch over an existing pattern. If we have <code>tar_target(y, x, pattern = map(x))</code> and <code>x</code> is another pattern, then each branch of <code>y</code> always gets a branch of <code>x</code> regardless of the iteration method. Likewise, the aggregation of stems does not depend on the iteration method because every stem is already aggregated.<a href="dynamic.html#fnref4" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 <div style = "background: #1C356D; color: white; padding: 10px 10px 10px 25px; font-size: 1em; width: 100%;">
