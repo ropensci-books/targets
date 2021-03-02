@@ -41,7 +41,7 @@ To reproducibly track an external input file, you need to define a new target th
 1. A command that returns the file path as a character vector, and 
 2. `format = "file"` in `tar_target()`.
 
-When the target runs in the pipeline, the returned character vector gets recorded in `_targets/meta`, and `targets` watches the data file and invalidates the target when that file changes. To track multiple files or directories this way, simply define a multi-element character vector where each element is a path.
+When the target runs in the pipeline, the returned character vector gets recorded in `_targets/meta`, and `targets` watches the data file and invalidates the target when that file changes. To track multiple files this way, simply define a multi-element character vector where each element is a path. Each element can also be a directory, but this directory must not be empty at the time the target runs.
 
 The first two targets of the [minimal example](https://github.com/ropensci/targets-minimal) demonstrate how to track an input file.
 
@@ -140,7 +140,7 @@ tar_visnetwork()
 
 ## External output files
 
-We can generate and track custom external files too, and the mechanics are similar. We still return a file path and use `format = "file"`, but this time, our R command writes a file before it returns a path. For an external plot file, our target might look like this.
+Output files have the same mechanics as input files. The target uses `format = "file"`, and the return value is a character value of paths to existing files and nonempty directories. The only difference here is that the target's R command writes to storage before it returns a value. For example, here is an output file target that saves a visualization.
 
 ```{r, eval = FALSE}
 tar_target(
@@ -150,7 +150,7 @@ tar_target(
 )
 ```
 
-where our custom `save_plot_and_return_path()` function does exactly what the name describes.
+Here, our custom `save_plot_and_return_path()` function does exactly what the name describes.
 
 ```{r, eval = FALSE}
 save_plot_and_return_path <- function() {
