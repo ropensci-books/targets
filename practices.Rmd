@@ -21,7 +21,7 @@ Targets are imperative high-level steps of the workflow that run the work you de
 1. Return a single value that is
     i. Easy to understand and introspect.
     i. Meaningful to the project.
-    i. Easy to save as a file, e.g. with `readRDS()`.
+    i. Easy to save as a file, e.g. with `readRDS()`. Please avoid [non-exportable objects](https://cran.r-project.org/web/packages/future/vignettes/future-4-non-exportable-objects.html) as target return values or global variables.
 
 Regarding the last point above, it is possible to customize the storage format of the target. For details, enter `?tar_target` in the console and scroll down to the description of the `format` argument.
 
