@@ -24,7 +24,7 @@ Dynamic branching is the act of defining new targets (i.e. branches) while the p
 
 To use dynamic branching, set the `pattern` argument of `tar_target()`. A pattern is a dynamic branching specification expressed in terms of functional programming. The following minimal example explores the mechanics of patterns (and examples of branching in real-world projects are [linked from here](https://docs.ropensci.org/targets/index.html#examples)).
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, eval = TRUE}
 library(targets)
 library(tidyverse)
 tar_script({
@@ -52,29 +52,29 @@ list(
 )
 ```
 
-```{r}
+```{r, eval = TRUE}
 tar_visnetwork()
 ```
 
-```{r}
+```{r, eval = TRUE}
 tar_make()
 ```
 
 Above, targets `w`, `x`, and `z` are called **stems** because they provide values for other targets to branch over. Target `y` is a **pattern** because it defines multiple sub-targets, or **branches**, based on the return values of the targets named inside `map()` or `cross()`. If we read target `y` into memory, all the branches will load and get aggregated according to the `iteration` argument of `tar_target()`.
 
-```{r}
+```{r, eval = TRUE}
 tar_read(y)
 ```
 
 Target `z` accepts this entire aggregate of `y` and sums it.
 
-```{r}
+```{r, eval = TRUE}
 tar_read(z)
 ```
 
 Target `z2` maps over `y`, so each each branch of `z2` accepts a branch of `y`.
 
-```{r}
+```{r, eval = TRUE}
 tar_read(z2)
 ```
 
@@ -90,7 +90,7 @@ tar_read(z2)
 
 These patterns are composable. Below, target `z` creates six branches, one for each combination of `w` and (`x`, `y`) pair. The pattern `cross(w, map(x, y))` is equivalent to `tidyr::crossing(w, tidyr::nesting(x, y))`.
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, eval = TRUE}
 tar_script({
   options(crayon.enabled = FALSE)
   list(
@@ -121,11 +121,11 @@ list(
 )
 ```
 
-```{r}
+```{r, eval = TRUE}
 tar_make()
 ```
 
-```{r}
+```{r, eval = TRUE}
 tar_read(z_comp)
 ```
 
@@ -133,7 +133,7 @@ tar_read(z_comp)
 
 The `tar_branches()` function identifies dependency relationships among individual branches. In the example pipeline below, we can find out the branch of `y` that each branch of `z` depends on. 
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, eval = TRUE}
 tar_script({
   options(crayon.enabled = FALSE)
   list(
@@ -154,33 +154,33 @@ list(
 )
 ```
 
-```{r}
+```{r, eval = TRUE}
 tar_make()
 ```
 
-```{r}
+```{r, eval = TRUE}
 branches <- tar_branches(z, map(y))
 branches
 ```
 
-```{r}
+```{r, eval = TRUE}
 tar_read_raw(branches$y[2])
 ```
 
 However, `tar_branches()` is not always helpful: for example, if we look at how `y` branches over `x`. `x` does not use dynamic branching, so `tar_branches()` does not return meaningful branch names.
 
-```{r}
+```{r, eval = TRUE}
 branches <- tar_branches(y, map(x))
 branches
 ```
 
-```{r, error = TRUE}
+```{r, error = TRUE, eval = TRUE}
 tar_read_raw(branches$x[2])
 ```
 
 In situations like this, it is best to proactively write targets that keep track of information about their upstream branches. Data frames and `tibble`s are useful for this.
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, eval = TRUE}
 tar_script({
   library(tibble)
   options(crayon.enabled = FALSE)
@@ -201,11 +201,11 @@ list(
 )
 ```
 
-```{r}
+```{r, eval = TRUE}
 tar_make()
 ```
 
-```{r}
+```{r, eval = TRUE}
 tar_read(y)
 ```
 
@@ -213,7 +213,7 @@ tar_read(y)
 
 To check the correctness of a pattern without running the pipeline, use [`tar_pattern()`](https://docs.ropensci.org/targets/reference/tar_pattern.html). Simply supply the pattern itself and the length of each dependency target. The branch names in the data frames below are made up, but they convey a high-level picture of the branching structure.
 
-```{r}
+```{r, eval = TRUE}
 tar_pattern(
   cross(w_comp, map(x_comp, y_comp)),
   w_comp = 2,
@@ -222,7 +222,7 @@ tar_pattern(
 )
 ```
 
-```{r}
+```{r, eval = TRUE}
 tar_pattern(
   head(cross(w_comp, map(x_comp, y_comp)), n = 2),
   w_comp = 2,
@@ -231,7 +231,7 @@ tar_pattern(
 )
 ```
 
-```{r}
+```{r, eval = TRUE}
 tar_pattern(
   cross(w_comp, sample(map(x_comp, y_comp), n = 2)),
   w_comp = 2,
@@ -326,7 +326,7 @@ There are many ways to slice up a stem for branching, and there are many ways to
 
 For atomic vectors like in the example above, this behavior is already intuitive. But if we map over a data frame, each branch will get a row of the data frame due to vector iteration.
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, eval = TRUE}
 tar_script({
   options(crayon.enabled = FALSE, tidyverse.quiet = TRUE)
   print_and_return <- function(x) {
@@ -352,13 +352,13 @@ list(
 )
 ```
 
-```{r}
+```{r, eval = TRUE}
 tar_make()
 ```
 
 And since `y` also has iteration = `"vector"`, the aggregate of `y` is a single data frame of all the rows.
 
-```{r}
+```{r, eval = TRUE}
 tar_read(y)
 ```
 
@@ -366,7 +366,7 @@ tar_read(y)
 
 List iteration splits and aggregates targets as simple lists. If target `x` has `"list"` iteration, all branches of downstream patterns will get `x[[1]]`, `x[[2]]`, and so on. (`vctrs::vec_slice()` behaves more like `[]` than `[[]]`.)
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, eval = TRUE}
 tar_script({
   options(crayon.enabled = FALSE, tidyverse.quiet = TRUE)
   print_and_return <- function(x) {
@@ -403,17 +403,17 @@ list(
 )
 ```
 
-```{r}
+```{r, eval = TRUE}
 tar_make()
 ```
 
 Aggregation also happens differently. In this case, the vector iteration in `y` is not ideal, and the list iteration in `z` gives us more sensible output. 
 
-```{r, error = TRUE}
+```{r, error = TRUE, eval = TRUE}
 tar_read(y)
 ```
 
-```{r}
+```{r, eval = TRUE}
 tar_read(z)
 ```
 
@@ -437,7 +437,7 @@ To map over the groups of rows defined by the `id` column, we
 
 Put together, the pipeline looks like this.
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, eval = TRUE}
 tar_script({
 options(crayon.enabled = FALSE, tidyverse.quiet = TRUE)
 tar_option_set(packages = "tidyverse")
@@ -486,17 +486,17 @@ list(
 )
 ```
 
-```{r}
+```{r, eval = TRUE}
 tar_make()
 ```
 
-```{r}
+```{r, eval = TRUE}
 lapply(tar_read(subsets), as.data.frame)
 ```
 
 Row groups are defined in the special `tar_group` column created by `tar_group()`. 
 
-```{r}
+```{r, eval = TRUE}
 data.frame(
   x = seq_len(6),
   id = rep(letters[seq_len(3)], each = 2)
@@ -507,7 +507,7 @@ data.frame(
 
 `tar_group()` creates this column based on the orderings of the grouping variables supplied to `dplyr::group_by()`, not the order of the rows in the data.
 
-```{r}
+```{r, eval = TRUE}
 flip_order <- function(x) {
   ordered(x, levels = sort(unique(x), decreasing = TRUE))
 }
@@ -522,7 +522,7 @@ data.frame(
 
 The ordering in `tar_group` agrees with the ordering shown by `dplyr::group_keys()`.
 
-```{r}
+```{r, eval = TRUE}
 data.frame(
   x = seq_len(6),
   id = flip_order(rep(letters[seq_len(3)], each = 2))
@@ -533,7 +533,7 @@ data.frame(
 
 Branches are arranged in increasing order with respect to the integers in `tar_group`.
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, eval = TRUE}
 tar_script({
 options(crayon.enabled = FALSE, tidyverse.quiet = TRUE)
 tar_option_set(packages = "tidyverse")
@@ -592,11 +592,11 @@ list(
 )
 ```
 
-```{r}
+```{r, eval = TRUE}
 tar_make()
 ```
 
-```{r}
+```{r, eval = TRUE}
 lapply(tar_read(subsets), as.data.frame)
 ```
 
