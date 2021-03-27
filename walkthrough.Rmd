@@ -1,17 +1,17 @@
 ```{r, message = FALSE, warning = FALSE, echo = FALSE}
 knitr::opts_knit$set(root.dir = fs::dir_create(tempfile()))
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = TRUE)
 options(crayon.enabled = FALSE)
 ```
 
-```{r, include = FALSE}
+```{r, include = FALSE, eval = TRUE}
 library(fs)
 library(targets)
 library(tidyverse)
 library(withr)
 ```
 
-```{r, include = FALSE}
+```{r, include = FALSE, eval = TRUE}
 dir_create("data")
 dir_create("R")
 write_csv(airquality, "data/raw_data.csv")
@@ -134,19 +134,19 @@ All `_targets.R` scripts have these requirements.
 
 Before you run the pipeline for real, you should always inspect the manifest and the graph for errors. `tar_manifest()` shows you a data frame information about the targets, and it has functionality to specify the targets and columns returned.
 
-```{r}
+```{r, eval = TRUE}
 tar_manifest(fields = "command")
 ```
 
 There are also graphical displays with `tar_glimpse()`
 
-```{r}
+```{r, eval = TRUE}
 tar_glimpse()
 ```
 
 and `tar_visnetwork()`.
 
-```{r}
+```{r, eval = TRUE}
 tar_visnetwork()
 ```
 
@@ -156,23 +156,23 @@ Both graphing functions above visualize the underlying directed acyclic graph (D
 
 `tar_make()` runs the workflow. It creates a fresh clean external R process, reads `_targets.R` to learn about the pipeline, runs the correct targets in the correct order given by the graph, and saves the necessary data to the `_targets/` data store.
 
-```{r}
+```{r, eval = TRUE}
 tar_make()
 ```
 
 The next time you run `tar_make()`, `targets` skips everything that is already up to date, which saves a lot of time in large projects with long runtimes.
 
-```{r}
+```{r, eval = TRUE}
 tar_make()
 ```
 
 You can use `tar_visnetwork()` and `tar_outdated()` to check ahead of time which targets are up to date.
 
-```{r}
+```{r, eval = TRUE}
 tar_visnetwork()
 ```
 
-```{r}
+```{r, eval = TRUE}
 tar_outdated()
 ```
 
@@ -184,7 +184,7 @@ The `targets` package notices when you make changes to your workflow, and `tar_m
 
 If you change one of your functions, the targets that depend on it will no longer be up to date, and `tar_make()` will rebuild them. For example, let's set the number of bins in our histogram.
 
-```{r, include = FALSE}
+```{r, include = FALSE, eval = TRUE}
 withr::with_dir("R", {
   tar_script({
     create_plot <- function(data) {
@@ -208,17 +208,17 @@ create_plot <- function(data) {
 
 `targets` detects the change. `hist` is outdated (as would be any targets downstream of `hist`) and the others are still up to date.
 
-```{r}
+```{r, eval = TRUE}
 tar_visnetwork()
 ```
 
-```{r}
+```{r, eval = TRUE}
 tar_outdated()
 ```
 
 That means `tar_make()` reruns `hist` and nothing else.
 
-```{r}
+```{r, eval = TRUE}
 tar_make()
 ```
 
@@ -228,21 +228,21 @@ We would see similar behavior if we changed the R expressions in any `tar_target
 
 If we change the data file `raw_data.csv`, `targets` notices the change. This is because `raw_data_file` is a dynamic file (i.e. `tar_target(format = "file")`) that returned `"raw_data.csv"`. Let's try it out. Below, let's use only the first 100 rows of the `airquality` dataset.
 
-```{r}
+```{r, eval = TRUE}
 write_csv(head(airquality, n = 100), "data/raw_data.csv")
 ```
 
 Sure enough, `raw_data_file` and everything downstream is out of date, so all our targets are outdated.
 
-```{r}
+```{r, eval = TRUE}
 tar_visnetwork()
 ```
 
-```{r}
+```{r, eval = TRUE}
 tar_outdated()
 ```
 
-```{r}
+```{r, eval = TRUE}
 tar_make()
 ```
 
@@ -256,7 +256,7 @@ tar_read(hist)
 
 There is also a `tar_load()` function, which supports [`tidyselect`](https://tidyselect.r-lib.org/) verbs like `starts_with()`
 
-```{r}
+```{r, eval = TRUE}
 tar_load(starts_with("fit"))
 library(biglm)
 fit
@@ -268,14 +268,14 @@ The purpose of `tar_read()` and `tar_load()` is to make exploratory data analysi
 
 To read the build progress of your targets while `tar_make()` is running, you can open a new R session and run `tar_progress()`. It reads the spreadsheet in `_targets/meta/progress` and tells you which targets are running, built, errored, or cancelled.
 
-```{r}
+```{r, eval = TRUE}
 tar_progress()
 ```
 
 Likewise, the `tar_meta()` function reads `_targets/meta/meta` and tells you high-level information about the target's settings, data, and results. The `warnings`, `error`, and `traceback` columns give you diagnostic information about targets with problems.
 
-```{r}
-as.data.frame(tar_meta())
+```{r, eval = TRUE, paged.print = FALSE}
+tar_meta()
 ```
 
 The `_targets/meta/meta` spreadsheet file is critically important. Although `targets` can still work properly if files are missing from `_targets/objects`, the pipeline will error out if `_targets/meta/meta` is corrupted. If `tar_meta()` works, the project should be fine.
