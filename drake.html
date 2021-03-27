@@ -650,16 +650,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><a href="https://github.com/ropensci/targets"><code>targets</code></a>, on the other hand, is more flexible regarding slicing and aggregation. When it branches over an object, it can iterate over vectors, lists, and even data frames grouped with <code>dplyr::group_by()</code>. To branch over chunks of a data frame, our data frame target needs to have a special <code>tar_group</code> column. We can create this column in our target’s return value with the <code>tar_group()</code> function.</p>
 <div class="sourceCode" id="cb166"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb166-1"><a href="drake.html#cb166-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
 <span id="cb166-2"><a href="drake.html#cb166-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb166-3"><a href="drake.html#cb166-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
-<span id="cb166-4"><a href="drake.html#cb166-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">seq_len</span>(<span class="dv">6</span>),</span>
-<span id="cb166-5"><a href="drake.html#cb166-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> <span class="fu">rep</span>(letters[<span class="fu">seq_len</span>(<span class="dv">3</span>)], <span class="at">each =</span> <span class="dv">2</span>)</span>
-<span id="cb166-6"><a href="drake.html#cb166-6" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb166-7"><a href="drake.html#cb166-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(id) <span class="sc">%&gt;%</span></span>
-<span id="cb166-8"><a href="drake.html#cb166-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_group</span>()</span></code></pre></div>
+<span id="cb166-3"><a href="drake.html#cb166-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
+<span id="cb166-4"><a href="drake.html#cb166-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb166-5"><a href="drake.html#cb166-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">seq_len</span>(<span class="dv">6</span>),</span>
+<span id="cb166-6"><a href="drake.html#cb166-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> <span class="fu">rep</span>(letters[<span class="fu">seq_len</span>(<span class="dv">3</span>)], <span class="at">each =</span> <span class="dv">2</span>)</span>
+<span id="cb166-7"><a href="drake.html#cb166-7" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb166-8"><a href="drake.html#cb166-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(id) <span class="sc">%&gt;%</span></span>
+<span id="cb166-9"><a href="drake.html#cb166-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_group</span>()</span>
+<span id="cb166-10"><a href="drake.html#cb166-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 x 3</span></span>
+<span id="cb166-11"><a href="drake.html#cb166-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # Groups:   id [3]</span></span>
+<span id="cb166-12"><a href="drake.html#cb166-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       x id    tar_group</span></span>
+<span id="cb166-13"><a href="drake.html#cb166-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;int&gt; &lt;chr&gt;     &lt;int&gt;</span></span>
+<span id="cb166-14"><a href="drake.html#cb166-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1     1 a             1</span></span>
+<span id="cb166-15"><a href="drake.html#cb166-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2     2 a             1</span></span>
+<span id="cb166-16"><a href="drake.html#cb166-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3     3 b             2</span></span>
+<span id="cb166-17"><a href="drake.html#cb166-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4     4 b             2</span></span>
+<span id="cb166-18"><a href="drake.html#cb166-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5     5 c             3</span></span>
+<span id="cb166-19"><a href="drake.html#cb166-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6     6 c             3</span></span></code></pre></div>
 <p>Our actual target has the command above and <code>iteration = "group"</code>.</p>
 <div class="sourceCode" id="cb167"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb167-1"><a href="drake.html#cb167-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_target</span>(</span>
 <span id="cb167-2"><a href="drake.html#cb167-2" aria-hidden="true" tabindex="-1"></a>  data,</span>
-<span id="cb167-3"><a href="drake.html#cb167-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(</span>
+<span id="cb167-3"><a href="drake.html#cb167-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
 <span id="cb167-4"><a href="drake.html#cb167-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">seq_len</span>(<span class="dv">6</span>),</span>
 <span id="cb167-5"><a href="drake.html#cb167-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">id =</span> <span class="fu">rep</span>(letters[<span class="fu">seq_len</span>(<span class="dv">3</span>)], <span class="at">each =</span> <span class="dv">2</span>)</span>
 <span id="cb167-6"><a href="drake.html#cb167-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
