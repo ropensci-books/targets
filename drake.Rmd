@@ -1,5 +1,10 @@
 # What about `drake`? {#drake}
 
+```{r, message = FALSE, warning = FALSE, echo = FALSE}
+knitr::opts_knit$set(root.dir = fs::dir_create(tempfile()))
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = TRUE)
+```
+
 <a href="https://www.tidyverse.org/lifecycle/#superseded"><img src="https://img.shields.io/badge/lifecycle-superseded-blue.svg" alt='superseded lifecycle'></a>
 
 [`targets`](https://github.com/ropensci/targets) is the successor of [`drake`](https://github.com/ropensci/drake), an older pipeline tool. [`drake`](https://github.com/ropensci/drake) is [superseded](https://lifecycle.r-lib.org/articles/stages.html#superseded), which means there are no plans for new features or discretionary enhancements, but basic maintenance and support will continue indefinitely. Existing projects that use [`drake`](https://github.com/ropensci/drake) can safely continue to use [`drake`](https://github.com/ropensci/drake), and there is no need to retrofit [`targets`](https://github.com/ropensci/targets). New projects should use [`targets`](https://github.com/ropensci/targets) because it is friendlier and more robust.
@@ -173,10 +178,11 @@ In [`targets`](https://github.com/ropensci/targets), the metadata management sys
 
 [`targets`](https://github.com/ropensci/targets), on the other hand, is more flexible regarding slicing and aggregation. When it branches over an object, it can iterate over vectors, lists, and even data frames grouped with `dplyr::group_by()`. To branch over chunks of a data frame, our data frame target needs to have a special `tar_group` column. We can create this column in our target's return value with the `tar_group()` function.
 
-```{r}
+```{r, eval = TRUE}
 library(dplyr)
 library(targets)
-data.frame(
+library(tibble)
+tibble(
   x = seq_len(6),
   id = rep(letters[seq_len(3)], each = 2)
 ) %>%
@@ -189,7 +195,7 @@ Our actual target has the command above and `iteration = "group"`.
 ```{r, eval = FALSE}
 tar_target(
   data,
-  data.frame(
+  tibble(
     x = seq_len(6),
     id = rep(letters[seq_len(3)], each = 2)
   ) %>%

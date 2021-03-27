@@ -2,7 +2,7 @@
 
 ```{r, message = FALSE, warning = FALSE, echo = FALSE}
 knitr::opts_knit$set(root.dir = fs::dir_create(tempfile()))
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = FALSE)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = TRUE)
 ```
 
 ```{r, message = FALSE, warning = FALSE, echo = FALSE, eval = TRUE}
@@ -28,7 +28,7 @@ tar_script({
 })
 ```
 
-```{r}
+```{r, eval = FALSE}
 # _targets.R
 library(targets)
 list(
@@ -63,7 +63,7 @@ Persistent workers require the [`clustermq`](https://github.com/mschubert/cluste
 
 When you write your `_targets.R` script, be sure to set the `clustermq.scheduler` global option to a a local scheduler like `"multicore"`. Many of the supported schedulers and their configuration details are [listed here](https://mschubert.github.io/clustermq/articles/userguide.html#configuration).
 
-```{r}
+```{r, eval = FALSE}
 # _targets.R
 options(clustermq.scheduler = "multicore")
 list(
@@ -77,7 +77,8 @@ list(
 
 Then, run `tar_make_clustermq()` with the appropriate number of workers.
 
-```{r}
+```{r, eval = FALSE}
+# R console
 tar_make_clustermq(workers = 2)
 ```
 
@@ -90,7 +91,7 @@ For parallel computing on a cluster,
 
 Supply the scheduler option and template file to the `clustermq.scheduler` and `clustermq.template` global options in your `_targets.R` file.
 
-```{r}
+```{r, eval = FALSE}
 # _targets.R
 options(clustermq.scheduler = "sge", clustermq.template = "sge.tmpl")
 list(
@@ -118,7 +119,8 @@ CMQ_AUTH={{ auth }} R --no-save --no-restore -e 'clustermq:::worker("{{ main }}"
 
 Then, run `tar_make_clustermq()` as before.
 
-```{r}
+```{r, eval = FALSE}
+# R console
 tar_make_clustermq(workers = 2)
 ```
 
@@ -142,7 +144,7 @@ CMQ_AUTH={{ auth }} R --no-save --no-restore -e 'clustermq:::worker("{{ main }}"
 
 Then, supply the value of `num_cores` to the `resources` option from within `_targets.R`.
 
-```{r}
+```{r, eval = FALSE}
 # _targets.R
 tar_option_set(resources = list(num_cores = 2))
 list(
@@ -153,7 +155,8 @@ list(
 
 Finally, call `tar_make_clustermq()` normally.
 
-```{r}
+```{r, eval = FALSE}
+# R console
 tar_make_clustermq(workers = 2)
 ```
 
@@ -181,7 +184,7 @@ If you intend to use a cluster, be sure to install the [`future.batchtools`](htt
 
 To parallelize targets over multiple processes on your local machine, declare one of the `future` [plans listed here](https://github.com/HenrikBengtsson/future/#controlling-how-futures-are-resolved) in your `_targets.R` file.
 
-```{r}
+```{r, eval = FALSE}
 # _targets.R
 library(future)
 plan(multisession)
@@ -196,7 +199,8 @@ list(
 
 Then, run `tar_make_future()` with the desired number of workers. Here, the `workers` argument specifies the maximum number of transient workers to allow at a given time. Some `future` plans also have optional `workers` arguments that set their own caps.
 
-```{r}
+```{r, eval = FALSE}
+# R console
 tar_make_future(workers = 2)
 ```
 
@@ -204,7 +208,7 @@ tar_make_future(workers = 2)
 
 To run transient workers on a cluster, first install the [`future.batchtools`](https://github.com/HenrikBengtsson/future.batchtools) package. Then, set one of [these plans](https://github.com/HenrikBengtsson/future.batchtools#choosing-batchtools-backend) in your `_targets.R` file.
 
-```{r}
+```{r, eval = FALSE}
 # _targets.R
 library(future)
 library(future.batchtools)
@@ -251,7 +255,7 @@ exit 0
 
 then you can set the number of cores for individual targets. In the case below, maybe the slow model needs 2 cores to run fast enough.
 
-```{r}
+```{r, eval = FALSE}
 # _targets.R
 library(future)
 library(future.batchtools)
@@ -267,7 +271,8 @@ list(
 
 Then, run `tar_make_future()` as usual.
 
-```{r}
+```{r, eval = FALSE}
+# R console
 tar_make_future(workers = 2)
 ```
 
