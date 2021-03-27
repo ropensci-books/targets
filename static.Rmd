@@ -2,10 +2,10 @@
 
 ```{r, message = FALSE, warning = FALSE, echo = FALSE}
 knitr::opts_knit$set(root.dir = fs::dir_create(tempfile()))
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = TRUE)
 ```
 
-```{r, message = FALSE, warning = FALSE, echo = FALSE}
+```{r, message = FALSE, warning = FALSE, echo = FALSE, eval = TRUE}
 library(targets)
 library(tarchetypes)
 library(tidyverse)
@@ -219,8 +219,6 @@ tar_read(combined_target)
 ```
 
 To use `tar_combine()` and `tar_map()` together in more complicated situations, you may need to supply `unlist = FALSE` to `tar_map()`. That way, `tar_map()` will return a nested list of target objects, and you can combine the ones you want. The pipeline extends our previous `tar_map()` example by combining just the summaries, omitting the analyses from `tar_combine()`. Also note the use of `bind_rows(!!!.x)` below. This is how you supply custom code to combine the return values of other targets. `.x` is a placeholder for the return values, and `!!!` is the "unquote-splice" operator from the `rlang` package.
-
-
 
 ```{r, eval = FALSE, echo = TRUE}
 # _targets.R file:
