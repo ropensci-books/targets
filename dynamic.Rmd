@@ -607,10 +607,11 @@ With dynamic branching, it is super easy to create an enormous number of targets
 [Targetopia](https://wlandau.github.io/targetopia.html) packages usually have functions that support batching for various use cases. In [`stantargets`](https://wlandau.github.io/stantargets/), [`tar_stan_mcmc_rep_summary()`](https://wlandau.github.io/stantargets/articles/mcmc_rep.html) and friends automatically use batching behind the scenes. The user simply needs to select the number of batches and number of reps per batch. Each batch is a dynamic branch with multiple reps, and each rep fits the user's model once and computes summary statistics. 
 
 In [`tarchetypes`](https://docs.ropensci.org/tarchetypes/), [tar_rep()`](https://docs.ropensci.org/tarchetypes/reference/tar_rep.html) is a general-use target factory for dynamic branching. It allows you to repeat arbitrary code over multiple reps split into multiple batches. Each batch gets its own reproducible random number seed generated from the target name (as do all targets) and reps run sequentially within each batch, so the results are reproducible. 
-
 The [`targets-stan`](https://github.com/ropensci/targets-stan) repository has an example of batching implemented from scratch. The goal of the pipeline is to validate a Bayesian model by simulating thousands of dataset, analyzing each with a Bayesian model, and assessing the overall accuracy of the inference. Rather than define a target for each dataset in model, the pipeline breaks up the work into batches, where each batch has multiple datasets or multiple analyses. Here is a version of the pipeline with 40 batches and 25 simulation reps per batch (1000 reps total in a pipeline of 82 targets).
 
 ```{r, eval = FALSE}
+# _targets.R
+library(targets)
 list(
   tar_target(model_file, compile_model("stan/model.stan"), format = "file"),
   tar_target(index_batch, seq_len(40)),
