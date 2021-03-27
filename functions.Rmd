@@ -2,7 +2,7 @@
 
 ```{r, message = FALSE, warning = FALSE, echo = FALSE}
 knitr::opts_knit$set(root.dir = fs::dir_create(tempfile()))
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = FALSE)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = TRUE)
 ```
 
 ```{r, message = FALSE, warning = FALSE, echo = FALSE, eval = TRUE}
@@ -23,7 +23,7 @@ Traditional data analysis projects consist of imperative scripts, often with wit
 
 To run the project, the user runs each of the scripts in order.
 
-```{r}
+```{r, eval = FALSE}
 source("01-data.R")
 source("02-model.R")
 source("03-plot.R")
@@ -31,7 +31,7 @@ source("03-plot.R")
 
 Each script executes a different part of the workflow.
 
-```{r}
+```{r, eval = FALSE}
 # 01-data.R
 library(tidyverse)
 raw_data <- read_csv("data/raw_data.csv", col_types = cols())
@@ -40,7 +40,7 @@ data <- raw_data %>%
 write_csv(data, "data/data.csv")
 ```
 
-```{r}
+```{r, eval = FALSE}
 # 02-model.R
 library(biglm)
 library(tidyverse)
@@ -49,7 +49,7 @@ fit <- biglm(Ozone ~ Wind + Temp, data)
 saveRDS(fit, "fit.rds")
 ```
 
-```{r}
+```{r, eval = FALSE}
 # 03-plot.R
 library(tidyverse)
 data <- read_csv("data/data.csv", col_types = cols())
@@ -75,7 +75,7 @@ In addition, functions are a nice mental model to express data science. A data a
 
 Let us begin with our [imperative](https://en.wikipedia.org/wiki/Imperative_programming) code for data processing. Every time you look at it, you need to read it carefully and relearn what it does. And test it, you need to copy the entire block into the R console.
 
-```{r}
+```{r, eval = FALSE}
 raw_data <- read_csv("data/raw_data.csv", col_types = cols())
 data <- raw_data %>%
   mutate(Ozone = replace_na(Ozone, mean(Ozone, na.rm = TRUE)))
@@ -83,7 +83,7 @@ data <- raw_data %>%
 
 It is better to encapsulate this code in a function.
 
-```{r}
+```{r, eval = FALSE}
 read_and_clean <- function(path) {
   raw_data <- read_csv(path, col_types = cols())
   raw_data %>%
@@ -93,13 +93,13 @@ read_and_clean <- function(path) {
 
 Now, instead of invoking a whole block of text, all you need to do is type a small reusable command. The function name speaks for itself, so you can recall what it does without having to mentally process all the details again.
 
-```{r}
+```{r, eval = FALSE}
 read_and_clean("data/raw_data.csv")
 ```
 
 As with the data, we can write a function to fit a model,
 
-```{r}
+```{r, eval = FALSE}
 fit_model <- function(data) {
   biglm(Ozone ~ Wind + Temp, data)
 }
@@ -107,7 +107,7 @@ fit_model <- function(data) {
 
 and another function to plot the data.
 
-```{r}
+```{r, eval = FALSE}
 create_plot <- function(data) {
   ggplot(data) +
     geom_histogram(aes(x = Ozone)) +
@@ -119,7 +119,7 @@ create_plot <- function(data) {
 
 Without those functions, our pipeline in the [walkthrough chapter](#walkthrough) would look long, complicated, and difficult to digest.
 
-```{r}
+```{r, eval = FALSE}
 # _targets.R
 library(targets)
 source("R/functions.R")
@@ -145,7 +145,7 @@ list(
 
 But if we write our functions in `R/functions.R` and `source()` them into `_targets.R`, the pipeline becomes much easier to read. We can even condense out `raw_data` and `data` targets together without creating a large command.
 
-```{r}
+```{r, eval = FALSE}
 # _targets.R
 library(targets)
 source("R/functions.R")
