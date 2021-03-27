@@ -1,6 +1,6 @@
 ```{r, message = FALSE, warning = FALSE, echo = FALSE}
 knitr::opts_knit$set(root.dir = fs::dir_create(tempfile()))
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = TRUE)
 ```
 
 ```{r, message = FALSE, warning = FALSE, echo = FALSE}
@@ -29,7 +29,7 @@ Regarding the last point above, it is possible to customize the storage format o
 
 Adept pipeline construction requires an understanding of dependency detection. To identify the targets and global objects that each target depends on, the `targets` package uses static code analysis with [`codetools`](https://CRAN.R-project.org/package=codetools), and you can emulate this process with `tar_deps()`. Let us look at the dependencies of the `raw_data` target.
 
-```{r}
+```{r, eval = TRUE}
 tar_deps(function() {
   read_csv(raw_data_file, col_types = cols())
 })

@@ -2,10 +2,10 @@
 
 ```{r, message = FALSE, warning = FALSE, echo = FALSE}
 knitr::opts_knit$set(root.dir = fs::dir_create(tempfile()))
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = TRUE)
 ```
 
-```{r, message = FALSE, warning = FALSE, echo = FALSE}
+```{r, message = FALSE, warning = FALSE, echo = FALSE, eval = TRUE}
 library(targets)
 ```
 
@@ -183,7 +183,7 @@ To connect the target with the pipeline, we define a special kind of target usin
 
 The target definition looks like this.
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, eval = TRUE}
 lines <- c(
   "---",
   "output: html_document",
@@ -197,9 +197,10 @@ lines <- c(
 writeLines(lines, "report.Rmd")
 ```
 
-```{r}
+```{r, eval = TRUE}
 library(tarchetypes)
-tar_render(report, "report.Rmd")
+target <- tar_render(report, "report.Rmd") # Just defines a target object.
+target$command$expr[[1]]
 ```
 
 Because symbols `fit` and `hist` appear in the command, `targets` knows that `report` depends on `fit` and `hist`. When we put the `report` target in the pipeline, these dependency relationships show up in the graph.
@@ -231,6 +232,7 @@ list(
 ```
 
 ```{r, eval = FALSE}
+# R console
 tar_visnetwork()
 ```
 
@@ -257,6 +259,7 @@ list(
 the `report` target will run:
 
 ```{r, eval = FALSE}
+# R console
 rmarkdown::render("report.Rmd", params = list(your_param = your_target))
 ```
 
@@ -321,6 +324,7 @@ print(tar_read(x))
 `tar_render_rep()` creates multiple targets to set up the R Markdown part of the workflow, including a target for the grid of parameters and a [dynamic branching](#dynamic) target to iterate over the parameters in batches. In this case, we have two batches (dynamic branches) and each one renders the report twice.
 
 ```{r, eval = FALSE}
+# R console
 tar_make()
 #> ● run target x
 #> ● run target report_params
