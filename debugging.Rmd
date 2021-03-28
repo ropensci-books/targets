@@ -115,7 +115,7 @@ library(targets)
 library(tidyverse)
 options(crayon.enabled = FALSE)
 tar_option_set(error = "workspace")
-f <- function(arg, value) {
+f <- function(arg, value, ...) {
   stopifnot(arg < 4)
 }
 list(
@@ -177,6 +177,16 @@ arg
 #> Error: object 'arg' not found
 value
 #> Error: object 'value' not found
+```
+
+The workspace also has a useful traceback, and you can retrieve it with `tar_traceback()`. The last couple lines of the traceback are unavoidably cryptic, but they do sometimes contain useful information.
+
+```{r, eval = FALSE}
+tar_traceback(y_05f206d7, characters = 77)
+#> [1] "f(arg = x, value = \"succeeded\", a = 1, b = 2, key = \"my_api_key\")"           
+#> [2] "stopifnot(arg < 4)"             
+#> [3] "stop(simpleError(msg, call = if (p <- sys.parent(1)) sys.call(p)))"              
+#> [4] "(function (condition) \n{\n    state$error <- build_message(condition)\n    stat"
 ```
 
 ## Tradeoffs
