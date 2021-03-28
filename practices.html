@@ -378,10 +378,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="monitoring-the-pipeline" class="section level2" number="5.6">
 <h2><span class="header-section-number">5.6</span> Monitoring the pipeline</h2>
-<p>If you are using <code>targets</code>, then you probably have an intense computation like Bayesian data analysis or machine learning. These tasks take a long time to run, and it is a good idea to monitor them. If you are running the work on your local machine, you can monitor parallel workers with a utility like <code>top</code> or <code>htop</code>. If you are using a traditional HPC scheduler like SLURM or SGE, you can check the status of the workers with <code>squeue</code>, <code>qstat</code>, or similar. But those tools do not always give you a high-level view of what the pipeline has done and which targets are going to run next. For that information, <code>targets</code> has options:</p>
+<p>If you are using <code>targets</code>, then you probably have an intense computation like Bayesian data analysis or machine learning. These tasks take a long time to run, and it is a good idea to monitor them. Here are some options built directly into <code>targets</code>:</p>
 <ol style="list-style-type: decimal">
-<li><code>tar_progress()</code> returns a data frame describing the targets that started, finished running successfully, got canceled, or errored out.</li>
-<li><code>tar_visnetwork()</code> shows this progress information in an interactive <code>visNetwork</code> widget. Set <code>outdated</code> to <code>FALSE</code> to get slightly more detailed progress information.</li>
+<li><code>tar_poll()</code> continuously refreshes a text summary of runtime progress in the R console. Run it in a new R session at the project root directory. (Only supported in <code>targets</code> version 0.3.1.9000 and higher.)</li>
+<li><code>tar_visnetwork()</code>, <code>tar_progress_summary()</code>, and <code>tar_progress()</code> show runtime information at a single moment in time.</li>
 <li><code>tar_watch()</code> launches an Shiny app that automatically refreshes the graph every few seconds. Try it out in the example below.</li>
 </ol>
 <div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="practices.html#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define an example _targets.R file with a slow pipeline.</span></span>
@@ -414,6 +414,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb52-28"><a href="practices.html#cb52-28" aria-hidden="true" tabindex="-1"></a>px <span class="ot">&lt;-</span> <span class="fu">tar_make</span>()</span></code></pre></div>
 <p><img src="man/figures/tar_watch.png" />
 <code>tar_watch_ui()</code> and <code>tar_watch_server()</code> make this functionality available to other apps through a Shiny module.</p>
+<p>Unfortunately, none of these options can tell you if any <a href="hpc.html#hpc">parallel workers</a> or external processes are still running. You can monitor local processes with a utility like <code>top</code> or <code>htop</code>, and traditional HPC scheduler like SLURM or SGE support their own polling utilities such as <code>squeue</code> and <code>qstat</code>. <code>tar_process()</code> and <code>tar_pid()</code> get the process ID of the main R process that last attempted to run the pipeline.</p>
 </div>
 <div id="performance" class="section level2" number="5.7">
 <h2><span class="header-section-number">5.7</span> Performance</h2>
