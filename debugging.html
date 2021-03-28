@@ -383,7 +383,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb31-4"><a href="debugging.html#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb31-5"><a href="debugging.html#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">crayon.enabled =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb31-6"><a href="debugging.html#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">error =</span> <span class="st">&quot;workspace&quot;</span>)</span>
-<span id="cb31-7"><a href="debugging.html#cb31-7" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="cf">function</span>(arg, value) {</span>
+<span id="cb31-7"><a href="debugging.html#cb31-7" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="cf">function</span>(arg, value, ...) {</span>
 <span id="cb31-8"><a href="debugging.html#cb31-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(arg <span class="sc">&lt;</span> <span class="dv">4</span>)</span>
 <span id="cb31-9"><a href="debugging.html#cb31-9" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb31-10"><a href="debugging.html#cb31-10" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
@@ -426,6 +426,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb36-2"><a href="debugging.html#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error: object &#39;arg&#39; not found</span></span>
 <span id="cb36-3"><a href="debugging.html#cb36-3" aria-hidden="true" tabindex="-1"></a>value</span>
 <span id="cb36-4"><a href="debugging.html#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error: object &#39;value&#39; not found</span></span></code></pre></div>
+<p>The workspace also has a useful traceback, and you can retrieve it with <code>tar_traceback()</code>. The last couple lines of the traceback are unavoidably cryptic, but they do sometimes contain useful information.</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="debugging.html#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_traceback</span>(y_05f206d7, <span class="at">characters =</span> <span class="dv">77</span>)</span>
+<span id="cb37-2"><a href="debugging.html#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;f(arg = x, value = \&quot;succeeded\&quot;, a = 1, b = 2, key = \&quot;my_api_key\&quot;)&quot;           </span></span>
+<span id="cb37-3"><a href="debugging.html#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2] &quot;stopifnot(arg &lt; 4)&quot;             </span></span>
+<span id="cb37-4"><a href="debugging.html#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [3] &quot;stop(simpleError(msg, call = if (p &lt;- sys.parent(1)) sys.call(p)))&quot;              </span></span>
+<span id="cb37-5"><a href="debugging.html#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [4] &quot;(function (condition) \n{\n    state$error &lt;- build_message(condition)\n    stat&quot;</span></span></code></pre></div>
 </div>
 <div id="tradeoffs" class="section level2" number="3.5">
 <h2><span class="header-section-number">3.5</span> Tradeoffs</h2>
