@@ -89,10 +89,10 @@ tar_option_set(
 
 ## Monitoring the pipeline
 
-If you are using `targets`, then you probably have an intense computation like Bayesian data analysis or machine learning. These tasks take a long time to run, and it is a good idea to monitor them. If you are running the work on your local machine, you can monitor parallel workers with a utility like `top` or `htop`. If you are using a traditional HPC scheduler like SLURM or SGE, you can check the status of the workers with `squeue`, `qstat`, or similar. But those tools do not always give you a high-level view of what the pipeline has done and which targets are going to run next. For that information, `targets` has options:
+If you are using `targets`, then you probably have an intense computation like Bayesian data analysis or machine learning. These tasks take a long time to run, and it is a good idea to monitor them. Here are some options built directly into `targets`:
 
-1. `tar_progress()` returns a data frame describing the targets that started, finished running successfully, got canceled, or errored out.
-1. `tar_visnetwork()` shows this progress information in an interactive `visNetwork` widget. Set `outdated` to `FALSE` to get slightly more detailed progress information.
+1. `tar_poll()` continuously shows runtime progress in the R console. Run it in a new R session at the project root directory. (Only supported in `targets` version 0.3.1.9000 and higher.)
+1. `tar_visnetwork()`, `tar_progress_summary()`, and `tar_progress()` show runtime information at a single moment in time.
 1. `tar_watch()` launches an Shiny app that automatically refreshes the graph every few seconds. Try it out in the example below.
 
 ```{r, eval = FALSE}
@@ -129,6 +129,7 @@ px <- tar_make()
 ![](./man/figures/tar_watch.png)
 `tar_watch_ui()` and `tar_watch_server()` make this functionality available to other apps through a Shiny module.
 
+Unfortunately, none of these options can tell you if any [parallel workers](#hpc) or external processes are still running. You can monitor local processes with a utility like `top` or `htop`, and traditional HPC scheduler like SLURM or SGE support their own polling utilities such as `squeue` and `qstat`. `tar_process()` and `tar_pid()` get the process ID of the main R process that last attempted to run the pipeline.
 
 ## Performance
 
