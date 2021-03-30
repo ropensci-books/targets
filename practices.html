@@ -185,7 +185,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="5" data-path="practices.html"><a href="practices.html"><i class="fa fa-check"></i><b>5</b> Best practices</a>
 <ul>
-<li class="chapter" data-level="5.1" data-path="practices.html"><a href="practices.html#how-to-define-good-targets"><i class="fa fa-check"></i><b>5.1</b> How to define good targets</a></li>
+<li class="chapter" data-level="5.1" data-path="practices.html"><a href="practices.html#how-to-define-a-good-target"><i class="fa fa-check"></i><b>5.1</b> How to define a good target</a>
+<ul>
+<li class="chapter" data-level="5.1.1" data-path="practices.html"><a href="practices.html#what-a-target-should-do"><i class="fa fa-check"></i><b>5.1.1</b> What a target should do</a></li>
+<li class="chapter" data-level="5.1.2" data-path="practices.html"><a href="practices.html#what-a-target-should-return"><i class="fa fa-check"></i><b>5.1.2</b> What a target should return</a></li>
+<li class="chapter" data-level="5.1.3" data-path="practices.html"><a href="practices.html#how-much-a-target-should-do"><i class="fa fa-check"></i><b>5.1.3</b> How much a target should do</a></li>
+</ul></li>
 <li class="chapter" data-level="5.2" data-path="practices.html"><a href="practices.html#dependencies"><i class="fa fa-check"></i><b>5.2</b> Dependencies</a></li>
 <li class="chapter" data-level="5.3" data-path="practices.html"><a href="practices.html#loading-and-configuring-r-packages"><i class="fa fa-check"></i><b>5.3</b> Loading and configuring R packages</a></li>
 <li class="chapter" data-level="5.4" data-path="practices.html"><a href="practices.html#packages-based-invalidation"><i class="fa fa-check"></i><b>5.4</b> Packages-based invalidation</a></li>
@@ -306,9 +311,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="practices" class="section level1" number="5">
 <h1><span class="header-section-number">Chapter 5</span> Best practices</h1>
 <p>This chapter describes additional best practices for developing and maintaining <code>targets</code>-powered projects.</p>
-<div id="how-to-define-good-targets" class="section level2" number="5.1">
-<h2><span class="header-section-number">5.1</span> How to define good targets</h2>
-<p>Targets are imperative high-level steps of the workflow that run the work you define in your functions. Like functions, targets generally focus on datasets, analyses, and summaries. The <code>targets</code> package automatically skips targets that are already up to date, so you should strive to define targets that maximize time savings. Good targets usually</p>
+<div id="how-to-define-a-good-target" class="section level2" number="5.1">
+<h2><span class="header-section-number">5.1</span> How to define a good target</h2>
+<div id="what-a-target-should-do" class="section level3" number="5.1.1">
+<h3><span class="header-section-number">5.1.1</span> What a target should do</h3>
+<p>Like a good function, a good target generally does one of three things:</p>
+<ol style="list-style-type: decimal">
+<li>Create a dataset.</li>
+<li>Analyze a dataset with a model.</li>
+<li>Summarize an analysis or dataset.</li>
+</ol>
+</div>
+<div id="what-a-target-should-return" class="section level3" number="5.1.2">
+<h3><span class="header-section-number">5.1.2</span> What a target should return</h3>
+<p>Targets are imperative high-level steps of the workflow that run the work you define in your functions. Like a good pure function, a good target should return a single value and not produce side effects. (The exception is <a href="files.html#files">output file targets</a> which create files and return their paths.) Avoid modifying the global environment with calls to <code>data()</code> or <code>source()</code>. If you need to source scripts to define global objects, please do so at the top of <code>_targets.R</code> just like <code>source("R/functions.R")</code> from the <a href="walkthrough.html#walkthrough">walkthrough vignette</a>.</p>
+</div>
+<div id="how-much-a-target-should-do" class="section level3" number="5.1.3">
+<h3><span class="header-section-number">5.1.3</span> How much a target should do</h3>
+<p>The <code>targets</code> package automatically skips targets that are already up to date, so it is best to define targets that maximize time savings. Good targets usually</p>
 <ol style="list-style-type: decimal">
 <li>Are large enough to subtract a decent amount of runtime when skipped.</li>
 <li>Are small enough that some targets can be skipped even if others need to run.</li>
@@ -321,6 +341,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ol></li>
 </ol>
 <p>Regarding the last point above, it is possible to customize the storage format of the target. For details, enter <code>?tar_target</code> in the console and scroll down to the description of the <code>format</code> argument.</p>
+</div>
 </div>
 <div id="dependencies" class="section level2" number="5.2">
 <h2><span class="header-section-number">5.2</span> Dependencies</h2>
@@ -380,7 +401,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">5.6</span> Monitoring the pipeline</h2>
 <p>If you are using <code>targets</code>, then you probably have an intense computation like Bayesian data analysis or machine learning. These tasks take a long time to run, and it is a good idea to monitor them. Here are some options built directly into <code>targets</code>:</p>
 <ol style="list-style-type: decimal">
-<li><code>tar_poll()</code> continuously shows runtime progress in the R console. Run it in a new R session at the project root directory. (Only supported in <code>targets</code> version 0.3.1.9000 and higher.)</li>
+<li><code>tar_poll()</code> continuously refreshes a text summary of runtime progress in the R console. Run it in a new R session at the project root directory. (Only supported in <code>targets</code> version 0.3.1.9000 and higher.)</li>
 <li><code>tar_visnetwork()</code>, <code>tar_progress_summary()</code>, and <code>tar_progress()</code> show runtime information at a single moment in time.</li>
 <li><code>tar_watch()</code> launches an Shiny app that automatically refreshes the graph every few seconds. Try it out in the example below.</li>
 </ol>
