@@ -13,6 +13,8 @@ This chapter describes additional best practices for developing and maintaining 
 
 ## How to define good targets
 
+Targets are high-level steps of the workflow that run the work you define in your functions. A target runs some R code and saves the returned R object to storage, usually a single file inside `_targets/objects/`. 
+
 ### What a target should do
 
 Like a good function, a good target generally does one of three things:
@@ -21,9 +23,34 @@ Like a good function, a good target generally does one of three things:
 2. Analyze a dataset with a model.
 3. Summarize an analysis or dataset.
 
-### What a target should return
+If a function gets too long, you can split it into nested sub-functions that make your larger function easier to read and maintain.
 
-Targets are imperative high-level steps of the workflow that run the work you define in your functions. Like a good pure function, a good target should return a single value and not produce side effects. (The exception is [output file targets](#files) which create files and return their paths.) Avoid modifying the global environment with calls to `data()` or `source()`. If you need to source scripts to define global objects, please do so at the top of `_targets.R` just like `source("R/functions.R")` from the [walkthrough vignette](#walkthrough).
+### Return value
+
+The return value of a target should be an R object that can be saved properly with the storage format you choose using the `format` argument of `tar_target()` or `tar_option_set()`. For example, if the format is `"rds"` (default), then the target should return an R object that can be saved with `saveRDS()` and safely loaded properly into another session. Please avoid returning [non-exportable objects](https://cran.r-project.org/web/packages/future/vignettes/future-4-non-exportable-objects.html) such as connection objects, `Rcpp` pointers, `xgboost` matrices, and `greta` models. [^Special exceptions are granted to Keras and Torch models, which can be safely returned from targets if you specify `format = "keras"` or `format = "torch"`.] As a workaround, you can write custom functions to create temporary instances of these non-exportable objects and clean them up after the task is done. The following sketch creates a target that returns a database table while managing a transient connection object.
+
+```{r, eval = FALSE}
+# _targets.R
+library(targets)
+
+get_from_database <- function(table, ...) {
+  con <- DBI::dbConnect(...)
+  on.exit(close(con))
+  dbReadTable(con, table)
+}
+
+list(
+  tar_target(
+    table_from_database,
+    get_from_database("my_table", ...), # ... has use-case-specific arguments.
+    format = "feather" # Requires that the return value is a data frame.
+  )
+)
+```
+
+## Side effects
+
+Like a good pure function, a good target should return a single value and not produce side effects. (The exception is [output file targets](#files) which create files and return their paths.) Avoid modifying the global environment with calls to `data()` or `source()`. If you need to source scripts to define global objects, please do so at the top of `_targets.R` just like `source("R/functions.R")` from the [walkthrough vignette](#walkthrough).
 
 ### How much a target should do
 
