@@ -188,16 +188,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="5.1" data-path="practices.html"><a href="practices.html#how-to-define-good-targets"><i class="fa fa-check"></i><b>5.1</b> How to define good targets</a>
 <ul>
 <li class="chapter" data-level="5.1.1" data-path="practices.html"><a href="practices.html#what-a-target-should-do"><i class="fa fa-check"></i><b>5.1.1</b> What a target should do</a></li>
-<li class="chapter" data-level="5.1.2" data-path="practices.html"><a href="practices.html#what-a-target-should-return"><i class="fa fa-check"></i><b>5.1.2</b> What a target should return</a></li>
-<li class="chapter" data-level="5.1.3" data-path="practices.html"><a href="practices.html#how-much-a-target-should-do"><i class="fa fa-check"></i><b>5.1.3</b> How much a target should do</a></li>
+<li class="chapter" data-level="5.1.2" data-path="practices.html"><a href="practices.html#return-value"><i class="fa fa-check"></i><b>5.1.2</b> Return value</a></li>
 </ul></li>
-<li class="chapter" data-level="5.2" data-path="practices.html"><a href="practices.html#dependencies"><i class="fa fa-check"></i><b>5.2</b> Dependencies</a></li>
-<li class="chapter" data-level="5.3" data-path="practices.html"><a href="practices.html#loading-and-configuring-r-packages"><i class="fa fa-check"></i><b>5.3</b> Loading and configuring R packages</a></li>
-<li class="chapter" data-level="5.4" data-path="practices.html"><a href="practices.html#packages-based-invalidation"><i class="fa fa-check"></i><b>5.4</b> Packages-based invalidation</a></li>
-<li class="chapter" data-level="5.5" data-path="practices.html"><a href="practices.html#working-with-tools-outside-r"><i class="fa fa-check"></i><b>5.5</b> Working with tools outside R</a></li>
-<li class="chapter" data-level="5.6" data-path="practices.html"><a href="practices.html#monitoring-the-pipeline"><i class="fa fa-check"></i><b>5.6</b> Monitoring the pipeline</a></li>
-<li class="chapter" data-level="5.7" data-path="practices.html"><a href="practices.html#performance"><i class="fa fa-check"></i><b>5.7</b> Performance</a></li>
-<li class="chapter" data-level="5.8" data-path="practices.html"><a href="practices.html#cleaning-up"><i class="fa fa-check"></i><b>5.8</b> Cleaning up</a></li>
+<li class="chapter" data-level="5.2" data-path="practices.html"><a href="practices.html#side-effects"><i class="fa fa-check"></i><b>5.2</b> Side effects</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="practices.html"><a href="practices.html#how-much-a-target-should-do"><i class="fa fa-check"></i><b>5.2.1</b> How much a target should do</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="practices.html"><a href="practices.html#dependencies"><i class="fa fa-check"></i><b>5.3</b> Dependencies</a></li>
+<li class="chapter" data-level="5.4" data-path="practices.html"><a href="practices.html#loading-and-configuring-r-packages"><i class="fa fa-check"></i><b>5.4</b> Loading and configuring R packages</a></li>
+<li class="chapter" data-level="5.5" data-path="practices.html"><a href="practices.html#packages-based-invalidation"><i class="fa fa-check"></i><b>5.5</b> Packages-based invalidation</a></li>
+<li class="chapter" data-level="5.6" data-path="practices.html"><a href="practices.html#working-with-tools-outside-r"><i class="fa fa-check"></i><b>5.6</b> Working with tools outside R</a></li>
+<li class="chapter" data-level="5.7" data-path="practices.html"><a href="practices.html#monitoring-the-pipeline"><i class="fa fa-check"></i><b>5.7</b> Monitoring the pipeline</a></li>
+<li class="chapter" data-level="5.8" data-path="practices.html"><a href="practices.html#performance"><i class="fa fa-check"></i><b>5.8</b> Performance</a></li>
+<li class="chapter" data-level="5.9" data-path="practices.html"><a href="practices.html#cleaning-up"><i class="fa fa-check"></i><b>5.9</b> Cleaning up</a></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="files.html"><a href="files.html"><i class="fa fa-check"></i><b>6</b> External files and literate programming</a>
 <ul>
@@ -313,6 +316,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>This chapter describes additional best practices for developing and maintaining <code>targets</code>-powered projects.</p>
 <div id="how-to-define-good-targets" class="section level2" number="5.1">
 <h2><span class="header-section-number">5.1</span> How to define good targets</h2>
+<p>Targets are high-level steps of the workflow that run the work you define in your functions. A target runs some R code and saves the returned R object to storage, usually a single file inside <code>_targets/objects/</code>.</p>
 <div id="what-a-target-should-do" class="section level3" number="5.1.1">
 <h3><span class="header-section-number">5.1.1</span> What a target should do</h3>
 <p>Like a good function, a good target generally does one of three things:</p>
@@ -321,13 +325,34 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Analyze a dataset with a model.</li>
 <li>Summarize an analysis or dataset.</li>
 </ol>
+<p>If a function gets too long, you can split it into nested sub-functions that make your larger function easier to read and maintain.</p>
 </div>
-<div id="what-a-target-should-return" class="section level3" number="5.1.2">
-<h3><span class="header-section-number">5.1.2</span> What a target should return</h3>
-<p>Targets are imperative high-level steps of the workflow that run the work you define in your functions. Like a good pure function, a good target should return a single value and not produce side effects. (The exception is <a href="files.html#files">output file targets</a> which create files and return their paths.) Avoid modifying the global environment with calls to <code>data()</code> or <code>source()</code>. If you need to source scripts to define global objects, please do so at the top of <code>_targets.R</code> just like <code>source("R/functions.R")</code> from the <a href="walkthrough.html#walkthrough">walkthrough vignette</a>.</p>
+<div id="return-value" class="section level3" number="5.1.2">
+<h3><span class="header-section-number">5.1.2</span> Return value</h3>
+<p>The return value of a target should be an R object that can be saved properly with the storage format you choose using the <code>format</code> argument of <code>tar_target()</code> or <code>tar_option_set()</code>. For example, if the format is <code>"rds"</code> (default), then the target should return an R object that can be saved with <code>saveRDS()</code> and safely loaded properly into another session. Please avoid returning <a href="https://cran.r-project.org/web/packages/future/vignettes/future-4-non-exportable-objects.html">non-exportable objects</a> such as connection objects, <code>Rcpp</code> pointers, <code>xgboost</code> matrices, and <code>greta</code> models. [^Special exceptions are granted to Keras and Torch models, which can be safely returned from targets if you specify <code>format = "keras"</code> or <code>format = "torch"</code>.] As a workaround, you can write custom functions to create temporary instances of these non-exportable objects and clean them up after the task is done. The following sketch creates a target that returns a database table while managing a transient connection object.</p>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="practices.html#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb50-2"><a href="practices.html#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb50-3"><a href="practices.html#cb50-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-4"><a href="practices.html#cb50-4" aria-hidden="true" tabindex="-1"></a>get_from_database <span class="ot">&lt;-</span> <span class="cf">function</span>(table, ...) {</span>
+<span id="cb50-5"><a href="practices.html#cb50-5" aria-hidden="true" tabindex="-1"></a>  con <span class="ot">&lt;-</span> DBI<span class="sc">::</span><span class="fu">dbConnect</span>(...)</span>
+<span id="cb50-6"><a href="practices.html#cb50-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">on.exit</span>(<span class="fu">close</span>(con))</span>
+<span id="cb50-7"><a href="practices.html#cb50-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dbReadTable</span>(con, table)</span>
+<span id="cb50-8"><a href="practices.html#cb50-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb50-9"><a href="practices.html#cb50-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-10"><a href="practices.html#cb50-10" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb50-11"><a href="practices.html#cb50-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb50-12"><a href="practices.html#cb50-12" aria-hidden="true" tabindex="-1"></a>    table_from_database,</span>
+<span id="cb50-13"><a href="practices.html#cb50-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">get_from_database</span>(<span class="st">&quot;my_table&quot;</span>, ...), <span class="co"># ... has use-case-specific arguments.</span></span>
+<span id="cb50-14"><a href="practices.html#cb50-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">format =</span> <span class="st">&quot;feather&quot;</span> <span class="co"># Requires that the return value is a data frame.</span></span>
+<span id="cb50-15"><a href="practices.html#cb50-15" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb50-16"><a href="practices.html#cb50-16" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 </div>
-<div id="how-much-a-target-should-do" class="section level3" number="5.1.3">
-<h3><span class="header-section-number">5.1.3</span> How much a target should do</h3>
+</div>
+<div id="side-effects" class="section level2" number="5.2">
+<h2><span class="header-section-number">5.2</span> Side effects</h2>
+<p>Like a good pure function, a good target should return a single value and not produce side effects. (The exception is <a href="files.html#files">output file targets</a> which create files and return their paths.) Avoid modifying the global environment with calls to <code>data()</code> or <code>source()</code>. If you need to source scripts to define global objects, please do so at the top of <code>_targets.R</code> just like <code>source("R/functions.R")</code> from the <a href="walkthrough.html#walkthrough">walkthrough vignette</a>.</p>
+<div id="how-much-a-target-should-do" class="section level3" number="5.2.1">
+<h3><span class="header-section-number">5.2.1</span> How much a target should do</h3>
 <p>The <code>targets</code> package automatically skips targets that are already up to date, so it is best to define targets that maximize time savings. Good targets usually</p>
 <ol style="list-style-type: decimal">
 <li>Are large enough to subtract a decent amount of runtime when skipped.</li>
@@ -343,13 +368,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Regarding the last point above, it is possible to customize the storage format of the target. For details, enter <code>?tar_target</code> in the console and scroll down to the description of the <code>format</code> argument.</p>
 </div>
 </div>
-<div id="dependencies" class="section level2" number="5.2">
-<h2><span class="header-section-number">5.2</span> Dependencies</h2>
+<div id="dependencies" class="section level2" number="5.3">
+<h2><span class="header-section-number">5.3</span> Dependencies</h2>
 <p>Adept pipeline construction requires an understanding of dependency detection. To identify the targets and global objects that each target depends on, the <code>targets</code> package uses static code analysis with <a href="https://CRAN.R-project.org/package=codetools"><code>codetools</code></a>, and you can emulate this process with <code>tar_deps()</code>. Let us look at the dependencies of the <code>raw_data</code> target.</p>
-<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="practices.html#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_deps</span>(<span class="cf">function</span>() {</span>
-<span id="cb50-2"><a href="practices.html#cb50-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">read_csv</span>(raw_data_file, <span class="at">col_types =</span> <span class="fu">cols</span>())</span>
-<span id="cb50-3"><a href="practices.html#cb50-3" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb50-4"><a href="practices.html#cb50-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;{&quot;             &quot;cols&quot;          &quot;raw_data_file&quot; &quot;read_csv&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="practices.html#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_deps</span>(<span class="cf">function</span>() {</span>
+<span id="cb51-2"><a href="practices.html#cb51-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">read_csv</span>(raw_data_file, <span class="at">col_types =</span> <span class="fu">cols</span>())</span>
+<span id="cb51-3"><a href="practices.html#cb51-3" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb51-4"><a href="practices.html#cb51-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;{&quot;             &quot;cols&quot;          &quot;raw_data_file&quot; &quot;read_csv&quot;</span></span></code></pre></div>
 <p>The <code>raw_data</code> target depends on target <code>raw_data_file</code> because the command for <code>raw_data</code> mentions the symbol <code>raw_data_file</code>. Similarly, if we were to create a user-defined <code>read_csv()</code> function, the <code>raw_data</code> target would also depend on <code>read_csv()</code> and any other user-defined global functions and objects nested inside <code>read_csv()</code>. Changes to any of these objects would cause the <code>raw_data</code> target to rerun on the next <code>tar_make()</code>.</p>
 <p>Not all of the objects from <code>tar_deps()</code> actually register as dependencies. When it comes to detecting dependencies, <code>targets</code> only recognizes</p>
 <ol style="list-style-type: decimal">
@@ -358,8 +383,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ol>
 <p>This process excludes many objects from dependency detection. For example, both <code>{</code> and <code>cols()</code> are excluded because they are defined in the environments of packages (<code>base</code> and <code>readr</code>, respectively). Functions and objects from packages are ignored unless you supply a package environment to the <code>envir</code> argument of <code>tar_option_set()</code> when you call it in <code>_targets.R</code>, e.g. <code>tar_option_set(envir = getNamespace("packageName"))</code>. You should only set <code>envir</code> if you write your own package to contain your whole data analysis project.</p>
 </div>
-<div id="loading-and-configuring-r-packages" class="section level2" number="5.3">
-<h2><span class="header-section-number">5.3</span> Loading and configuring R packages</h2>
+<div id="loading-and-configuring-r-packages" class="section level2" number="5.4">
+<h2><span class="header-section-number">5.4</span> Loading and configuring R packages</h2>
 <p>For most pipelines, it is straightforward to load the R packages that your targets need in order to run.</p>
 <ol style="list-style-type: decimal">
 <li>Call <code>library()</code> at the top of <code>_targets.R</code> to load each package the conventional way, or</li>
@@ -370,8 +395,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ol>
 <p>Some package management workflows are more complicated. If your use special configuration with <a href="https://github.com/r-lib/conflicted">conflicted</a>, <a href="https://klmr.me/box/"><code>box</code></a>, <a href="https://import.rticulate.org/"><code>import</code></a>, or similar utility, please do your configuration inside a project-level <code>.Rprofile</code> file instead of the <code>_targets.R</code> file. In addition, if you use distributed workers inside external containers (Docker, Singularity, AWS AMI, etc.) make sure each container has a copy of this same <code>.Rprofile</code> file where the R worker process spawns. This approach is ensures that all <a href="hpc.html#hpc">remote workers</a> are configured the same way as the local main process.</p>
 </div>
-<div id="packages-based-invalidation" class="section level2" number="5.4">
-<h2><span class="header-section-number">5.4</span> Packages-based invalidation</h2>
+<div id="packages-based-invalidation" class="section level2" number="5.5">
+<h2><span class="header-section-number">5.5</span> Packages-based invalidation</h2>
 <p>When it comes time to decide which targets to rerun or skip, the default behavior is to ignore changes to external R packages. Usually, local package libraries do not need to change very often, and it is best to maintain a reproducible project library using <a href="https://rstudio.github.io/renv/articles/renv.html"><code>renv</code></a>.</p>
 <p>However, sometimes you may wish to invalidate certain targets based on changes to the contents of certain packages. Example scenarios:</p>
 <ol style="list-style-type: decimal">
@@ -383,62 +408,62 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Fully install these packages with <code>install.packages()</code> or equivalent. <code>devtools::load_all()</code> is insufficient because it does not make the packages available to <a href="hpc.html#hpc">parallel workers</a>.</li>
 <li>Write the following in your <code>_targets.R</code> file:</li>
 </ol>
-<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="practices.html#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
-<span id="cb51-2"><a href="practices.html#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb51-3"><a href="practices.html#cb51-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(</span>
-<span id="cb51-4"><a href="practices.html#cb51-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">packages =</span> <span class="fu">c</span>(<span class="st">&quot;package1&quot;</span>, <span class="st">&quot;package2&quot;</span>, ...), <span class="co"># `...` is for other packages.</span></span>
-<span id="cb51-5"><a href="practices.html#cb51-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">imports =</span> <span class="fu">c</span>(<span class="st">&quot;package1&quot;</span>, <span class="st">&quot;package2&quot;</span>)</span>
-<span id="cb51-6"><a href="practices.html#cb51-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb51-7"><a href="practices.html#cb51-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Write the rest of _targets.R below.</span></span>
-<span id="cb51-8"><a href="practices.html#cb51-8" aria-hidden="true" tabindex="-1"></a><span class="co"># ...</span></span></code></pre></div>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="practices.html#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb52-2"><a href="practices.html#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb52-3"><a href="practices.html#cb52-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(</span>
+<span id="cb52-4"><a href="practices.html#cb52-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">packages =</span> <span class="fu">c</span>(<span class="st">&quot;package1&quot;</span>, <span class="st">&quot;package2&quot;</span>, ...), <span class="co"># `...` is for other packages.</span></span>
+<span id="cb52-5"><a href="practices.html#cb52-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">imports =</span> <span class="fu">c</span>(<span class="st">&quot;package1&quot;</span>, <span class="st">&quot;package2&quot;</span>)</span>
+<span id="cb52-6"><a href="practices.html#cb52-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb52-7"><a href="practices.html#cb52-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Write the rest of _targets.R below.</span></span>
+<span id="cb52-8"><a href="practices.html#cb52-8" aria-hidden="true" tabindex="-1"></a><span class="co"># ...</span></span></code></pre></div>
 <p><code>packages = c("package1", "package2", ...)</code> tells <code>targets</code> to call <code>library(package1)</code>, <code>library(package2)</code>, etc. before running each target. <code>imports = c("package1", "package2")</code> tells <code>targets</code> to dive into the environments of <code>package1</code> and <code>package2</code> and reproducibly track all the objects it finds. For example, if you define a function <code>f()</code> in <code>package1</code>, then you should see a function node for <code>f()</code> in the graph produced by <code>tar_visnetwork(targets_only = FALSE)</code>, and targets downstream of <code>f()</code> will invalidate if you install an update to <code>package1</code> with a new version of <code>f()</code>. The next time you call <code>tar_make()</code>, those invalidated targets will automatically rerun.</p>
 </div>
-<div id="working-with-tools-outside-r" class="section level2" number="5.5">
-<h2><span class="header-section-number">5.5</span> Working with tools outside R</h2>
+<div id="working-with-tools-outside-r" class="section level2" number="5.6">
+<h2><span class="header-section-number">5.6</span> Working with tools outside R</h2>
 <p><code>targets</code> lives and operates entirely within the R interpreter, so working with outside tools is a matter of finding the right functionality in R itself. <code>system2()</code> and <a href="https://processx.r-lib.org"><code>processx</code></a> can invoke system commands outside R, and you can include them in your targets’ R commands to run shell scripts, Python scripts, etc. There are also specialized R packages to retrieve data from remote sources and invoke web APIs, including <a href="https://github.com/ropensci/rnoaa"><code>rnoaa</code></a>, <a href="https://github.com/ropensci/ots"><code>ots</code></a>, and <a href="https://github.com/cloudyr/aws.s3"><code>aws.s3</code></a>.</p>
 </div>
-<div id="monitoring-the-pipeline" class="section level2" number="5.6">
-<h2><span class="header-section-number">5.6</span> Monitoring the pipeline</h2>
+<div id="monitoring-the-pipeline" class="section level2" number="5.7">
+<h2><span class="header-section-number">5.7</span> Monitoring the pipeline</h2>
 <p>If you are using <code>targets</code>, then you probably have an intense computation like Bayesian data analysis or machine learning. These tasks take a long time to run, and it is a good idea to monitor them. Here are some options built directly into <code>targets</code>:</p>
 <ol style="list-style-type: decimal">
 <li><code>tar_poll()</code> continuously refreshes a text summary of runtime progress in the R console. Run it in a new R session at the project root directory. (Only supported in <code>targets</code> version 0.3.1.9000 and higher.)</li>
 <li><code>tar_visnetwork()</code>, <code>tar_progress_summary()</code>, and <code>tar_progress()</code> show runtime information at a single moment in time.</li>
 <li><code>tar_watch()</code> launches an Shiny app that automatically refreshes the graph every few seconds. Try it out in the example below.</li>
 </ol>
-<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="practices.html#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define an example _targets.R file with a slow pipeline.</span></span>
-<span id="cb52-2"><a href="practices.html#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb52-3"><a href="practices.html#cb52-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_script</span>({</span>
-<span id="cb52-4"><a href="practices.html#cb52-4" aria-hidden="true" tabindex="-1"></a>  sleep_run <span class="ot">&lt;-</span> <span class="cf">function</span>(...) {</span>
-<span id="cb52-5"><a href="practices.html#cb52-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Sys.sleep</span>(<span class="dv">10</span>)</span>
-<span id="cb52-6"><a href="practices.html#cb52-6" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb52-7"><a href="practices.html#cb52-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
-<span id="cb52-8"><a href="practices.html#cb52-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(settings, <span class="fu">sleep_run</span>()),</span>
-<span id="cb52-9"><a href="practices.html#cb52-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(data1, <span class="fu">sleep_run</span>(settings)),</span>
-<span id="cb52-10"><a href="practices.html#cb52-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(data2, <span class="fu">sleep_run</span>(settings)),</span>
-<span id="cb52-11"><a href="practices.html#cb52-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(data3, <span class="fu">sleep_run</span>(settings)),</span>
-<span id="cb52-12"><a href="practices.html#cb52-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(model1, <span class="fu">sleep_run</span>(data1)),</span>
-<span id="cb52-13"><a href="practices.html#cb52-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(model2, <span class="fu">sleep_run</span>(data2)),</span>
-<span id="cb52-14"><a href="practices.html#cb52-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(model3, <span class="fu">sleep_run</span>(data3)),</span>
-<span id="cb52-15"><a href="practices.html#cb52-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(figure1, <span class="fu">sleep_run</span>(model1)),</span>
-<span id="cb52-16"><a href="practices.html#cb52-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(figure2, <span class="fu">sleep_run</span>(model2)),</span>
-<span id="cb52-17"><a href="practices.html#cb52-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(figure3, <span class="fu">sleep_run</span>(model3)),</span>
-<span id="cb52-18"><a href="practices.html#cb52-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(conclusions, <span class="fu">sleep_run</span>(<span class="fu">c</span>(figure1, figure2, figure3)))</span>
-<span id="cb52-19"><a href="practices.html#cb52-19" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb52-20"><a href="practices.html#cb52-20" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb52-21"><a href="practices.html#cb52-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-22"><a href="practices.html#cb52-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Launch the app in a background process.</span></span>
-<span id="cb52-23"><a href="practices.html#cb52-23" aria-hidden="true" tabindex="-1"></a><span class="co"># You may need to refresh the browser if the app is slow to start.</span></span>
-<span id="cb52-24"><a href="practices.html#cb52-24" aria-hidden="true" tabindex="-1"></a><span class="co"># The graph automatically refreshes every 10 seconds</span></span>
-<span id="cb52-25"><a href="practices.html#cb52-25" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_watch</span>(<span class="at">seconds =</span> <span class="dv">10</span>, <span class="at">outdated =</span> <span class="cn">FALSE</span>, <span class="at">targets_only =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb52-26"><a href="practices.html#cb52-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-27"><a href="practices.html#cb52-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Now run the pipeline and watch the graph change.</span></span>
-<span id="cb52-28"><a href="practices.html#cb52-28" aria-hidden="true" tabindex="-1"></a>px <span class="ot">&lt;-</span> <span class="fu">tar_make</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="practices.html#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define an example _targets.R file with a slow pipeline.</span></span>
+<span id="cb53-2"><a href="practices.html#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb53-3"><a href="practices.html#cb53-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_script</span>({</span>
+<span id="cb53-4"><a href="practices.html#cb53-4" aria-hidden="true" tabindex="-1"></a>  sleep_run <span class="ot">&lt;-</span> <span class="cf">function</span>(...) {</span>
+<span id="cb53-5"><a href="practices.html#cb53-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Sys.sleep</span>(<span class="dv">10</span>)</span>
+<span id="cb53-6"><a href="practices.html#cb53-6" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb53-7"><a href="practices.html#cb53-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb53-8"><a href="practices.html#cb53-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(settings, <span class="fu">sleep_run</span>()),</span>
+<span id="cb53-9"><a href="practices.html#cb53-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(data1, <span class="fu">sleep_run</span>(settings)),</span>
+<span id="cb53-10"><a href="practices.html#cb53-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(data2, <span class="fu">sleep_run</span>(settings)),</span>
+<span id="cb53-11"><a href="practices.html#cb53-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(data3, <span class="fu">sleep_run</span>(settings)),</span>
+<span id="cb53-12"><a href="practices.html#cb53-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(model1, <span class="fu">sleep_run</span>(data1)),</span>
+<span id="cb53-13"><a href="practices.html#cb53-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(model2, <span class="fu">sleep_run</span>(data2)),</span>
+<span id="cb53-14"><a href="practices.html#cb53-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(model3, <span class="fu">sleep_run</span>(data3)),</span>
+<span id="cb53-15"><a href="practices.html#cb53-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(figure1, <span class="fu">sleep_run</span>(model1)),</span>
+<span id="cb53-16"><a href="practices.html#cb53-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(figure2, <span class="fu">sleep_run</span>(model2)),</span>
+<span id="cb53-17"><a href="practices.html#cb53-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(figure3, <span class="fu">sleep_run</span>(model3)),</span>
+<span id="cb53-18"><a href="practices.html#cb53-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(conclusions, <span class="fu">sleep_run</span>(<span class="fu">c</span>(figure1, figure2, figure3)))</span>
+<span id="cb53-19"><a href="practices.html#cb53-19" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb53-20"><a href="practices.html#cb53-20" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb53-21"><a href="practices.html#cb53-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-22"><a href="practices.html#cb53-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Launch the app in a background process.</span></span>
+<span id="cb53-23"><a href="practices.html#cb53-23" aria-hidden="true" tabindex="-1"></a><span class="co"># You may need to refresh the browser if the app is slow to start.</span></span>
+<span id="cb53-24"><a href="practices.html#cb53-24" aria-hidden="true" tabindex="-1"></a><span class="co"># The graph automatically refreshes every 10 seconds</span></span>
+<span id="cb53-25"><a href="practices.html#cb53-25" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_watch</span>(<span class="at">seconds =</span> <span class="dv">10</span>, <span class="at">outdated =</span> <span class="cn">FALSE</span>, <span class="at">targets_only =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb53-26"><a href="practices.html#cb53-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-27"><a href="practices.html#cb53-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Now run the pipeline and watch the graph change.</span></span>
+<span id="cb53-28"><a href="practices.html#cb53-28" aria-hidden="true" tabindex="-1"></a>px <span class="ot">&lt;-</span> <span class="fu">tar_make</span>()</span></code></pre></div>
 <p><img src="man/figures/tar_watch.png" />
 <code>tar_watch_ui()</code> and <code>tar_watch_server()</code> make this functionality available to other apps through a Shiny module.</p>
 <p>Unfortunately, none of these options can tell you if any <a href="hpc.html#hpc">parallel workers</a> or external processes are still running. You can monitor local processes with a utility like <code>top</code> or <code>htop</code>, and traditional HPC scheduler like SLURM or SGE support their own polling utilities such as <code>squeue</code> and <code>qstat</code>. <code>tar_process()</code> and <code>tar_pid()</code> get the process ID of the main R process that last attempted to run the pipeline.</p>
 </div>
-<div id="performance" class="section level2" number="5.7">
-<h2><span class="header-section-number">5.7</span> Performance</h2>
+<div id="performance" class="section level2" number="5.8">
+<h2><span class="header-section-number">5.8</span> Performance</h2>
 <p>If your pipeline has several thousand targets, functions like <code>tar_make()</code>, <code>tar_outdated()</code>, and <code>tar_visnetwork()</code> may take longer to run. There is an inevitable per-target runtime cost because package needs to check the code and data of each target individually. If this overhead becomes too much, consider batching your work into a smaller group of heavier targets. Using your custom functions, you can make each target perform multiple iterations of a task that was previously given to targets one at a time. For details and an example, please see the discussion on batching at the bottom of the <a href="dynamic.html#dynamic">dynamic branching chapter</a>.</p>
 <p>Alternatively, if you see slowness in your project, you can contribute to the package with a profiling study. These contributions are great because they help improve the package. Here are the recommended steps.</p>
 <ol style="list-style-type: decimal">
@@ -448,8 +473,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Post the flame graph, along with any code and data you can share, to the <a href="https://github.com/ropensci/targets/issues"><code>targets</code> package issue tracker</a>. The maintainer will have a look and try to make the package faster for your use case if speedups are possible.</li>
 </ol>
 </div>
-<div id="cleaning-up" class="section level2" number="5.8">
-<h2><span class="header-section-number">5.8</span> Cleaning up</h2>
+<div id="cleaning-up" class="section level2" number="5.9">
+<h2><span class="header-section-number">5.9</span> Cleaning up</h2>
 <p>There are <a href="https://docs.ropensci.org/targets/reference/index.html#section-clean">multiple functions</a> to help you manually remove data or force targets to rerun.</p>
 <ul>
 <li><a href="https://docs.ropensci.org/targets/reference/tar_destroy.html"><code>tar_destroy()</code></a> is by far the most commonly used cleaning function. It removes the <code>_targets/</code> data store completely, deleting all the results from <a href="https://docs.ropensci.org/targets/reference/tar_make.html"><code>tar_make()</code></a> except for external files. Use it if you intend to start the pipeline from scratch without any trace of a previous run.</li>
