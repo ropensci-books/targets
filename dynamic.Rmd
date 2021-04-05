@@ -60,7 +60,7 @@ tar_visnetwork()
 tar_make()
 ```
 
-Above, targets `w`, `x`, and `z` are called **stems** because they provide values for other targets to branch over. Target `y` is a **pattern** because it defines multiple sub-targets, or **branches**, based on the return values of the targets named inside `map()` or `cross()`. If we read target `y` into memory, all the branches will load and get aggregated according to the `iteration` argument of `tar_target()`.
+Above, targets `w`, `x`, and `z` are called **stems** because they do not create branches themselves. Target `y` is a **pattern** because it creates its own **branches** like `y_4096b6a8`. A branch is a special kind of target whose dependencies are slices of the targets mentioned in `pattern = map(...)` etc. If we read target `y` into memory, all the branches will load and automatically aggregate as a vector.^[To use list aggregation, write `tar_target(y, w + x, pattern = map(w, x), iteration = "list")` in the pipeline.]
 
 ```{r, eval = TRUE}
 tar_read(y)
@@ -318,7 +318,7 @@ For more information on how the row grouping mechanism works, see the section on
 
 ## Iteration
 
-There are many ways to slice up a stem for branching, and there are many ways to aggregate the branches of a pattern.^[Slicing is always the same when we branch over an existing pattern. If we have `tar_target(y, x, pattern = map(x))` and `x` is another pattern, then each branch of `y` always gets a branch of `x` regardless of the iteration method. Likewise, the aggregation of stems does not depend on the iteration method because every stem is already aggregated.] The `iteration` argument of `tar_target()` controls the splitting and aggregation protocol on a target-by-target basis, and you can set the default for all targets with the analogous argument of `tar_option_set()`.
+The `iteration` arguments of `tar_target()` and `tar_option_set()` control the slicing of stems and the aggregation of patterns. For example, if you write a stem target with `tar_target(x, fun(), iteration = "list")`, then all downstream targets that branch over `x` will give list-like slices `x[[1]]`, `x[[2]]`, etc. to the individual branches instead of the default vector-like slices `x[1]`, `x[2]`, etc. Likewise, for a pattern defined with `tar_target(y, fun(x), pattern = map(x), iteration = "list")`, `tar_read(y)` will return a list instead of a vector, and a downstream target like `tar_target(y, fun(z))` will treat `z` as a list instead of a vector.^[`iteration` does not control the aggregation of stems because stems are already aggregated, so there is nothing to be done. Likewise, it does not control the splitting of patterns because the `pattern` argument of `tar_target()` already does that.]
 
 ### Vector iteration
 
