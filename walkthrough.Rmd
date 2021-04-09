@@ -154,7 +154,7 @@ Both graphing functions above visualize the underlying directed acyclic graph (D
 
 ## Run the pipeline
 
-`tar_make()` runs the workflow. It creates a fresh clean external R process, reads `_targets.R` to learn about the pipeline, runs the correct targets in the correct order given by the graph, and saves the necessary data to the `_targets/` data store.
+`tar_make()` runs the workflow. It creates a fresh clean external R process, reads `_targets.R` to learn about the pipeline, runs the correct targets in the correct order given by the graph, and saves the necessary data to the `_targets/` data store. ^[In `targets` version 0.3.1.9000 and above, you can set the path of the local data store to something other than `_targets/`. A project-level `_targets.yaml` file keeps track of the path. Functions [`tar_config_set()`](https://docs.ropensci.org/targets/reference/tar_config_set.html) and [`tar_config_get()`](https://docs.ropensci.org/targets/reference/tar_config_get.html) can help.]
 
 ```{r, eval = TRUE}
 tar_make()

@@ -13,10 +13,10 @@ The `targets` package automatically stores data and automatically responds to ch
 
 ## Internal files
 
-Each project's data lives in the `_targets/` folder in the root directory (where you call `tar_make()`). The files in the `_targets/` look like this:
+Each project has a local data store. This is usually a special `_targets/` folder at the project root directory (where you call `tar_make()`). In `targets` version 0.3.1.9000 and above, you can set the location to something other than `_targets/` using [`tar_config_set()`](https://docs.ropensci.org/targets/reference/tar_config_set.html), which writes to a project-level `_targets.yaml` file at the project root. The files in the data store are structured as follows.
 
 ```
-_targets/
+_targets/ # Can be customized with tar_config_set().
 ├── meta/
 ├────── meta
 ├────── process
