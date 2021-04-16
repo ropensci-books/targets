@@ -132,22 +132,18 @@ tar_make()
 tar_read(z_comp)
 ```
 
-And here is a demonstration of dynamic slicing.
+With `slice()`, you can select pieces of a pattern or upstream target as follows.
 
 ```{r, echo = FALSE, eval = TRUE}
 tar_script({
   options(crayon.enabled = FALSE)
   list(
     tar_target(a_data, letters),
+    tar_target(b_data, LETTERS),
     tar_target(
-      a_sliced_data,
-      a_data,
-      pattern = slice(a_data, index = seq(5, 15))
-    ),
-    tar_target(
-      a_some_branches,
-      toupper(a_sliced_data),
-      pattern = slice(a_sliced_data, index = c(2, 3))
+      c_data,
+      paste(a_data, b_data),
+      pattern = slice(cross(a_data, b_data), index = seq(2, 3))
     )
   )
 })
@@ -158,15 +154,11 @@ tar_script({
 library(targets)
 list(
   tar_target(a_data, letters),
+  tar_target(b_data, LETTERS),
   tar_target(
-    a_sliced_data,
-    a_data,
-    pattern = slice(a_data, index = seq(5, 15))
-  ),
-  tar_target(
-    a_some_branches,
-    toupper(a_sliced_data),
-    pattern = slice(a_sliced_data, index = c(2, 3))
+    c_data,
+    paste(a_data, b_data),
+    pattern = slice(cross(a_data, b_data), index = seq(2, 3))
   )
 )
 ```
@@ -178,12 +170,7 @@ tar_make()
 
 ```{r, eval = TRUE}
 # R console
-tar_read(a_sliced_data)
-```
-
-```{r, eval = TRUE}
-# R console
-tar_read(a_some_branches)
+tar_read(c_data)
 ```
 
 ## Branch provenance
