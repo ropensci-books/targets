@@ -61,11 +61,11 @@ Persistent workers require the [`clustermq`](https://github.com/mschubert/cluste
 
 ### Clustermq locally
 
-When you write your `_targets.R` script, be sure to set the `clustermq.scheduler` global option to a a local scheduler like `"multicore"`. Many of the supported schedulers and their configuration details are [listed here](https://mschubert.github.io/clustermq/articles/userguide.html#configuration).
+When you write your `_targets.R` script, be sure to set the `clustermq.scheduler` global option to a a local scheduler like `"multiprocess"`. Many of the supported schedulers and their configuration details are [listed here](https://mschubert.github.io/clustermq/articles/userguide.html#configuration).
 
 ```{r, eval = FALSE}
 # _targets.R
-options(clustermq.scheduler = "multicore")
+options(clustermq.scheduler = "multiprocess")
 list(
   tar_target(data, get_data()),
   tar_target(fast_fit, fit_small_model(data)),
