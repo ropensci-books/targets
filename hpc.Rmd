@@ -51,6 +51,10 @@ The following sections cover the mechanics and configuration details of high-per
 
 ## Clustermq
 
+[`tar_make_clustermq()`](https://docs.ropensci.org/targets/reference/tar_make_clustermq.html) uses the [`clustermq`](https://mschubert.github.io/clustermq/) package, and prior familiarity with [`clustermq`](https://mschubert.github.io/clustermq/) is extremely helpful for configuring `targets` and diagnosing errors. So before you use [`tar_make_clustermq()`](https://docs.ropensci.org/targets/reference/tar_make_clustermq.html), please read the documentation at <https://mschubert.github.io/clustermq/> and try out [`clustermq`](https://mschubert.github.io/clustermq/) directly. If you plan to use a scheduler like SLURM or SGE, please configure and experiment with [`clustermq`](https://mschubert.github.io/clustermq/) on your scheduler without `targets`. And if you later experience issues with [`tar_make_clustermq()`](https://docs.ropensci.org/targets/reference/tar_make_clustermq.html), try to isolate the problem by creating a [reproducible example](https://www.tidyverse.org/help/) that uses [`clustermq`](https://mschubert.github.io/clustermq/) and not `targets`. Peeling back layers can help isolate problems and point toward specific solutions, and `targets` is usually one of the outer layers.
+
+### Persistent workers
+
 `tar_make_clustermq()` uses persistent workers. That means all the parallel processes launch together as soon as there is a target to build, and all the processes keep running until the pipeline winds down. The video clip below visualizes the concept.
 
 <script src="https://fast.wistia.com/embed/medias/ycczhxwkjw.jsonp" async></script><script src="https://fast.wistia.com/assets/external/E-v1.js" async></script><div class="wistia_responsive_padding" style="padding:56.21% 0 0 0;position:relative;"><div class="wistia_responsive_wrapper" style="height:100%;left:0;position:absolute;top:0;width:100%;"><div class="wistia_embed wistia_async_ycczhxwkjw videoFoam=true" style="height:100%;position:relative;width:100%"><div class="wistia_swatch" style="height:100%;left:0;opacity:0;overflow:hidden;position:absolute;top:0;transition:opacity 200ms;width:100%;"><img src="https://fast.wistia.com/embed/medias/ycczhxwkjw/swatch" style="filter:blur(5px);height:100%;object-fit:contain;width:100%;" alt="" onload="this.parentNode.style.opacity=1;" /></div></div></div></div>
@@ -163,6 +167,10 @@ tar_make_clustermq(workers = 2)
 This particular use case comes up when you have custom parallel computing within targets and need to take advantage of multiple cores.
 
 ## Future
+
+[`tar_make_future()`](https://docs.ropensci.org/targets/reference/tar_make_future.html) uses the [`future`](https://future.futureverse.org/) package, and prior familiarity with [`future`](https://future.futureverse.org/) is extremely helpful for configuring `targets` and diagnosing errors. So before you use [`tar_make_future()`](https://docs.ropensci.org/targets/reference/tar_make_future.html), please read the documentation at <https://future.futureverse.org/> and try out [`future`](https://future.futureverse.org/) directly, ideally with backends like [`future.callr`](https://future.callr.futureverse.org/) and possibly [`future.batchtools`](https://future.batchtools.futureverse.org/). If you plan to use a scheduler like SLURM or SGE, please configure and experiment with [`future`](https://future.futureverse.org/) on your scheduler without `targets`. And if you later experience issues with [`tar_make_future()`](https://docs.ropensci.org/targets/reference/tar_make_future.html), try to isolate the problem by creating a [reproducible example](https://www.tidyverse.org/help/) that uses [`future`](https://future.futureverse.org/) and not `targets`. Same goes for [`future.batchtools`](https://future.batchtools.futureverse.org/) if applicable. Peeling back layers can help isolate problems and point toward specific solutions, and `targets` is usually one of the outer layers.
+
+### Transient workers
 
 `tar_make_future()` runs transient workers. That means each target gets its own worker which initializes when the target begins and terminates when the target ends. The following video clip demonstrates the concept.
 
