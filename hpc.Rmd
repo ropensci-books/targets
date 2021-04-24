@@ -199,6 +199,7 @@ install.packages("future.callr")
 ### Future locally
 
 To parallelize targets over multiple processes on your local machine, declare a  `future` plan in your `_targets.R` file. The `callr` plan from the  [`future.callr`](https://future.callr.futureverse.org) package is recommended.^[Some alternative local future plans are [listed here](https://github.com/HenrikBengtsson/future/#controlling-how-futures-are-resolved).]
+It is crucial that `future::plan()` is called in the `_targets.R` file itself - defining a plan interactively before invoking `tar_make_future()` does not leverage the future package.
 
 ```{r, eval = FALSE}
 # _targets.R
