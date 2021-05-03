@@ -320,3 +320,82 @@ tar_script({
 ```{r, eval = TRUE}
 tar_manifest(fields = command)
 ```
+
+## Hooks
+
+Hooks are supported in `tarchtypes` version 0.2.0 and above, and they allow you to prepend or wrap code in multiple targets at a time. For example, `tar_hook_before()` is a robust way to invoke the [`conflicted`](https://conflicted.r-lib.org) package to resolve namespace conflicts that works with [distributed computing](#hpc) and does not require a project-level `.Rprofile` file.
+
+```{r, echo = FALSE, eval = TRUE}
+tar_script({
+  library(tarchetypes)
+  library(magrittr)
+  tar_option_set(packages = c("conflicted", "dplyr"))
+  list(
+    tar_target(data, get_time_series_data()),
+    tar_target(analysis1, analyze(data)),
+    tar_target(analysis2, analyze(data))
+  ) %>%
+    tar_hook_before(
+      hook = conflicted_prefer("filter", "dplyr"),
+      names = starts_with("analysis")
+    )
+})
+```
+
+```{r, echo = TRUE, eval = FALSE}
+# _targets.R file
+library(tarchetypes)
+library(magrittr)
+tar_option_set(packages = c("conflicted", "dplyr"))
+source("R/functions.R")
+list(
+  tar_target(data, get_time_series_data()),
+  tar_target(analysis1, analyze_months(data)),
+  tar_target(analysis2, analyze_weeks(data))
+) %>%
+  tar_hook_before(
+    hook = conflicted_prefer("filter", "dplyr"),
+    names = starts_with("analysis")
+  )
+```
+
+```{r, eval = TRUE}
+# R console
+targets::tar_manifest(fields = command)
+```
+
+Similarly, `tar_hook_outer()` wraps expressions around target commands, and `tar_hook_inner()` wraps expressions around target dependencies. These hooks could potentially help encrypt targets before storage in `_targets/` and decrypt targets before retrieval, as demonstrated in the sketch below. 
+
+Data security is the sole responsibility of the user and not the responsibility of `targets`, `tarchetypes`, or related pipeline packages. You as the user are responsible for validating your own target specifications and custom code and applying additional security precautions as appropriate for the situation.
+
+```{r, echo = FALSE, eval = TRUE}
+tar_script({
+  library(tarchetypes)
+  library(magrittr)
+  list(
+    tar_target(data1, get_data1()),
+    tar_target(data2, get_data2()),
+    tar_target(analysis, analyze(data1, data2))
+  ) %>%
+    tar_hook_outer(encrypt(.x, threads = 2)) %>%
+    tar_hook_inner(decrypt(.x))
+})
+```
+
+```{r, echo = TRUE, eval = FALSE}
+# _targets.R file
+library(tarchetypes)
+library(magrittr)
+list(
+  tar_target(data1, get_data1()),
+  tar_target(data2, get_data2()),
+  tar_target(analysis, analyze(data1, data2))
+) %>%
+  tar_hook_outer(encrypt(.x, threads = 2)) %>%
+  tar_hook_inner(decrypt(.x))
+```
+
+```{r, eval = TRUE}
+# R console
+targets::tar_manifest(fields = command)
+```
