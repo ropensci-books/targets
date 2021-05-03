@@ -332,9 +332,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Each script executes a different part of the workflow.</p>
 <div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="functions.html#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 01-data.R</span></span>
 <span id="cb40-2"><a href="functions.html#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb40-3"><a href="functions.html#cb40-3" aria-hidden="true" tabindex="-1"></a>raw_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/raw_data.csv&quot;</span>, <span class="at">col_types =</span> <span class="fu">cols</span>())</span>
-<span id="cb40-4"><a href="functions.html#cb40-4" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> raw_data <span class="sc">%&gt;%</span></span>
-<span id="cb40-5"><a href="functions.html#cb40-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Ozone =</span> <span class="fu">replace_na</span>(Ozone, <span class="fu">mean</span>(Ozone, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)))</span>
+<span id="cb40-3"><a href="functions.html#cb40-3" aria-hidden="true" tabindex="-1"></a>raw_data <span class="ot">&lt;-</span> <span class="st">&quot;data/raw_data.csv&quot;</span> <span class="sc">%&gt;%</span></span>
+<span id="cb40-4"><a href="functions.html#cb40-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">read_csv</span>(<span class="at">col_types =</span> <span class="fu">cols</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb40-5"><a href="functions.html#cb40-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Ozone))</span>
 <span id="cb40-6"><a href="functions.html#cb40-6" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(data, <span class="st">&quot;data/data.csv&quot;</span>)</span></code></pre></div>
 <div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="functions.html#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 02-model.R</span></span>
 <span id="cb41-2"><a href="functions.html#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(biglm)</span>
@@ -364,14 +364,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="writing-functions" class="section level2" number="4.3">
 <h2><span class="header-section-number">4.3</span> Writing functions</h2>
 <p>Let us begin with our <a href="https://en.wikipedia.org/wiki/Imperative_programming">imperative</a> code for data processing. Every time you look at it, you need to read it carefully and relearn what it does. And test it, you need to copy the entire block into the R console.</p>
-<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="functions.html#cb43-1" aria-hidden="true" tabindex="-1"></a>raw_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/raw_data.csv&quot;</span>, <span class="at">col_types =</span> <span class="fu">cols</span>())</span>
-<span id="cb43-2"><a href="functions.html#cb43-2" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> raw_data <span class="sc">%&gt;%</span></span>
-<span id="cb43-3"><a href="functions.html#cb43-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Ozone =</span> <span class="fu">replace_na</span>(Ozone, <span class="fu">mean</span>(Ozone, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)))</span></code></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="functions.html#cb43-1" aria-hidden="true" tabindex="-1"></a>raw_data <span class="ot">&lt;-</span> <span class="st">&quot;data/raw_data.csv&quot;</span> <span class="sc">%&gt;%</span></span>
+<span id="cb43-2"><a href="functions.html#cb43-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">read_csv</span>(<span class="at">col_types =</span> <span class="fu">cols</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb43-3"><a href="functions.html#cb43-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Ozone))</span></code></pre></div>
 <p>It is better to encapsulate this code in a function.</p>
 <div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="functions.html#cb44-1" aria-hidden="true" tabindex="-1"></a>read_and_clean <span class="ot">&lt;-</span> <span class="cf">function</span>(path) {</span>
-<span id="cb44-2"><a href="functions.html#cb44-2" aria-hidden="true" tabindex="-1"></a>  raw_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(path, <span class="at">col_types =</span> <span class="fu">cols</span>())</span>
-<span id="cb44-3"><a href="functions.html#cb44-3" aria-hidden="true" tabindex="-1"></a>  raw_data <span class="sc">%&gt;%</span></span>
-<span id="cb44-4"><a href="functions.html#cb44-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">Ozone =</span> <span class="fu">replace_na</span>(Ozone, <span class="fu">mean</span>(Ozone, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)))</span>
+<span id="cb44-2"><a href="functions.html#cb44-2" aria-hidden="true" tabindex="-1"></a>  path <span class="sc">%&gt;%</span></span>
+<span id="cb44-3"><a href="functions.html#cb44-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">read_csv</span>(<span class="at">col_types =</span> <span class="fu">cols</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb44-4"><a href="functions.html#cb44-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Ozone))</span>
 <span id="cb44-5"><a href="functions.html#cb44-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p>Now, instead of invoking a whole block of text, all you need to do is type a small reusable command. The function name speaks for itself, so you can recall what it does without having to mentally process all the details again.</p>
 <div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="functions.html#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_and_clean</span>(<span class="st">&quot;data/raw_data.csv&quot;</span>)</span></code></pre></div>
@@ -400,7 +400,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb48-9"><a href="functions.html#cb48-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
 <span id="cb48-10"><a href="functions.html#cb48-10" aria-hidden="true" tabindex="-1"></a>    data,</span>
 <span id="cb48-11"><a href="functions.html#cb48-11" aria-hidden="true" tabindex="-1"></a>    raw_data <span class="sc">%&gt;%</span></span>
-<span id="cb48-12"><a href="functions.html#cb48-12" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">Ozone =</span> <span class="fu">replace_na</span>(Ozone, <span class="fu">mean</span>(Ozone, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)))</span>
+<span id="cb48-12"><a href="functions.html#cb48-12" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Ozone))</span>
 <span id="cb48-13"><a href="functions.html#cb48-13" aria-hidden="true" tabindex="-1"></a>  ),</span>
 <span id="cb48-14"><a href="functions.html#cb48-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(fit, <span class="fu">biglm</span>(Ozone <span class="sc">~</span> Wind <span class="sc">+</span> Temp, data)),</span>
 <span id="cb48-15"><a href="functions.html#cb48-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
