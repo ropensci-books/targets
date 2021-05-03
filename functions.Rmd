@@ -34,9 +34,9 @@ Each script executes a different part of the workflow.
 ```{r, eval = FALSE}
 # 01-data.R
 library(tidyverse)
-raw_data <- read_csv("data/raw_data.csv", col_types = cols())
-data <- raw_data %>%
-  mutate(Ozone = replace_na(Ozone, mean(Ozone, na.rm = TRUE)))
+raw_data <- "data/raw_data.csv" %>%
+  read_csv(col_types = cols()) %>%
+  filter(!is.na(Ozone))
 write_csv(data, "data/data.csv")
 ```
 
@@ -76,18 +76,18 @@ In addition, functions are a nice mental model to express data science. A data a
 Let us begin with our [imperative](https://en.wikipedia.org/wiki/Imperative_programming) code for data processing. Every time you look at it, you need to read it carefully and relearn what it does. And test it, you need to copy the entire block into the R console.
 
 ```{r, eval = FALSE}
-raw_data <- read_csv("data/raw_data.csv", col_types = cols())
-data <- raw_data %>%
-  mutate(Ozone = replace_na(Ozone, mean(Ozone, na.rm = TRUE)))
+raw_data <- "data/raw_data.csv" %>%
+  read_csv(col_types = cols()) %>%
+  filter(!is.na(Ozone))
 ```
 
 It is better to encapsulate this code in a function.
 
 ```{r, eval = FALSE}
 read_and_clean <- function(path) {
-  raw_data <- read_csv(path, col_types = cols())
-  raw_data %>%
-    mutate(Ozone = replace_na(Ozone, mean(Ozone, na.rm = TRUE)))
+  path %>%
+    read_csv(col_types = cols()) %>%
+    filter(!is.na(Ozone))
 }
 ```
 
@@ -131,7 +131,7 @@ list(
   tar_target(
     data,
     raw_data %>%
-      mutate(Ozone = replace_na(Ozone, mean(Ozone, na.rm = TRUE)))
+      filter(!is.na(Ozone))
   ),
   tar_target(fit, biglm(Ozone ~ Wind + Temp, data)),
   tar_target(
