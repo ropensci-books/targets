@@ -178,7 +178,7 @@ tar_outdated()
 
 ## Changes
 
-The `targets` package notices when you make changes to your workflow, and `tar_make()` only runs the targets that need to build. There are custom rules called "cues" that `targets` uses to decide whether a target needs to rerun. ^[For the full details on cues, read the "Details" section of the `tar_cue()` help file. (Enter `?targets::tar_cue` into your R console.)]
+The `targets` package notices when you make changes to code and data, and those changes affect which targets rerun and which targets are skipped. Internally, special rules called "cues" decide whether a target reruns. The [`tar_cue()`](https://docs.ropensci.org/targets/reference/tar_cue.html) function lets you suppress some of these cues, and the [`tarchetypes`](https://docs.ropensci.org/tarchetypes/) package supports nuanced [cue factories](https://docs.ropensci.org/tarchetypes/reference/index.html#section-cues) and [target factories](https://docs.ropensci.org/tarchetypes/reference/index.html#section-targets-with-custom-invalidation-rules) to further customize target invalidation behavior. The [`tar_cue()`](https://docs.ropensci.org/targets/reference/tar_cue.html) function documentation [explains cues in detail](https://docs.ropensci.org/targets/reference/tar_cue.html#target-invalidation-rules), as well as [specifics on how `targets` detects changes to upstream dependencies](https://docs.ropensci.org/targets/reference/tar_cue.html#dependency-based-invalidation-and-user-defined-functions).
 
 ### Change code
 
