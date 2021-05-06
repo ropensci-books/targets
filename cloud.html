@@ -400,7 +400,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Log into <a href="https://s3.console.aws.amazon.com/s3" class="uri">https://s3.console.aws.amazon.com/s3</a>. You should see objects <code>_targets/objects/data</code> and <code>_targets/objects/mean_file</code> in your bucket. To download this data locally, use <code>tar_read()</code> and <code>tar_load()</code> like before. These functions download the data from the bucket and load it into R.</p>
 <div class="sourceCode" id="cb168"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb168-1"><a href="cloud.html#cb168-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(data)</span>
 <span id="cb168-2"><a href="cloud.html#cb168-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] -0.74654607 -0.59593497 -1.57229983  0.40915323  0.02579023</span></span></code></pre></div>
-<p>The <code>"aws_file"</code> format is different from the other AWS-powered formats. <code>tar_read()</code> and <code>tar_load()</code> download the object to a temporary file and return the path so you can process it yourself.<a href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a></p>
+<p>The <code>"aws_file"</code> format is different from the other AWS-powered formats. <code>tar_read()</code> and <code>tar_load()</code> download the object to a temporary file and return the path so you can process it yourself.<a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a></p>
 <div class="sourceCode" id="cb169"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb169-1"><a href="cloud.html#cb169-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_load</span>(mean_file)</span>
 <span id="cb169-2"><a href="cloud.html#cb169-2" aria-hidden="true" tabindex="-1"></a>mean_file</span>
 <span id="cb169-3"><a href="cloud.html#cb169-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;_targets/scratch/mean_fileff086e70876d&quot;</span></span></code></pre></div>
@@ -416,8 +416,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div class="footnotes">
 <hr />
-<ol start="8">
-<li id="fn8"><p>Non-“file” AWS formats also download temporary files, but they are immediately discarded after they are read into memory.<a href="cloud.html#fnref8" class="footnote-back">↩︎</a></p></li>
+<ol start="7">
+<li id="fn7"><p>Non-“file” AWS formats also download temporary files, but they are immediately discarded after they are read into memory.<a href="cloud.html#fnref7" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 <div style = "background: #1C356D; color: white; padding: 10px 10px 10px 25px; font-size: 1em; width: 100%;">
