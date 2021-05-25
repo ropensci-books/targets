@@ -21,6 +21,10 @@ Right now, `targets` does not have built-in cloud-based distributed computing su
 
 `targets` supports cloud storage on a target-by-target basis using [Amazon Simple Storage Service, or S3](https://aws.amazon.com/s3/). After a target completes, the return value is uploaded to a user-defined S3 bucket [S3 bucket](https://docs.aws.amazon.com/AmazonS3/latest/user-guide/create-bucket.html). Follow these steps to get started.
 
+### A disclaimer
+
+Please be aware of your resource and monetary constraints when using AWS. The AWS-backed storage capabilities in `targets` sends individual data files to S3 buckets on a target-by-target basis and periodically queries the HTML header data. For a large number of S3-backed targets, the pipeline may slow down, and it may incur monetary costs due to a large number of API requests, both for uploading new targets and checking if existing targets are up to date. It may be best to select a small number of important or large targets to send to S3 buckets, while putting the majority of small targets under source code version control, e.g. Git/GitHub. To put the whole `_targets/` data store in a single S3 bucket, including metadata, it is best to run the pipeline locally first and then invoke `aws.s3::s3sync()` or similar.
+
 ### Communicate with your collaborators
 
 An S3 bucket can be a shared file space. If you have access to someone else's bucket, running their pipeline could accidentally overwrite their cloud data. It is best if you and your colleagues decide in advance who will write to the bucket at any given time.
