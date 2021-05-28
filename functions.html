@@ -176,11 +176,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.1" data-path="markdown.html"><a href="markdown.html#access"><i class="fa fa-check"></i><b>3.1</b> Access</a></li>
 <li class="chapter" data-level="3.2" data-path="markdown.html"><a href="markdown.html#modes"><i class="fa fa-check"></i><b>3.2</b> Modes</a></li>
 <li class="chapter" data-level="3.3" data-path="markdown.html"><a href="markdown.html#example"><i class="fa fa-check"></i><b>3.3</b> Example</a></li>
-<li class="chapter" data-level="3.4" data-path="markdown.html"><a href="markdown.html#setup"><i class="fa fa-check"></i><b>3.4</b> Setup</a></li>
-<li class="chapter" data-level="3.5" data-path="markdown.html"><a href="markdown.html#globals"><i class="fa fa-check"></i><b>3.5</b> Globals</a></li>
-<li class="chapter" data-level="3.6" data-path="markdown.html"><a href="markdown.html#targets"><i class="fa fa-check"></i><b>3.6</b> Targets</a></li>
-<li class="chapter" data-level="3.7" data-path="markdown.html"><a href="markdown.html#run-the-pipeline-1"><i class="fa fa-check"></i><b>3.7</b> Run the pipeline</a></li>
-<li class="chapter" data-level="3.8" data-path="markdown.html"><a href="markdown.html#inspect-the-output"><i class="fa fa-check"></i><b>3.8</b> Inspect the output</a></li>
+<li class="chapter" data-level="3.4" data-path="markdown.html"><a href="markdown.html#packages"><i class="fa fa-check"></i><b>3.4</b> Packages</a></li>
+<li class="chapter" data-level="3.5" data-path="markdown.html"><a href="markdown.html#setup"><i class="fa fa-check"></i><b>3.5</b> Setup</a></li>
+<li class="chapter" data-level="3.6" data-path="markdown.html"><a href="markdown.html#globals"><i class="fa fa-check"></i><b>3.6</b> Globals</a></li>
+<li class="chapter" data-level="3.7" data-path="markdown.html"><a href="markdown.html#targets"><i class="fa fa-check"></i><b>3.7</b> Targets</a></li>
+<li class="chapter" data-level="3.8" data-path="markdown.html"><a href="markdown.html#run-the-pipeline-1"><i class="fa fa-check"></i><b>3.8</b> Run the pipeline</a></li>
+<li class="chapter" data-level="3.9" data-path="markdown.html"><a href="markdown.html#inspect-the-output"><i class="fa fa-check"></i><b>3.9</b> Inspect the output</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="debugging.html"><a href="debugging.html"><i class="fa fa-check"></i><b>4</b> Debugging</a>
 <ul>
@@ -340,29 +341,29 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 02-model.R
 03-plot.R</code></pre>
 <p>To run the project, the user runs each of the scripts in order.</p>
-<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="functions.html#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;01-data.R&quot;</span>)</span>
-<span id="cb51-2"><a href="functions.html#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;02-model.R&quot;</span>)</span>
-<span id="cb51-3"><a href="functions.html#cb51-3" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;03-plot.R&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="functions.html#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;01-data.R&quot;</span>)</span>
+<span id="cb52-2"><a href="functions.html#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;02-model.R&quot;</span>)</span>
+<span id="cb52-3"><a href="functions.html#cb52-3" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;03-plot.R&quot;</span>)</span></code></pre></div>
 <p>Each script executes a different part of the workflow.</p>
-<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="functions.html#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 01-data.R</span></span>
-<span id="cb52-2"><a href="functions.html#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb52-3"><a href="functions.html#cb52-3" aria-hidden="true" tabindex="-1"></a>raw_data <span class="ot">&lt;-</span> <span class="st">&quot;data/raw_data.csv&quot;</span> <span class="sc">%&gt;%</span></span>
-<span id="cb52-4"><a href="functions.html#cb52-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">read_csv</span>(<span class="at">col_types =</span> <span class="fu">cols</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb52-5"><a href="functions.html#cb52-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Ozone))</span>
-<span id="cb52-6"><a href="functions.html#cb52-6" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(data, <span class="st">&quot;data/data.csv&quot;</span>)</span></code></pre></div>
-<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="functions.html#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 02-model.R</span></span>
-<span id="cb53-2"><a href="functions.html#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(biglm)</span>
-<span id="cb53-3"><a href="functions.html#cb53-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb53-4"><a href="functions.html#cb53-4" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/data.csv&quot;</span>, <span class="at">col_types =</span> <span class="fu">cols</span>())</span>
-<span id="cb53-5"><a href="functions.html#cb53-5" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">biglm</span>(Ozone <span class="sc">~</span> Wind <span class="sc">+</span> Temp, data)</span>
-<span id="cb53-6"><a href="functions.html#cb53-6" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(fit, <span class="st">&quot;fit.rds&quot;</span>)</span></code></pre></div>
-<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="functions.html#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 03-plot.R</span></span>
-<span id="cb54-2"><a href="functions.html#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb54-3"><a href="functions.html#cb54-3" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/data.csv&quot;</span>, <span class="at">col_types =</span> <span class="fu">cols</span>())</span>
-<span id="cb54-4"><a href="functions.html#cb54-4" aria-hidden="true" tabindex="-1"></a>hist <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(data) <span class="sc">+</span></span>
-<span id="cb54-5"><a href="functions.html#cb54-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x =</span> Ozone)) <span class="sc">+</span></span>
-<span id="cb54-6"><a href="functions.html#cb54-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_gray</span>(<span class="dv">24</span>)</span>
-<span id="cb54-7"><a href="functions.html#cb54-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="st">&quot;hist.png&quot;</span>, hist)</span></code></pre></div>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="functions.html#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 01-data.R</span></span>
+<span id="cb53-2"><a href="functions.html#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb53-3"><a href="functions.html#cb53-3" aria-hidden="true" tabindex="-1"></a>raw_data <span class="ot">&lt;-</span> <span class="st">&quot;data/raw_data.csv&quot;</span> <span class="sc">%&gt;%</span></span>
+<span id="cb53-4"><a href="functions.html#cb53-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">read_csv</span>(<span class="at">col_types =</span> <span class="fu">cols</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb53-5"><a href="functions.html#cb53-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Ozone))</span>
+<span id="cb53-6"><a href="functions.html#cb53-6" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(data, <span class="st">&quot;data/data.csv&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="functions.html#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 02-model.R</span></span>
+<span id="cb54-2"><a href="functions.html#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(biglm)</span>
+<span id="cb54-3"><a href="functions.html#cb54-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb54-4"><a href="functions.html#cb54-4" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/data.csv&quot;</span>, <span class="at">col_types =</span> <span class="fu">cols</span>())</span>
+<span id="cb54-5"><a href="functions.html#cb54-5" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">biglm</span>(Ozone <span class="sc">~</span> Wind <span class="sc">+</span> Temp, data)</span>
+<span id="cb54-6"><a href="functions.html#cb54-6" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(fit, <span class="st">&quot;fit.rds&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="functions.html#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 03-plot.R</span></span>
+<span id="cb55-2"><a href="functions.html#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb55-3"><a href="functions.html#cb55-3" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/data.csv&quot;</span>, <span class="at">col_types =</span> <span class="fu">cols</span>())</span>
+<span id="cb55-4"><a href="functions.html#cb55-4" aria-hidden="true" tabindex="-1"></a>hist <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(data) <span class="sc">+</span></span>
+<span id="cb55-5"><a href="functions.html#cb55-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x =</span> Ozone)) <span class="sc">+</span></span>
+<span id="cb55-6"><a href="functions.html#cb55-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_gray</span>(<span class="dv">24</span>)</span>
+<span id="cb55-7"><a href="functions.html#cb55-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="st">&quot;hist.png&quot;</span>, hist)</span></code></pre></div>
 <p>Although this approach may feel convenient at first, it scales poorly for medium-sized workflows. These <a href="https://en.wikipedia.org/wiki/Imperative_programming">imperative</a> scripts are monolithic, and they grow too large and complicated to understand or maintain.</p>
 </div>
 <div id="functions-1" class="section level2" number="5.2">
@@ -378,64 +379,64 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="writing-functions" class="section level2" number="5.3">
 <h2><span class="header-section-number">5.3</span> Writing functions</h2>
 <p>Let us begin with our <a href="https://en.wikipedia.org/wiki/Imperative_programming">imperative</a> code for data processing. Every time you look at it, you need to read it carefully and relearn what it does. And test it, you need to copy the entire block into the R console.</p>
-<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="functions.html#cb55-1" aria-hidden="true" tabindex="-1"></a>raw_data <span class="ot">&lt;-</span> <span class="st">&quot;data/raw_data.csv&quot;</span> <span class="sc">%&gt;%</span></span>
-<span id="cb55-2"><a href="functions.html#cb55-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">read_csv</span>(<span class="at">col_types =</span> <span class="fu">cols</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb55-3"><a href="functions.html#cb55-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Ozone))</span></code></pre></div>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="functions.html#cb56-1" aria-hidden="true" tabindex="-1"></a>raw_data <span class="ot">&lt;-</span> <span class="st">&quot;data/raw_data.csv&quot;</span> <span class="sc">%&gt;%</span></span>
+<span id="cb56-2"><a href="functions.html#cb56-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">read_csv</span>(<span class="at">col_types =</span> <span class="fu">cols</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb56-3"><a href="functions.html#cb56-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Ozone))</span></code></pre></div>
 <p>It is better to encapsulate this code in a function.</p>
-<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="functions.html#cb56-1" aria-hidden="true" tabindex="-1"></a>read_and_clean <span class="ot">&lt;-</span> <span class="cf">function</span>(path) {</span>
-<span id="cb56-2"><a href="functions.html#cb56-2" aria-hidden="true" tabindex="-1"></a>  path <span class="sc">%&gt;%</span></span>
-<span id="cb56-3"><a href="functions.html#cb56-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">read_csv</span>(<span class="at">col_types =</span> <span class="fu">cols</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb56-4"><a href="functions.html#cb56-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Ozone))</span>
-<span id="cb56-5"><a href="functions.html#cb56-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="functions.html#cb57-1" aria-hidden="true" tabindex="-1"></a>read_and_clean <span class="ot">&lt;-</span> <span class="cf">function</span>(path) {</span>
+<span id="cb57-2"><a href="functions.html#cb57-2" aria-hidden="true" tabindex="-1"></a>  path <span class="sc">%&gt;%</span></span>
+<span id="cb57-3"><a href="functions.html#cb57-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">read_csv</span>(<span class="at">col_types =</span> <span class="fu">cols</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb57-4"><a href="functions.html#cb57-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Ozone))</span>
+<span id="cb57-5"><a href="functions.html#cb57-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p>Now, instead of invoking a whole block of text, all you need to do is type a small reusable command. The function name speaks for itself, so you can recall what it does without having to mentally process all the details again.</p>
-<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="functions.html#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_and_clean</span>(<span class="st">&quot;data/raw_data.csv&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="functions.html#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_and_clean</span>(<span class="st">&quot;data/raw_data.csv&quot;</span>)</span></code></pre></div>
 <p>As with the data, we can write a function to fit a model,</p>
-<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="functions.html#cb58-1" aria-hidden="true" tabindex="-1"></a>fit_model <span class="ot">&lt;-</span> <span class="cf">function</span>(data) {</span>
-<span id="cb58-2"><a href="functions.html#cb58-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">biglm</span>(Ozone <span class="sc">~</span> Wind <span class="sc">+</span> Temp, data)</span>
-<span id="cb58-3"><a href="functions.html#cb58-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="functions.html#cb59-1" aria-hidden="true" tabindex="-1"></a>fit_model <span class="ot">&lt;-</span> <span class="cf">function</span>(data) {</span>
+<span id="cb59-2"><a href="functions.html#cb59-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">biglm</span>(Ozone <span class="sc">~</span> Wind <span class="sc">+</span> Temp, data)</span>
+<span id="cb59-3"><a href="functions.html#cb59-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p>and another function to plot the data.</p>
-<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="functions.html#cb59-1" aria-hidden="true" tabindex="-1"></a>create_plot <span class="ot">&lt;-</span> <span class="cf">function</span>(data) {</span>
-<span id="cb59-2"><a href="functions.html#cb59-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(data) <span class="sc">+</span></span>
-<span id="cb59-3"><a href="functions.html#cb59-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x =</span> Ozone)) <span class="sc">+</span></span>
-<span id="cb59-4"><a href="functions.html#cb59-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_gray</span>(<span class="dv">24</span>)</span>
-<span id="cb59-5"><a href="functions.html#cb59-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="functions.html#cb60-1" aria-hidden="true" tabindex="-1"></a>create_plot <span class="ot">&lt;-</span> <span class="cf">function</span>(data) {</span>
+<span id="cb60-2"><a href="functions.html#cb60-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(data) <span class="sc">+</span></span>
+<span id="cb60-3"><a href="functions.html#cb60-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x =</span> Ozone)) <span class="sc">+</span></span>
+<span id="cb60-4"><a href="functions.html#cb60-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_gray</span>(<span class="dv">24</span>)</span>
+<span id="cb60-5"><a href="functions.html#cb60-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 <div id="functions-in-pipelines" class="section level2" number="5.4">
 <h2><span class="header-section-number">5.4</span> Functions in pipelines</h2>
 <p>Without those functions, our pipeline in the <a href="walkthrough.html#walkthrough">walkthrough chapter</a> would look long, complicated, and difficult to digest.</p>
-<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="functions.html#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
-<span id="cb60-2"><a href="functions.html#cb60-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb60-3"><a href="functions.html#cb60-3" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions.R&quot;</span>)</span>
-<span id="cb60-4"><a href="functions.html#cb60-4" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">tidyverse.quiet =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb60-5"><a href="functions.html#cb60-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">packages =</span> <span class="fu">c</span>(<span class="st">&quot;biglm&quot;</span>, <span class="st">&quot;rmarkdown&quot;</span>, <span class="st">&quot;tidyverse&quot;</span>))</span>
-<span id="cb60-6"><a href="functions.html#cb60-6" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb60-7"><a href="functions.html#cb60-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(raw_data_file, <span class="st">&quot;data/raw_data.csv&quot;</span>, <span class="at">format =</span> <span class="st">&quot;file&quot;</span>),</span>
-<span id="cb60-8"><a href="functions.html#cb60-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(raw_data, <span class="fu">read_csv</span>(raw_data_file, <span class="at">col_types =</span> <span class="fu">cols</span>())),</span>
-<span id="cb60-9"><a href="functions.html#cb60-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
-<span id="cb60-10"><a href="functions.html#cb60-10" aria-hidden="true" tabindex="-1"></a>    data,</span>
-<span id="cb60-11"><a href="functions.html#cb60-11" aria-hidden="true" tabindex="-1"></a>    raw_data <span class="sc">%&gt;%</span></span>
-<span id="cb60-12"><a href="functions.html#cb60-12" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Ozone))</span>
-<span id="cb60-13"><a href="functions.html#cb60-13" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb60-14"><a href="functions.html#cb60-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(fit, <span class="fu">biglm</span>(Ozone <span class="sc">~</span> Wind <span class="sc">+</span> Temp, data)),</span>
-<span id="cb60-15"><a href="functions.html#cb60-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
-<span id="cb60-16"><a href="functions.html#cb60-16" aria-hidden="true" tabindex="-1"></a>    hist,</span>
-<span id="cb60-17"><a href="functions.html#cb60-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(data) <span class="sc">+</span></span>
-<span id="cb60-18"><a href="functions.html#cb60-18" aria-hidden="true" tabindex="-1"></a>      <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x =</span> Ozone)) <span class="sc">+</span></span>
-<span id="cb60-19"><a href="functions.html#cb60-19" aria-hidden="true" tabindex="-1"></a>      <span class="fu">theme_gray</span>(<span class="dv">24</span>)</span>
-<span id="cb60-20"><a href="functions.html#cb60-20" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb60-21"><a href="functions.html#cb60-21" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<p>But if we write our functions in <code>R/functions.R</code> and <code>source()</code> them into <code>_targets.R</code>, the pipeline becomes much easier to read. We can even condense out <code>raw_data</code> and <code>data</code> targets together without creating a large command.</p>
 <div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="functions.html#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
 <span id="cb61-2"><a href="functions.html#cb61-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
 <span id="cb61-3"><a href="functions.html#cb61-3" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions.R&quot;</span>)</span>
 <span id="cb61-4"><a href="functions.html#cb61-4" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">tidyverse.quiet =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb61-5"><a href="functions.html#cb61-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">packages =</span> <span class="fu">c</span>(<span class="st">&quot;biglm&quot;</span>, <span class="st">&quot;tidyverse&quot;</span>))</span>
+<span id="cb61-5"><a href="functions.html#cb61-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">packages =</span> <span class="fu">c</span>(<span class="st">&quot;biglm&quot;</span>, <span class="st">&quot;rmarkdown&quot;</span>, <span class="st">&quot;tidyverse&quot;</span>))</span>
 <span id="cb61-6"><a href="functions.html#cb61-6" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb61-7"><a href="functions.html#cb61-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(raw_data_file, <span class="st">&quot;data/raw_data.csv&quot;</span>,<span class="at">format =</span> <span class="st">&quot;file&quot;</span>),</span>
-<span id="cb61-8"><a href="functions.html#cb61-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data, <span class="fu">read_and_clean</span>(raw_data_file)),</span>
-<span id="cb61-9"><a href="functions.html#cb61-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(fit, <span class="fu">fit_model</span>(data)),</span>
-<span id="cb61-10"><a href="functions.html#cb61-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(hist, <span class="fu">create_plot</span>(data))</span>
-<span id="cb61-11"><a href="functions.html#cb61-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<span id="cb61-7"><a href="functions.html#cb61-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(raw_data_file, <span class="st">&quot;data/raw_data.csv&quot;</span>, <span class="at">format =</span> <span class="st">&quot;file&quot;</span>),</span>
+<span id="cb61-8"><a href="functions.html#cb61-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(raw_data, <span class="fu">read_csv</span>(raw_data_file, <span class="at">col_types =</span> <span class="fu">cols</span>())),</span>
+<span id="cb61-9"><a href="functions.html#cb61-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb61-10"><a href="functions.html#cb61-10" aria-hidden="true" tabindex="-1"></a>    data,</span>
+<span id="cb61-11"><a href="functions.html#cb61-11" aria-hidden="true" tabindex="-1"></a>    raw_data <span class="sc">%&gt;%</span></span>
+<span id="cb61-12"><a href="functions.html#cb61-12" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Ozone))</span>
+<span id="cb61-13"><a href="functions.html#cb61-13" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb61-14"><a href="functions.html#cb61-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(fit, <span class="fu">biglm</span>(Ozone <span class="sc">~</span> Wind <span class="sc">+</span> Temp, data)),</span>
+<span id="cb61-15"><a href="functions.html#cb61-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb61-16"><a href="functions.html#cb61-16" aria-hidden="true" tabindex="-1"></a>    hist,</span>
+<span id="cb61-17"><a href="functions.html#cb61-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(data) <span class="sc">+</span></span>
+<span id="cb61-18"><a href="functions.html#cb61-18" aria-hidden="true" tabindex="-1"></a>      <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x =</span> Ozone)) <span class="sc">+</span></span>
+<span id="cb61-19"><a href="functions.html#cb61-19" aria-hidden="true" tabindex="-1"></a>      <span class="fu">theme_gray</span>(<span class="dv">24</span>)</span>
+<span id="cb61-20"><a href="functions.html#cb61-20" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb61-21"><a href="functions.html#cb61-21" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<p>But if we write our functions in <code>R/functions.R</code> and <code>source()</code> them into <code>_targets.R</code>, the pipeline becomes much easier to read. We can even condense out <code>raw_data</code> and <code>data</code> targets together without creating a large command.</p>
+<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="functions.html#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb62-2"><a href="functions.html#cb62-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb62-3"><a href="functions.html#cb62-3" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions.R&quot;</span>)</span>
+<span id="cb62-4"><a href="functions.html#cb62-4" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">tidyverse.quiet =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb62-5"><a href="functions.html#cb62-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">packages =</span> <span class="fu">c</span>(<span class="st">&quot;biglm&quot;</span>, <span class="st">&quot;tidyverse&quot;</span>))</span>
+<span id="cb62-6"><a href="functions.html#cb62-6" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb62-7"><a href="functions.html#cb62-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(raw_data_file, <span class="st">&quot;data/raw_data.csv&quot;</span>,<span class="at">format =</span> <span class="st">&quot;file&quot;</span>),</span>
+<span id="cb62-8"><a href="functions.html#cb62-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data, <span class="fu">read_and_clean</span>(raw_data_file)),</span>
+<span id="cb62-9"><a href="functions.html#cb62-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(fit, <span class="fu">fit_model</span>(data)),</span>
+<span id="cb62-10"><a href="functions.html#cb62-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(hist, <span class="fu">create_plot</span>(data))</span>
+<span id="cb62-11"><a href="functions.html#cb62-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 
 </div>
 </div>
