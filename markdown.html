@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 11 Cloud integration | The targets R Package User Manual</title>
+  <title>Chapter 3 Target Markdown | The targets R Package User Manual</title>
   <meta name="description" content="In-depth discussion of the major functionality of targets." />
   <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 11 Cloud integration | The targets R Package User Manual" />
+  <meta property="og:title" content="Chapter 3 Target Markdown | The targets R Package User Manual" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://books.ropensci.org/targets" />
   <meta property="og:image" content="https://books.ropensci.org/targets//man/figures/logo.png" />
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="ropensci-books/targets" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 11 Cloud integration | The targets R Package User Manual" />
+  <meta name="twitter:title" content="Chapter 3 Target Markdown | The targets R Package User Manual" />
   
   <meta name="twitter:description" content="In-depth discussion of the major functionality of targets." />
   <meta name="twitter:image" content="https://books.ropensci.org/targets//man/figures/logo.png" />
@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <link rel="apple-touch-icon-precomposed" sizes="120x120" href="man/figures/apple-touch-icon.png" />
   <link rel="shortcut icon" href="man/figures/favicon.ico" type="image/x-icon" />
-<link rel="prev" href="hpc.html"/>
-<link rel="next" href="drake.html"/>
+<link rel="prev" href="walkthrough.html"/>
+<link rel="next" href="debugging.html"/>
 <script src="libs/header-attrs-2.8/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -330,111 +330,101 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="cloud" class="section level1" number="11">
-<h1><span class="header-section-number">Chapter 11</span> Cloud integration</h1>
-<p><code>targets</code> has built-in cloud capabilities to help scale pipelines up and out. Cloud storage solutions are already available, and cloud computing computing solutions are in the works.</p>
-<p>Before getting started, please familiarize yourself with the <a href="https://aws.amazon.com/pricing/">pricing model</a> and <a href="https://docs.aws.amazon.com/account-billing/index.html">cost management and monitoring tools</a> of <a href="https://aws.amazon.com/">Amazon Web Services</a>. Everything has a cost, from <a href="https://aws.amazon.com/ec2/">virtual instances</a> to <a href="https://docs.aws.amazon.com/#user_guides">web API calls</a>. <a href="https://aws.amazon.com/free/">Free tier accounts</a> give you a modest monthly budget for some services for the first year, but it is easy to exceed the limits. Developers of reusable software should consider applying for <a href="https://aws.amazon.com/blogs/opensource/aws-promotional-credits-open-source-projects/">promotional credit</a> using <a href="https://pages.awscloud.com/AWS-Credits-for-Open-Source-Projects">this application form</a>.</p>
-<div id="compute" class="section level2" number="11.1">
-<h2><span class="header-section-number">11.1</span> Compute</h2>
-<p>Right now, <code>targets</code> does not have built-in cloud-based distributed computing support. However, future development plans include seamless integration with <a href="https://aws.amazon.com/batch/">AWS Batch</a>. As a temporary workaround, it is possible to deploy a burstable <a href="https://slurm.schedmd.com/documentation.html">SLURM</a> cluster using <a href="https://aws.amazon.com/hpc/parallelcluster/">AWS ParallelCluster</a> and leverage <code>targets</code>’ <a href="hpc.html#hpc">existing support for traditional schedulers</a>.</p>
+<div id="markdown" class="section level1" number="3">
+<h1><span class="header-section-number">Chapter 3</span> Target Markdown</h1>
+<p>Target Markdown, available in <code>targets</code> &gt; 0.4.2.9000, is a powerful R Markdown interface for reproducible analysis pipelines. With Target Markdown, you can define a fully scalable pipeline from a single R Markdown document. You get the best of both worlds: the human readable narrative of literate programming, and the sophisticated caching and dependency management systems of <code>targets</code>.</p>
+<div id="access" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> Access</h2>
+<p>This chapter is available as a Target Markdown document through RStudio R Markdown template system: <a href="https://rstudio.github.io/rstudio-extensions/rmarkdown_templates.html" class="uri">https://rstudio.github.io/rstudio-extensions/rmarkdown_templates.html</a>. In the RStudio IDE, select a new R Markdown document in the New File dropdown menu in the upper left-hand corner of the window.</p>
+<p><img src="man/figures/new_rmd.png" /></p>
+<p>Then, select the Target Markdown template and click OK to open a copy of the report for editing.</p>
+<p><img src="man/figures/target_markdown.png" /></p>
 </div>
-<div id="storage" class="section level2" number="11.2">
-<h2><span class="header-section-number">11.2</span> Storage</h2>
-<p><code>targets</code> supports cloud storage on a target-by-target basis using <a href="https://aws.amazon.com/s3/">Amazon Simple Storage Service, or S3</a>. After a target completes, the return value is uploaded to a user-defined S3 bucket <a href="https://docs.aws.amazon.com/AmazonS3/latest/user-guide/create-bucket.html">S3 bucket</a>. Follow these steps to get started.</p>
-<div id="a-disclaimer" class="section level3" number="11.2.1">
-<h3><span class="header-section-number">11.2.1</span> A disclaimer</h3>
-<p>Please be aware of your resource and monetary constraints when using AWS. The AWS-backed storage capabilities in <code>targets</code> sends individual data files to S3 buckets on a target-by-target basis and periodically queries the HTML header data. For a large number of S3-backed targets, the pipeline may slow down, and it may incur monetary costs due to a large number of API requests, both for uploading new targets and checking if existing targets are up to date. It may be best to select a small number of important or large targets to send to S3 buckets, while putting the majority of small targets under source code version control, e.g. Git/GitHub. To put the whole <code>_targets/</code> data store in a single S3 bucket, including metadata, it is best to run the pipeline locally first and then invoke <code>aws.s3::s3sync()</code> or similar.</p>
-</div>
-<div id="communicate-with-your-collaborators" class="section level3" number="11.2.2">
-<h3><span class="header-section-number">11.2.2</span> Communicate with your collaborators</h3>
-<p>An S3 bucket can be a shared file space. If you have access to someone else’s bucket, running their pipeline could accidentally overwrite their cloud data. It is best if you and your colleagues decide in advance who will write to the bucket at any given time.</p>
-</div>
-<div id="get-started-with-the-amazon-s3-web-console" class="section level3" number="11.2.3">
-<h3><span class="header-section-number">11.2.3</span> Get started with the Amazon S3 web console</h3>
-<p>If you do not already have an Amazon Web Services account, sign up for the free tier at <a href="https://aws.amazon.com/free" class="uri">https://aws.amazon.com/free</a>. Then, follow <a href="https://docs.aws.amazon.com/AmazonS3/latest/gsg/GetStartedWithS3.html">these step-by-step instructions</a> to practice using Amazon S3 through the web console at <a href="https://console.aws.amazon.com/s3/" class="uri">https://console.aws.amazon.com/s3/</a>.</p>
-</div>
-<div id="configure-your-local-machine" class="section level3" number="11.2.4">
-<h3><span class="header-section-number">11.2.4</span> Configure your local machine</h3>
-<p><code>targets</code> uses the <a href="https://github.com/cloudyr/aws.s3"><code>aws.s3</code></a> package behind the scenes. It is not a strict dependency of <code>targets</code>, so you will need to install it yourself.</p>
-<div class="sourceCode" id="cb173"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb173-1"><a href="cloud.html#cb173-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;aws.s3&quot;</span>)</span></code></pre></div>
-<p>Next, <code>aws.s3</code> needs an access ID, secret access key, and default region. Follow <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html#cli-configure-quickstart-creds">these steps</a> to generate the keys, and choose a region from <a href="https://docs.aws.amazon.com/general/latest/gr/s3.html">this table of endpoints</a>. Then, open the <code>.Renviron</code> file in your home directory with <code>usethis::edit_r_environ()</code> and store this information in <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html">special environment variables</a>. Here is an example <code>.Renviron</code> file.</p>
-<div class="sourceCode" id="cb174"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb174-1"><a href="cloud.html#cb174-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example .Renviron file</span></span>
-<span id="cb174-2"><a href="cloud.html#cb174-2" aria-hidden="true" tabindex="-1"></a>AWS_ACCESS_KEY_ID<span class="ot">=</span>AKIAIOSFODNN7EXAMPLE</span>
-<span id="cb174-3"><a href="cloud.html#cb174-3" aria-hidden="true" tabindex="-1"></a>AWS_SECRET_ACCESS_KEY<span class="ot">=</span>wJalrXUtnFEMI<span class="sc">/</span>K7MDENG<span class="sc">/</span>bPxRfiCYEXAMPLEKEY</span>
-<span id="cb174-4"><a href="cloud.html#cb174-4" aria-hidden="true" tabindex="-1"></a>AWS_DEFAULT_REGION<span class="ot">=</span>us<span class="sc">-</span>east<span class="dv">-1</span></span></code></pre></div>
-<p>Restart your R session so the changes take effect. Your keys are sensitive personal information. You can print them in your private console to verify correctness, but otherwise please avoid saving them to any persistent documents other than <code>.Renviron</code>.</p>
-<div class="sourceCode" id="cb175"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb175-1"><a href="cloud.html#cb175-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.getenv</span>(<span class="st">&quot;AWS_ACCESS_KEY_ID&quot;</span>)</span>
-<span id="cb175-2"><a href="cloud.html#cb175-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;AKIAIOSFODNN7EXAMPLE&quot;</span></span>
-<span id="cb175-3"><a href="cloud.html#cb175-3" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.getenv</span>(<span class="st">&quot;AWS_SECRET_ACCESS_KEY&quot;</span>)</span>
-<span id="cb175-4"><a href="cloud.html#cb175-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY&quot;</span></span>
-<span id="cb175-5"><a href="cloud.html#cb175-5" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.getenv</span>(<span class="st">&quot;AWS_DEFAULT_REGION&quot;</span>)</span>
-<span id="cb175-6"><a href="cloud.html#cb175-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;us-east-1&quot;</span></span></code></pre></div>
-</div>
-<div id="create-s3-buckets" class="section level3" number="11.2.5">
-<h3><span class="header-section-number">11.2.5</span> Create S3 buckets</h3>
-<p>Now, you are ready to create one or more <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingBucket.html">S3 buckets</a> for your <code>targets</code> pipeline. Each pipeline should have its own set of buckets. Create one through the web console or with <code>aws.s3::put_bucket()</code>.</p>
-<div class="sourceCode" id="cb176"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb176-1"><a href="cloud.html#cb176-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(aws.s3)</span>
-<span id="cb176-2"><a href="cloud.html#cb176-2" aria-hidden="true" tabindex="-1"></a><span class="fu">put_bucket</span>(<span class="st">&quot;my-test-bucket-25edb4956460647d&quot;</span>)</span>
-<span id="cb176-3"><a href="cloud.html#cb176-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
-<p>Sign in to <a href="https://s3.console.aws.amazon.com/s3" class="uri">https://s3.console.aws.amazon.com/s3</a> to verify that the bucket exists.</p>
-</div>
-<div id="configure-the-pipeline" class="section level3" number="11.2.6">
-<h3><span class="header-section-number">11.2.6</span> Configure the pipeline</h3>
-<p>To connect your pipeline with S3,</p>
+<div id="modes" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span> Modes</h2>
+<p>Target Markdown defines a new <code><code>{targets}</code></code> language engine for <code>knitr</code>. This engine has two modes:</p>
 <ol style="list-style-type: decimal">
-<li>Supply your bucket name to <code>resources</code> in <code>tar_option_set()</code>. To use different buckets for different targets, set <code>resources</code> directly in <code>tar_target()</code>.</li>
-<li>Supply AWS-powered storage formats to <code>tar_option_set()</code> and/or <code>tar_target()</code>. See the <a href="https://docs.ropensci.org/targets/reference/tar_target.html#arguments"><code>tar_target()</code> help file</a> for the full list of formats.</li>
+<li>Interactive mode: when you open a report in the RStudio IDE, the notebook interface (<a href="https://bookdown.org/yihui/rmarkdown/notebook.html" class="uri">https://bookdown.org/yihui/rmarkdown/notebook.html</a>) shows a green play button on the right-hand side of every code chunk. If you click this green button next to a <code><code>{targets}</code></code> code chunk, you are running it in interactive mode. This mode is for prototyping and testing groups of targets. It runs the correct targets in the correct order, tests if the targets can be saved and loaded correctly, and assigns those targets to objects in memory (the <code>tar_option_get("envir")</code> environment, usually <code>globalenv()</code>). It does not interfere with any R scripts or <code>_targets/</code> output data saved locally, though it may modify your file system if you wrote special code in the targets’ commands to create output files.</li>
+<li>Non-interactive mode: when you run the report with the Knit button in RStudio or call <code>rmarkdown::render()</code> in the R console, you are running the report in non-interactive mode. In non-interactive mode, the <code><code>{targets}</code></code> engine overwrites <code>_targets.R</code> and writes special scripts in a special <code>_targets_r/</code> folder to construct the pipeline. Non-interactive does not actually run any of the code in the code chunks, so you will need to call <code>tar_make()</code> or similar in subsequent R code chunks to run the pipeline.</li>
 </ol>
-<p>Your <code>_targets.R</code> file will look something like this.</p>
-<div class="sourceCode" id="cb177"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb177-1"><a href="cloud.html#cb177-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example _targets.R</span></span>
-<span id="cb177-2"><a href="cloud.html#cb177-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb177-3"><a href="cloud.html#cb177-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">resources =</span> <span class="fu">list</span>(<span class="at">bucket =</span> <span class="st">&quot;my-test-bucket-25edb4956460647d&quot;</span>))</span>
-<span id="cb177-4"><a href="cloud.html#cb177-4" aria-hidden="true" tabindex="-1"></a>write_mean <span class="ot">&lt;-</span> <span class="cf">function</span>(data) {</span>
-<span id="cb177-5"><a href="cloud.html#cb177-5" aria-hidden="true" tabindex="-1"></a>  tmp <span class="ot">&lt;-</span> <span class="fu">tempfile</span>()</span>
-<span id="cb177-6"><a href="cloud.html#cb177-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">writeLines</span>(<span class="fu">as.character</span>(<span class="fu">mean</span>(data)), tmp)</span>
-<span id="cb177-7"><a href="cloud.html#cb177-7" aria-hidden="true" tabindex="-1"></a>  tmp</span>
-<span id="cb177-8"><a href="cloud.html#cb177-8" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb177-9"><a href="cloud.html#cb177-9" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb177-10"><a href="cloud.html#cb177-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data, <span class="fu">rnorm</span>(<span class="dv">5</span>), <span class="at">format =</span> <span class="st">&quot;aws_qs&quot;</span>),</span>
-<span id="cb177-11"><a href="cloud.html#cb177-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(mean_file, <span class="fu">write_mean</span>(data), <span class="at">format =</span> <span class="st">&quot;aws_file&quot;</span>)</span>
-<span id="cb177-12"><a href="cloud.html#cb177-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 </div>
-<div id="run-the-pipeline-2" class="section level3" number="11.2.7">
-<h3><span class="header-section-number">11.2.7</span> Run the pipeline</h3>
-<p>When you run the pipeline above with <a href="https://docs.ropensci.org/targets/reference/tar_make.html"><code>tar_make()</code></a>, your local R session computes <code>rnorm(5)</code>, saves it to a temporary <a href="https://github.com/traversc/qs"><code>qs</code></a> file on disk, and then uploads it to a file called <code>_targets/objects/data</code> on your S3 bucket. Likewise for <code>mean_file</code>, but because the format is <code>"aws_file"</code>, you are responsible for supplying the path to the file that gets uploaded to <code>_targets/objects/mean_file</code>.</p>
-<div class="sourceCode" id="cb178"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb178-1"><a href="cloud.html#cb178-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
-<span id="cb178-2"><a href="cloud.html#cb178-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target data</span></span>
-<span id="cb178-3"><a href="cloud.html#cb178-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target mean_file</span></span>
-<span id="cb178-4"><a href="cloud.html#cb178-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● end pipeline</span></span></code></pre></div>
-<p>And of course, your targets stay up to date if you make no changes.</p>
-<div class="sourceCode" id="cb179"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb179-1"><a href="cloud.html#cb179-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
-<span id="cb179-2"><a href="cloud.html#cb179-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✓ skip target data</span></span>
-<span id="cb179-3"><a href="cloud.html#cb179-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✓ skip target mean_file</span></span>
-<span id="cb179-4"><a href="cloud.html#cb179-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✓ skip pipeline</span></span></code></pre></div>
+<div id="example" class="section level2" number="3.3">
+<h2><span class="header-section-number">3.3</span> Example</h2>
+<p>This example of Target Markdown is based on the minimal <code>targets</code> example from <a href="https://github.com/wlandau/targets-minimal/" class="uri">https://github.com/wlandau/targets-minimal/</a>. It processes R’s built-in <code>airquality</code> dataset, fits a model, and displays a histogram of ozone concentration.</p>
 </div>
-<div id="manage-the-data" class="section level3" number="11.2.8">
-<h3><span class="header-section-number">11.2.8</span> Manage the data</h3>
-<p>Log into <a href="https://s3.console.aws.amazon.com/s3" class="uri">https://s3.console.aws.amazon.com/s3</a>. You should see objects <code>_targets/objects/data</code> and <code>_targets/objects/mean_file</code> in your bucket. To download this data locally, use <code>tar_read()</code> and <code>tar_load()</code> like before. These functions download the data from the bucket and load it into R.</p>
-<div class="sourceCode" id="cb180"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb180-1"><a href="cloud.html#cb180-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(data)</span>
-<span id="cb180-2"><a href="cloud.html#cb180-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] -0.74654607 -0.59593497 -1.57229983  0.40915323  0.02579023</span></span></code></pre></div>
-<p>The <code>"aws_file"</code> format is different from the other AWS-powered formats. <code>tar_read()</code> and <code>tar_load()</code> download the object to a temporary file and return the path so you can process it yourself.<a href="#fn9" class="footnote-ref" id="fnref9"><sup>9</sup></a></p>
-<div class="sourceCode" id="cb181"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb181-1"><a href="cloud.html#cb181-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_load</span>(mean_file)</span>
-<span id="cb181-2"><a href="cloud.html#cb181-2" aria-hidden="true" tabindex="-1"></a>mean_file</span>
-<span id="cb181-3"><a href="cloud.html#cb181-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;_targets/scratch/mean_fileff086e70876d&quot;</span></span></code></pre></div>
-<div class="sourceCode" id="cb182"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb182-1"><a href="cloud.html#cb182-1" aria-hidden="true" tabindex="-1"></a><span class="fu">readLines</span>(mean_file)</span>
-<span id="cb182-2"><a href="cloud.html#cb182-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;-0.495967480886693&quot;</span></span></code></pre></div>
-<p>When you are done with these temporary files and the pipeline is no longer running, you can safely remove everything in <code>_targets/scratch/</code>.</p>
-<div class="sourceCode" id="cb183"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb183-1"><a href="cloud.html#cb183-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unlink</span>(<span class="st">&quot;_targets/scratch/&quot;</span>, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
-<p>Lastly, if you want to erase the whole project or start over from scratch, consider removing the S3 bucket to avoid incurring storage fees. The easiest way to do this is through the <a href="https://s3.console.aws.amazon.com/s3">S3 console</a>. You can alternatively call <code>aws.s3::delete_bucket()</code>, but you have to make sure the bucket is empty first.</p>
-<div class="sourceCode" id="cb184"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb184-1"><a href="cloud.html#cb184-1" aria-hidden="true" tabindex="-1"></a><span class="fu">delete_bucket</span>(<span class="st">&quot;my-test-bucket-25edb4956460647d&quot;</span>)</span></code></pre></div>
+<div id="setup" class="section level2" number="3.4">
+<h2><span class="header-section-number">3.4</span> Setup</h2>
+<p>First, load <code>targets</code> to activate the specialized <code>knitr</code> engine for Target Markdown.</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="markdown.html#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span></code></pre></div>
+<p>Near the top, you may also wish to remove the <code>_targets_r</code> directory where Target Markdown writes scripts in non-interactive mode. That way, you will get rid of any old superfluous target definitions you may have created in obsolete versions of your R Markdown report.</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="markdown.html#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_unscript</span>()</span></code></pre></div>
+</div>
+<div id="globals" class="section level2" number="3.5">
+<h2><span class="header-section-number">3.5</span> Globals</h2>
+<p>As usual, your targets depend on custom functions, global objects, and <code>tar_option_set()</code> options you define ahead of time. Write one or more code chunks using the <code>targets</code> engine with the <code>targets = FALSE</code> chunk option. In interactive mode, the chunk simply runs in the <code>tar_option_get("envir")</code> environment (usually the global environment). In non-interactive mode, the chunk overwrites the <code>_targets.R</code> file and writes a new file in <code>_targets_r/globals/chunk-name.R</code>.<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a></p>
+<pre class="targets"><code>options(tidyverse.quiet = TRUE)
+tar_option_set(packages = c(&quot;biglm&quot;, &quot;dplyr&quot;, &quot;ggplot2&quot;, &quot;readr&quot;, &quot;tidyr&quot;))
+create_plot &lt;- function(data) {
+  ggplot(data) +
+    geom_histogram(aes(x = Ozone), bins = 12) +
+    theme_gray(24)
+}
+#&gt; Wrote _targets.R and _targets_r/globals/chunk-name.R</code></pre>
+</div>
+<div id="targets" class="section level2" number="3.6">
+<h2><span class="header-section-number">3.6</span> Targets</h2>
+<p>To define targets for the workflow, use the <code>targets</code> engine with the <code>targets</code> chunk option equal to <code>TRUE</code> or <code>NULL</code> (default). The return value of the chunk must be a target object or a list of multiple target objects, created by <code>tar_target()</code> or similar function.</p>
+<p>Below, we define a target to establish the air quality dataset. If you run this chunk in interactive mode, the engine runs this target, tests if the output can be saved and loaded from disk correctly, and then stores the output in the <code>tar_option_get("envir")</code> environment (usually the global environment). None of this interferes with any existing <code>_targets/</code> data store you may already have, but any custom <code>format = "file"</code> output files outside the data store may be modified. In non-interactive mode, the chunk overwrites the <code>_targets.R</code> file and writes an new file in <code>_targets_r/targets/chunk-name-with-target.R</code></p>
+<pre class="targets"><code>tar_target(raw_data, airquality)
+#&gt; Wrote _targets.R and _targets_r/targets/chunk-name-with-target.R</code></pre>
+<p>At this point in interactive mode, you can print out the <code>raw_data</code> object in the R console. In non-interactive mode, the pipeline is only defined, not executed, so <code>raw_data</code> may not exist yet.</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="markdown.html#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(raw_data)</span></code></pre></div>
+<p>Next, we define more targets to process the raw data, plot a histogram, and fit a model. Remember: when it comes to targets in the pipeline, only the return value of the chunk registers properly. So if you define multiple targets in a single chunk, please wrap them in a list.</p>
+<pre class="targets"><code>list(
+  tar_target(data, raw_data %&gt;% filter(!is.na(Ozone))),
+  tar_target(hist, create_plot(data)),
+  tar_target(fit, biglm(Ozone ~ Wind + Temp, data))
+)
+#&gt; Wrote _targets.R and _targets_r/targets/downstream-targets.R</code></pre>
+<p>In interactive mode, it is good practice to inspect the outputs to make sure they ran properly. Remember: in interactive mode, these results do not exist in storage, and they will evaporate when you restart your R session.</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="markdown.html#cb30-1" aria-hidden="true" tabindex="-1"></a>fit</span></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="markdown.html#cb31-1" aria-hidden="true" tabindex="-1"></a>hist</span></code></pre></div>
+</div>
+<div id="run-the-pipeline-1" class="section level2" number="3.7">
+<h2><span class="header-section-number">3.7</span> Run the pipeline</h2>
+<p>In non-interactive mode, the above <code><code>{targets}</code></code> code chunks only write R code to <code>_targets.R</code> and <code>_targets_r/</code>, they do not actually run the code or run the pipeline. To actually run the pipeline in non-interactive mode, call <code>tar_make()</code> or similar in an ordinary R code chunk. If this is not the first time you are running this report, you may see some up-to-date targets automatically skip to reduce runtime. The dependency management and caching systems in <code>targets</code> are highly recommended over the less developed <code>autodep</code> and caching features of <code>knitr</code>.</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="markdown.html#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
+<span id="cb32-2"><a href="markdown.html#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start target raw_data</span></span>
+<span id="cb32-3"><a href="markdown.html#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built target raw_data</span></span>
+<span id="cb32-4"><a href="markdown.html#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start target data</span></span>
+<span id="cb32-5"><a href="markdown.html#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built target data</span></span>
+<span id="cb32-6"><a href="markdown.html#cb32-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start target fit</span></span>
+<span id="cb32-7"><a href="markdown.html#cb32-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built target fit</span></span>
+<span id="cb32-8"><a href="markdown.html#cb32-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start target hist</span></span>
+<span id="cb32-9"><a href="markdown.html#cb32-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built target hist</span></span>
+<span id="cb32-10"><a href="markdown.html#cb32-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • end pipeline</span></span></code></pre></div>
+</div>
+<div id="inspect-the-output" class="section level2" number="3.8">
+<h2><span class="header-section-number">3.8</span> Inspect the output</h2>
+<p>You can retrieve results from the <code>_targets/</code> data store using <code>tar_read()</code> or <code>tar_load()</code>.</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="markdown.html#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(biglm)</span>
+<span id="cb33-2"><a href="markdown.html#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(fit)</span>
+<span id="cb33-3"><a href="markdown.html#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Large data regression model: biglm(Ozone ~ Wind + Temp, data)</span></span>
+<span id="cb33-4"><a href="markdown.html#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sample size =  116</span></span></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="markdown.html#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(hist)</span></code></pre></div>
+<p><img src="targets-manual_files/figure-html/unnamed-chunk-35-1.png" width="672" /></p>
+<p>The <code>targets</code> dependency graph helps your readers understand the steps of your pipeline at a high level.</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="markdown.html#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_visnetwork</span>()</span></code></pre></div>
+<div id="htmlwidget-68a413f45d720d1ade32" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-68a413f45d720d1ade32">{"x":{"nodes":{"name":["data","fit","hist","raw_data","create_plot"],"type":["stem","stem","stem","stem","function"],"status":["uptodate","uptodate","uptodate","uptodate","uptodate"],"seconds":[0.01,0.005,0.013,0.579,null],"bytes":[1079,1574,44216,1260,null],"branches":[null,null,null,null,null],"id":["data","fit","hist","raw_data","create_plot"],"label":["data","fit","hist","raw_data","create_plot"],"level":[2,3,3,1,1],"color":["#354823","#354823","#354823","#354823","#354823"],"shape":["dot","dot","dot","dot","triangle"]},"edges":{"from":["data","create_plot","data","raw_data"],"to":["fit","hist","hist","data"],"arrows":["to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":false,"hoverNearest":false,"degree":1,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Up to date","Stem","Function"],"color":["#354823","#899DA4","#899DA4"],"shape":["dot","dot","triangle"]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
+<p>At this point, if you go back and run <code><code>{targets}</code></code> code chunks in interactive mode, this will not interfere with any scripts or data created in non-interactive mode.</p>
 
-</div>
 </div>
 </div>
 <div class="footnotes">
 <hr />
-<ol start="9">
-<li id="fn9"><p>Non-“file” AWS formats also download temporary files, but they are immediately discarded after they are read into memory.<a href="cloud.html#fnref9" class="footnote-back">↩︎</a></p></li>
+<ol start="2">
+<li id="fn2"><p>For <code>bookdown</code> projects, chunk labels should only use alphanumeric characters and dashes.<a href="markdown.html#fnref2" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 <div style = "background: #1C356D; color: white; padding: 10px 10px 10px 25px; font-size: 1em; width: 100%;">
@@ -445,8 +435,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="hpc.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="drake.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="walkthrough.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="debugging.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -468,11 +458,11 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/ropensci-books/targets/edit/main/cloud.Rmd",
+"link": "https://github.com/ropensci-books/targets/edit/main/markdown.Rmd",
 "text": "Edit this chapter"
 },
 "history": {
-"link": "https://github.com/ropensci-books/targets/commits/main/cloud.Rmd",
+"link": "https://github.com/ropensci-books/targets/commits/main/markdown.Rmd",
 "text": "Chapter edit history"
 },
 "view": {
