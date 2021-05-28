@@ -361,11 +361,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="setup" class="section level2" number="3.5">
 <h2><span class="header-section-number">3.5</span> Setup</h2>
 <p>First, load <code>targets</code> to activate the specialized <code>knitr</code> engine for Target Markdown.</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="markdown.html#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span></code></pre></div>
+<pre><code>```{r}
+library(targets)
+```</code></pre>
 <p>Optionally set the <code>root.dir</code> <code>knitr</code> option to invoke all the code chunks from the directory of your choice.</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="markdown.html#cb26-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_knit<span class="sc">$</span><span class="fu">set</span>(<span class="at">root.dir =</span> <span class="fu">getwd</span>()) <span class="co"># Can be a different directory.</span></span></code></pre></div>
+<pre><code>```{r}
+knitr::opts_knit$set(root.dir = getwd()) # Can be a different directory.
+```</code></pre>
 <p>Near the top, you may also wish to remove the <code>_targets_r</code> directory where Target Markdown writes scripts in non-interactive mode. That way, you will get rid of any old superfluous target definitions you may have created in obsolete versions of your R Markdown report.</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="markdown.html#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_unscript</span>()</span></code></pre></div>
+<pre><code>``{r}
+tar_unscript()
+```</code></pre>
 </div>
 <div id="globals" class="section level2" number="3.6">
 <h2><span class="header-section-number">3.6</span> Globals</h2>
@@ -390,7 +396,9 @@ tar_target(raw_data, airquality)
 ```</code></pre>
 <pre><code>#&gt; Wrote _targets.R and _targets_r/targets/chunk-name-with-target.R</code></pre>
 <p>At this point in interactive mode, you can print out the <code>raw_data</code> object in the R console. In non-interactive mode, the pipeline is only defined, not executed, so <code>raw_data</code> may not exist yet.</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="markdown.html#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(raw_data)</span></code></pre></div>
+<pre><code>``{r, eval = FALSE}
+head(raw_data)
+```</code></pre>
 <p>Next, we define more targets to process the raw data, plot a histogram, and fit a model. Remember: when it comes to targets in the pipeline, only the return value of the chunk registers properly. So if you define multiple targets in a single chunk, please wrap them in a list.</p>
 <pre><code>```{targets downstream-targets}
 list(
@@ -401,36 +409,48 @@ list(
 ```</code></pre>
 <pre><code>#&gt; Wrote _targets.R and _targets_r/targets/downstream-targets.R</code></pre>
 <p>In interactive mode, it is good practice to inspect the outputs to make sure they ran properly. Remember: in interactive mode, these results do not exist in storage, and they will evaporate when you restart your R session.</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="markdown.html#cb35-1" aria-hidden="true" tabindex="-1"></a>fit</span></code></pre></div>
-<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="markdown.html#cb36-1" aria-hidden="true" tabindex="-1"></a>hist</span></code></pre></div>
+<pre><code>``{r}
+fit
+```</code></pre>
+<pre><code>``{r}
+hist
+```</code></pre>
 </div>
 <div id="run-the-pipeline-1" class="section level2" number="3.8">
 <h2><span class="header-section-number">3.8</span> Run the pipeline</h2>
 <p>In non-interactive mode, the above <code><code>{targets}</code></code> code chunks only write R code to <code>_targets.R</code> and <code>_targets_r/</code>, they do not actually run the code or run the pipeline. To actually run the pipeline in non-interactive mode, call <code>tar_make()</code> or similar in an ordinary R code chunk. If this is not the first time you are running this report, you may see some up-to-date targets automatically skip to reduce runtime. The dependency management and caching systems in <code>targets</code> are highly recommended over the less developed <code>autodep</code> and caching features of <code>knitr</code>.</p>
-<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="markdown.html#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
-<span id="cb37-2"><a href="markdown.html#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start target raw_data</span></span>
-<span id="cb37-3"><a href="markdown.html#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built target raw_data</span></span>
-<span id="cb37-4"><a href="markdown.html#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start target data</span></span>
-<span id="cb37-5"><a href="markdown.html#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built target data</span></span>
-<span id="cb37-6"><a href="markdown.html#cb37-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start target fit</span></span>
-<span id="cb37-7"><a href="markdown.html#cb37-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built target fit</span></span>
-<span id="cb37-8"><a href="markdown.html#cb37-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start target hist</span></span>
-<span id="cb37-9"><a href="markdown.html#cb37-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built target hist</span></span>
-<span id="cb37-10"><a href="markdown.html#cb37-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • end pipeline</span></span></code></pre></div>
+<pre><code>``{r}
+tar_make()
+```</code></pre>
+<pre><code>#&gt; • start target raw_data
+#&gt; • built target raw_data
+#&gt; • start target data
+#&gt; • built target data
+#&gt; • start target fit
+#&gt; • built target fit
+#&gt; • start target hist
+#&gt; • built target hist
+#&gt; • end pipeline</code></pre>
 </div>
 <div id="inspect-the-output" class="section level2" number="3.9">
 <h2><span class="header-section-number">3.9</span> Inspect the output</h2>
 <p>You can retrieve results from the <code>_targets/</code> data store using <code>tar_read()</code> or <code>tar_load()</code>.</p>
-<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="markdown.html#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(biglm)</span>
-<span id="cb38-2"><a href="markdown.html#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(fit)</span>
-<span id="cb38-3"><a href="markdown.html#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Large data regression model: biglm(Ozone ~ Wind + Temp, data)</span></span>
-<span id="cb38-4"><a href="markdown.html#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sample size =  116</span></span></code></pre></div>
-<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="markdown.html#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(hist)</span></code></pre></div>
-<p><img src="targets-manual_files/figure-html/unnamed-chunk-37-1.png" width="672" /></p>
+<pre><code>``{r}
+library(biglm)
+tar_read(fit)
+```</code></pre>
+<pre><code>#&gt; Large data regression model: biglm(Ozone ~ Wind + Temp, data)
+#&gt; Sample size =  116</code></pre>
+<pre><code>``
+tar_read(hist)
+```</code></pre>
+<p><img src="targets-manual_files/figure-html/unnamed-chunk-33-1.png" width="672" /></p>
 <p>The <code>targets</code> dependency graph helps your readers understand the steps of your pipeline at a high level.</p>
-<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="markdown.html#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_visnetwork</span>()</span></code></pre></div>
-<div id="htmlwidget-04c3fa06ffdad315892e" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
-<script type="application/json" data-for="htmlwidget-04c3fa06ffdad315892e">{"x":{"nodes":{"name":["data","fit","hist","raw_data","create_plot"],"type":["stem","stem","stem","stem","function"],"status":["uptodate","uptodate","uptodate","uptodate","uptodate"],"seconds":[0.01,0.005,0.014,0.481,null],"bytes":[1079,1574,44216,1260,null],"branches":[null,null,null,null,null],"id":["data","fit","hist","raw_data","create_plot"],"label":["data","fit","hist","raw_data","create_plot"],"level":[2,3,3,1,1],"color":["#354823","#354823","#354823","#354823","#354823"],"shape":["dot","dot","dot","dot","triangle"]},"edges":{"from":["data","create_plot","data","raw_data"],"to":["fit","hist","hist","data"],"arrows":["to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":false,"hoverNearest":false,"degree":1,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Up to date","Stem","Function"],"color":["#354823","#899DA4","#899DA4"],"shape":["dot","dot","triangle"]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
+<pre><code>``{r}
+tar_visnetwork()
+```</code></pre>
+<div id="htmlwidget-f284d2f35c8a4d4853c7" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-f284d2f35c8a4d4853c7">{"x":{"nodes":{"name":["data","fit","hist","raw_data","create_plot"],"type":["stem","stem","stem","stem","function"],"status":["uptodate","uptodate","uptodate","uptodate","uptodate"],"seconds":[0.008,0.004,0.015,0.529,null],"bytes":[1079,1574,44216,1260,null],"branches":[null,null,null,null,null],"id":["data","fit","hist","raw_data","create_plot"],"label":["data","fit","hist","raw_data","create_plot"],"level":[2,3,3,1,1],"color":["#354823","#354823","#354823","#354823","#354823"],"shape":["dot","dot","dot","dot","triangle"]},"edges":{"from":["data","create_plot","data","raw_data"],"to":["fit","hist","hist","data"],"arrows":["to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":false,"hoverNearest":false,"degree":1,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Up to date","Stem","Function"],"color":["#354823","#899DA4","#899DA4"],"shape":["dot","dot","triangle"]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
 <p>At this point, if you go back and run <code><code>{targets}</code></code> code chunks in interactive mode, this will not interfere with any scripts or data created in non-interactive mode.</p>
 
 </div>
