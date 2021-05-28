@@ -62,7 +62,7 @@ knitr::opts_knit$set(root.dir = getwd()) # Can be a different directory.
 Near the top, you may also wish to remove the `_targets_r` directory where Target Markdown writes scripts in non-interactive mode. That way, you will get rid of any old superfluous target definitions you may have created in obsolete versions of your R Markdown report.
 
 ````
-`r ''```{r}
+`r ''````{r}
 tar_unscript()
 ```
 ````
@@ -114,7 +114,7 @@ tar_target(raw_data, airquality)
 At this point in interactive mode, you can print out the `raw_data` object in the R console. In non-interactive mode, the pipeline is only defined, not executed, so `raw_data` may not exist yet.
 
 ````
-`r ''```{r, eval = FALSE}
+`r ''````{r, eval = FALSE}
 head(raw_data)
 ```
 ````
@@ -144,13 +144,13 @@ In interactive mode, it is good practice to inspect the outputs to make sure the
 
 
 ````
-`r ''```{r}
+`r ''````{r, eval = FALSE}
 fit
 ```
 ````
 
 ````
-`r ''```{r}
+`r ''````{r, eval = FALSE}
 hist
 ```
 ````
@@ -160,7 +160,7 @@ hist
 In non-interactive mode, the above <code>```{targets}```</code> code chunks only write R code to `_targets.R` and `_targets_r/`, they do not actually run the code or run the pipeline. To actually run the pipeline in non-interactive mode, call `tar_make()` or similar in an ordinary R code chunk. If this is not the first time you are running this report, you may see some up-to-date targets automatically skip to reduce runtime. The dependency management and caching systems in `targets` are highly recommended over the less developed `autodep` and caching features of `knitr`.
 
 ````
-`r ''```{r}
+`r ''````{r}
 tar_make()
 ```
 ````
@@ -174,7 +174,7 @@ tar_make()
 You can retrieve results from the `_targets/` data store using `tar_read()` or `tar_load()`.
 
 ````
-`r ''```{r}
+`r ''````{r}
 library(biglm)
 tar_read(fit)
 ```
@@ -186,7 +186,7 @@ tar_read(fit)
 ```
 
 ````
-`r ''```
+`r ''````{r}
 tar_read(hist)
 ```
 ````
@@ -198,7 +198,7 @@ tar_read(hist)
 The `targets` dependency graph helps your readers understand the steps of your pipeline at a high level.
 
 ````
-`r ''```{r}
+`r ''````{r}
 tar_visnetwork()
 ```
 ````
