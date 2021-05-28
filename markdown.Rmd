@@ -31,7 +31,7 @@ This example of Target Markdown is based on the minimal `targets` example from h
 
 ## Packages
 
-This example requires several R packages, and `targets` must be version 0.5.0 or above. 
+This example requires several R packages, and `targets` must be version 0.5.0 or above.
 
 ```{r, eval = FALSE}
 install.packages(c("biglm", "dplyr", "ggplot2", "readr", "targets", "tidyr"))
@@ -41,21 +41,31 @@ install.packages(c("biglm", "dplyr", "ggplot2", "readr", "targets", "tidyr"))
 
 First, load `targets` to activate the specialized `knitr` engine for Target Markdown.
 
-```{r, eval = TRUE}
+````
+`r ''````{r}
+library(targets)
+```
+````
+
+```{r, eval = TRUE, echo = FALSE}
 library(targets)
 ```
 
 Optionally set the `root.dir` `knitr` option to invoke all the code chunks from the directory of your choice.
 
-```{r, eval = FALSE}
+````
+`r ''````{r}
 knitr::opts_knit$set(root.dir = getwd()) # Can be a different directory.
 ```
+````
 
 Near the top, you may also wish to remove the `_targets_r` directory where Target Markdown writes scripts in non-interactive mode. That way, you will get rid of any old superfluous target definitions you may have created in obsolete versions of your R Markdown report.
 
-```{r}
+````
+`r ''```{r}
 tar_unscript()
 ```
+````
 
 ## Globals
 
@@ -103,9 +113,11 @@ tar_target(raw_data, airquality)
 
 At this point in interactive mode, you can print out the `raw_data` object in the R console. In non-interactive mode, the pipeline is only defined, not executed, so `raw_data` may not exist yet.
 
-```{r runs-only-if-interactive, eval = FALSE}
+````
+`r ''```{r, eval = FALSE}
 head(raw_data)
 ```
+````
 
 Next, we define more targets to process the raw data, plot a histogram, and fit a model. Remember: when it comes to targets in the pipeline, only the return value of the chunk registers properly. So if you define multiple targets in a single chunk, please wrap them in a list.
 
@@ -129,19 +141,31 @@ list(
 
 In interactive mode, it is good practice to inspect the outputs to make sure they ran properly. Remember: in interactive mode, these results do not exist in storage, and they will evaporate when you restart your R session.
 
-```{r, eval = FALSE}
+
+
+````
+`r ''```{r}
 fit
 ```
+````
 
-```{r, eval = FALSE}
+````
+`r ''```{r}
 hist
 ```
+````
 
 ## Run the pipeline
 
 In non-interactive mode, the above <code>```{targets}```</code> code chunks only write R code to `_targets.R` and `_targets_r/`, they do not actually run the code or run the pipeline. To actually run the pipeline in non-interactive mode, call `tar_make()` or similar in an ordinary R code chunk. If this is not the first time you are running this report, you may see some up-to-date targets automatically skip to reduce runtime. The dependency management and caching systems in `targets` are highly recommended over the less developed `autodep` and caching features of `knitr`.
 
-```{r, eval = TRUE}
+````
+`r ''```{r}
+tar_make()
+```
+````
+
+```{r, eval = TRUE, echo = FALSE}
 tar_make()
 ```
 
@@ -149,18 +173,37 @@ tar_make()
 
 You can retrieve results from the `_targets/` data store using `tar_read()` or `tar_load()`.
 
-```{r, message = FALSE, eval = TRUE}
+````
+`r ''```{r}
+library(biglm)
+tar_read(fit)
+```
+````
+
+```{r, message = FALSE, eval = TRUE, echo = FALSE}
 library(biglm)
 tar_read(fit)
 ```
 
-```{r, eval = TRUE}
+````
+`r ''```
+tar_read(hist)
+```
+````
+
+```{r, eval = TRUE, echo = FALSE}
 tar_read(hist)
 ```
 
 The `targets` dependency graph helps your readers understand the steps of your pipeline at a high level.
 
-```{r, eval = TRUE}
+````
+`r ''```{r}
+tar_visnetwork()
+```
+````
+
+```{r, eval = TRUE, echo = FALSE}
 tar_visnetwork()
 ```
 
