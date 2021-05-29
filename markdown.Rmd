@@ -128,7 +128,7 @@ create_plot <- function(data) {
 }
 ```
 
-In non-interactive mode, the chunk overwrites the `_targets.R` file and writes the R code to a script in `_targets_r/globals/`. It is good practice to assign explicit chunk labels because they are used as script names. (The labels of unnamed chunks depend on chunk order, which is brittle).^[All chunk labels must be unique. And for `bookdown` projects, chunk labels should only use alphanumeric characters and dashes.]
+In non-interactive mode, the chunk establishes a common `_targets.R` file and writes the R code to a script in `_targets_r/globals/`.^[The `_targets.R` file from Target Markdown never changes from chunk to chunk or report to report, so you can spread your work over multiple reports without worrying about aligning `_targets.R` scripts. Just be sure all your chunk names are unique across all the reports of a project.] It is good practice to assign explicit chunk labels because they are used as script names. (The labels of unnamed chunks depend on chunk order, which is brittle).^[All chunk labels must be unique. And for `bookdown` projects, chunk labels should only use alphanumeric characters and dashes.]
 
 ## Targets
 
@@ -156,7 +156,7 @@ head(raw_data)
 head(raw_data)
 ```
 
-For demonstration purposes, here is the same chunk in non-interactive mode. In non-interactive mode, the `{targets}` engine does not actually run any targets. Instead, it overwrites `_targets.R` and writes the code to a script in `_targets_r/targets/`.
+For demonstration purposes, here is the same chunk in non-interactive mode. In non-interactive mode, the `{targets}` engine does not actually run any targets. Instead, it establishes a common `_targets.R` and writes the code to a script in `_targets_r/targets/`.
 
 ````
 `r ''````{targets chunk-name-with-target, tar_interactive = FALSE}
