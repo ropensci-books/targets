@@ -29,9 +29,11 @@ Target Markdown uses a special `knitr` language engine. R Markdown code chunks b
 
 The `{targets}` engine can run in interactive or non-interactive mode. Interactive mode is for prototyping and testing, while non-interactive mode is for pipeline construction. Pipeline development is continual back-and-forth between exploratory analysis and serious runs, so most users will frequently switch modes. The default mode is whatever `interactive()` returns, so the notebook interface defaults to interactive (https://bookdown.org/yihui/rmarkdown/notebook.html) and the Knit button in RStudio defaults to non-interactive. However, you can control the mode with the `tar_interactive` chunk option. You can even set the default mode for the whole report:
 
-```{r}
+````
+`r ''````{r}
 knitr::opts_chunk$set(tar_interactive = FALSE)
 ```
+````
 
 The following example demonstrates both modes.
 
@@ -44,6 +46,7 @@ The following example is based on the minimal `targets` project at https://githu
 This example requires several R packages, and `targets` must be version 0.5.0 or above.
 
 ```{r, eval = FALSE}
+# R console
 install.packages(c("biglm", "dplyr", "ggplot2", "readr", "targets", "tidyr"))
 ```
 
@@ -61,15 +64,15 @@ library(targets)
 library(targets)
 ```
 
-Optionally set the `root.dir` `knitr` option to invoke all the code chunks from the directory of your choice.
+Optionally set the `root.dir` `knitr` option to invoke all the code chunks from the directory of your choice. This gives you control over where `targets` writes all its scripts and output data.
 
 ````
 `r ''````{r}
-knitr::opts_knit$set(root.dir = getwd()) # Can be a different directory.
+knitr::opts_knit$set(root.dir = "your/choice/")
 ```
 ````
 
-Near the top, you may also wish to remove the `_targets_r` directory where Target Markdown writes scripts in non-interactive mode. That way, you will get rid of any old superfluous target definitions you may have created in obsolete versions of your R Markdown report.
+Early on, you may also wish to remove the leftover `_targets_r` directory from a previous run in non-interactive mode.
 
 ````
 `r ''````{r}
@@ -125,7 +128,7 @@ create_plot <- function(data) {
 }
 ```
 
-In non-interactive mode, the chunk overwrites the `_targets.R` file and writes the R code to a script in `_targets_r/globals/`. It is good practice to assign chunk labels because they are used as script names. (The labels of unnamed chunks depend on chunk order, which is brittle).^[All chunk labels must be unique. And for `bookdown` projects, chunk labels should only use alphanumeric characters and dashes.]
+In non-interactive mode, the chunk overwrites the `_targets.R` file and writes the R code to a script in `_targets_r/globals/`. It is good practice to assign explicit chunk labels because they are used as script names. (The labels of unnamed chunks depend on chunk order, which is brittle).^[All chunk labels must be unique. And for `bookdown` projects, chunk labels should only use alphanumeric characters and dashes.]
 
 ## Targets
 
@@ -183,15 +186,7 @@ list(
 )
 ```
 
-In interactive mode, it is good practice to inspect the outputs to make sure the targets ran properly. Remember: in interactive mode, these results do not exist in permanent storage, and they will evaporate when you restart your R session.
-
-```{targets downstream-targets-int, tar_interactive = TRUE, echo = FALSE, results = "hide"}
-list(
-  tar_target(data, raw_data %>% filter(!is.na(Ozone))),
-  tar_target(hist, create_plot(data)),
-  tar_target(fit, biglm(Ozone ~ Wind + Temp, data))
-)
-```
+In interactive mode, it is good practice to inspect the outputs to make sure the targets ran properly. You can do this with ordinary `{r}` code chunks.
 
 ````
 `r ''````{r, eval = FALSE}
@@ -199,23 +194,15 @@ fit
 ```
 ````
 
-```{r, echo = FALSE}
-fit
-```
-
 ````
 `r ''````{r, eval = FALSE}
 hist
 ```
 ````
-
-```{r, echo = FALSE}
-hist
-```
 
 ## Pipeline
 
-If you ran all the `{targets}` chunks in non-interactive mode, you are ready to run the pipeline in with `tar_make()` in an ordinary R code chunk. This time, the output is written to persistent storage at the project root.
+If you ran all the `{targets}` chunks in non-interactive mode, you are ready to run the pipeline in with `tar_make()` in an ordinary `{r}` code chunk. This time, the output is written to persistent storage at the project root.
 
 ````
 `r ''````{r}
