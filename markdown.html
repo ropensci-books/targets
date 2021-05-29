@@ -353,7 +353,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="modes" class="section level2" number="3.3">
 <h2><span class="header-section-number">3.3</span> Modes</h2>
 <p>The <code>{targets}</code> engine can run in interactive or non-interactive mode. Interactive mode is for prototyping and testing, while non-interactive mode is for pipeline construction. Pipeline development is continual back-and-forth between exploratory analysis and serious runs, so most users will frequently switch modes. The default mode is whatever <code>interactive()</code> returns, so the notebook interface defaults to interactive (<a href="https://bookdown.org/yihui/rmarkdown/notebook.html" class="uri">https://bookdown.org/yihui/rmarkdown/notebook.html</a>) and the Knit button in RStudio defaults to non-interactive. However, you can control the mode with the <code>tar_interactive</code> chunk option. You can even set the default mode for the whole report:</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="markdown.html#cb24-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(<span class="at">tar_interactive =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<pre><code>```{r}
+knitr::opts_chunk$set(tar_interactive = FALSE)
+```</code></pre>
 <p>The following example demonstrates both modes.</p>
 </div>
 <div id="example" class="section level2" number="3.4">
@@ -363,7 +365,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="packages" class="section level2" number="3.5">
 <h2><span class="header-section-number">3.5</span> Packages</h2>
 <p>This example requires several R packages, and <code>targets</code> must be version 0.5.0 or above.</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="markdown.html#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="fu">c</span>(<span class="st">&quot;biglm&quot;</span>, <span class="st">&quot;dplyr&quot;</span>, <span class="st">&quot;ggplot2&quot;</span>, <span class="st">&quot;readr&quot;</span>, <span class="st">&quot;targets&quot;</span>, <span class="st">&quot;tidyr&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="markdown.html#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
+<span id="cb25-2"><a href="markdown.html#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="fu">c</span>(<span class="st">&quot;biglm&quot;</span>, <span class="st">&quot;dplyr&quot;</span>, <span class="st">&quot;ggplot2&quot;</span>, <span class="st">&quot;readr&quot;</span>, <span class="st">&quot;targets&quot;</span>, <span class="st">&quot;tidyr&quot;</span>))</span></code></pre></div>
 </div>
 <div id="setup" class="section level2" number="3.6">
 <h2><span class="header-section-number">3.6</span> Setup</h2>
@@ -371,11 +374,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <pre><code>```{r}
 library(targets)
 ```</code></pre>
-<p>Optionally set the <code>root.dir</code> <code>knitr</code> option to invoke all the code chunks from the directory of your choice.</p>
+<p>Optionally set the <code>root.dir</code> <code>knitr</code> option to invoke all the code chunks from the directory of your choice. This gives you control over where <code>targets</code> writes all its scripts and output data.</p>
 <pre><code>```{r}
-knitr::opts_knit$set(root.dir = getwd()) # Can be a different directory.
+knitr::opts_knit$set(root.dir = &quot;your/choice/&quot;)
 ```</code></pre>
-<p>Near the top, you may also wish to remove the <code>_targets_r</code> directory where Target Markdown writes scripts in non-interactive mode. That way, you will get rid of any old superfluous target definitions you may have created in obsolete versions of your R Markdown report.</p>
+<p>Early on, you may also wish to remove the leftover <code>_targets_r</code> directory from a previous run in non-interactive mode.</p>
 <pre><code>```{r}
 tar_unscript()
 ```</code></pre>
@@ -404,7 +407,7 @@ create_plot &lt;- function(data) {
 }
 ```</code></pre>
 <pre><code>#&gt; Wrote _targets.R and _targets_r/globals/chunk-name.R</code></pre>
-<p>In non-interactive mode, the chunk overwrites the <code>_targets.R</code> file and writes the R code to a script in <code>_targets_r/globals/</code>. It is good practice to assign chunk labels because they are used as script names. (The labels of unnamed chunks depend on chunk order, which is brittle).<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a></p>
+<p>In non-interactive mode, the chunk overwrites the <code>_targets.R</code> file and writes the R code to a script in <code>_targets_r/globals/</code>. It is good practice to assign explicit chunk labels because they are used as script names. (The labels of unnamed chunks depend on chunk order, which is brittle).<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a></p>
 </div>
 <div id="targets" class="section level2" number="3.8">
 <h2><span class="header-section-number">3.8</span> Targets</h2>
@@ -440,20 +443,17 @@ list(
 )
 ```</code></pre>
 <pre><code>#&gt; Wrote _targets.R and _targets_r/targets/downstream-targets.R</code></pre>
-<p>In interactive mode, it is good practice to inspect the outputs to make sure the targets ran properly. Remember: in interactive mode, these results do not exist in permanent storage, and they will evaporate when you restart your R session.</p>
+<p>In interactive mode, it is good practice to inspect the outputs to make sure the targets ran properly. You can do this with ordinary <code>{r}</code> code chunks.</p>
 <pre><code>```{r, eval = FALSE}
 fit
 ```</code></pre>
-<pre><code>#&gt; Large data regression model: biglm(Ozone ~ Wind + Temp, data)
-#&gt; Sample size =  116</code></pre>
 <pre><code>```{r, eval = FALSE}
 hist
 ```</code></pre>
-<p><img src="targets-manual_files/figure-html/unnamed-chunk-36-1.png" width="672" /></p>
 </div>
 <div id="pipeline" class="section level2" number="3.9">
 <h2><span class="header-section-number">3.9</span> Pipeline</h2>
-<p>If you ran all the <code>{targets}</code> chunks in non-interactive mode, you are ready to run the pipeline in with <code>tar_make()</code> in an ordinary R code chunk. This time, the output is written to persistent storage at the project root.</p>
+<p>If you ran all the <code>{targets}</code> chunks in non-interactive mode, you are ready to run the pipeline in with <code>tar_make()</code> in an ordinary <code>{r}</code> code chunk. This time, the output is written to persistent storage at the project root.</p>
 <pre><code>```{r}
 tar_make()
 ```</code></pre>
@@ -479,13 +479,13 @@ tar_read(fit)
 <pre><code>```{r}
 tar_read(hist)
 ```</code></pre>
-<p><img src="targets-manual_files/figure-html/unnamed-chunk-39-1.png" width="672" /></p>
+<p><img src="targets-manual_files/figure-html/unnamed-chunk-36-1.png" width="672" /></p>
 <p>The <code>targets</code> dependency graph helps your readers understand the steps of your pipeline at a high level.</p>
 <pre><code>```{r}
 tar_visnetwork()
 ```</code></pre>
-<div id="htmlwidget-2dba573e1c2344c8a888" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
-<script type="application/json" data-for="htmlwidget-2dba573e1c2344c8a888">{"x":{"nodes":{"name":["data","fit","hist","raw_data","create_plot"],"type":["stem","stem","stem","stem","function"],"status":["uptodate","uptodate","uptodate","uptodate","uptodate"],"seconds":[0.009,0.004,0.013,0.479,null],"bytes":[1079,1574,44216,1260,null],"branches":[null,null,null,null,null],"id":["data","fit","hist","raw_data","create_plot"],"label":["data","fit","hist","raw_data","create_plot"],"level":[2,3,3,1,1],"color":["#354823","#354823","#354823","#354823","#354823"],"shape":["dot","dot","dot","dot","triangle"]},"edges":{"from":["data","create_plot","data","raw_data"],"to":["fit","hist","hist","data"],"arrows":["to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":false,"hoverNearest":false,"degree":1,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Up to date","Stem","Function"],"color":["#354823","#899DA4","#899DA4"],"shape":["dot","dot","triangle"]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-e8fd9f071973f2354314" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-e8fd9f071973f2354314">{"x":{"nodes":{"name":["data","fit","hist","raw_data","create_plot"],"type":["stem","stem","stem","stem","function"],"status":["uptodate","uptodate","uptodate","uptodate","uptodate"],"seconds":[0.009,0.004,0.013,0.466,null],"bytes":[1079,1574,44216,1260,null],"branches":[null,null,null,null,null],"id":["data","fit","hist","raw_data","create_plot"],"label":["data","fit","hist","raw_data","create_plot"],"level":[2,3,3,1,1],"color":["#354823","#354823","#354823","#354823","#354823"],"shape":["dot","dot","dot","dot","triangle"]},"edges":{"from":["data","create_plot","data","raw_data"],"to":["fit","hist","hist","data"],"arrows":["to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":false,"hoverNearest":false,"degree":1,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Up to date","Stem","Function"],"color":["#354823","#899DA4","#899DA4"],"shape":["dot","dot","triangle"]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
 <p>At this point, you can go back and run <code>{targets}</code> chunks in interactive mode without interfering with the code or data of the non-interactive pipeline.</p>
 
 </div>
