@@ -174,14 +174,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3" data-path="markdown.html"><a href="markdown.html"><i class="fa fa-check"></i><b>3</b> Target Markdown</a>
 <ul>
 <li class="chapter" data-level="3.1" data-path="markdown.html"><a href="markdown.html#access"><i class="fa fa-check"></i><b>3.1</b> Access</a></li>
-<li class="chapter" data-level="3.2" data-path="markdown.html"><a href="markdown.html#modes"><i class="fa fa-check"></i><b>3.2</b> Modes</a></li>
-<li class="chapter" data-level="3.3" data-path="markdown.html"><a href="markdown.html#example"><i class="fa fa-check"></i><b>3.3</b> Example</a></li>
-<li class="chapter" data-level="3.4" data-path="markdown.html"><a href="markdown.html#packages"><i class="fa fa-check"></i><b>3.4</b> Packages</a></li>
-<li class="chapter" data-level="3.5" data-path="markdown.html"><a href="markdown.html#setup"><i class="fa fa-check"></i><b>3.5</b> Setup</a></li>
-<li class="chapter" data-level="3.6" data-path="markdown.html"><a href="markdown.html#globals"><i class="fa fa-check"></i><b>3.6</b> Globals</a></li>
-<li class="chapter" data-level="3.7" data-path="markdown.html"><a href="markdown.html#targets"><i class="fa fa-check"></i><b>3.7</b> Targets</a></li>
-<li class="chapter" data-level="3.8" data-path="markdown.html"><a href="markdown.html#run-the-pipeline-1"><i class="fa fa-check"></i><b>3.8</b> Run the pipeline</a></li>
-<li class="chapter" data-level="3.9" data-path="markdown.html"><a href="markdown.html#inspect-the-output"><i class="fa fa-check"></i><b>3.9</b> Inspect the output</a></li>
+<li class="chapter" data-level="3.2" data-path="markdown.html"><a href="markdown.html#engine"><i class="fa fa-check"></i><b>3.2</b> Engine</a></li>
+<li class="chapter" data-level="3.3" data-path="markdown.html"><a href="markdown.html#modes"><i class="fa fa-check"></i><b>3.3</b> Modes</a></li>
+<li class="chapter" data-level="3.4" data-path="markdown.html"><a href="markdown.html#example"><i class="fa fa-check"></i><b>3.4</b> Example</a></li>
+<li class="chapter" data-level="3.5" data-path="markdown.html"><a href="markdown.html#packages"><i class="fa fa-check"></i><b>3.5</b> Packages</a></li>
+<li class="chapter" data-level="3.6" data-path="markdown.html"><a href="markdown.html#setup"><i class="fa fa-check"></i><b>3.6</b> Setup</a></li>
+<li class="chapter" data-level="3.7" data-path="markdown.html"><a href="markdown.html#globals"><i class="fa fa-check"></i><b>3.7</b> Globals</a></li>
+<li class="chapter" data-level="3.8" data-path="markdown.html"><a href="markdown.html#targets"><i class="fa fa-check"></i><b>3.8</b> Targets</a></li>
+<li class="chapter" data-level="3.9" data-path="markdown.html"><a href="markdown.html#pipeline"><i class="fa fa-check"></i><b>3.9</b> Pipeline</a></li>
+<li class="chapter" data-level="3.10" data-path="markdown.html"><a href="markdown.html#output"><i class="fa fa-check"></i><b>3.10</b> Output</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="debugging.html"><a href="debugging.html"><i class="fa fa-check"></i><b>4</b> Debugging</a>
 <ul>
@@ -289,7 +290,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="11.2.4" data-path="cloud.html"><a href="cloud.html#configure-your-local-machine"><i class="fa fa-check"></i><b>11.2.4</b> Configure your local machine</a></li>
 <li class="chapter" data-level="11.2.5" data-path="cloud.html"><a href="cloud.html#create-s3-buckets"><i class="fa fa-check"></i><b>11.2.5</b> Create S3 buckets</a></li>
 <li class="chapter" data-level="11.2.6" data-path="cloud.html"><a href="cloud.html#configure-the-pipeline"><i class="fa fa-check"></i><b>11.2.6</b> Configure the pipeline</a></li>
-<li class="chapter" data-level="11.2.7" data-path="cloud.html"><a href="cloud.html#run-the-pipeline-2"><i class="fa fa-check"></i><b>11.2.7</b> Run the pipeline</a></li>
+<li class="chapter" data-level="11.2.7" data-path="cloud.html"><a href="cloud.html#run-the-pipeline-1"><i class="fa fa-check"></i><b>11.2.7</b> Run the pipeline</a></li>
 <li class="chapter" data-level="11.2.8" data-path="cloud.html"><a href="cloud.html#manage-the-data"><i class="fa fa-check"></i><b>11.2.8</b> Manage the data</a></li>
 </ul></li>
 </ul></li>
@@ -337,17 +338,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="error-messages" class="section level2" number="4.1">
 <h2><span class="header-section-number">4.1</span> Error messages</h2>
 <p>The metadata in <code>_targets/meta/meta</code> contains error messages and warning messages from when each target last ran. <code>tar_meta()</code> can retrieve these clues.</p>
-<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="debugging.html#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_meta</span>(<span class="at">fields =</span> error, <span class="at">complete_only =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb43-2"><a href="debugging.html#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_meta</span>(<span class="at">fields =</span> warnings, <span class="at">complete_only =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="debugging.html#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_meta</span>(<span class="at">fields =</span> error, <span class="at">complete_only =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb50-2"><a href="debugging.html#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_meta</span>(<span class="at">fields =</span> warnings, <span class="at">complete_only =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 </div>
 <div id="environment-browser" class="section level2" number="4.2">
 <h2><span class="header-section-number">4.2</span> Environment browser</h2>
 <p>By default, <code>tar_make()</code> runs in a reproducible background process, so <a href="https://rstats.wtf/debugging-r-code.html"><code>debug()</code></a> and <a href="https://rstats.wtf/debugging-r-code.html"><code>browser()</code></a> do not interrupt the pipeline. To use the environment browser your the main session, restart R and supply <code>callr_function = NULL</code> to <code>tar_make()</code>. <code>callr_function = NULL</code> risks invalidating your hard-earned results, so only use it after you have just restarted R and only use it for debugging.</p>
-<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="debugging.html#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Restart R first...</span></span>
-<span id="cb44-2"><a href="debugging.html#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="fu">debug</span>(custom_function_called_from_a_target)</span>
-<span id="cb44-3"><a href="debugging.html#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>(<span class="at">names =</span> target_to_debug, <span class="at">callr_function =</span> <span class="cn">NULL</span>)</span>
-<span id="cb44-4"><a href="debugging.html#cb44-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; debugging in: custom_function_called_from_a_target()</span></span>
-<span id="cb44-5"><a href="debugging.html#cb44-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Browse[1]&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="debugging.html#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Restart R first...</span></span>
+<span id="cb51-2"><a href="debugging.html#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="fu">debug</span>(custom_function_called_from_a_target)</span>
+<span id="cb51-3"><a href="debugging.html#cb51-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>(<span class="at">names =</span> target_to_debug, <span class="at">callr_function =</span> <span class="cn">NULL</span>)</span>
+<span id="cb51-4"><a href="debugging.html#cb51-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; debugging in: custom_function_called_from_a_target()</span></span>
+<span id="cb51-5"><a href="debugging.html#cb51-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Browse[1]&gt;</span></span></code></pre></div>
 </div>
 <div id="the-debug-option" class="section level2" number="4.3">
 <h2><span class="header-section-number">4.3</span> The debug option</h2>
@@ -360,42 +361,42 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Interactively run any R code that helps you troubleshoot the problem. For example, if the target invokes a function <code>f()</code>, enter <code>debug(f)</code> and then <code>c</code> to immediately enter the function’s calling environment where all its arguments are defined.</li>
 </ol>
 <p>To try it out yourself, write the following <code>_targets.R</code> file.</p>
-<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="debugging.html#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
-<span id="cb45-2"><a href="debugging.html#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb45-3"><a href="debugging.html#cb45-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">debug =</span> <span class="st">&quot;b&quot;</span>)</span>
-<span id="cb45-4"><a href="debugging.html#cb45-4" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">another_arg =</span> <span class="dv">123</span>) x <span class="sc">+</span> another_arg</span>
-<span id="cb45-5"><a href="debugging.html#cb45-5" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb45-6"><a href="debugging.html#cb45-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(a, <span class="dv">1</span>),</span>
-<span id="cb45-7"><a href="debugging.html#cb45-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(b, <span class="fu">f</span>(a))</span>
-<span id="cb45-8"><a href="debugging.html#cb45-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="debugging.html#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb52-2"><a href="debugging.html#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb52-3"><a href="debugging.html#cb52-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">debug =</span> <span class="st">&quot;b&quot;</span>)</span>
+<span id="cb52-4"><a href="debugging.html#cb52-4" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">another_arg =</span> <span class="dv">123</span>) x <span class="sc">+</span> another_arg</span>
+<span id="cb52-5"><a href="debugging.html#cb52-5" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb52-6"><a href="debugging.html#cb52-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(a, <span class="dv">1</span>),</span>
+<span id="cb52-7"><a href="debugging.html#cb52-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(b, <span class="fu">f</span>(a))</span>
+<span id="cb52-8"><a href="debugging.html#cb52-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <p>Then, call <code>tar_make(callr_function = NULL)</code> to drop into a debugger at the command of <code>b</code>.</p>
-<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="debugging.html#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
-<span id="cb46-2"><a href="debugging.html#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>(<span class="at">callr_function =</span> <span class="cn">NULL</span>)</span>
-<span id="cb46-3"><a href="debugging.html#cb46-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target a</span></span>
-<span id="cb46-4"><a href="debugging.html#cb46-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target b</span></span>
-<span id="cb46-5"><a href="debugging.html#cb46-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Called from: eval(expr, envir)</span></span>
-<span id="cb46-6"><a href="debugging.html#cb46-6" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="debugging.html#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
+<span id="cb53-2"><a href="debugging.html#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>(<span class="at">callr_function =</span> <span class="cn">NULL</span>)</span>
+<span id="cb53-3"><a href="debugging.html#cb53-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target a</span></span>
+<span id="cb53-4"><a href="debugging.html#cb53-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target b</span></span>
+<span id="cb53-5"><a href="debugging.html#cb53-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Called from: eval(expr, envir)</span></span>
+<span id="cb53-6"><a href="debugging.html#cb53-6" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span></span></code></pre></div>
 <p>When the debugger launches, run <code>targets::tar_name()</code> to confirm you are running the correct target.</p>
-<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="debugging.html#cb47-1" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> targets<span class="sc">::</span><span class="fu">tar_name</span>()</span>
-<span id="cb47-2"><a href="debugging.html#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;b&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="debugging.html#cb54-1" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> targets<span class="sc">::</span><span class="fu">tar_name</span>()</span>
+<span id="cb54-2"><a href="debugging.html#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;b&quot;</span></span></code></pre></div>
 <p>In the debugger, the dependency targets of <code>b</code> are available in the current environment, and the global objects and functions are available in the parent environment.</p>
-<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="debugging.html#cb48-1" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> <span class="fu">ls</span>()</span>
-<span id="cb48-2"><a href="debugging.html#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;a&quot;</span></span>
-<span id="cb48-3"><a href="debugging.html#cb48-3" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> a</span>
-<span id="cb48-4"><a href="debugging.html#cb48-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 1</span></span>
-<span id="cb48-5"><a href="debugging.html#cb48-5" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> <span class="fu">ls</span>(<span class="fu">parent.env</span>(<span class="fu">environment</span>()))</span>
-<span id="cb48-6"><a href="debugging.html#cb48-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;f&quot;</span></span>
-<span id="cb48-7"><a href="debugging.html#cb48-7" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> <span class="fu">f</span>(<span class="dv">1</span>)</span>
-<span id="cb48-8"><a href="debugging.html#cb48-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 124</span></span></code></pre></div>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="debugging.html#cb55-1" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> <span class="fu">ls</span>()</span>
+<span id="cb55-2"><a href="debugging.html#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;a&quot;</span></span>
+<span id="cb55-3"><a href="debugging.html#cb55-3" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> a</span>
+<span id="cb55-4"><a href="debugging.html#cb55-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 1</span></span>
+<span id="cb55-5"><a href="debugging.html#cb55-5" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> <span class="fu">ls</span>(<span class="fu">parent.env</span>(<span class="fu">environment</span>()))</span>
+<span id="cb55-6"><a href="debugging.html#cb55-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;f&quot;</span></span>
+<span id="cb55-7"><a href="debugging.html#cb55-7" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> <span class="fu">f</span>(<span class="dv">1</span>)</span>
+<span id="cb55-8"><a href="debugging.html#cb55-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 124</span></span></code></pre></div>
 <p>Enter <code>debug(f)</code> to debug the function <code>f()</code>, and press <code>c</code> to enter the function’s calling environment where <code>another_arg</code> is defined.</p>
-<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="debugging.html#cb49-1" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> <span class="fu">debug</span>(f)</span>
-<span id="cb49-2"><a href="debugging.html#cb49-2" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> c</span>
-<span id="cb49-3"><a href="debugging.html#cb49-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; debugging in: f(a)</span></span>
-<span id="cb49-4"><a href="debugging.html#cb49-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; debug at _targets.R#3: x + another_arg</span></span>
-<span id="cb49-5"><a href="debugging.html#cb49-5" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">2</span>]<span class="sc">&gt;</span> <span class="fu">ls</span>()</span>
-<span id="cb49-6"><a href="debugging.html#cb49-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;another_arg&quot; &quot;x&quot;   </span></span>
-<span id="cb49-7"><a href="debugging.html#cb49-7" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">2</span>]<span class="sc">&gt;</span> another_arg</span>
-<span id="cb49-8"><a href="debugging.html#cb49-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 123</span></span></code></pre></div>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="debugging.html#cb56-1" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> <span class="fu">debug</span>(f)</span>
+<span id="cb56-2"><a href="debugging.html#cb56-2" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> c</span>
+<span id="cb56-3"><a href="debugging.html#cb56-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; debugging in: f(a)</span></span>
+<span id="cb56-4"><a href="debugging.html#cb56-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; debug at _targets.R#3: x + another_arg</span></span>
+<span id="cb56-5"><a href="debugging.html#cb56-5" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">2</span>]<span class="sc">&gt;</span> <span class="fu">ls</span>()</span>
+<span id="cb56-6"><a href="debugging.html#cb56-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;another_arg&quot; &quot;x&quot;   </span></span>
+<span id="cb56-7"><a href="debugging.html#cb56-7" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">2</span>]<span class="sc">&gt;</span> another_arg</span>
+<span id="cb56-8"><a href="debugging.html#cb56-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 123</span></span></code></pre></div>
 </div>
 <div id="workspaces" class="section level2" number="4.4">
 <h2><span class="header-section-number">4.4</span> Workspaces</h2>
@@ -405,61 +406,61 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>In the <code>workspaces</code> argument of <code>tar_option_set()</code>, specify the targets for which you want to save workspaces. Then, run <code>tar_make()</code> or similar. A workspace file will be saved for each existing target, regardless of whether the target runs or gets skipped in the pipeline.</li>
 </ol>
 <p>Here is an example of (1).</p>
-<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="debugging.html#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R file:</span></span>
-<span id="cb50-2"><a href="debugging.html#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">tidyverse.quiet =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb50-3"><a href="debugging.html#cb50-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb50-4"><a href="debugging.html#cb50-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb50-5"><a href="debugging.html#cb50-5" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">crayon.enabled =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb50-6"><a href="debugging.html#cb50-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">error =</span> <span class="st">&quot;workspace&quot;</span>)</span>
-<span id="cb50-7"><a href="debugging.html#cb50-7" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="cf">function</span>(arg, value, ...) {</span>
-<span id="cb50-8"><a href="debugging.html#cb50-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(arg <span class="sc">&lt;</span> <span class="dv">4</span>)</span>
-<span id="cb50-9"><a href="debugging.html#cb50-9" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb50-10"><a href="debugging.html#cb50-10" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb50-11"><a href="debugging.html#cb50-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(x, <span class="fu">seq_len</span>(<span class="dv">4</span>)),</span>
-<span id="cb50-12"><a href="debugging.html#cb50-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
-<span id="cb50-13"><a href="debugging.html#cb50-13" aria-hidden="true" tabindex="-1"></a>    y,</span>
-<span id="cb50-14"><a href="debugging.html#cb50-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">f</span>(<span class="at">arg =</span> x, <span class="at">value =</span> <span class="st">&quot;succeeded&quot;</span>, <span class="at">a =</span> <span class="dv">1</span>, <span class="at">b =</span> <span class="dv">2</span>, <span class="at">key =</span> <span class="st">&quot;my_api_key&quot;</span>),</span>
-<span id="cb50-15"><a href="debugging.html#cb50-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">pattern =</span> <span class="fu">map</span>(x) <span class="co"># The branching chapter describes patterns.</span></span>
-<span id="cb50-16"><a href="debugging.html#cb50-16" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb50-17"><a href="debugging.html#cb50-17" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="debugging.html#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console:</span></span>
-<span id="cb51-2"><a href="debugging.html#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
-<span id="cb51-3"><a href="debugging.html#cb51-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target x</span></span>
-<span id="cb51-4"><a href="debugging.html#cb51-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run branch y_29239c8a</span></span>
-<span id="cb51-5"><a href="debugging.html#cb51-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run branch y_7cc32924</span></span>
-<span id="cb51-6"><a href="debugging.html#cb51-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run branch y_bd602d50</span></span>
-<span id="cb51-7"><a href="debugging.html#cb51-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run branch y_05f206d7</span></span>
-<span id="cb51-8"><a href="debugging.html#cb51-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; x error branch y_05f206d7</span></span>
-<span id="cb51-9"><a href="debugging.html#cb51-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● save workspace y_05f206d7</span></span>
-<span id="cb51-10"><a href="debugging.html#cb51-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error : x &lt; 4 is not TRUE .</span></span>
-<span id="cb51-11"><a href="debugging.html#cb51-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error: callr subprocess failed: x &lt; 4 is not TRUE .</span></span></code></pre></div>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="debugging.html#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R file:</span></span>
+<span id="cb57-2"><a href="debugging.html#cb57-2" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">tidyverse.quiet =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb57-3"><a href="debugging.html#cb57-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb57-4"><a href="debugging.html#cb57-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb57-5"><a href="debugging.html#cb57-5" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">crayon.enabled =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb57-6"><a href="debugging.html#cb57-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">error =</span> <span class="st">&quot;workspace&quot;</span>)</span>
+<span id="cb57-7"><a href="debugging.html#cb57-7" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="cf">function</span>(arg, value, ...) {</span>
+<span id="cb57-8"><a href="debugging.html#cb57-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(arg <span class="sc">&lt;</span> <span class="dv">4</span>)</span>
+<span id="cb57-9"><a href="debugging.html#cb57-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb57-10"><a href="debugging.html#cb57-10" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb57-11"><a href="debugging.html#cb57-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(x, <span class="fu">seq_len</span>(<span class="dv">4</span>)),</span>
+<span id="cb57-12"><a href="debugging.html#cb57-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb57-13"><a href="debugging.html#cb57-13" aria-hidden="true" tabindex="-1"></a>    y,</span>
+<span id="cb57-14"><a href="debugging.html#cb57-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">f</span>(<span class="at">arg =</span> x, <span class="at">value =</span> <span class="st">&quot;succeeded&quot;</span>, <span class="at">a =</span> <span class="dv">1</span>, <span class="at">b =</span> <span class="dv">2</span>, <span class="at">key =</span> <span class="st">&quot;my_api_key&quot;</span>),</span>
+<span id="cb57-15"><a href="debugging.html#cb57-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">pattern =</span> <span class="fu">map</span>(x) <span class="co"># The branching chapter describes patterns.</span></span>
+<span id="cb57-16"><a href="debugging.html#cb57-16" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb57-17"><a href="debugging.html#cb57-17" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="debugging.html#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console:</span></span>
+<span id="cb58-2"><a href="debugging.html#cb58-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
+<span id="cb58-3"><a href="debugging.html#cb58-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target x</span></span>
+<span id="cb58-4"><a href="debugging.html#cb58-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run branch y_29239c8a</span></span>
+<span id="cb58-5"><a href="debugging.html#cb58-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run branch y_7cc32924</span></span>
+<span id="cb58-6"><a href="debugging.html#cb58-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run branch y_bd602d50</span></span>
+<span id="cb58-7"><a href="debugging.html#cb58-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run branch y_05f206d7</span></span>
+<span id="cb58-8"><a href="debugging.html#cb58-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; x error branch y_05f206d7</span></span>
+<span id="cb58-9"><a href="debugging.html#cb58-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● save workspace y_05f206d7</span></span>
+<span id="cb58-10"><a href="debugging.html#cb58-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error : x &lt; 4 is not TRUE .</span></span>
+<span id="cb58-11"><a href="debugging.html#cb58-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error: callr subprocess failed: x &lt; 4 is not TRUE .</span></span></code></pre></div>
 <p>One of the <code>y_*******</code> targets errored out.</p>
-<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="debugging.html#cb52-1" aria-hidden="true" tabindex="-1"></a>failed <span class="ot">&lt;-</span> <span class="fu">tar_meta</span>(<span class="at">fields =</span> error) <span class="sc">%&gt;%</span></span>
-<span id="cb52-2"><a href="debugging.html#cb52-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb52-3"><a href="debugging.html#cb52-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(name)</span>
-<span id="cb52-4"><a href="debugging.html#cb52-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-5"><a href="debugging.html#cb52-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(failed)</span>
-<span id="cb52-6"><a href="debugging.html#cb52-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;y_05f206d7&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="debugging.html#cb59-1" aria-hidden="true" tabindex="-1"></a>failed <span class="ot">&lt;-</span> <span class="fu">tar_meta</span>(<span class="at">fields =</span> error) <span class="sc">%&gt;%</span></span>
+<span id="cb59-2"><a href="debugging.html#cb59-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb59-3"><a href="debugging.html#cb59-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(name)</span>
+<span id="cb59-4"><a href="debugging.html#cb59-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-5"><a href="debugging.html#cb59-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(failed)</span>
+<span id="cb59-6"><a href="debugging.html#cb59-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;y_05f206d7&quot;</span></span></code></pre></div>
 <p><code>tar_workspace()</code> reads the special metadata in the workspace file and then loads the target’s dependencies from various locations in <code>_targets/objects</code> and/or the <a href="cloud.html#cloud">cloud</a>. It also sets the random number generator seed to the seed of the target, loads the required packages, and runs <code>_targets.R</code> to load other global object dependencies such as functions.</p>
-<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="debugging.html#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_workspace</span>(y_05f206d7)</span></code></pre></div>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="debugging.html#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_workspace</span>(y_05f206d7)</span></code></pre></div>
 <p>We now have the dependencies of <code>y_05f206d7</code> in memory, which allows you to try out any failed function calls in your local R session. <a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> <a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a></p>
-<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="debugging.html#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(x)</span>
-<span id="cb54-2"><a href="debugging.html#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 4</span></span>
-<span id="cb54-3"><a href="debugging.html#cb54-3" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(<span class="at">arg =</span> <span class="dv">0</span>, <span class="at">value =</span> <span class="st">&quot;my_value&quot;</span>, <span class="at">a =</span> <span class="dv">1</span>, <span class="at">b =</span> <span class="dv">2</span>, <span class="at">key =</span> <span class="st">&quot;my_api_key&quot;</span>)</span>
-<span id="cb54-4"><a href="debugging.html#cb54-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;my_value&quot;</span></span>
-<span id="cb54-5"><a href="debugging.html#cb54-5" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(<span class="at">arg =</span> x, <span class="at">value =</span> <span class="st">&quot;my_value&quot;</span>, <span class="at">a =</span> <span class="dv">1</span>, <span class="at">b =</span> <span class="dv">2</span>, <span class="at">key =</span> <span class="st">&quot;my_api_key&quot;</span>)</span>
-<span id="cb54-6"><a href="debugging.html#cb54-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error in f(x) : x &lt; 4 is not TRUE</span></span></code></pre></div>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="debugging.html#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(x)</span>
+<span id="cb61-2"><a href="debugging.html#cb61-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 4</span></span>
+<span id="cb61-3"><a href="debugging.html#cb61-3" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(<span class="at">arg =</span> <span class="dv">0</span>, <span class="at">value =</span> <span class="st">&quot;my_value&quot;</span>, <span class="at">a =</span> <span class="dv">1</span>, <span class="at">b =</span> <span class="dv">2</span>, <span class="at">key =</span> <span class="st">&quot;my_api_key&quot;</span>)</span>
+<span id="cb61-4"><a href="debugging.html#cb61-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;my_value&quot;</span></span>
+<span id="cb61-5"><a href="debugging.html#cb61-5" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(<span class="at">arg =</span> x, <span class="at">value =</span> <span class="st">&quot;my_value&quot;</span>, <span class="at">a =</span> <span class="dv">1</span>, <span class="at">b =</span> <span class="dv">2</span>, <span class="at">key =</span> <span class="st">&quot;my_api_key&quot;</span>)</span>
+<span id="cb61-6"><a href="debugging.html#cb61-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error in f(x) : x &lt; 4 is not TRUE</span></span></code></pre></div>
 <p>Keep in mind that that although the dependencies of <code>y_05f206d7</code> are in memory, the arguments of <code>f()</code> are not.</p>
-<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="debugging.html#cb55-1" aria-hidden="true" tabindex="-1"></a>arg</span>
-<span id="cb55-2"><a href="debugging.html#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error: object &#39;arg&#39; not found</span></span>
-<span id="cb55-3"><a href="debugging.html#cb55-3" aria-hidden="true" tabindex="-1"></a>value</span>
-<span id="cb55-4"><a href="debugging.html#cb55-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error: object &#39;value&#39; not found</span></span></code></pre></div>
+<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="debugging.html#cb62-1" aria-hidden="true" tabindex="-1"></a>arg</span>
+<span id="cb62-2"><a href="debugging.html#cb62-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error: object &#39;arg&#39; not found</span></span>
+<span id="cb62-3"><a href="debugging.html#cb62-3" aria-hidden="true" tabindex="-1"></a>value</span>
+<span id="cb62-4"><a href="debugging.html#cb62-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error: object &#39;value&#39; not found</span></span></code></pre></div>
 <p>The workspace also has a useful traceback, and you can retrieve it with <code>tar_traceback()</code>. The last couple lines of the traceback are unavoidably cryptic, but they do sometimes contain useful information.</p>
-<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="debugging.html#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_traceback</span>(y_05f206d7, <span class="at">characters =</span> <span class="dv">77</span>)</span>
-<span id="cb56-2"><a href="debugging.html#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;f(arg = x, value = \&quot;succeeded\&quot;, a = 1, b = 2, key = \&quot;my_api_key\&quot;)&quot;           </span></span>
-<span id="cb56-3"><a href="debugging.html#cb56-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2] &quot;stopifnot(arg &lt; 4)&quot;             </span></span>
-<span id="cb56-4"><a href="debugging.html#cb56-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [3] &quot;stop(simpleError(msg, call = if (p &lt;- sys.parent(1)) sys.call(p)))&quot;              </span></span>
-<span id="cb56-5"><a href="debugging.html#cb56-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [4] &quot;(function (condition) \n{\n    state$error &lt;- build_message(condition)\n    stat&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="debugging.html#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_traceback</span>(y_05f206d7, <span class="at">characters =</span> <span class="dv">77</span>)</span>
+<span id="cb63-2"><a href="debugging.html#cb63-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;f(arg = x, value = \&quot;succeeded\&quot;, a = 1, b = 2, key = \&quot;my_api_key\&quot;)&quot;           </span></span>
+<span id="cb63-3"><a href="debugging.html#cb63-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2] &quot;stopifnot(arg &lt; 4)&quot;             </span></span>
+<span id="cb63-4"><a href="debugging.html#cb63-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [3] &quot;stop(simpleError(msg, call = if (p &lt;- sys.parent(1)) sys.call(p)))&quot;              </span></span>
+<span id="cb63-5"><a href="debugging.html#cb63-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [4] &quot;(function (condition) \n{\n    state$error &lt;- build_message(condition)\n    stat&quot;</span></span></code></pre></div>
 </div>
 <div id="tradeoffs" class="section level2" number="4.5">
 <h2><span class="header-section-number">4.5</span> Tradeoffs</h2>
