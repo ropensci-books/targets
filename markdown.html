@@ -161,15 +161,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="2.1" data-path="walkthrough.html"><a href="walkthrough.html#about-this-minimal-example"><i class="fa fa-check"></i><b>2.1</b> About this minimal example</a></li>
 <li class="chapter" data-level="2.2" data-path="walkthrough.html"><a href="walkthrough.html#file-structure"><i class="fa fa-check"></i><b>2.2</b> File structure</a></li>
-<li class="chapter" data-level="2.3" data-path="walkthrough.html"><a href="walkthrough.html#inspect-the-pipeline"><i class="fa fa-check"></i><b>2.3</b> Inspect the pipeline</a></li>
-<li class="chapter" data-level="2.4" data-path="walkthrough.html"><a href="walkthrough.html#run-the-pipeline"><i class="fa fa-check"></i><b>2.4</b> Run the pipeline</a></li>
-<li class="chapter" data-level="2.5" data-path="walkthrough.html"><a href="walkthrough.html#changes"><i class="fa fa-check"></i><b>2.5</b> Changes</a>
+<li class="chapter" data-level="2.3" data-path="walkthrough.html"><a href="walkthrough.html#target-script-file"><i class="fa fa-check"></i><b>2.3</b> Target script file</a></li>
+<li class="chapter" data-level="2.4" data-path="walkthrough.html"><a href="walkthrough.html#inspect-the-pipeline"><i class="fa fa-check"></i><b>2.4</b> Inspect the pipeline</a></li>
+<li class="chapter" data-level="2.5" data-path="walkthrough.html"><a href="walkthrough.html#run-the-pipeline"><i class="fa fa-check"></i><b>2.5</b> Run the pipeline</a></li>
+<li class="chapter" data-level="2.6" data-path="walkthrough.html"><a href="walkthrough.html#changes"><i class="fa fa-check"></i><b>2.6</b> Changes</a>
 <ul>
-<li class="chapter" data-level="2.5.1" data-path="walkthrough.html"><a href="walkthrough.html#change-code"><i class="fa fa-check"></i><b>2.5.1</b> Change code</a></li>
-<li class="chapter" data-level="2.5.2" data-path="walkthrough.html"><a href="walkthrough.html#change-data"><i class="fa fa-check"></i><b>2.5.2</b> Change data</a></li>
+<li class="chapter" data-level="2.6.1" data-path="walkthrough.html"><a href="walkthrough.html#change-code"><i class="fa fa-check"></i><b>2.6.1</b> Change code</a></li>
+<li class="chapter" data-level="2.6.2" data-path="walkthrough.html"><a href="walkthrough.html#change-data"><i class="fa fa-check"></i><b>2.6.2</b> Change data</a></li>
 </ul></li>
-<li class="chapter" data-level="2.6" data-path="walkthrough.html"><a href="walkthrough.html#read-your-data"><i class="fa fa-check"></i><b>2.6</b> Read your data</a></li>
-<li class="chapter" data-level="2.7" data-path="walkthrough.html"><a href="walkthrough.html#read-metadata"><i class="fa fa-check"></i><b>2.7</b> Read metadata</a></li>
+<li class="chapter" data-level="2.7" data-path="walkthrough.html"><a href="walkthrough.html#read-your-data"><i class="fa fa-check"></i><b>2.7</b> Read your data</a></li>
+<li class="chapter" data-level="2.8" data-path="walkthrough.html"><a href="walkthrough.html#read-metadata"><i class="fa fa-check"></i><b>2.8</b> Read metadata</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="markdown.html"><a href="markdown.html"><i class="fa fa-check"></i><b>3</b> Target Markdown</a>
 <ul>
@@ -348,6 +349,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><code>tar_globals</code>: Logical, whether to define globals or targets. If <code>TRUE</code>, the chunk code defines functions, objects, and options common to all the targets. If <code>FALSE</code> or <code>NULL</code> (default), then the chunk returns formal targets for the pipeline.</li>
 <li><code>tar_interactive</code>: Logical, whether to run in interactive mode or non-interactive mode. Defaults to the return value of <code>interactive()</code>.</li>
+<li><code>tar_script</code>: Character of length 1, where to write the target script file in non-interactive mode. Most users can skip this option and stick with the default <code>_targets.R</code> script path. Helper script files are always written next to the target script in a folder with an <code>"_r"</code> suffix. The <code>tar_script</code> path must either be absolute or be relative to the project root (where you call <code>tar_make()</code> or similar). If not specified, the target script path defaults to <code>tar_config_get("script")</code> (default: <code>_targets.R</code>; helpers default: <code>_targets_r/</code>). When you run <code>tar_make()</code> etc. with a non-default target script, you must select the correct target script file either with the <code>script</code> argument or with <code>tar_config_set(script = ...)</code>. The function will <code>source()</code> the script file from the current working directory (i.e. with <code>chdir = FALSE</code> in <code>source()</code>).</li>
 </ul>
 </div>
 <div id="modes" class="section level2" number="3.3">
@@ -373,10 +375,6 @@ knitr::opts_chunk$set(tar_interactive = FALSE)
 <p>First, load <code>targets</code> to activate the specialized <code>knitr</code> engine for Target Markdown.</p>
 <pre><code>```{r}
 library(targets)
-```</code></pre>
-<p>Optionally set the <code>root.dir</code> <code>knitr</code> option to invoke all the code chunks from the directory of your choice. This gives you control over where <code>targets</code> writes all its scripts and output data, which makes it easy to create different sub-pipelines from different R Markdown documents.</p>
-<pre><code>```{r}
-knitr::opts_knit$set(root.dir = &quot;your/choice/&quot;)
 ```</code></pre>
 <p>Early on, you may also wish to remove the leftover <code>_targets_r</code> directory from a previous run in non-interactive mode.</p>
 <pre><code>```{r}
@@ -407,7 +405,7 @@ create_plot &lt;- function(data) {
 }
 ```</code></pre>
 <pre><code>#&gt; Established _targets.R and _targets_r/globals/chunk-name.R</code></pre>
-<p>In non-interactive mode, the chunk establishes a common <code>_targets.R</code> file and writes the R code to a script in <code>_targets_r/globals/</code>.<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> It is good practice to assign explicit chunk labels because they are used as script names. (The labels of unnamed chunks depend on chunk order, which is brittle).<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a></p>
+<p>In non-interactive mode, the chunk establishes a common <code>_targets.R</code> file and writes the R code to a script in <code>_targets_r/globals/</code>.<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> It is good practice to assign explicit chunk labels because they are used as script names. (The labels of unnamed chunks depend on chunk order, which is brittle).<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a></p>
 </div>
 <div id="targets" class="section level2" number="3.8">
 <h2><span class="header-section-number">3.8</span> Targets</h2>
@@ -421,14 +419,14 @@ tar_target(raw_data, airquality)
 <pre><code>```{r}
 head(raw_data)
 ```</code></pre>
-<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="markdown.html#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(raw_data)</span>
-<span id="cb36-2"><a href="markdown.html#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Ozone Solar.R Wind Temp Month Day</span></span>
-<span id="cb36-3"><a href="markdown.html#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1    41     190  7.4   67     5   1</span></span>
-<span id="cb36-4"><a href="markdown.html#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2    36     118  8.0   72     5   2</span></span>
-<span id="cb36-5"><a href="markdown.html#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3    12     149 12.6   74     5   3</span></span>
-<span id="cb36-6"><a href="markdown.html#cb36-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4    18     313 11.5   62     5   4</span></span>
-<span id="cb36-7"><a href="markdown.html#cb36-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5    NA      NA 14.3   56     5   5</span></span>
-<span id="cb36-8"><a href="markdown.html#cb36-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6    28      NA 14.9   66     5   6</span></span></code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="markdown.html#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(raw_data)</span>
+<span id="cb35-2"><a href="markdown.html#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Ozone Solar.R Wind Temp Month Day</span></span>
+<span id="cb35-3"><a href="markdown.html#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1    41     190  7.4   67     5   1</span></span>
+<span id="cb35-4"><a href="markdown.html#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2    36     118  8.0   72     5   2</span></span>
+<span id="cb35-5"><a href="markdown.html#cb35-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3    12     149 12.6   74     5   3</span></span>
+<span id="cb35-6"><a href="markdown.html#cb35-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4    18     313 11.5   62     5   4</span></span>
+<span id="cb35-7"><a href="markdown.html#cb35-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5    NA      NA 14.3   56     5   5</span></span>
+<span id="cb35-8"><a href="markdown.html#cb35-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6    28      NA 14.9   66     5   6</span></span></code></pre></div>
 <p>For demonstration purposes, here is the same chunk in non-interactive mode. In non-interactive mode, the <code>{targets}</code> engine does not actually run any targets. Instead, it establishes a common <code>_targets.R</code> and writes the code to a script in <code>_targets_r/targets/</code>.</p>
 <pre><code>```{targets chunk-name-with-target, tar_interactive = FALSE}
 tar_target(raw_data, airquality)
@@ -484,17 +482,17 @@ tar_read(hist)
 <pre><code>```{r}
 tar_visnetwork()
 ```</code></pre>
-<div id="htmlwidget-a16be9c90690f235a450" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
-<script type="application/json" data-for="htmlwidget-a16be9c90690f235a450">{"x":{"nodes":{"name":["data","fit","hist","raw_data","create_plot"],"type":["stem","stem","stem","stem","function"],"status":["uptodate","uptodate","uptodate","uptodate","uptodate"],"seconds":[0.01,0.005,0.015,0.649,null],"bytes":[1079,1574,44216,1260,null],"branches":[null,null,null,null,null],"id":["data","fit","hist","raw_data","create_plot"],"label":["data","fit","hist","raw_data","create_plot"],"level":[2,3,3,1,1],"color":["#354823","#354823","#354823","#354823","#354823"],"shape":["dot","dot","dot","dot","triangle"]},"edges":{"from":["data","create_plot","data","raw_data"],"to":["fit","hist","hist","data"],"arrows":["to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":false,"hoverNearest":false,"degree":1,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Up to date","Stem","Function"],"color":["#354823","#899DA4","#899DA4"],"shape":["dot","dot","triangle"]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-cc765cfe5282eeb5e46d" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-cc765cfe5282eeb5e46d">{"x":{"nodes":{"name":["data","fit","hist","raw_data","create_plot"],"type":["stem","stem","stem","stem","function"],"status":["uptodate","uptodate","uptodate","uptodate","uptodate"],"seconds":[0.009,0.006,0.017,0.463,null],"bytes":[1079,1574,44216,1260,null],"branches":[null,null,null,null,null],"id":["data","fit","hist","raw_data","create_plot"],"label":["data","fit","hist","raw_data","create_plot"],"level":[2,3,3,1,1],"color":["#354823","#354823","#354823","#354823","#354823"],"shape":["dot","dot","dot","dot","triangle"]},"edges":{"from":["data","create_plot","data","raw_data"],"to":["fit","hist","hist","data"],"arrows":["to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Up to date","Stem","Function"],"color":["#354823","#899DA4","#899DA4"],"shape":["dot","dot","triangle"]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
 <p>At this point, you can go back and run <code>{targets}</code> chunks in interactive mode without interfering with the code or data of the non-interactive pipeline.</p>
 
 </div>
 </div>
 <div class="footnotes">
 <hr />
-<ol start="2">
-<li id="fn2"><p>The <code>_targets.R</code> file from Target Markdown never changes from chunk to chunk or report to report, so you can spread your work over multiple reports without worrying about aligning <code>_targets.R</code> scripts. Just be sure all your chunk names are unique across all the reports of a project.<a href="markdown.html#fnref2" class="footnote-back">↩︎</a></p></li>
-<li id="fn3"><p>All chunk labels must be unique. And for <code>bookdown</code> projects, chunk labels should only use alphanumeric characters and dashes.<a href="markdown.html#fnref3" class="footnote-back">↩︎</a></p></li>
+<ol start="3">
+<li id="fn3"><p>The <code>_targets.R</code> file from Target Markdown never changes from chunk to chunk or report to report, so you can spread your work over multiple reports without worrying about aligning <code>_targets.R</code> scripts. Just be sure all your chunk names are unique across all the reports of a project.<a href="markdown.html#fnref3" class="footnote-back">↩︎</a></p></li>
+<li id="fn4"><p>All chunk labels must be unique. And for <code>bookdown</code> projects, chunk labels should only use alphanumeric characters and dashes.<a href="markdown.html#fnref4" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 <div style = "background: #1C356D; color: white; padding: 10px 10px 10px 25px; font-size: 1em; width: 100%;">
