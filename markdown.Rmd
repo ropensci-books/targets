@@ -24,6 +24,7 @@ Target Markdown uses a special `knitr` language engine. R Markdown code chunks b
 
 * `tar_globals`: Logical, whether to define globals or targets. If `TRUE`, the chunk code defines functions, objects, and options common to all the targets. If `FALSE` or `NULL` (default), then the chunk returns formal targets for the pipeline.
 * `tar_interactive`: Logical, whether to run in interactive mode or non-interactive mode. Defaults to the return value of `interactive()`.
+* `tar_script`: Character of length 1, where to write the target script file in non-interactive mode. Most users can skip this option and stick with the default `_targets.R` script path. Helper script files are always written next to the target script in a folder with an `"_r"` suffix. The `tar_script` path must either be absolute or be relative to the project root (where you call `tar_make()` or similar). If not specified, the target script path defaults to `tar_config_get("script")` (default: `_targets.R`; helpers default: `_targets_r/`). When you run `tar_make()` etc. with a non-default target script, you must select the correct target script file either with the `script` argument or with `tar_config_set(script = ...)`. The function will `source()` the script file from the current working directory (i.e. with `chdir = FALSE` in `source()`).
 
 ## Modes
 
@@ -60,17 +61,9 @@ library(targets)
 ```
 ````
 
-```{r, eval = TRUE, echo = FALSE}
+```{r, eval = TRUE, echo = FALSE, results = "hide"}
 library(targets)
 ```
-
-Optionally set the `root.dir` `knitr` option to invoke all the code chunks from the directory of your choice. This gives you control over where `targets` writes all its scripts and output data, which makes it easy to create different sub-pipelines from different R Markdown documents.
-
-````
-`r ''````{r}
-knitr::opts_knit$set(root.dir = "your/choice/")
-```
-````
 
 Early on, you may also wish to remove the leftover `_targets_r` directory from a previous run in non-interactive mode.
 

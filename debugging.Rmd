@@ -36,16 +36,16 @@ tar_make(names = target_to_debug, callr_function = NULL)
 
 `targets` has a more convenient way to launch the environment browser from inside a target:
 
-1. In `_targets.R`, write a call to `tar_option_set()` with `debug` equal to the target name. Consider also setting `cue` equal to `tar_cue(mode = "never")` so `tar_make()` reaches the target you want to debug more quickly.
-1. Launch a fresh clean new interactive R session with the `_targets.R` script in your working directory.
+1. In the target script file (default: `_targets.R`) write a call to `tar_option_set()` with `debug` equal to the target name. Consider also setting `cue` equal to `tar_cue(mode = "never")` so `tar_make()` reaches the target you want to debug more quickly.
+1. Launch a fresh clean new interactive R session with the target script file (default: `_targets.R`) script in your working directory.
 1. Run `targets::tar_make()` (or `targets::tar_make_clustermq()`, or `targets::tar_make_future()`) with `callr_function = NULL`.
 1. When `targets` reaches the target you selected to debug, your R session will start an interactive debugger, and you should see `Browse[1]>` in your console. Run `targets::tar_name()` to verify that you are debugging the correct target.
 1. Interactively run any R code that helps you troubleshoot the problem. For example, if the target invokes a function `f()`, enter `debug(f)` and then `c` to immediately enter the function's calling environment where all its arguments are defined.
 
-To try it out yourself, write the following `_targets.R` file.
+To try it out yourself, write the following target script file file.
 
 ```{r, eval = FALSE}
-# _targets.R
+# _targets.R file
 library(targets)
 tar_option_set(debug = "b")
 f <- function(x, another_arg = 123) x + another_arg
@@ -153,7 +153,7 @@ print(failed)
 #> [1] "y_05f206d7"
 ```
 
-`tar_workspace()` reads the special metadata in the workspace file and then loads the target's dependencies from various locations in `_targets/objects` and/or the [cloud](#cloud). It also sets the random number generator seed to the seed of the target, loads the required packages, and runs `_targets.R` to load other global object dependencies such as functions. 
+`tar_workspace()` reads the special metadata in the workspace file and then loads the target's dependencies from various locations in `_targets/objects` and/or the [cloud](#cloud). It also sets the random number generator seed to the seed of the target, loads the required packages, and runs the target script file (default: `_targets.R`) to load other global object dependencies such as functions. 
 
 ```{r, eval = FALSE}
 tar_workspace(y_05f206d7)

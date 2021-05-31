@@ -54,7 +54,7 @@ list(
 
 ## Side effects
 
-Like a good pure function, a good target should return a single value and not produce side effects. (The exception is [output file targets](#files) which create files and return their paths.) Avoid modifying the global environment with calls to `data()` or `source()`. If you need to source scripts to define global objects, please do so at the top of `_targets.R` just like `source("R/functions.R")` from the [walkthrough vignette](#walkthrough).
+Like a good pure function, a good target should return a single value and not produce side effects. (The exception is [output file targets](#files) which create files and return their paths.) Avoid modifying the global environment with calls to `data()` or `source()`. If you need to source scripts to define global objects, please do so at the top of your target script file (default: `_targets.R`) just like `source("R/functions.R")` from the [walkthrough vignette](#walkthrough).
 
 ### How much a target should do
 
@@ -85,20 +85,20 @@ The `raw_data` target depends on target `raw_data_file` because the command for 
 Not all of the objects from `tar_deps()` actually register as dependencies. When it comes to detecting dependencies, `targets` only recognizes
 
 1. Other targets (such as `raw_data_file`).
-1. Functions and objects in the main environment. This environment is almost always the global environment of the R process that runs `_targets.R`, so these dependencies are usually going to be the custom functions and objects you write yourself.
+1. Functions and objects in the main environment. This environment is almost always the global environment of the R process that runs the target script file (default: `_targets.R`) so these dependencies are usually going to be the custom functions and objects you write yourself.
 
-This process excludes many objects from dependency detection. For example, both `{` and `cols()` are excluded because they are defined in the environments of packages (`base` and `readr`, respectively). Functions and objects from packages are ignored unless you supply a package environment to the `envir` argument of `tar_option_set()` when you call it in `_targets.R`, e.g. `tar_option_set(envir = getNamespace("packageName"))`. You should only set `envir` if you write your own package to contain your whole data analysis project.
+This process excludes many objects from dependency detection. For example, both `{` and `cols()` are excluded because they are defined in the environments of packages (`base` and `readr`, respectively). Functions and objects from packages are ignored unless you supply a package environment to the `envir` argument of `tar_option_set()` when you call it in the target script file (default: `_targets.R`) e.g. `tar_option_set(envir = getNamespace("packageName"))`. You should only set `envir` if you write your own package to contain your whole data analysis project.
 
 ## Loading and configuring R packages
 
 For most pipelines, it is straightforward to load the R packages that your targets need in order to run.
 
-1. Call `library()` at the top of `_targets.R` to load each package the conventional way, or
+1. Call `library()` at the top of the target script file (default: `_targets.R`) to load each package the conventional way, or
 2. Name the required packages using the `packages` argument of `tar_option_set()`. 
 
 (2) is often faster, especially for utilities like `tar_visnetwork()`, because it avoids loading packages unless absolutely necessary.
 
-Some package management workflows are more complicated. If your use special configuration with [conflicted](https://github.com/r-lib/conflicted), [`box`](https://klmr.me/box/), [`import`](https://import.rticulate.org/), or similar utility, please do your configuration inside a project-level `.Rprofile` file instead of the `_targets.R` file. In addition, if you use distributed workers inside external containers (Docker, Singularity, AWS AMI, etc.) make sure each container has a copy of this same `.Rprofile` file where the R worker process spawns. This approach is ensures that all [remote workers](#hpc) are configured the same way as the local main process.
+Some package management workflows are more complicated. If your use special configuration with [conflicted](https://github.com/r-lib/conflicted), [`box`](https://klmr.me/box/), [`import`](https://import.rticulate.org/), or similar utility, please do your configuration inside a project-level `.Rprofile` file instead of the target script file (default: `_targets.R`). In addition, if you use distributed workers inside external containers (Docker, Singularity, AWS AMI, etc.) make sure each container has a copy of this same `.Rprofile` file where the R worker process spawns. This approach is ensures that all [remote workers](#hpc) are configured the same way as the local main process.
 
 ## Packages-based invalidation
 
@@ -112,7 +112,7 @@ However, sometimes you may wish to invalidate certain targets based on changes t
 To track the contents of packages `package1` and `package2`, you must
 
 1. Fully install these packages with `install.packages()` or equivalent. `devtools::load_all()` is insufficient because it does not make the packages available to [parallel workers](#hpc).
-2. Write the following in your `_targets.R` file:
+2. Write the following in your target script file (default: `_targets.R`):
 
 
 ```{r, eval = FALSE}
@@ -141,7 +141,7 @@ If you are using `targets`, then you probably have an intense computation like B
 1. `tar_watch()` launches an Shiny app that automatically refreshes the graph every few seconds. Try it out in the example below.
 
 ```{r, eval = FALSE}
-# Define an example _targets.R file with a slow pipeline.
+# Define an example target script file with a slow pipeline.
 library(targets)
 tar_script({
   sleep_run <- function(...) {
@@ -192,6 +192,6 @@ Alternatively, if you see slowness in your project, you can contribute to the pa
 There are [multiple functions](https://docs.ropensci.org/targets/reference/index.html#section-clean) to help you manually remove data or force targets to rerun.
 
 * [`tar_destroy()`](https://docs.ropensci.org/targets/reference/tar_destroy.html) is by far the most commonly used cleaning function. It removes the `_targets/` data store completely, deleting all the results from [`tar_make()`](https://docs.ropensci.org/targets/reference/tar_make.html) except for external files. Use it if you intend to start the pipeline from scratch without any trace of a previous run.
-* [`tar_prune()`](https://docs.ropensci.org/targets/reference/tar_prune.html) deletes the data and metadata of all the targets no longer present in your current `_targets.R` file. This is useful if you recently worked through multiple changes to your project and are now trying to discard irrelevant data while keeping the results that still matter.
+* [`tar_prune()`](https://docs.ropensci.org/targets/reference/tar_prune.html) deletes the data and metadata of all the targets no longer present in your current target script file (default: `_targets.R`). This is useful if you recently worked through multiple changes to your project and are now trying to discard irrelevant data while keeping the results that still matter.
 * [`tar_delete()`](https://docs.ropensci.org/targets/reference/tar_delete.html) is more selective than [`tar_destroy()`](https://docs.ropensci.org/targets/reference/tar_destroy.html) and [`tar_prune()`](https://docs.ropensci.org/targets/reference/tar_prune.html). It removes the individual data files of a given set of targets from `_targets/objects/` while leaving the metadata in `_targets/meta/meta` alone. If you have a small number of data-heavy targets you need to discard to conserve storage, this function can help.
 * [`tar_invalidate()`](https://docs.ropensci.org/targets/reference/tar_invalidate.html) is the opposite of [`tar_delete()`](https://docs.ropensci.org/targets/reference/tar_delete.html): for the selected targets, it deletes the metadata in `_targets/meta/meta` but keeps the return values in `_targets/objects/`. After invalidation, you will still be able to locate the data files with [`tar_path()`](https://docs.ropensci.org/targets/reference/tar_path.html) and manually salvage them in an emergency. However, [`tar_load()`](https://docs.ropensci.org/targets/reference/tar_load.html) and [`tar_read()`](https://docs.ropensci.org/targets/reference/tar_read.html) will not be able to read the data into R, and subesequent calls to [`tar_make()`](https://docs.ropensci.org/targets/reference/tar_make.html) will attempt to rebuild those targets.

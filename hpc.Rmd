@@ -65,7 +65,7 @@ Persistent workers require the [`clustermq`](https://github.com/mschubert/cluste
 
 ### Clustermq locally
 
-When you write your `_targets.R` script, be sure to set the `clustermq.scheduler` global option to a a local scheduler like `"multiprocess"`. Many of the supported schedulers and their configuration details are [listed here](https://mschubert.github.io/clustermq/articles/userguide.html#configuration).
+When you write your target script file (default: `_targets.R`) be sure to set the `clustermq.scheduler` global option to a a local scheduler like `"multiprocess"`. Many of the supported schedulers and their configuration details are [listed here](https://mschubert.github.io/clustermq/articles/userguide.html#configuration).
 
 ```{r, eval = FALSE}
 # _targets.R
@@ -93,7 +93,7 @@ For parallel computing on a cluster,
 1. Choose a [scheduler listed here](https://mschubert.github.io/clustermq/articles/userguide.html#configuration) that corresponds to your cluster's resource manager.
 1. Create a [template file](https://github.com/mschubert/clustermq/tree/main/inst) that configures the computing requirements and other settings for the cluster.
 
-Supply the scheduler option and template file to the `clustermq.scheduler` and `clustermq.template` global options in your `_targets.R` file.
+Supply the scheduler option and template file to the `clustermq.scheduler` and `clustermq.template` global options in your target script file (default: `_targets.R`).
 
 ```{r, eval = FALSE}
 # _targets.R
@@ -146,7 +146,7 @@ module load R/3.6.3
 CMQ_AUTH={{ auth }} R --no-save --no-restore -e 'clustermq:::worker("{{ main }}")'
 ```
 
-Then, supply the value of `num_cores` to the `resources` option from within `_targets.R`.
+Then, supply the value of `num_cores` to the `resources` option from within the target script file (default: `_targets.R`).
 
 ```{r, eval = FALSE}
 # _targets.R
@@ -198,8 +198,8 @@ install.packages("future.callr")
 
 ### Future locally
 
-To parallelize targets over multiple processes on your local machine, declare a  `future` plan in your `_targets.R` file. The `callr` plan from the  [`future.callr`](https://future.callr.futureverse.org) package is recommended.^[Some alternative local future plans are [listed here](https://github.com/HenrikBengtsson/future/#controlling-how-futures-are-resolved).]
-It is crucial that `future::plan()` is called in the `_targets.R` file itself - defining a plan interactively before invoking `tar_make_future()` does not leverage the future package.
+To parallelize targets over multiple processes on your local machine, declare a  `future` plan in your target script file (default: `_targets.R`). The `callr` plan from the  [`future.callr`](https://future.callr.futureverse.org) package is recommended.^[Some alternative local future plans are [listed here](https://github.com/HenrikBengtsson/future/#controlling-how-futures-are-resolved).]
+It is crucial that `future::plan()` is called in the target script file itself - defining a plan interactively before invoking `tar_make_future()` does not leverage the future package.
 
 ```{r, eval = FALSE}
 # _targets.R
@@ -224,7 +224,7 @@ tar_make_future(workers = 2)
 
 ### Future remotely
 
-To run transient workers on a cluster, first install the [`future.batchtools`](https://github.com/HenrikBengtsson/future.batchtools) package. Then, set one of [these plans](https://github.com/HenrikBengtsson/future.batchtools#choosing-batchtools-backend) in your `_targets.R` file.
+To run transient workers on a cluster, first install the [`future.batchtools`](https://github.com/HenrikBengtsson/future.batchtools) package. Then, set one of [these plans](https://github.com/HenrikBengtsson/future.batchtools#choosing-batchtools-backend) in your target script file (default: `_targets.R`).
 
 ```{r, eval = FALSE}
 # _targets.R

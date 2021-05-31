@@ -94,10 +94,12 @@ create_plot <- function(data) {
 }
 ```
 
-Whereas files `raw_data.csv` and `functions.R` are typical user-defined components of a [project-oriented workflow](https://rstats.wtf/project-oriented-workflow.html), `_targets.R` file is special. Every [`targets`](https://github.com/ropensci/targets) workflow needs a file called `_targets.R` in the project's [root directory](https://martinctc.github.io/blog/rstudio-projects-and-working-directories-a-beginner%27s-guide/). Functions [`tar_script()`](https://docs.ropensci.org/targets/reference/tar_script.html) and [`tar_edit()`](https://docs.ropensci.org/targets/reference/tar_edit.html) can help you create one. Ours looks looks like this:
+## Target script file
+
+Whereas files `raw_data.csv` and `functions.R` are typical user-defined components of a [project-oriented workflow](https://rstats.wtf/project-oriented-workflow.html), the target script file `_targets.R` file is special. Every [`targets`](https://github.com/ropensci/targets) workflow needs a [target script file](https://docs.ropensci.org/targets/reference/tar_script.html) to formally define the targets in the pipeline. By default, the target script is a file called `_targets.R` in the project's [root directory](https://martinctc.github.io/blog/rstudio-projects-and-working-directories-a-beginner%27s-guide/). However, in `targets` version 0.5.0.9000 and above, you can set the target script file path to something other than `_targets.R`. You can either set the path persistently for your project using [`tar_config_set()`](https://docs.ropensci.org/targets/reference/tar_config_set.html), or you can set it temporarily for an individual function call using the `script` argument of [`tar_make()`](https://docs.ropensci.org/targets/reference/tar_make.html) and related functions. Functions [`tar_script()`](https://docs.ropensci.org/targets/reference/tar_script.html) and [`tar_edit()`](https://docs.ropensci.org/targets/reference/tar_edit.html) can help you create a target script file. Ours looks like this:
 
 ```{r, eval = FALSE}
-# _targets.R
+# _targets.R file
 library(targets)
 source("R/functions.R")
 options(tidyverse.quiet = TRUE)
@@ -122,13 +124,13 @@ list(
 )
 ```
 
-All `_targets.R` scripts have these requirements.
+All target script files have these requirements.
 
-1. Load the [`targets`](https://github.com/ropensci/targets) package itself. (`_targets.R` scripts created with `tar_script()` automatically insert a `library(targets)` line at the top by default.)
+1. Load the [`targets`](https://github.com/ropensci/targets) package itself. (target scripts created with `tar_script()` automatically insert a `library(targets)` line at the top by default.)
 1. Load your custom functions and global objects into the R session. In our case, our only such object is the `create_plot()` function, and we load it into the session by calling `source("R/functions.R")`.
 1. Call `tar_option_set()` to set the default settings for all you targets, such as the names of required packages and the data storage format. Individual targets can override these settings.
-1. Define individual targets with the `tar_target()` function. Each target is an intermediate step of the workflow. At minimum, a target must have a name and an R expression. This expression runs when the pipeline builds the target, and the return value is saved as a file in the `_targets/objects/` folder. The only targets not stored in `_/targets/objects/` are dynamic files such as `raw_data_file`. Here, `format = "file"` makes `raw_data_file` a dynamic file. That means `targets` watches the data at the file paths returned from the expression (in this case, `"data/raw_data.csv")`.
-1. Every `_targets.R` script must end with a list of your `tar_target()` objects. Those objects can be nested, i.e. lists within lists.
+1. Define individual targets with the `tar_target()` function. Each target is an intermediate step of the workflow. At minimum, a target must have a name and an R expression. This expression runs when the pipeline builds the target, and the return value is saved as a file in the `_targets/objects/` folder. The only targets not stored in `_/targets/objects/` are dynamic files such as `raw_data_file`. Here, `format = "file"` makes `raw_data_file` a dynamic file. That means `targets` watches the data at the file paths returned from the expression (in this case, `"data/raw_data.csv")`.^[You can also set the path of the data store to something other than `_targets/`. `tar_config_set()` sets it persistently, and the `store` argument of various functions like `tar_make()` let you choose the data store path temporarily for a single function call.]
+1. Every target script must end with a list of your `tar_target()` objects. Those objects can be nested, i.e. lists within lists.
 
 ## Inspect the pipeline
 
@@ -154,7 +156,7 @@ Both graphing functions above visualize the underlying directed acyclic graph (D
 
 ## Run the pipeline
 
-`tar_make()` runs the workflow. It creates a fresh clean external R process, reads `_targets.R` to learn about the pipeline, runs the correct targets in the correct order given by the graph, and saves the necessary data to the `_targets/` data store. ^[In `targets` version 0.3.1.9000 and above, you can set the path of the local data store to something other than `_targets/`. A project-level `_targets.yaml` file keeps track of the path. Functions [`tar_config_set()`](https://docs.ropensci.org/targets/reference/tar_config_set.html) and [`tar_config_get()`](https://docs.ropensci.org/targets/reference/tar_config_get.html) can help.]
+`tar_make()` runs the workflow. It creates a fresh clean external R process, reads the target script to learn about the pipeline, runs the correct targets in the correct order given by the graph, and saves the necessary data to the `_targets/` data store. ^[In `targets` version 0.3.1.9000 and above, you can set the path of the local data store to something other than `_targets/`. A project-level `_targets.yaml` file keeps track of the path. Functions [`tar_config_set()`](https://docs.ropensci.org/targets/reference/tar_config_set.html) and [`tar_config_get()`](https://docs.ropensci.org/targets/reference/tar_config_get.html) can help.]
 
 ```{r, eval = TRUE}
 tar_make()
@@ -222,7 +224,7 @@ That means `tar_make()` reruns `hist` and nothing else.
 tar_make()
 ```
 
-We would see similar behavior if we changed the R expressions in any `tar_target()` calls in `_targets.R`.
+We would see similar behavior if we changed the R expressions in any `tar_target()` calls in the target script file.
 
 ### Change data
 
