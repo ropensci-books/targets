@@ -77,7 +77,7 @@ Sign in to <https://s3.console.aws.amazon.com/s3> to verify that the bucket exis
 
 To connect your pipeline with S3,
 
-1. Supply your bucket name to `resources` in `tar_option_set()`. To use different buckets for different targets, set `resources` directly in `tar_target()`.
+1. Supply your bucket name to `resources` in `tar_option_set()`. To use different buckets for different targets, set `resources` directly in `tar_target()`. In older version of `targets`, `resources` was a named list. In `targets` >= 0.5.0.9000, please create the `resources` argument with helpers `tar_resources()` and `tar_resources_aws()`.
 1. Supply AWS-powered storage formats to `tar_option_set()` and/or `tar_target()`. See the [`tar_target()` help file](https://docs.ropensci.org/targets/reference/tar_target.html#arguments) for the full list of formats.
 
 Your target script file file will look something like this.
@@ -85,7 +85,14 @@ Your target script file file will look something like this.
 ```{r, eval = FALSE}
 # Example _targets.R
 library(targets)
-tar_option_set(resources = list(bucket = "my-test-bucket-25edb4956460647d"))
+# With older versions of targets:
+# tar_option_set(resources = list(bucket = "my-test-bucket-25edb4956460647d"))
+# With targets >= 0.5.0.9000:
+tar_option_set(
+  resources = tar_resources(
+    aws = tar_resources_aws(bucket = "my-test-bucket-25edb4956460647d")
+  )
+)
 write_mean <- function(data) {
   tmp <- tempfile()
   writeLines(as.character(mean(data)), tmp)
