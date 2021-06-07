@@ -385,22 +385,29 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3><span class="header-section-number">11.2.6</span> Configure the pipeline</h3>
 <p>To connect your pipeline with S3,</p>
 <ol style="list-style-type: decimal">
-<li>Supply your bucket name to <code>resources</code> in <code>tar_option_set()</code>. To use different buckets for different targets, set <code>resources</code> directly in <code>tar_target()</code>.</li>
+<li>Supply your bucket name to <code>resources</code> in <code>tar_option_set()</code>. To use different buckets for different targets, set <code>resources</code> directly in <code>tar_target()</code>. In older version of <code>targets</code>, <code>resources</code> was a named list. In <code>targets</code> &gt;= 0.5.0.9000, please create the <code>resources</code> argument with helpers <code>tar_resources()</code> and <code>tar_resources_aws()</code>.</li>
 <li>Supply AWS-powered storage formats to <code>tar_option_set()</code> and/or <code>tar_target()</code>. See the <a href="https://docs.ropensci.org/targets/reference/tar_target.html#arguments"><code>tar_target()</code> help file</a> for the full list of formats.</li>
 </ol>
 <p>Your target script file file will look something like this.</p>
 <div class="sourceCode" id="cb189"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb189-1"><a href="cloud.html#cb189-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example _targets.R</span></span>
 <span id="cb189-2"><a href="cloud.html#cb189-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb189-3"><a href="cloud.html#cb189-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">resources =</span> <span class="fu">list</span>(<span class="at">bucket =</span> <span class="st">&quot;my-test-bucket-25edb4956460647d&quot;</span>))</span>
-<span id="cb189-4"><a href="cloud.html#cb189-4" aria-hidden="true" tabindex="-1"></a>write_mean <span class="ot">&lt;-</span> <span class="cf">function</span>(data) {</span>
-<span id="cb189-5"><a href="cloud.html#cb189-5" aria-hidden="true" tabindex="-1"></a>  tmp <span class="ot">&lt;-</span> <span class="fu">tempfile</span>()</span>
-<span id="cb189-6"><a href="cloud.html#cb189-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">writeLines</span>(<span class="fu">as.character</span>(<span class="fu">mean</span>(data)), tmp)</span>
-<span id="cb189-7"><a href="cloud.html#cb189-7" aria-hidden="true" tabindex="-1"></a>  tmp</span>
-<span id="cb189-8"><a href="cloud.html#cb189-8" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb189-9"><a href="cloud.html#cb189-9" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb189-10"><a href="cloud.html#cb189-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data, <span class="fu">rnorm</span>(<span class="dv">5</span>), <span class="at">format =</span> <span class="st">&quot;aws_qs&quot;</span>),</span>
-<span id="cb189-11"><a href="cloud.html#cb189-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(mean_file, <span class="fu">write_mean</span>(data), <span class="at">format =</span> <span class="st">&quot;aws_file&quot;</span>)</span>
-<span id="cb189-12"><a href="cloud.html#cb189-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<span id="cb189-3"><a href="cloud.html#cb189-3" aria-hidden="true" tabindex="-1"></a><span class="co"># With older versions of targets:</span></span>
+<span id="cb189-4"><a href="cloud.html#cb189-4" aria-hidden="true" tabindex="-1"></a><span class="co"># tar_option_set(resources = list(bucket = &quot;my-test-bucket-25edb4956460647d&quot;))</span></span>
+<span id="cb189-5"><a href="cloud.html#cb189-5" aria-hidden="true" tabindex="-1"></a><span class="co"># With targets &gt;= 0.5.0.9000:</span></span>
+<span id="cb189-6"><a href="cloud.html#cb189-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(</span>
+<span id="cb189-7"><a href="cloud.html#cb189-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">resources =</span> <span class="fu">tar_resources</span>(</span>
+<span id="cb189-8"><a href="cloud.html#cb189-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">aws =</span> <span class="fu">tar_resources_aws</span>(<span class="at">bucket =</span> <span class="st">&quot;my-test-bucket-25edb4956460647d&quot;</span>)</span>
+<span id="cb189-9"><a href="cloud.html#cb189-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb189-10"><a href="cloud.html#cb189-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb189-11"><a href="cloud.html#cb189-11" aria-hidden="true" tabindex="-1"></a>write_mean <span class="ot">&lt;-</span> <span class="cf">function</span>(data) {</span>
+<span id="cb189-12"><a href="cloud.html#cb189-12" aria-hidden="true" tabindex="-1"></a>  tmp <span class="ot">&lt;-</span> <span class="fu">tempfile</span>()</span>
+<span id="cb189-13"><a href="cloud.html#cb189-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">writeLines</span>(<span class="fu">as.character</span>(<span class="fu">mean</span>(data)), tmp)</span>
+<span id="cb189-14"><a href="cloud.html#cb189-14" aria-hidden="true" tabindex="-1"></a>  tmp</span>
+<span id="cb189-15"><a href="cloud.html#cb189-15" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb189-16"><a href="cloud.html#cb189-16" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb189-17"><a href="cloud.html#cb189-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data, <span class="fu">rnorm</span>(<span class="dv">5</span>), <span class="at">format =</span> <span class="st">&quot;aws_qs&quot;</span>),</span>
+<span id="cb189-18"><a href="cloud.html#cb189-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(mean_file, <span class="fu">write_mean</span>(data), <span class="at">format =</span> <span class="st">&quot;aws_file&quot;</span>)</span>
+<span id="cb189-19"><a href="cloud.html#cb189-19" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 </div>
 <div id="run-the-pipeline-1" class="section level3" number="11.2.7">
 <h3><span class="header-section-number">11.2.7</span> Run the pipeline</h3>
