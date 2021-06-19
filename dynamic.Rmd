@@ -644,9 +644,17 @@ tar_make()
 lapply(tar_read(subsets), as.data.frame)
 ```
 
-## Batching
+## Dynamic branching performance
 
-With dynamic branching, it is super easy to create an enormous number of targets. But when the number of targets starts to exceed a couple hundred, `tar_make()` slows down, and graphs from `tar_visnetwork()` start to become unmanageable. If that happens to you, consider batching your work into a smaller number of targets.
+With dynamic branching, it is super easy to create an enormous number of targets. But when the number of targets starts to exceed a couple hundred, `tar_make()` slows down, and graphs from `tar_visnetwork()` start to become unmanageable.
+
+If that happens to you, you be tempted to use the `names` and `shortcut` arguments to `tar_make()`, e.g. `tar_make(names = all_of("only", "these", "targets"), shortcut = TRUE)`, to completely temporarily omit thousands of upstream targets for the sake of concentrating on one section at a time. However, this technique is only a temporary measure, and it is best to eventually revert back to the default `names = NULL` and `shortcut = FALSE` to ensure reproducibility.
+
+Another temporary workaround is to temporarily select subsets of branches. For example, instead of `pattern = map(large_target)` in `tar_target()`, you could prototype on a target that uses `pattern = head(map(large_target), n = 1)` or `pattern = slice(map(large_target), c(4, 5, 6))`. In the case of `slice()`, the `tar_branch_index()` function (only in `targets` version 0.5.0.9000 and above) can help you find the required integer indexes  corresponding to individual branch names you may want.
+
+However, both the above solutions are temporary workarounds for the sake of prototyping a pipeline and chipping away at a large computation. To help the entire pipeline scale more efficiently, consider batching your work into a smaller number of targets.
+
+## Batching
 
 [Targetopia](https://wlandau.github.io/targetopia.html) packages usually have functions that support batching for various use cases. In [`stantargets`](https://wlandau.github.io/stantargets/), [`tar_stan_mcmc_rep_summary()`](https://wlandau.github.io/stantargets/articles/mcmc_rep.html) and friends automatically use batching behind the scenes. The user simply needs to select the number of batches and number of reps per batch. Each batch is a dynamic branch with multiple reps, and each rep fits the user's model once and computes summary statistics. 
 

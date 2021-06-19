@@ -36,9 +36,9 @@ tar_make(names = target_to_debug, callr_function = NULL)
 
 `targets` has a more convenient way to launch the environment browser from inside a target:
 
-1. In the target script file (default: `_targets.R`) write a call to `tar_option_set()` with `debug` equal to the target name. Consider also setting `cue` equal to `tar_cue(mode = "never")` so `tar_make()` reaches the target you want to debug more quickly.
+1. In the target script file (default: `_targets.R`) write a call to `tar_option_set()` with `debug` equal to the target name.
 1. Launch a fresh clean new interactive R session with the target script file (default: `_targets.R`) script in your working directory.
-1. Run `targets::tar_make()` (or `targets::tar_make_clustermq()`, or `targets::tar_make_future()`) with `callr_function = NULL`.
+1. Run `targets::tar_make()` (or `targets::tar_make_clustermq()`, or `targets::tar_make_future()`) with `callr_function = NULL`. If you are using `targets` version 0.5.0.9000 or above, consider also setting `shortcut` to `TRUE` and supplying the target name to `names`.^[In the case of dynamic branching, `names` does not accept individual branch names, but you can still supply the name of the overarching dynamic target.] This allows `tar_make()` to reach the desired target more quickly.
 1. When `targets` reaches the target you selected to debug, your R session will start an interactive debugger, and you should see `Browse[1]>` in your console. Run `targets::tar_name()` to verify that you are debugging the correct target.
 1. Interactively run any R code that helps you troubleshoot the problem. For example, if the target invokes a function `f()`, enter `debug(f)` and then `c` to immediately enter the function's calling environment where all its arguments are defined.
 
@@ -59,8 +59,7 @@ Then, call `tar_make(callr_function = NULL)` to drop into a debugger at the comm
 
 ```{r, eval = FALSE}
 # R console
-tar_make(callr_function = NULL)
-#> ● run target a
+tar_make(callr_function = NULL, names = any_of("b"), shortcut = TRUE)
 #> ● run target b
 #> Called from: eval(expr, envir)
 Browse[1]>
