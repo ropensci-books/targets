@@ -248,7 +248,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="8.9.2" data-path="dynamic.html"><a href="dynamic.html#list-iteration"><i class="fa fa-check"></i><b>8.9.2</b> List iteration</a></li>
 <li class="chapter" data-level="8.9.3" data-path="dynamic.html"><a href="dynamic.html#group-iteration"><i class="fa fa-check"></i><b>8.9.3</b> Group iteration</a></li>
 </ul></li>
-<li class="chapter" data-level="8.10" data-path="dynamic.html"><a href="dynamic.html#batching"><i class="fa fa-check"></i><b>8.10</b> Batching</a></li>
+<li class="chapter" data-level="8.10" data-path="dynamic.html"><a href="dynamic.html#dynamic-branching-performance"><i class="fa fa-check"></i><b>8.10</b> Dynamic branching performance</a></li>
+<li class="chapter" data-level="8.11" data-path="dynamic.html"><a href="dynamic.html#batching"><i class="fa fa-check"></i><b>8.11</b> Batching</a></li>
 </ul></li>
 <li class="chapter" data-level="9" data-path="static.html"><a href="static.html"><i class="fa fa-check"></i><b>9</b> Static branching</a>
 <ul>
@@ -427,7 +428,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Log into <a href="https://s3.console.aws.amazon.com/s3" class="uri">https://s3.console.aws.amazon.com/s3</a>. You should see objects <code>_targets/objects/data</code> and <code>_targets/objects/mean_file</code> in your bucket. To download this data locally, use <code>tar_read()</code> and <code>tar_load()</code> like before. These functions download the data from the bucket and load it into R.</p>
 <div class="sourceCode" id="cb192"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb192-1"><a href="cloud.html#cb192-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(data)</span>
 <span id="cb192-2"><a href="cloud.html#cb192-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] -0.74654607 -0.59593497 -1.57229983  0.40915323  0.02579023</span></span></code></pre></div>
-<p>The <code>"aws_file"</code> format is different from the other AWS-powered formats. <code>tar_read()</code> and <code>tar_load()</code> download the object to a local path (where the target saved it locally before it was uploaded) and return the path so you can process it yourself.<a href="#fn11" class="footnote-ref" id="fnref11"><sup>11</sup></a></p>
+<p>The <code>"aws_file"</code> format is different from the other AWS-powered formats. <code>tar_read()</code> and <code>tar_load()</code> download the object to a local path (where the target saved it locally before it was uploaded) and return the path so you can process it yourself.<a href="#fn12" class="footnote-ref" id="fnref12"><sup>12</sup></a></p>
 <div class="sourceCode" id="cb193"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb193-1"><a href="cloud.html#cb193-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_load</span>(mean_file)</span>
 <span id="cb193-2"><a href="cloud.html#cb193-2" aria-hidden="true" tabindex="-1"></a>mean_file</span>
 <span id="cb193-3"><a href="cloud.html#cb193-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;_targets/scratch/mean_fileff086e70876d&quot;</span></span></code></pre></div>
@@ -443,8 +444,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div class="footnotes">
 <hr />
-<ol start="11">
-<li id="fn11"><p>Non-“file” AWS formats also download files, but they are temporary and immediately discarded after the data is read into memory.<a href="cloud.html#fnref11" class="footnote-back">↩︎</a></p></li>
+<ol start="12">
+<li id="fn12"><p>Non-“file” AWS formats also download files, but they are temporary and immediately discarded after the data is read into memory.<a href="cloud.html#fnref12" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 <div style = "background: #1C356D; color: white; padding: 10px 10px 10px 25px; font-size: 1em; width: 100%;">

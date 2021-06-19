@@ -248,7 +248,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="8.9.2" data-path="dynamic.html"><a href="dynamic.html#list-iteration"><i class="fa fa-check"></i><b>8.9.2</b> List iteration</a></li>
 <li class="chapter" data-level="8.9.3" data-path="dynamic.html"><a href="dynamic.html#group-iteration"><i class="fa fa-check"></i><b>8.9.3</b> Group iteration</a></li>
 </ul></li>
-<li class="chapter" data-level="8.10" data-path="dynamic.html"><a href="dynamic.html#batching"><i class="fa fa-check"></i><b>8.10</b> Batching</a></li>
+<li class="chapter" data-level="8.10" data-path="dynamic.html"><a href="dynamic.html#dynamic-branching-performance"><i class="fa fa-check"></i><b>8.10</b> Dynamic branching performance</a></li>
+<li class="chapter" data-level="8.11" data-path="dynamic.html"><a href="dynamic.html#batching"><i class="fa fa-check"></i><b>8.11</b> Batching</a></li>
 </ul></li>
 <li class="chapter" data-level="9" data-path="static.html"><a href="static.html"><i class="fa fa-check"></i><b>9</b> Static branching</a>
 <ul>
@@ -355,9 +356,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">4.3</span> The debug option</h2>
 <p><code>targets</code> has a more convenient way to launch the environment browser from inside a target:</p>
 <ol style="list-style-type: decimal">
-<li>In the target script file (default: <code>_targets.R</code>) write a call to <code>tar_option_set()</code> with <code>debug</code> equal to the target name. Consider also setting <code>cue</code> equal to <code>tar_cue(mode = "never")</code> so <code>tar_make()</code> reaches the target you want to debug more quickly.</li>
+<li>In the target script file (default: <code>_targets.R</code>) write a call to <code>tar_option_set()</code> with <code>debug</code> equal to the target name.</li>
 <li>Launch a fresh clean new interactive R session with the target script file (default: <code>_targets.R</code>) script in your working directory.</li>
-<li>Run <code>targets::tar_make()</code> (or <code>targets::tar_make_clustermq()</code>, or <code>targets::tar_make_future()</code>) with <code>callr_function = NULL</code>.</li>
+<li>Run <code>targets::tar_make()</code> (or <code>targets::tar_make_clustermq()</code>, or <code>targets::tar_make_future()</code>) with <code>callr_function = NULL</code>. If you are using <code>targets</code> version 0.5.0.9000 or above, consider also setting <code>shortcut</code> to <code>TRUE</code> and supplying the target name to <code>names</code>.<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a> This allows <code>tar_make()</code> to reach the desired target more quickly.</li>
 <li>When <code>targets</code> reaches the target you selected to debug, your R session will start an interactive debugger, and you should see <code>Browse[1]&gt;</code> in your console. Run <code>targets::tar_name()</code> to verify that you are debugging the correct target.</li>
 <li>Interactively run any R code that helps you troubleshoot the problem. For example, if the target invokes a function <code>f()</code>, enter <code>debug(f)</code> and then <code>c</code> to immediately enter the function’s calling environment where all its arguments are defined.</li>
 </ol>
@@ -372,11 +373,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb50-8"><a href="debugging.html#cb50-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <p>Then, call <code>tar_make(callr_function = NULL)</code> to drop into a debugger at the command of <code>b</code>.</p>
 <div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="debugging.html#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
-<span id="cb51-2"><a href="debugging.html#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>(<span class="at">callr_function =</span> <span class="cn">NULL</span>)</span>
-<span id="cb51-3"><a href="debugging.html#cb51-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target a</span></span>
-<span id="cb51-4"><a href="debugging.html#cb51-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target b</span></span>
-<span id="cb51-5"><a href="debugging.html#cb51-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Called from: eval(expr, envir)</span></span>
-<span id="cb51-6"><a href="debugging.html#cb51-6" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span></span></code></pre></div>
+<span id="cb51-2"><a href="debugging.html#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>(<span class="at">callr_function =</span> <span class="cn">NULL</span>, <span class="at">names =</span> <span class="fu">any_of</span>(<span class="st">&quot;b&quot;</span>), <span class="at">shortcut =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb51-3"><a href="debugging.html#cb51-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target b</span></span>
+<span id="cb51-4"><a href="debugging.html#cb51-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Called from: eval(expr, envir)</span></span>
+<span id="cb51-5"><a href="debugging.html#cb51-5" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span></span></code></pre></div>
 <p>When the debugger launches, run <code>targets::tar_name()</code> to confirm you are running the correct target.</p>
 <div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="debugging.html#cb52-1" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> targets<span class="sc">::</span><span class="fu">tar_name</span>()</span>
 <span id="cb52-2"><a href="debugging.html#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;b&quot;</span></span></code></pre></div>
@@ -444,7 +444,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb57-6"><a href="debugging.html#cb57-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;y_05f206d7&quot;</span></span></code></pre></div>
 <p><code>tar_workspace()</code> reads the special metadata in the workspace file and then loads the target’s dependencies from various locations in <code>_targets/objects</code> and/or the <a href="cloud.html#cloud">cloud</a>. It also sets the random number generator seed to the seed of the target, loads the required packages, and runs the target script file (default: <code>_targets.R</code>) to load other global object dependencies such as functions.</p>
 <div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="debugging.html#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_workspace</span>(y_05f206d7)</span></code></pre></div>
-<p>We now have the dependencies of <code>y_05f206d7</code> in memory, which allows you to try out any failed function calls in your local R session. <a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a> <a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a></p>
+<p>We now have the dependencies of <code>y_05f206d7</code> in memory, which allows you to try out any failed function calls in your local R session. <a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a> <a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a></p>
 <div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="debugging.html#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(x)</span>
 <span id="cb59-2"><a href="debugging.html#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 4</span></span>
 <span id="cb59-3"><a href="debugging.html#cb59-3" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(<span class="at">arg =</span> <span class="dv">0</span>, <span class="at">value =</span> <span class="st">&quot;my_value&quot;</span>, <span class="at">a =</span> <span class="dv">1</span>, <span class="at">b =</span> <span class="dv">2</span>, <span class="at">key =</span> <span class="st">&quot;my_api_key&quot;</span>)</span>
@@ -472,8 +472,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="footnotes">
 <hr />
 <ol start="5">
-<li id="fn5"><p>In addition, current random number generator seed (<code>.Random.seed</code>) is also the value <code>y_05f206d7</code> started with.<a href="debugging.html#fnref5" class="footnote-back">↩︎</a></p></li>
-<li id="fn6"><p>When you are finished debugging, you can remove all workspace files with <code>tar_destroy(destroy = "workspaces")</code>.<a href="debugging.html#fnref6" class="footnote-back">↩︎</a></p></li>
+<li id="fn5"><p>In the case of dynamic branching, <code>names</code> does not accept individual branch names, but you can still supply the name of the overarching dynamic target.<a href="debugging.html#fnref5" class="footnote-back">↩︎</a></p></li>
+<li id="fn6"><p>In addition, current random number generator seed (<code>.Random.seed</code>) is also the value <code>y_05f206d7</code> started with.<a href="debugging.html#fnref6" class="footnote-back">↩︎</a></p></li>
+<li id="fn7"><p>When you are finished debugging, you can remove all workspace files with <code>tar_destroy(destroy = "workspaces")</code>.<a href="debugging.html#fnref7" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 <div style = "background: #1C356D; color: white; padding: 10px 10px 10px 25px; font-size: 1em; width: 100%;">
