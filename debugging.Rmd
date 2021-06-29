@@ -100,7 +100,7 @@ Browse[2]> another_arg
 
 ## Workspaces
 
-Workspaces are a persistent alternative to the environment browser. A workspace is a special lightweight reference file that lists the elements of a target's runtime environment. Using `tar_workspace()`, you can recover a target's workspace and locally debug it even if the pipeline is not running. If you tell `targets` to record workspaces in advance, you can preempt errors and debug later at your convenience. To enable workspaces, use the `tar_workspace_policy()` to set the value of the `workspaces` argument in `tar_option_set()`. This configures the conditions under which workspace files are saved. For example, `tar_option_set(workspaces = tar_workspace_policy(error = TRUE, always = c("x", "y")))` tells `tar_make()` and friends to save a workspace for a target named `x`.^[In `targets` version 0.5.0.9001 and below, `tar_workspace_policy()` does not exist yet, and the `workspaces` argument of `tar_option_set()` only accepts a character vector of target names. For those earlier versions of targets, set `error = "workspace"` in `tar_target()` or `tar_option_set()` in order to automatically save the workspace of a target on error.] Example in a pipeline:
+Workspaces are a persistent alternative to the environment browser. A workspace is a special lightweight reference file that lists the elements of a target's runtime environment. Using `tar_workspace()`, you can recover a target's workspace and locally debug it even if the pipeline is not running. If you tell `targets` to record workspaces in advance, you can preempt errors and debug later at your convenience. To enable workspaces, use the `workspace_on_error` and `workspaces` arguments of `tar_option_set()`. These arguments set the conditions under which workspace files are saved. For example, `tar_option_set(workspace_on_error = TRUE, workspaces = c("x", "y"))` tells `tar_make()` and friends to save a workspace for a target named `x`, a target named `y`, and every target that throws and error. Example in a pipeline:
 
 ```{r, eval = FALSE}
 # _targets.R file:
@@ -108,7 +108,7 @@ options(tidyverse.quiet = TRUE)
 library(targets)
 library(tidyverse)
 options(crayon.enabled = FALSE)
-tar_option_set(workspaces = tar_workspace_policy(error = TRUE))
+tar_option_set(workspace_on_error = TRUE)
 f <- function(arg, value, ...) {
   stopifnot(arg < 4)
 }
