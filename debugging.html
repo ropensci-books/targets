@@ -401,18 +401,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="workspaces" class="section level2" number="4.4">
 <h2><span class="header-section-number">4.4</span> Workspaces</h2>
-<p>Workspaces are a persistent alternative to the environment browser. A workspace is a special lightweight reference file that lists the elements of a target’s runtime environment. Using <code>tar_workspace()</code>, you can recover a target’s workspace and locally debug it even if the pipeline is not running. If you tell <code>targets</code> to record workspaces in advance, you can preempt errors and debug later at your convenience. Here is how:</p>
-<ol style="list-style-type: decimal">
-<li>Set <code>error = "workspace"</code> in <code>tar_option_set()</code> or <code>tar_target()</code>. Then, <code>tar_make()</code> and friends will save a workspace file for every target that errors out.</li>
-<li>In the <code>workspaces</code> argument of <code>tar_option_set()</code>, specify the targets for which you want to save workspaces. Then, run <code>tar_make()</code> or similar. A workspace file will be saved for each existing target, regardless of whether the target runs or gets skipped in the pipeline.</li>
-</ol>
-<p>Here is an example of (1).</p>
+<p>Workspaces are a persistent alternative to the environment browser. A workspace is a special lightweight reference file that lists the elements of a target’s runtime environment. Using <code>tar_workspace()</code>, you can recover a target’s workspace and locally debug it even if the pipeline is not running. If you tell <code>targets</code> to record workspaces in advance, you can preempt errors and debug later at your convenience. To enable workspaces, use the <code>workspace_on_error</code> and <code>workspaces</code> arguments of <code>tar_option_set()</code>. These arguments set the conditions under which workspace files are saved. For example, <code>tar_option_set(workspace_on_error = TRUE, workspaces = c("x", "y"))</code> tells <code>tar_make()</code> and friends to save a workspace for a target named <code>x</code>, a target named <code>y</code>, and every target that throws and error. Example in a pipeline:</p>
 <div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="debugging.html#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R file:</span></span>
 <span id="cb55-2"><a href="debugging.html#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">tidyverse.quiet =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb55-3"><a href="debugging.html#cb55-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
 <span id="cb55-4"><a href="debugging.html#cb55-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb55-5"><a href="debugging.html#cb55-5" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">crayon.enabled =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb55-6"><a href="debugging.html#cb55-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">error =</span> <span class="st">&quot;workspace&quot;</span>)</span>
+<span id="cb55-6"><a href="debugging.html#cb55-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">workspace_on_error =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb55-7"><a href="debugging.html#cb55-7" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="cf">function</span>(arg, value, ...) {</span>
 <span id="cb55-8"><a href="debugging.html#cb55-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(arg <span class="sc">&lt;</span> <span class="dv">4</span>)</span>
 <span id="cb55-9"><a href="debugging.html#cb55-9" aria-hidden="true" tabindex="-1"></a>}</span>
