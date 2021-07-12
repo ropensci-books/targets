@@ -31,7 +31,18 @@ The pipeline automatically loads dependencies into memory when they are required
 
 ### Return value
 
-The return value of a target should be an R object that can be saved properly with the storage format you choose using the `format` argument of `tar_target()` or `tar_option_set()`. For example, if the format is `"rds"` (default), then the target should return an R object that can be saved with `saveRDS()` and safely loaded properly into another session. Please avoid returning [non-exportable objects](https://cran.r-project.org/web/packages/future/vignettes/future-4-non-exportable-objects.html) such as connection objects, `Rcpp` pointers, `xgboost` matrices, and `greta` models^[Special exceptions are granted to Keras and Torch models, which can be safely returned from targets if you specify `format = "keras"` or `format = "torch"`.]. As a workaround, you can write custom functions to create temporary instances of these non-exportable objects and clean them up after the task is done. The following sketch creates a target that returns a database table while managing a transient connection object.
+The return value of a target should be an R object that can be saved to disk and hashed.
+#### Saving
+
+The object should be compatible with the storage format you choose using the `format` argument of `tar_target()` or `tar_option_set()`. For example, if the format is `"rds"` (default), then the target should return an R object that can be saved with `saveRDS()` and safely loaded properly into another session. Please avoid returning [non-exportable objects](https://cran.r-project.org/web/packages/future/vignettes/future-4-non-exportable-objects.html) such as connection objects, `Rcpp` pointers, `xgboost` matrices, and `greta` models^[Special exceptions are granted to Keras and Torch models, which can be safely returned from targets if you specify `format = "keras"` or `format = "torch"`.].
+
+#### Hashing
+
+Once a target is saved to disk, `targets` computes a [`digest`](https://eddelbuettel.github.io/digest/) hash to track changes to the data file(s). These hashes are used to decide whether each target is up to date or needs to rerun. In order for the hash to be useful, the data you return from a target must be an accurate reflection of the underlying content of the data. So please try to return the actual data instead of an object that wraps or points to the data. Otherwise, the package will make incorrect decisions regarding which targets can skip and which need to rerun.
+
+#### Workaround
+
+As a workaround, you can write custom functions to create temporary instances of these non-exportable/non-hashable objects and clean them up after the task is done. The following sketch creates a target that returns a database table while managing a transient connection object.
 
 ```{r, eval = FALSE}
 # _targets.R
