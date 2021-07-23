@@ -7,7 +7,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = TRUE)
 
 ```{r, message = FALSE, warning = FALSE, echo = FALSE}
 library(targets)
-library(tidyverse)
+library(dplyr)
 ```
 
 ## Branching
@@ -26,9 +26,7 @@ To use dynamic branching, set the `pattern` argument of `tar_target()`. A patter
 
 ```{r, echo = FALSE, eval = TRUE}
 library(targets)
-library(tidyverse)
 tar_script({
-  options(crayon.enabled = FALSE, tidyverse.quiet = TRUE)
   list(
     tar_target(w, c(1, 2)),
     tar_target(x, c(10, 20)),
@@ -42,7 +40,6 @@ tar_script({
 ```{r, eval = FALSE}
 # _targets.R
 library(targets)
-library(tidyverse)
 list(
   tar_target(w, c(1, 2)),
   tar_target(x, c(10, 20)),
@@ -226,11 +223,10 @@ In situations like this, it is best to proactively write targets that keep track
 
 ```{r, echo = FALSE, eval = TRUE}
 tar_script({
-  library(tibble)
   options(crayon.enabled = FALSE)
   list(
     tar_target(x, seq_len(3)),
-    tar_target(y, tibble(x = x, y = x + 1), pattern = map(x))
+    tar_target(y, data.frame(x = x, y = x + 1), pattern = map(x))
   )
 })
 ```
@@ -238,10 +234,9 @@ tar_script({
 ```{r, eval = FALSE}
 # _targets.R
 library(targets)
-library(tibble)
 list(
   tar_target(x, seq_len(3)),
-  tar_target(y, tibble(x = x, y = x + 1), pattern = map(x))
+  tar_target(y, data.frame(x = x, y = x + 1), pattern = map(x))
 )
 ```
 
@@ -372,7 +367,7 @@ For atomic vectors like in the example above, this behavior is already intuitive
 
 ```{r, echo = FALSE, eval = TRUE}
 tar_script({
-  options(crayon.enabled = FALSE, tidyverse.quiet = TRUE)
+  options(crayon.enabled = FALSE)
   print_and_return <- function(x) {
     print(x)
     x
@@ -412,7 +407,7 @@ List iteration splits and aggregates targets as simple lists. If target `x` has 
 
 ```{r, echo = FALSE, eval = TRUE}
 tar_script({
-  options(crayon.enabled = FALSE, tidyverse.quiet = TRUE)
+  options(crayon.enabled = FALSE)
   print_and_return <- function(x) {
     print(x)
     x
@@ -483,8 +478,8 @@ Put together, the pipeline looks like this.
 
 ```{r, echo = FALSE, eval = TRUE}
 tar_script({
-options(crayon.enabled = FALSE, tidyverse.quiet = TRUE)
-tar_option_set(packages = "tidyverse")
+options(crayon.enabled = FALSE)
+tar_option_set(packages = "dplyr")
 list(
   tar_target(
     data,
@@ -509,7 +504,7 @@ list(
 ```{r, eval = FALSE}
 # _targets.R
 library(targets)
-tar_option_set(packages = "tidyverse")
+tar_option_set(packages = "dplyr")
 list(
   tar_target(
     data,
@@ -579,8 +574,8 @@ Branches are arranged in increasing order with respect to the integers in `tar_g
 
 ```{r, echo = FALSE, eval = TRUE}
 tar_script({
-options(crayon.enabled = FALSE, tidyverse.quiet = TRUE)
-tar_option_set(packages = "tidyverse")
+options(crayon.enabled = FALSE)
+tar_option_set(packages = "dplyr")
 
 flip_order <- function(x) {
   ordered(x, levels = sort(unique(x), decreasing = TRUE))
@@ -610,7 +605,7 @@ list(
 ```{r, eval = FALSE}
 # _targets.R
 library(targets)
-tar_option_set(packages = "tidyverse")
+tar_option_set(packages = "dplyr")
 
 flip_order <- function(x) {
   ordered(x, levels = sort(unique(x), decreasing = TRUE))

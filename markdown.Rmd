@@ -10,7 +10,12 @@ Target Markdown, available in `targets` > 0.4.2.9000, is a powerful R Markdown i
 
 ## Access
 
-The example from this chapter is available as a Target Markdown document through RStudio R Markdown template system: https://rstudio.github.io/rstudio-extensions/rmarkdown_templates.html. In the RStudio IDE, select a new R Markdown document in the New File dropdown menu in the upper left-hand corner of the window.
+This chapter's [example Target Markdown document](https://github.com/ropensci/targets/blob/main/inst/rmarkdown/templates/targets/skeleton/skeleton.Rmd) is itself a tutorial and a simplified version of the chapter. There are two convenient ways to access the file:
+
+1. The [`use_targets()`](https://docs.ropensci.org/targets/reference/use_targets.html) function.
+2. The [RStudio R Markdown template system] https://rstudio.github.io/rstudio-extensions/rmarkdown_templates.html.
+
+For (2), in the RStudio IDE, select a new R Markdown document in the New File dropdown menu in the upper left-hand corner of the window.
 
 ![](./man/figures/new_rmd.png)
 
@@ -192,13 +197,12 @@ list(
 
 In non-interactive mode, the whole target list gets written to a single script.
 
-```{targets downstream-targets, echo = FALSE}
+```{targets downstream-targets, echo = FALSE, tar_interactive = FALSE}
 list(
   tar_target(data, raw_data %>% filter(!is.na(Ozone))),
   tar_target(hist, create_plot(data))
 )
 ```
-
 
 Lastly, we define a target to fit a model to the data. For simple targets like this one, we can use convenient shorthand to convert the code in a chunk into a valid target. Simply set the `tar_simple` chunk option to `TRUE`.
 
@@ -211,7 +215,7 @@ biglm(Ozone ~ Wind + Temp, analysis_data)
 
 When the chunk is preprocessed, chunk label (or the `tar_name` chunk option if you set it) becomes the target name, and the chunk code becomes the target command. All other arguments of `tar_target()` remain at their default values (configurable with `tar_option_set()` in a `tar_globals = TRUE` chunk). The output in the rendered R Markdown document reflects this preprocessing.
 
-```{targets fit, tar_simple = TRUE, echo = TRUE}
+```{targets fit, tar_simple = TRUE, echo = TRUE, tar_interactive = FALSE}
 biglm(Ozone ~ Wind + Temp, data)
 ```
 
@@ -240,7 +244,7 @@ tar_read(fit)
 ```
 ````
 
-```{r, message = FALSE, eval = TRUE, echo = FALSE}
+```{r readbiglmfit, message = FALSE, eval = TRUE, echo = FALSE}
 library(biglm)
 tar_read(fit)
 ```

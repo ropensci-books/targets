@@ -292,7 +292,7 @@ In this scenario, you still have a single report, but you render it multiple tim
 # _targets.R
 library(targets)
 library(tarchetypes)
-library(tibble)
+tar_option_set(packages = "tibble")
 list(
   tar_target(x, "value_of_x"),
   tar_render_rep(

@@ -106,9 +106,8 @@ Workspaces are a persistent alternative to the environment browser. A workspace 
 # _targets.R file:
 options(tidyverse.quiet = TRUE)
 library(targets)
-library(tidyverse)
 options(crayon.enabled = FALSE)
-tar_option_set(workspace_on_error = TRUE)
+tar_option_set(workspace_on_error = TRUE, packages = "tidyverse")
 f <- function(arg, value, ...) {
   stopifnot(arg < 4)
 }
