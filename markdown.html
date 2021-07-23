@@ -339,7 +339,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Target Markdown, available in <code>targets</code> &gt; 0.4.2.9000, is a powerful R Markdown interface for reproducible analysis pipelines. With Target Markdown, you can define a fully scalable pipeline from within one or more R Markdown reports, anything from a single report to a whole <code>bookdown</code> or <code>workflowr</code> project. You get the best of both worlds: the human readable narrative of literate programming, and the sophisticated caching and dependency management systems of <code>targets</code>.</p>
 <div id="access" class="section level2" number="3.1">
 <h2><span class="header-section-number">3.1</span> Access</h2>
-<p>The example from this chapter is available as a Target Markdown document through RStudio R Markdown template system: <a href="https://rstudio.github.io/rstudio-extensions/rmarkdown_templates.html" class="uri">https://rstudio.github.io/rstudio-extensions/rmarkdown_templates.html</a>. In the RStudio IDE, select a new R Markdown document in the New File dropdown menu in the upper left-hand corner of the window.</p>
+<p>This chapter’s <a href="https://github.com/ropensci/targets/blob/main/inst/rmarkdown/templates/targets/skeleton/skeleton.Rmd">example Target Markdown document</a> is itself a tutorial and a simplified version of the chapter. There are two convenient ways to access the file:</p>
+<ol style="list-style-type: decimal">
+<li>The <a href="https://docs.ropensci.org/targets/reference/use_targets.html"><code>use_targets()</code></a> function.</li>
+<li>The [RStudio R Markdown template system] <a href="https://rstudio.github.io/rstudio-extensions/rmarkdown_templates.html" class="uri">https://rstudio.github.io/rstudio-extensions/rmarkdown_templates.html</a>.</li>
+</ol>
+<p>For (2), in the RStudio IDE, select a new R Markdown document in the New File dropdown menu in the upper left-hand corner of the window.</p>
 <p><img src="man/figures/new_rmd.png" /></p>
 <p>Then, select the Target Markdown template and click OK to open a copy of the report for editing.</p>
 <p><img src="man/figures/target_markdown.png" /></p>
@@ -408,9 +413,9 @@ create_plot &lt;- function(data) {
     theme_gray(24)
 }
 ```</code></pre>
-<p>In non-interactive mode, the chunk establishes a common <code>_targets.R</code> file and writes the R code to a script in <code>_targets_r/globals/</code>, and displays an informative message:<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a></p>
+<p>In non-interactive mode, the chunk establishes a common <code>_targets.R</code> file and writes the R code to a script in <code>_targets_r/globals/</code>, and displays an informative message:<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a></p>
 <pre><code>#&gt; Established _targets.R and _targets_r/globals/chunk-name.R.</code></pre>
-<p>It is good practice to assign explicit chunk labels or set the <code>tar_name</code> chunk option on a chunk-by-chunk basis. Each chunk writes code to a script path that depends on the name, and all script paths need to be unique.<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a></p>
+<p>It is good practice to assign explicit chunk labels or set the <code>tar_name</code> chunk option on a chunk-by-chunk basis. Each chunk writes code to a script path that depends on the name, and all script paths need to be unique.<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a></p>
 </div>
 <div id="targets" class="section level2" number="3.8">
 <h2><span class="header-section-number">3.8</span> Targets</h2>
@@ -490,22 +495,22 @@ tar_read(fit)
 <pre><code>```{r}
 tar_read(hist)
 ```</code></pre>
-<p><img src="targets-manual_files/figure-html/unnamed-chunk-34-1.png" width="672" /></p>
+<p><img src="targets-manual_files/figure-html/unnamed-chunk-33-1.png" width="672" /></p>
 <p>The <code>targets</code> dependency graph helps your readers understand the steps of your pipeline at a high level.</p>
 <pre><code>```{r}
 tar_visnetwork()
 ```</code></pre>
-<div id="htmlwidget-c8be188ff0e295fc4ffe" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
-<script type="application/json" data-for="htmlwidget-c8be188ff0e295fc4ffe">{"x":{"nodes":{"name":["data","fit","hist","raw_data","create_plot"],"type":["stem","stem","stem","stem","function"],"status":["uptodate","uptodate","uptodate","uptodate","uptodate"],"seconds":[0.009,0.003,0.014,0.493,null],"bytes":[1079,1574,44520,1260,null],"branches":[null,null,null,null,null],"id":["data","fit","hist","raw_data","create_plot"],"label":["data","fit","hist","raw_data","create_plot"],"level":[2,3,3,1,1],"color":["#354823","#354823","#354823","#354823","#354823"],"shape":["dot","dot","dot","dot","triangle"]},"edges":{"from":["data","create_plot","data","raw_data"],"to":["fit","hist","hist","data"],"arrows":["to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Up to date","Stem","Function"],"color":["#354823","#899DA4","#899DA4"],"shape":["dot","dot","triangle"]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-ea3caadebf8abc268941" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-ea3caadebf8abc268941">{"x":{"nodes":{"name":["data","fit","hist","raw_data","create_plot"],"type":["stem","stem","stem","stem","function"],"status":["uptodate","uptodate","uptodate","uptodate","uptodate"],"seconds":[0.009,0.004,0.013,0.423,null],"bytes":[1079,1574,44520,1260,null],"branches":[null,null,null,null,null],"id":["data","fit","hist","raw_data","create_plot"],"label":["data","fit","hist","raw_data","create_plot"],"level":[2,3,3,1,1],"color":["#354823","#354823","#354823","#354823","#354823"],"shape":["dot","dot","dot","dot","triangle"]},"edges":{"from":["data","create_plot","data","raw_data"],"to":["fit","hist","hist","data"],"arrows":["to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Up to date","Stem","Function"],"color":["#354823","#899DA4","#899DA4"],"shape":["dot","dot","triangle"]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
 <p>At this point, you can go back and run <code>{targets}</code> chunks in interactive mode without interfering with the code or data of the non-interactive pipeline.</p>
 
 </div>
 </div>
 <div class="footnotes">
 <hr />
-<ol start="3">
-<li id="fn3"><p>The <code>_targets.R</code> file from Target Markdown never changes from chunk to chunk or report to report, so you can spread your work over multiple reports without worrying about aligning <code>_targets.R</code> scripts. Just be sure all your chunk names are unique across all the reports of a project, or you set the <code>tar_name</code> chunk option to specify base names of script file paths.<a href="markdown.html#fnref3" class="footnote-back">↩︎</a></p></li>
-<li id="fn4"><p>In addition, for for <code>bookdown</code> projects, chunk labels should only use alphanumeric characters and dashes.<a href="markdown.html#fnref4" class="footnote-back">↩︎</a></p></li>
+<ol start="4">
+<li id="fn4"><p>The <code>_targets.R</code> file from Target Markdown never changes from chunk to chunk or report to report, so you can spread your work over multiple reports without worrying about aligning <code>_targets.R</code> scripts. Just be sure all your chunk names are unique across all the reports of a project, or you set the <code>tar_name</code> chunk option to specify base names of script file paths.<a href="markdown.html#fnref4" class="footnote-back">↩︎</a></p></li>
+<li id="fn5"><p>In addition, for for <code>bookdown</code> projects, chunk labels should only use alphanumeric characters and dashes.<a href="markdown.html#fnref5" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 <div style = "background: #1C356D; color: white; padding: 10px 10px 10px 25px; font-size: 1em; width: 100%;">

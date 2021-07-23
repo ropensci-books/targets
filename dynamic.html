@@ -350,17 +350,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>To use dynamic branching, set the <code>pattern</code> argument of <code>tar_target()</code>. A pattern is a dynamic branching specification expressed in terms of functional programming. The following minimal example explores the mechanics of patterns (and examples of branching in real-world projects are <a href="https://docs.ropensci.org/targets/index.html#examples">linked from here</a>).</p>
 <div class="sourceCode" id="cb96"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb96-1"><a href="dynamic.html#cb96-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
 <span id="cb96-2"><a href="dynamic.html#cb96-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb96-3"><a href="dynamic.html#cb96-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb96-4"><a href="dynamic.html#cb96-4" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb96-5"><a href="dynamic.html#cb96-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(w, <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>)),</span>
-<span id="cb96-6"><a href="dynamic.html#cb96-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(x, <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">20</span>)),</span>
-<span id="cb96-7"><a href="dynamic.html#cb96-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(y, w <span class="sc">+</span> x, <span class="at">pattern =</span> <span class="fu">map</span>(w, x)),</span>
-<span id="cb96-8"><a href="dynamic.html#cb96-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(z, <span class="fu">sum</span>(y)),</span>
-<span id="cb96-9"><a href="dynamic.html#cb96-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(z2, <span class="fu">length</span>(y), <span class="at">pattern =</span> <span class="fu">map</span>(y))</span>
-<span id="cb96-10"><a href="dynamic.html#cb96-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<span id="cb96-3"><a href="dynamic.html#cb96-3" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb96-4"><a href="dynamic.html#cb96-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(w, <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>)),</span>
+<span id="cb96-5"><a href="dynamic.html#cb96-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(x, <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">20</span>)),</span>
+<span id="cb96-6"><a href="dynamic.html#cb96-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(y, w <span class="sc">+</span> x, <span class="at">pattern =</span> <span class="fu">map</span>(w, x)),</span>
+<span id="cb96-7"><a href="dynamic.html#cb96-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(z, <span class="fu">sum</span>(y)),</span>
+<span id="cb96-8"><a href="dynamic.html#cb96-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(z2, <span class="fu">length</span>(y), <span class="at">pattern =</span> <span class="fu">map</span>(y))</span>
+<span id="cb96-9"><a href="dynamic.html#cb96-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb97-1"><a href="dynamic.html#cb97-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_visnetwork</span>()</span></code></pre></div>
-<div id="htmlwidget-da9fec360508132b31b6" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
-<script type="application/json" data-for="htmlwidget-da9fec360508132b31b6">{"x":{"nodes":{"name":["w","x","y","z","z2"],"type":["stem","stem","pattern","stem","pattern"],"status":["outdated","outdated","outdated","outdated","outdated"],"seconds":[null,null,null,null,null],"bytes":[null,null,null,null,null],"branches":[null,null,null,null,null],"id":["w","x","y","z","z2"],"label":["w","x","y","z","z2"],"level":[1,1,2,3,3],"color":["#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5"],"shape":["dot","dot","square","dot","square"]},"edges":{"from":["y","w","x","y"],"to":["z2","y","y","z"],"arrows":["to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Outdated","Stem","Pattern"],"color":["#78B7C5","#899DA4","#899DA4"],"shape":["dot","dot","square"]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-102b581b7fe93ec5baeb" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-102b581b7fe93ec5baeb">{"x":{"nodes":{"name":["w","x","y","z","z2"],"type":["stem","stem","pattern","stem","pattern"],"status":["outdated","outdated","outdated","outdated","outdated"],"seconds":[null,null,null,null,null],"bytes":[null,null,null,null,null],"branches":[null,null,null,null,null],"id":["w","x","y","z","z2"],"label":["w","x","y","z","z2"],"level":[1,1,2,3,3],"color":["#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5"],"shape":["dot","dot","square","dot","square"]},"edges":{"from":["y","w","x","y"],"to":["z2","y","y","z"],"arrows":["to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Outdated","Stem","Pattern"],"color":["#78B7C5","#899DA4","#899DA4"],"shape":["dot","dot","square"]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
 <div class="sourceCode" id="cb98"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb98-1"><a href="dynamic.html#cb98-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
 <span id="cb98-2"><a href="dynamic.html#cb98-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start target w</span></span>
 <span id="cb98-3"><a href="dynamic.html#cb98-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built target w</span></span>
@@ -379,7 +378,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb98-16"><a href="dynamic.html#cb98-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start target z</span></span>
 <span id="cb98-17"><a href="dynamic.html#cb98-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built target z</span></span>
 <span id="cb98-18"><a href="dynamic.html#cb98-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • end pipeline</span></span></code></pre></div>
-<p>Above, targets <code>w</code>, <code>x</code>, and <code>z</code> are called <strong>stems</strong> because they do not create branches themselves. Target <code>y</code> is a <strong>pattern</strong> because it creates its own <strong>branches</strong> like <code>y_4096b6a8</code>. A branch is a special kind of target whose dependencies are slices of the targets mentioned in <code>pattern = map(...)</code> etc. If we read target <code>y</code> into memory, all the branches will load and automatically aggregate as a vector.<a href="#fn9" class="footnote-ref" id="fnref9"><sup>9</sup></a></p>
+<p>Above, targets <code>w</code>, <code>x</code>, and <code>z</code> are called <strong>stems</strong> because they do not create branches themselves. Target <code>y</code> is a <strong>pattern</strong> because it creates its own <strong>branches</strong> like <code>y_4096b6a8</code>. A branch is a special kind of target whose dependencies are slices of the targets mentioned in <code>pattern = map(...)</code> etc. If we read target <code>y</code> into memory, all the branches will load and automatically aggregate as a vector.<a href="#fn10" class="footnote-ref" id="fnref10"><sup>10</sup></a></p>
 <div class="sourceCode" id="cb99"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb99-1"><a href="dynamic.html#cb99-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(y)</span>
 <span id="cb99-2"><a href="dynamic.html#cb99-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; y_61ced14d y_4096b6a8 </span></span>
 <span id="cb99-3"><a href="dynamic.html#cb99-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         11         22</span></span></code></pre></div>
@@ -505,7 +504,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb109-18"><a href="dynamic.html#cb109-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • end pipeline</span></span></code></pre></div>
 <div class="sourceCode" id="cb110"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb110-1"><a href="dynamic.html#cb110-1" aria-hidden="true" tabindex="-1"></a>branches <span class="ot">&lt;-</span> <span class="fu">tar_branches</span>(z, <span class="fu">map</span>(y))</span>
 <span id="cb110-2"><a href="dynamic.html#cb110-2" aria-hidden="true" tabindex="-1"></a>branches</span>
-<span id="cb110-3"><a href="dynamic.html#cb110-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 x 2</span></span>
+<span id="cb110-3"><a href="dynamic.html#cb110-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 2</span></span>
 <span id="cb110-4"><a href="dynamic.html#cb110-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   z          y         </span></span>
 <span id="cb110-5"><a href="dynamic.html#cb110-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;      &lt;chr&gt;     </span></span>
 <span id="cb110-6"><a href="dynamic.html#cb110-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 z_d0697b30 y_29239c8a</span></span>
@@ -516,7 +515,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>However, <code>tar_branches()</code> is not always helpful: for example, if we look at how <code>y</code> branches over <code>x</code>. <code>x</code> does not use dynamic branching, so <code>tar_branches()</code> does not return meaningful branch names.</p>
 <div class="sourceCode" id="cb112"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb112-1"><a href="dynamic.html#cb112-1" aria-hidden="true" tabindex="-1"></a>branches <span class="ot">&lt;-</span> <span class="fu">tar_branches</span>(y, <span class="fu">map</span>(x))</span>
 <span id="cb112-2"><a href="dynamic.html#cb112-2" aria-hidden="true" tabindex="-1"></a>branches</span>
-<span id="cb112-3"><a href="dynamic.html#cb112-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 x 2</span></span>
+<span id="cb112-3"><a href="dynamic.html#cb112-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 2</span></span>
 <span id="cb112-4"><a href="dynamic.html#cb112-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   y          x         </span></span>
 <span id="cb112-5"><a href="dynamic.html#cb112-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;      &lt;chr&gt;     </span></span>
 <span id="cb112-6"><a href="dynamic.html#cb112-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 y_29239c8a x_ccba877f</span></span>
@@ -527,11 +526,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>In situations like this, it is best to proactively write targets that keep track of information about their upstream branches. Data frames and <code>tibble</code>s are useful for this.</p>
 <div class="sourceCode" id="cb114"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb114-1"><a href="dynamic.html#cb114-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
 <span id="cb114-2"><a href="dynamic.html#cb114-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb114-3"><a href="dynamic.html#cb114-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
-<span id="cb114-4"><a href="dynamic.html#cb114-4" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb114-5"><a href="dynamic.html#cb114-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(x, <span class="fu">seq_len</span>(<span class="dv">3</span>)),</span>
-<span id="cb114-6"><a href="dynamic.html#cb114-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(y, <span class="fu">tibble</span>(<span class="at">x =</span> x, <span class="at">y =</span> x <span class="sc">+</span> <span class="dv">1</span>), <span class="at">pattern =</span> <span class="fu">map</span>(x))</span>
-<span id="cb114-7"><a href="dynamic.html#cb114-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<span id="cb114-3"><a href="dynamic.html#cb114-3" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb114-4"><a href="dynamic.html#cb114-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(x, <span class="fu">seq_len</span>(<span class="dv">3</span>)),</span>
+<span id="cb114-5"><a href="dynamic.html#cb114-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(y, <span class="fu">data.frame</span>(<span class="at">x =</span> x, <span class="at">y =</span> x <span class="sc">+</span> <span class="dv">1</span>), <span class="at">pattern =</span> <span class="fu">map</span>(x))</span>
+<span id="cb114-6"><a href="dynamic.html#cb114-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <div class="sourceCode" id="cb115"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb115-1"><a href="dynamic.html#cb115-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
 <span id="cb115-2"><a href="dynamic.html#cb115-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ skip target x</span></span>
 <span id="cb115-3"><a href="dynamic.html#cb115-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start branch y_29239c8a</span></span>
@@ -543,12 +541,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb115-9"><a href="dynamic.html#cb115-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built pattern y</span></span>
 <span id="cb115-10"><a href="dynamic.html#cb115-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • end pipeline</span></span></code></pre></div>
 <div class="sourceCode" id="cb116"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb116-1"><a href="dynamic.html#cb116-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(y)</span>
-<span id="cb116-2"><a href="dynamic.html#cb116-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 x 2</span></span>
-<span id="cb116-3"><a href="dynamic.html#cb116-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       x     y</span></span>
-<span id="cb116-4"><a href="dynamic.html#cb116-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;int&gt; &lt;dbl&gt;</span></span>
-<span id="cb116-5"><a href="dynamic.html#cb116-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1     1     2</span></span>
-<span id="cb116-6"><a href="dynamic.html#cb116-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2     2     3</span></span>
-<span id="cb116-7"><a href="dynamic.html#cb116-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3     3     4</span></span></code></pre></div>
+<span id="cb116-2"><a href="dynamic.html#cb116-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   x y</span></span>
+<span id="cb116-3"><a href="dynamic.html#cb116-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 1 2</span></span>
+<span id="cb116-4"><a href="dynamic.html#cb116-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 2 3</span></span>
+<span id="cb116-5"><a href="dynamic.html#cb116-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 3 4</span></span></code></pre></div>
 </div>
 <div id="testing-patterns" class="section level2" number="8.6">
 <h2><span class="header-section-number">8.6</span> Testing patterns</h2>
@@ -559,7 +555,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb117-4"><a href="dynamic.html#cb117-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">x_comp =</span> <span class="dv">3</span>,</span>
 <span id="cb117-5"><a href="dynamic.html#cb117-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">y_comp =</span> <span class="dv">3</span></span>
 <span id="cb117-6"><a href="dynamic.html#cb117-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb117-7"><a href="dynamic.html#cb117-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 x 3</span></span>
+<span id="cb117-7"><a href="dynamic.html#cb117-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 3</span></span>
 <span id="cb117-8"><a href="dynamic.html#cb117-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   w_comp   x_comp   y_comp  </span></span>
 <span id="cb117-9"><a href="dynamic.html#cb117-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt;   </span></span>
 <span id="cb117-10"><a href="dynamic.html#cb117-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 w_comp_1 x_comp_1 y_comp_1</span></span>
@@ -574,7 +570,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb118-4"><a href="dynamic.html#cb118-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">x_comp =</span> <span class="dv">3</span>,</span>
 <span id="cb118-5"><a href="dynamic.html#cb118-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">y_comp =</span> <span class="dv">3</span></span>
 <span id="cb118-6"><a href="dynamic.html#cb118-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb118-7"><a href="dynamic.html#cb118-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2 x 3</span></span>
+<span id="cb118-7"><a href="dynamic.html#cb118-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2 × 3</span></span>
 <span id="cb118-8"><a href="dynamic.html#cb118-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   w_comp   x_comp   y_comp  </span></span>
 <span id="cb118-9"><a href="dynamic.html#cb118-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt;   </span></span>
 <span id="cb118-10"><a href="dynamic.html#cb118-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 w_comp_1 x_comp_1 y_comp_1</span></span>
@@ -585,7 +581,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb119-4"><a href="dynamic.html#cb119-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">x_comp =</span> <span class="dv">3</span>,</span>
 <span id="cb119-5"><a href="dynamic.html#cb119-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">y_comp =</span> <span class="dv">3</span></span>
 <span id="cb119-6"><a href="dynamic.html#cb119-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb119-7"><a href="dynamic.html#cb119-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 4 x 3</span></span>
+<span id="cb119-7"><a href="dynamic.html#cb119-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 4 × 3</span></span>
 <span id="cb119-8"><a href="dynamic.html#cb119-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   w_comp   x_comp   y_comp  </span></span>
 <span id="cb119-9"><a href="dynamic.html#cb119-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt;   </span></span>
 <span id="cb119-10"><a href="dynamic.html#cb119-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 w_comp_1 x_comp_2 y_comp_2</span></span>
@@ -650,7 +646,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb123-16"><a href="dynamic.html#cb123-16" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb123-17"><a href="dynamic.html#cb123-17" aria-hidden="true" tabindex="-1"></a><span class="co"># First row group:</span></span>
 <span id="cb123-18"><a href="dynamic.html#cb123-18" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(group, <span class="at">branches =</span> <span class="dv">1</span>)</span>
-<span id="cb123-19"><a href="dynamic.html#cb123-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 x 4</span></span>
+<span id="cb123-19"><a href="dynamic.html#cb123-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 4</span></span>
 <span id="cb123-20"><a href="dynamic.html#cb123-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   var1  var2    rep tar_group</span></span>
 <span id="cb123-21"><a href="dynamic.html#cb123-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;fct&gt; &lt;fct&gt; &lt;dbl&gt;     &lt;int&gt;</span></span>
 <span id="cb123-22"><a href="dynamic.html#cb123-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 a     c         1         1</span></span>
@@ -659,7 +655,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb123-25"><a href="dynamic.html#cb123-25" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb123-26"><a href="dynamic.html#cb123-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Second row group:</span></span>
 <span id="cb123-27"><a href="dynamic.html#cb123-27" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(group, <span class="at">branches =</span> <span class="dv">2</span>)</span>
-<span id="cb123-28"><a href="dynamic.html#cb123-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 x 4</span></span>
+<span id="cb123-28"><a href="dynamic.html#cb123-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 4</span></span>
 <span id="cb123-29"><a href="dynamic.html#cb123-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   var1  var2    rep tar_group</span></span>
 <span id="cb123-30"><a href="dynamic.html#cb123-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;fct&gt; &lt;fct&gt; &lt;dbl&gt;     &lt;int&gt;</span></span>
 <span id="cb123-31"><a href="dynamic.html#cb123-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 a     d         1         2</span></span>
@@ -669,7 +665,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="iteration" class="section level2" number="8.9">
 <h2><span class="header-section-number">8.9</span> Iteration</h2>
-<p>The <code>iteration</code> arguments of <code>tar_target()</code> and <code>tar_option_set()</code> control the slicing of stems and the aggregation of patterns. For example, if you write a stem target with <code>tar_target(x, fun(), iteration = "list")</code>, then all downstream targets that branch over <code>x</code> will give list-like slices <code>x[[1]]</code>, <code>x[[2]]</code>, etc. to the individual branches instead of the default vector-like slices <code>x[1]</code>, <code>x[2]</code>, etc. Likewise, for a pattern defined with <code>tar_target(y, fun(x), pattern = map(x), iteration = "list")</code>, <code>tar_read(y)</code> will return a list instead of a vector, and a downstream target like <code>tar_target(y, fun(z))</code> will treat <code>z</code> as a list instead of a vector.<a href="#fn10" class="footnote-ref" id="fnref10"><sup>10</sup></a></p>
+<p>The <code>iteration</code> arguments of <code>tar_target()</code> and <code>tar_option_set()</code> control the slicing of stems and the aggregation of patterns. For example, if you write a stem target with <code>tar_target(x, fun(), iteration = "list")</code>, then all downstream targets that branch over <code>x</code> will give list-like slices <code>x[[1]]</code>, <code>x[[2]]</code>, etc. to the individual branches instead of the default vector-like slices <code>x[1]</code>, <code>x[2]</code>, etc. Likewise, for a pattern defined with <code>tar_target(y, fun(x), pattern = map(x), iteration = "list")</code>, <code>tar_read(y)</code> will return a list instead of a vector, and a downstream target like <code>tar_target(y, fun(z))</code> will treat <code>z</code> as a list instead of a vector.<a href="#fn11" class="footnote-ref" id="fnref11"><sup>11</sup></a></p>
 <div id="vector-iteration" class="section level3" number="8.9.1">
 <h3><span class="header-section-number">8.9.1</span> Vector iteration</h3>
 <p><code>targets</code> uses vector iteration by default, and you can opt into this behavior by setting <code>iteration = "vector"</code> in <code>tar_target()</code>. In vector iteration, <code>targets</code> uses the <a href="https://vctrs.r-lib.org/"><code>vctrs</code></a> package to split stems and aggregate branches. That means <code>vctrs::vec_slice()</code> slices up stems like <code>x</code> for mapping, and <code>vctrs::vec_c()</code> aggregates patterns like <code>y</code> for operations like <code>tar_read()</code>.</p>
@@ -770,7 +766,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Put together, the pipeline looks like this.</p>
 <div class="sourceCode" id="cb132"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb132-1"><a href="dynamic.html#cb132-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
 <span id="cb132-2"><a href="dynamic.html#cb132-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb132-3"><a href="dynamic.html#cb132-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">packages =</span> <span class="st">&quot;tidyverse&quot;</span>)</span>
+<span id="cb132-3"><a href="dynamic.html#cb132-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">packages =</span> <span class="st">&quot;dplyr&quot;</span>)</span>
 <span id="cb132-4"><a href="dynamic.html#cb132-4" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
 <span id="cb132-5"><a href="dynamic.html#cb132-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
 <span id="cb132-6"><a href="dynamic.html#cb132-6" aria-hidden="true" tabindex="-1"></a>    data,</span>
@@ -822,7 +818,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb135-4"><a href="dynamic.html#cb135-4" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
 <span id="cb135-5"><a href="dynamic.html#cb135-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(id) <span class="sc">%&gt;%</span></span>
 <span id="cb135-6"><a href="dynamic.html#cb135-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_group</span>()</span>
-<span id="cb135-7"><a href="dynamic.html#cb135-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 x 3</span></span>
+<span id="cb135-7"><a href="dynamic.html#cb135-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 3</span></span>
 <span id="cb135-8"><a href="dynamic.html#cb135-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       x id    tar_group</span></span>
 <span id="cb135-9"><a href="dynamic.html#cb135-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;int&gt; &lt;chr&gt;     &lt;int&gt;</span></span>
 <span id="cb135-10"><a href="dynamic.html#cb135-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1     1 a             1</span></span>
@@ -842,7 +838,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb136-8"><a href="dynamic.html#cb136-8" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
 <span id="cb136-9"><a href="dynamic.html#cb136-9" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(id) <span class="sc">%&gt;%</span></span>
 <span id="cb136-10"><a href="dynamic.html#cb136-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_group</span>()</span>
-<span id="cb136-11"><a href="dynamic.html#cb136-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 x 3</span></span>
+<span id="cb136-11"><a href="dynamic.html#cb136-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 3</span></span>
 <span id="cb136-12"><a href="dynamic.html#cb136-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       x id    tar_group</span></span>
 <span id="cb136-13"><a href="dynamic.html#cb136-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;int&gt; &lt;ord&gt;     &lt;int&gt;</span></span>
 <span id="cb136-14"><a href="dynamic.html#cb136-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1     1 a             3</span></span>
@@ -858,7 +854,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb137-4"><a href="dynamic.html#cb137-4" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
 <span id="cb137-5"><a href="dynamic.html#cb137-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(id) <span class="sc">%&gt;%</span></span>
 <span id="cb137-6"><a href="dynamic.html#cb137-6" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_keys</span>()</span>
-<span id="cb137-7"><a href="dynamic.html#cb137-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 x 1</span></span>
+<span id="cb137-7"><a href="dynamic.html#cb137-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 1</span></span>
 <span id="cb137-8"><a href="dynamic.html#cb137-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   id   </span></span>
 <span id="cb137-9"><a href="dynamic.html#cb137-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;ord&gt;</span></span>
 <span id="cb137-10"><a href="dynamic.html#cb137-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 c    </span></span>
@@ -867,7 +863,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Branches are arranged in increasing order with respect to the integers in <code>tar_group</code>.</p>
 <div class="sourceCode" id="cb138"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb138-1"><a href="dynamic.html#cb138-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
 <span id="cb138-2"><a href="dynamic.html#cb138-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb138-3"><a href="dynamic.html#cb138-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">packages =</span> <span class="st">&quot;tidyverse&quot;</span>)</span>
+<span id="cb138-3"><a href="dynamic.html#cb138-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">packages =</span> <span class="st">&quot;dplyr&quot;</span>)</span>
 <span id="cb138-4"><a href="dynamic.html#cb138-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb138-5"><a href="dynamic.html#cb138-5" aria-hidden="true" tabindex="-1"></a>flip_order <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
 <span id="cb138-6"><a href="dynamic.html#cb138-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ordered</span>(x, <span class="at">levels =</span> <span class="fu">sort</span>(<span class="fu">unique</span>(x), <span class="at">decreasing =</span> <span class="cn">TRUE</span>))</span>
@@ -953,9 +949,9 @@ The <a href="https://github.com/ropensci/targets-stan"><code>targets-stan</code>
 </div>
 <div class="footnotes">
 <hr />
-<ol start="9">
-<li id="fn9"><p>To use list aggregation, write <code>tar_target(y, w + x, pattern = map(w, x), iteration = "list")</code> in the pipeline.<a href="dynamic.html#fnref9" class="footnote-back">↩︎</a></p></li>
-<li id="fn10"><p><code>iteration</code> does not control the aggregation of stems because stems are already aggregated, so there is nothing to be done. Likewise, it does not control the splitting of patterns because the <code>pattern</code> argument of <code>tar_target()</code> already does that.<a href="dynamic.html#fnref10" class="footnote-back">↩︎</a></p></li>
+<ol start="10">
+<li id="fn10"><p>To use list aggregation, write <code>tar_target(y, w + x, pattern = map(w, x), iteration = "list")</code> in the pipeline.<a href="dynamic.html#fnref10" class="footnote-back">↩︎</a></p></li>
+<li id="fn11"><p><code>iteration</code> does not control the aggregation of stems because stems are already aggregated, so there is nothing to be done. Likewise, it does not control the splitting of patterns because the <code>pattern</code> argument of <code>tar_target()</code> already does that.<a href="dynamic.html#fnref11" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 <div style = "background: #1C356D; color: white; padding: 10px 10px 10px 25px; font-size: 1em; width: 100%;">

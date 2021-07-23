@@ -359,7 +359,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>The return value of a target should be an R object that can be saved to disk and hashed.</p>
 <div id="saving" class="section level4" number="6.1.3.1">
 <h4><span class="header-section-number">6.1.3.1</span> Saving</h4>
-<p>The object should be compatible with the storage format you choose using the <code>format</code> argument of <code>tar_target()</code> or <code>tar_option_set()</code>. For example, if the format is <code>"rds"</code> (default), then the target should return an R object that can be saved with <code>saveRDS()</code> and safely loaded properly into another session. Please avoid returning <a href="https://cran.r-project.org/web/packages/future/vignettes/future-4-non-exportable-objects.html">non-exportable objects</a> such as connection objects, <code>Rcpp</code> pointers, <code>xgboost</code> matrices, and <code>greta</code> models<a href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a>.</p>
+<p>The object should be compatible with the storage format you choose using the <code>format</code> argument of <code>tar_target()</code> or <code>tar_option_set()</code>. For example, if the format is <code>"rds"</code> (default), then the target should return an R object that can be saved with <code>saveRDS()</code> and safely loaded properly into another session. Please avoid returning <a href="https://cran.r-project.org/web/packages/future/vignettes/future-4-non-exportable-objects.html">non-exportable objects</a> such as connection objects, <code>Rcpp</code> pointers, <code>xgboost</code> matrices, and <code>greta</code> models<a href="#fn9" class="footnote-ref" id="fnref9"><sup>9</sup></a>.</p>
 </div>
 <div id="hashing" class="section level4" number="6.1.3.2">
 <h4><span class="header-section-number">6.1.3.2</span> Hashing</h4>
@@ -529,8 +529,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div class="footnotes">
 <hr />
-<ol start="8">
-<li id="fn8"><p>Special exceptions are granted to Keras and Torch models, which can be safely returned from targets if you specify <code>format = "keras"</code> or <code>format = "torch"</code>.<a href="practices.html#fnref8" class="footnote-back">↩︎</a></p></li>
+<ol start="9">
+<li id="fn9"><p>Special exceptions are granted to Keras and Torch models, which can be safely returned from targets if you specify <code>format = "keras"</code> or <code>format = "torch"</code>.<a href="practices.html#fnref9" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 <div style = "background: #1C356D; color: white; padding: 10px 10px 10px 25px; font-size: 1em; width: 100%;">
