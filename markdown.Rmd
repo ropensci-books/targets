@@ -24,27 +24,14 @@ Then, select the Target Markdown template and click OK to open a copy of the rep
 
 ![](./man/figures/target_markdown.png)
 
-## Engine
+## Purpose
 
-Target Markdown uses a special `knitr` language engine. R Markdown code chunks begin with `{targets}` rather than `{r}`, and there are special chunk options:
+Target Markdown has two primary objectives:
 
-* `tar_globals`: Logical of length 1, whether to define globals or targets. If `TRUE`, the chunk code defines functions, objects, and options common to all the targets. If `FALSE` or `NULL` (default), then the chunk returns formal targets for the pipeline.
-* `tar_interactive`: Logical of length 1 to choose whether to run the chunk in interactive mode or non-interactive mode.
-* `tar_name`: name to use for writing helper script files (e.g.  _targets_r/targets/target_script.R) and specifying target names if the tar_simple chunk option is TRUE. All helper scripts and target names must have unique names, so please do not set this option globally with knitr::opts_chunk$set().
-* `tar_script`: Character of length 1, where to write the target script file in non-interactive mode. Most users can skip this option and stick with the default `_targets.R` script path. Helper script files are always written next to the target script in a folder with an `"_r"` suffix. The `tar_script` path must either be absolute or be relative to the project root (where you call `tar_make()` or similar). If not specified, the target script path defaults to `tar_config_get("script")` (default: `_targets.R`; helpers default: `_targets_r/`). When you run `tar_make()` etc. with a non-default target script, you must select the correct target script file either with the `script` argument or with `tar_config_set(script = ...)`. The function will `source()` the script file from the current working directory (i.e. with `chdir = FALSE` in `source()`).
-* `tar_simple`: Logical of length 1. Set to `TRUE` to define a single target with a simplified interface. In code chunks with `tar_simple` equal to `TRUE`, the chunk label (or the `tar_name` chunk option if you set it) becomes the name, and the chunk code becomes the command. In other words, a code chunk with label `targetname` and command `mycommand()` automatically gets converted to `tar_target(name = targetname, command = mycommand())`. All other arguments of `tar_target()` remain at their default values (configurable with `tar_option_set()` in a `tar_globals = TRUE` chunk).
+1. Interactively explore, prototype, and test the components of a `targets` pipeline using the R Markdown [notebook interface](https://bookdown.org/yihui/rmarkdown/notebook.html).
+2. Set up a `targets` pipeline using convenient R Markdown code chunks.
 
-## Modes
-
-The `{targets}` engine can run in interactive or non-interactive mode. Interactive mode is for prototyping and testing in the [notebook interface](https://bookdown.org/yihui/rmarkdown/notebook.html), while non-interactive mode is for pipeline construction during `knitr::knit()` or `rmarkdown::render()`. The default mode is chosen automatically^[In `targets` version 0.6.0, the mode is interactive if `interactive()` is `TRUE`. In subsequent versions, the mode is interactive if `!isTRUE(getOption("knitr.in.progress"))` is `TRUE`.], and you can set it with the `tar_interactive` chunk option:
-
-````
-`r ''````{r}
-knitr::opts_chunk$set(tar_interactive = FALSE)
-```
-````
-
-The following example demonstrates both modes.
+Target Markdown supports a special `{targets}` [language engine](https://bookdown.org/yihui/rmarkdown-cookbook/other-languages.html) with an interactive mode for (1) and a non-interactive mode for (2). By default, the mode is interactive in the [notebook interface](https://bookdown.org/yihui/rmarkdown/notebook.html) and non-interactive when you knit/render the whole document.^[In `targets` version 0.6.0, the mode is interactive if `interactive()` is `TRUE`. In subsequent versions, the mode is interactive if `!isTRUE(getOption("knitr.in.progress"))` is `TRUE`.]. You can set the mode using the `tar_interactive` chunk option.
 
 ## Example
 
@@ -52,7 +39,7 @@ The following example is based on the minimal `targets` project at https://githu
 
 ## Packages
 
-This example requires several R packages, and `targets` must be version 0.5.0 or above.
+This example requires several R packages, and `targets` must be version 0.6.0 or above.
 
 ```{r, eval = FALSE}
 # R console
@@ -73,7 +60,7 @@ library(targets)
 library(targets)
 ```
 
-Early on, you may also wish to remove the leftover `_targets_r` directory from a previous run in non-interactive mode.
+Non-interactive Target Markdown writes scripts to a special `_targets_r/` directory to define individual targets and global objects. In order to keep your target definitions up to date, it is recommended to remove `_targets_r/` at the beginning of the R Markdown document(s) in order to clear out superfluous targets and globals from a previous version. `tar_unscript()` is a convenient way to do this.
 
 ````
 `r ''````{r}
@@ -139,7 +126,7 @@ It is good practice to assign explicit chunk labels or set the `tar_name` chunk 
 
 ## Targets
 
-To define targets for the workflow, use the `targets` engine with the `tar_globals` chunk option equal `FALSE` or `NULL` (default). The return value of the chunk must be a target object or a list of target objects, created by `tar_target()` or a similar function.
+To define targets of the pipeline, use the `{targets}` language engine with the `tar_globals` chunk option equal `FALSE` or `NULL` (default). The return value of the chunk must be a target object or a list of target objects, created by `tar_target()` or a similar function.
 
 Below, we define a target to establish the air quality dataset in the pipeline.
 
@@ -274,3 +261,10 @@ tar_visnetwork()
 
 At this point, you can go back and run `{targets}` chunks in interactive mode without interfering with the code or data of the non-interactive pipeline.
 
+## Chunk options
+
+* `tar_globals`: Logical of length 1, whether to define globals or targets. If `TRUE`, the chunk code defines functions, objects, and options common to all the targets. If `FALSE` or `NULL` (default), then the chunk returns formal targets for the pipeline.
+* `tar_interactive`: Logical of length 1 to choose whether to run the chunk in interactive mode or non-interactive mode.
+* `tar_name`: name to use for writing helper script files (e.g.  _targets_r/targets/target_script.R) and specifying target names if the tar_simple chunk option is TRUE. All helper scripts and target names must have unique names, so please do not set this option globally with knitr::opts_chunk$set().
+* `tar_script`: Character of length 1, where to write the target script file in non-interactive mode. Most users can skip this option and stick with the default `_targets.R` script path. Helper script files are always written next to the target script in a folder with an `"_r"` suffix. The `tar_script` path must either be absolute or be relative to the project root (where you call `tar_make()` or similar). If not specified, the target script path defaults to `tar_config_get("script")` (default: `_targets.R`; helpers default: `_targets_r/`). When you run `tar_make()` etc. with a non-default target script, you must select the correct target script file either with the `script` argument or with `tar_config_set(script = ...)`. The function will `source()` the script file from the current working directory (i.e. with `chdir = FALSE` in `source()`).
+* `tar_simple`: Logical of length 1. Set to `TRUE` to define a single target with a simplified interface. In code chunks with `tar_simple` equal to `TRUE`, the chunk label (or the `tar_name` chunk option if you set it) becomes the name, and the chunk code becomes the command. In other words, a code chunk with label `targetname` and command `mycommand()` automatically gets converted to `tar_target(name = targetname, command = mycommand())`. All other arguments of `tar_target()` remain at their default values (configurable with `tar_option_set()` in a `tar_globals = TRUE` chunk).
