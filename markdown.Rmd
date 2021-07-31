@@ -4,6 +4,7 @@
 knitr::opts_knit$set(root.dir = fs::dir_create(tempfile()))
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = TRUE)
 options(crayon.enabled = FALSE)
+Sys.setenv(TAR_WARN = "false")
 ```
 
 Target Markdown, available in `targets` > 0.4.2.9000, is a powerful R Markdown interface for reproducible analysis pipelines. With Target Markdown, you can define a fully scalable pipeline from within one or more R Markdown reports, anything from a single report to a whole `bookdown` or `workflowr` project. You get the best of both worlds: the human readable narrative of literate programming, and the sophisticated caching and dependency management systems of `targets`.
@@ -28,14 +29,14 @@ Then, select the Target Markdown template and click OK to open a copy of the rep
 Target Markdown uses a special `knitr` language engine. R Markdown code chunks begin with `{targets}` rather than `{r}`, and there are special chunk options:
 
 * `tar_globals`: Logical of length 1, whether to define globals or targets. If `TRUE`, the chunk code defines functions, objects, and options common to all the targets. If `FALSE` or `NULL` (default), then the chunk returns formal targets for the pipeline.
-* `tar_interactive`: Logical of length 1, whether to run in interactive mode or non-interactive mode. Defaults to the return value of `interactive()`.
+* `tar_interactive`: Logical of length 1 to choose whether to run the chunk in interactive mode or non-interactive mode.
 * `tar_name`: name to use for writing helper script files (e.g.  _targets_r/targets/target_script.R) and specifying target names if the tar_simple chunk option is TRUE. All helper scripts and target names must have unique names, so please do not set this option globally with knitr::opts_chunk$set().
 * `tar_script`: Character of length 1, where to write the target script file in non-interactive mode. Most users can skip this option and stick with the default `_targets.R` script path. Helper script files are always written next to the target script in a folder with an `"_r"` suffix. The `tar_script` path must either be absolute or be relative to the project root (where you call `tar_make()` or similar). If not specified, the target script path defaults to `tar_config_get("script")` (default: `_targets.R`; helpers default: `_targets_r/`). When you run `tar_make()` etc. with a non-default target script, you must select the correct target script file either with the `script` argument or with `tar_config_set(script = ...)`. The function will `source()` the script file from the current working directory (i.e. with `chdir = FALSE` in `source()`).
 * `tar_simple`: Logical of length 1. Set to `TRUE` to define a single target with a simplified interface. In code chunks with `tar_simple` equal to `TRUE`, the chunk label (or the `tar_name` chunk option if you set it) becomes the name, and the chunk code becomes the command. In other words, a code chunk with label `targetname` and command `mycommand()` automatically gets converted to `tar_target(name = targetname, command = mycommand())`. All other arguments of `tar_target()` remain at their default values (configurable with `tar_option_set()` in a `tar_globals = TRUE` chunk).
 
 ## Modes
 
-The `{targets}` engine can run in interactive or non-interactive mode. Interactive mode is for prototyping and testing, while non-interactive mode is for pipeline construction. Pipeline development is continual back-and-forth between exploratory analysis and serious runs, so most users will frequently switch modes. The default mode is whatever `interactive()` returns, so the notebook interface defaults to interactive (https://bookdown.org/yihui/rmarkdown/notebook.html) and the Knit button in RStudio defaults to non-interactive. However, you can control the mode with the `tar_interactive` chunk option. You can even set the default mode for the whole report:
+The `{targets}` engine can run in interactive or non-interactive mode. Interactive mode is for prototyping and testing in the [notebook interface](https://bookdown.org/yihui/rmarkdown/notebook.html), while non-interactive mode is for pipeline construction during `knitr::knit()` or `rmarkdown::render()`. The default mode is chosen automatically^[In `targets` version 0.6.0, the mode is interactive if `interactive()` is `TRUE`. In subsequent versions, the mode is interactive if `!isTRUE(getOption("knitr.in.progress"))` is `TRUE`.], and you can set it with the `tar_interactive` chunk option:
 
 ````
 `r ''````{r}
