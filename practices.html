@@ -33,7 +33,7 @@
   <link rel="shortcut icon" href="man/figures/favicon.ico" type="image/x-icon" />
 <link rel="prev" href="functions.html"/>
 <link rel="next" href="files.html"/>
-<script src="libs/header-attrs-2.9/header-attrs.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -420,7 +420,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Other targets (such as <code>raw_data_file</code>).</li>
 <li>Functions and objects in the main environment. This environment is almost always the global environment of the R process that runs the target script file (default: <code>_targets.R</code>) so these dependencies are usually going to be the custom functions and objects you write yourself.</li>
 </ol>
-<p>This process excludes many objects from dependency detection. For example, both <code>{</code> and <code>cols()</code> are excluded because they are defined in the environments of packages (<code>base</code> and <code>readr</code>, respectively). Functions and objects from packages are ignored unless you supply a package environment to the <code>envir</code> argument of <code>tar_option_set()</code> when you call it in the target script file (default: <code>_targets.R</code>) e.g. <code>tar_option_set(envir = getNamespace("packageName"))</code>. You should only set <code>envir</code> if you write your own package to contain your whole data analysis project.</p>
+<p>This process excludes many objects from dependency detection. For example, both <code>{</code> and <code>cols()</code> are excluded because they are defined in the environments of packages (<code>base</code> and <code>readr</code>, respectively). Functions and objects from packages are ignored unless you supply the package name to the <code>packages</code> and <code>imports</code> fields of <code>tar_option_set()</code> as described later on in this chapter.<a href="#fn11" class="footnote-ref" id="fnref11"><sup>11</sup></a></p>
 </div>
 <div id="loading-and-configuring-r-packages" class="section level2" number="6.4">
 <h2><span class="header-section-number">6.4</span> Loading and configuring R packages</h2>
@@ -531,6 +531,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <hr />
 <ol start="10">
 <li id="fn10"><p>Special exceptions are granted to Keras and Torch models, which can be safely returned from targets if you specify <code>format = "keras"</code> or <code>format = "torch"</code>.<a href="practices.html#fnref10" class="footnote-back">↩︎</a></p></li>
+<li id="fn11"><p>It is also possible to supply an alternative environment to the <code>envir</code> argument of <code>tar_option_set()</code>, which changes the environment where <code>targets</code> detects non-package global objects and functions, but there is rarely ever a need to do this.<a href="practices.html#fnref11" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 <div style = "background: #1C356D; color: white; padding: 10px 10px 10px 25px; font-size: 1em; width: 100%;">
