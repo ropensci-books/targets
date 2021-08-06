@@ -99,7 +99,7 @@ Not all of the objects from `tar_deps()` actually register as dependencies. When
 1. Other targets (such as `raw_data_file`).
 1. Functions and objects in the main environment. This environment is almost always the global environment of the R process that runs the target script file (default: `_targets.R`) so these dependencies are usually going to be the custom functions and objects you write yourself.
 
-This process excludes many objects from dependency detection. For example, both `{` and `cols()` are excluded because they are defined in the environments of packages (`base` and `readr`, respectively). Functions and objects from packages are ignored unless you supply a package environment to the `envir` argument of `tar_option_set()` when you call it in the target script file (default: `_targets.R`) e.g. `tar_option_set(envir = getNamespace("packageName"))`. You should only set `envir` if you write your own package to contain your whole data analysis project.
+This process excludes many objects from dependency detection. For example, both `{` and `cols()` are excluded because they are defined in the environments of packages (`base` and `readr`, respectively). Functions and objects from packages are ignored unless you supply the package name to the `packages` and `imports` fields of `tar_option_set()` as described later on in this chapter.^[It is also possible to supply an alternative environment to the `envir` argument of `tar_option_set()`, which changes the environment where `targets` detects non-package global objects and functions, but there is rarely ever a need to do this.]
 
 ## Loading and configuring R packages
 
