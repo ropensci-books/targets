@@ -261,6 +261,40 @@ tar_visnetwork()
 
 At this point, you can go back and run `{targets}` chunks in interactive mode without interfering with the code or data of the non-interactive pipeline.
 
+## Conditioning on interactive mode
+
+`targets` version 0.6.0.9001 and above supports the `tar_interactive()` function, which suppresses code unless Target Markdown interactive mode is turned on. Similarly, `tar_noninteractive()` suppresses code in interactive mode.
+
+`tar_interactive()` is useful for dynamic branching. If a dynamic target branches over a target from a different chunk, this ordinarily breaks interactive mode.
+
+````
+`r ''````{targets condition, tar_interactive = TRUE}
+tar_target(y, x ^ 2, pattern = map(x))
+```
+````
+
+```{targets condition, tar_interactive = TRUE, error = TRUE}
+tar_target(y, x ^ 2, pattern = map(x))
+```
+
+However, with `tar_interactive()`, you can define a version of `x` just for testing and prototyping in interactive mode. The chunk below fixes interactive mode without changing the pipeline in non-interactive mode.
+
+````
+`r ''````{targets condition-fixed, tar_interactive = TRUE}
+list(
+  tar_interactive(tar_target(x, seq_len(2))),
+  tar_target(y, x ^ 2, pattern = map(x))
+)
+```
+````
+
+```{targets condition-fixed, tar_interactive = TRUE}
+list(
+  tar_interactive(tar_target(x, seq_len(2))),
+  tar_target(y, x ^ 2, pattern = map(x))
+)
+```
+
 ## Chunk options
 
 * `tar_globals`: Logical of length 1, whether to define globals or targets. If `TRUE`, the chunk code defines functions, objects, and options common to all the targets. If `FALSE` or `NULL` (default), then the chunk returns formal targets for the pipeline.
