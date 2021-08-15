@@ -661,14 +661,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="cloud-storage" class="section level3" number="12.3.5">
 <h3><span class="header-section-number">12.3.5</span> Cloud storage</h3>
 <p>Thanks to the simplified data store and simplified internals, <a href="https://github.com/ropensci/targets"><code>targets</code></a> can automatically upload data to the Amazon S3 bucket of your choice. Simply configure <a href="https://github.com/cloudyr/aws.s3"><code>aws.s3</code></a>, create a bucket, and select one of the AWS-powered storage formats. Then, <a href="https://github.com/ropensci/targets"><code>targets</code></a> will automatically upload the return values to the cloud.</p>
-<div class="sourceCode" id="cb202"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb202-1"><a href="drake.html#cb202-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
-<span id="cb202-2"><a href="drake.html#cb202-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">resources =</span> <span class="fu">list</span>(<span class="at">bucket =</span> <span class="st">&quot;my-bucket-name&quot;</span>))</span>
-<span id="cb202-3"><a href="drake.html#cb202-3" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb202-4"><a href="drake.html#cb202-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(dataset, <span class="fu">get_large_dataset</span>(), <span class="at">format =</span> <span class="st">&quot;aws_fst_tbl&quot;</span>),</span>
-<span id="cb202-5"><a href="drake.html#cb202-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(analysis, <span class="fu">analyze_dataset</span>(dataset), <span class="at">format =</span> <span class="st">&quot;aws_qs&quot;</span>)</span>
-<span id="cb202-6"><a href="drake.html#cb202-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb203"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb203-1"><a href="drake.html#cb203-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb203-2"><a href="drake.html#cb203-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">resources =</span> <span class="fu">list</span>(<span class="at">bucket =</span> <span class="st">&quot;my-bucket-name&quot;</span>))</span>
+<span id="cb203-3"><a href="drake.html#cb203-3" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb203-4"><a href="drake.html#cb203-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(dataset, <span class="fu">get_large_dataset</span>(), <span class="at">format =</span> <span class="st">&quot;aws_fst_tbl&quot;</span>),</span>
+<span id="cb203-5"><a href="drake.html#cb203-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(analysis, <span class="fu">analyze_dataset</span>(dataset), <span class="at">format =</span> <span class="st">&quot;aws_qs&quot;</span>)</span>
+<span id="cb203-6"><a href="drake.html#cb203-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <p>Data retrieval is still super easy.</p>
-<div class="sourceCode" id="cb203"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb203-1"><a href="drake.html#cb203-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(dataset)</span></code></pre></div>
+<div class="sourceCode" id="cb204"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb204-1"><a href="drake.html#cb204-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(dataset)</span></code></pre></div>
 </div>
 <div id="show-status-of-functions-and-global-objects" class="section level3" number="12.3.6">
 <h3><span class="header-section-number">12.3.6</span> Show status of functions and global objects</h3>
@@ -680,57 +680,57 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3><span class="header-section-number">12.3.7</span> Dynamic branching with <code>dplyr::group_by()</code></h3>
 <p><a href="https://books.ropensci.org/drake/dynamic.html">Dynamic branching</a> was an architecturally difficult fit in <a href="https://github.com/ropensci/drake"><code>drake</code></a>, and it can only support one single (<a href="https://github.com/r-lib/vctrs"><code>vctrs</code></a>-based) method of slicing and aggregation for processing sub-targets. This limitation has frustrated members of the community, as discussed <a href="https://github.com/ropensci/drake/issues/1087">here</a> and <a href="https://github.com/ropensci/drake/issues/1170">here</a>.</p>
 <p><a href="https://github.com/ropensci/targets"><code>targets</code></a>, on the other hand, is more flexible regarding slicing and aggregation. When it branches over an object, it can iterate over vectors, lists, and even data frames grouped with <code>dplyr::group_by()</code>. To branch over chunks of a data frame, our data frame target needs to have a special <code>tar_group</code> column. We can create this column in our target’s return value with the <code>tar_group()</code> function.</p>
-<div class="sourceCode" id="cb204"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb204-1"><a href="drake.html#cb204-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb204-2"><a href="drake.html#cb204-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb204-3"><a href="drake.html#cb204-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
-<span id="cb204-4"><a href="drake.html#cb204-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
-<span id="cb204-5"><a href="drake.html#cb204-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">seq_len</span>(<span class="dv">6</span>),</span>
-<span id="cb204-6"><a href="drake.html#cb204-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> <span class="fu">rep</span>(letters[<span class="fu">seq_len</span>(<span class="dv">3</span>)], <span class="at">each =</span> <span class="dv">2</span>)</span>
-<span id="cb204-7"><a href="drake.html#cb204-7" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb204-8"><a href="drake.html#cb204-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(id) <span class="sc">%&gt;%</span></span>
-<span id="cb204-9"><a href="drake.html#cb204-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_group</span>()</span>
-<span id="cb204-10"><a href="drake.html#cb204-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 3</span></span>
-<span id="cb204-11"><a href="drake.html#cb204-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       x id    tar_group</span></span>
-<span id="cb204-12"><a href="drake.html#cb204-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;int&gt; &lt;chr&gt;     &lt;int&gt;</span></span>
-<span id="cb204-13"><a href="drake.html#cb204-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1     1 a             1</span></span>
-<span id="cb204-14"><a href="drake.html#cb204-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2     2 a             1</span></span>
-<span id="cb204-15"><a href="drake.html#cb204-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3     3 b             2</span></span>
-<span id="cb204-16"><a href="drake.html#cb204-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4     4 b             2</span></span>
-<span id="cb204-17"><a href="drake.html#cb204-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5     5 c             3</span></span>
-<span id="cb204-18"><a href="drake.html#cb204-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6     6 c             3</span></span></code></pre></div>
+<div class="sourceCode" id="cb205"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb205-1"><a href="drake.html#cb205-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb205-2"><a href="drake.html#cb205-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb205-3"><a href="drake.html#cb205-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
+<span id="cb205-4"><a href="drake.html#cb205-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb205-5"><a href="drake.html#cb205-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">seq_len</span>(<span class="dv">6</span>),</span>
+<span id="cb205-6"><a href="drake.html#cb205-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> <span class="fu">rep</span>(letters[<span class="fu">seq_len</span>(<span class="dv">3</span>)], <span class="at">each =</span> <span class="dv">2</span>)</span>
+<span id="cb205-7"><a href="drake.html#cb205-7" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb205-8"><a href="drake.html#cb205-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(id) <span class="sc">%&gt;%</span></span>
+<span id="cb205-9"><a href="drake.html#cb205-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_group</span>()</span>
+<span id="cb205-10"><a href="drake.html#cb205-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 3</span></span>
+<span id="cb205-11"><a href="drake.html#cb205-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       x id    tar_group</span></span>
+<span id="cb205-12"><a href="drake.html#cb205-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;int&gt; &lt;chr&gt;     &lt;int&gt;</span></span>
+<span id="cb205-13"><a href="drake.html#cb205-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1     1 a             1</span></span>
+<span id="cb205-14"><a href="drake.html#cb205-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2     2 a             1</span></span>
+<span id="cb205-15"><a href="drake.html#cb205-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3     3 b             2</span></span>
+<span id="cb205-16"><a href="drake.html#cb205-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4     4 b             2</span></span>
+<span id="cb205-17"><a href="drake.html#cb205-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5     5 c             3</span></span>
+<span id="cb205-18"><a href="drake.html#cb205-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6     6 c             3</span></span></code></pre></div>
 <p>Our actual target has the command above and <code>iteration = "group"</code>.</p>
-<div class="sourceCode" id="cb205"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb205-1"><a href="drake.html#cb205-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_target</span>(</span>
-<span id="cb205-2"><a href="drake.html#cb205-2" aria-hidden="true" tabindex="-1"></a>  data,</span>
-<span id="cb205-3"><a href="drake.html#cb205-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
-<span id="cb205-4"><a href="drake.html#cb205-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">seq_len</span>(<span class="dv">6</span>),</span>
-<span id="cb205-5"><a href="drake.html#cb205-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">id =</span> <span class="fu">rep</span>(letters[<span class="fu">seq_len</span>(<span class="dv">3</span>)], <span class="at">each =</span> <span class="dv">2</span>)</span>
-<span id="cb205-6"><a href="drake.html#cb205-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb205-7"><a href="drake.html#cb205-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(id) <span class="sc">%&gt;%</span></span>
-<span id="cb205-8"><a href="drake.html#cb205-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_group</span>(),</span>
-<span id="cb205-9"><a href="drake.html#cb205-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">iteration =</span> <span class="st">&quot;group&quot;</span></span>
-<span id="cb205-10"><a href="drake.html#cb205-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<p>Now, any target that maps over <code>data</code> is going to define one branch for each group in the data frame. The following target creates three branches when run in a pipeline: one returning 3, one returning 7, and one returning 11.</p>
 <div class="sourceCode" id="cb206"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb206-1"><a href="drake.html#cb206-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_target</span>(</span>
-<span id="cb206-2"><a href="drake.html#cb206-2" aria-hidden="true" tabindex="-1"></a>  sums,</span>
-<span id="cb206-3"><a href="drake.html#cb206-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(data<span class="sc">$</span>x),</span>
-<span id="cb206-4"><a href="drake.html#cb206-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">pattern =</span> <span class="fu">map</span>(data)</span>
-<span id="cb206-5"><a href="drake.html#cb206-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<span id="cb206-2"><a href="drake.html#cb206-2" aria-hidden="true" tabindex="-1"></a>  data,</span>
+<span id="cb206-3"><a href="drake.html#cb206-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
+<span id="cb206-4"><a href="drake.html#cb206-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">seq_len</span>(<span class="dv">6</span>),</span>
+<span id="cb206-5"><a href="drake.html#cb206-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">id =</span> <span class="fu">rep</span>(letters[<span class="fu">seq_len</span>(<span class="dv">3</span>)], <span class="at">each =</span> <span class="dv">2</span>)</span>
+<span id="cb206-6"><a href="drake.html#cb206-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb206-7"><a href="drake.html#cb206-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(id) <span class="sc">%&gt;%</span></span>
+<span id="cb206-8"><a href="drake.html#cb206-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_group</span>(),</span>
+<span id="cb206-9"><a href="drake.html#cb206-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">iteration =</span> <span class="st">&quot;group&quot;</span></span>
+<span id="cb206-10"><a href="drake.html#cb206-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<p>Now, any target that maps over <code>data</code> is going to define one branch for each group in the data frame. The following target creates three branches when run in a pipeline: one returning 3, one returning 7, and one returning 11.</p>
+<div class="sourceCode" id="cb207"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb207-1"><a href="drake.html#cb207-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_target</span>(</span>
+<span id="cb207-2"><a href="drake.html#cb207-2" aria-hidden="true" tabindex="-1"></a>  sums,</span>
+<span id="cb207-3"><a href="drake.html#cb207-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(data<span class="sc">$</span>x),</span>
+<span id="cb207-4"><a href="drake.html#cb207-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">pattern =</span> <span class="fu">map</span>(data)</span>
+<span id="cb207-5"><a href="drake.html#cb207-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 </div>
 <div id="composable-dynamic-branching" class="section level3" number="12.3.8">
 <h3><span class="header-section-number">12.3.8</span> Composable dynamic branching</h3>
 <p>Because the design of <a href="https://github.com/ropensci/targets"><code>targets</code></a> is fundamentally dynamic, users can create complicated dynamic branching patterns that are never going to be possible in <code>drake</code>. Below, target <code>z</code> creates six branches, one for each combination of <code>w</code> and tuple (<code>x</code>, <code>y</code>). The pattern <code>cross(w, map(x, y))</code> is equivalent to <code>tidyr::crossing(w, tidyr::nesting(x, y))</code>.</p>
-<div class="sourceCode" id="cb207"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb207-1"><a href="drake.html#cb207-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
-<span id="cb207-2"><a href="drake.html#cb207-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb207-3"><a href="drake.html#cb207-3" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb207-4"><a href="drake.html#cb207-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(w, <span class="fu">seq_len</span>(<span class="dv">2</span>)),</span>
-<span id="cb207-5"><a href="drake.html#cb207-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(x, <span class="fu">head</span>(letters, <span class="dv">3</span>)),</span>
-<span id="cb207-6"><a href="drake.html#cb207-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(y, <span class="fu">head</span>(LETTERS, <span class="dv">3</span>)),</span>
-<span id="cb207-7"><a href="drake.html#cb207-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
-<span id="cb207-8"><a href="drake.html#cb207-8" aria-hidden="true" tabindex="-1"></a>    z,</span>
-<span id="cb207-9"><a href="drake.html#cb207-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.frame</span>(<span class="at">w =</span> w, <span class="at">x =</span> x, <span class="at">y =</span> y),</span>
-<span id="cb207-10"><a href="drake.html#cb207-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">pattern =</span> <span class="fu">cross</span>(w, <span class="fu">map</span>(x, y))</span>
-<span id="cb207-11"><a href="drake.html#cb207-11" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb207-12"><a href="drake.html#cb207-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb208"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb208-1"><a href="drake.html#cb208-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb208-2"><a href="drake.html#cb208-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb208-3"><a href="drake.html#cb208-3" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb208-4"><a href="drake.html#cb208-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(w, <span class="fu">seq_len</span>(<span class="dv">2</span>)),</span>
+<span id="cb208-5"><a href="drake.html#cb208-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(x, <span class="fu">head</span>(letters, <span class="dv">3</span>)),</span>
+<span id="cb208-6"><a href="drake.html#cb208-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(y, <span class="fu">head</span>(LETTERS, <span class="dv">3</span>)),</span>
+<span id="cb208-7"><a href="drake.html#cb208-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb208-8"><a href="drake.html#cb208-8" aria-hidden="true" tabindex="-1"></a>    z,</span>
+<span id="cb208-9"><a href="drake.html#cb208-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.frame</span>(<span class="at">w =</span> w, <span class="at">x =</span> x, <span class="at">y =</span> y),</span>
+<span id="cb208-10"><a href="drake.html#cb208-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">pattern =</span> <span class="fu">cross</span>(w, <span class="fu">map</span>(x, y))</span>
+<span id="cb208-11"><a href="drake.html#cb208-11" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb208-12"><a href="drake.html#cb208-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <p>Thanks to <a href="https://github.com/glep"><code>glep</code></a> and <a href="https://github.com/djbirke"><code>djbirke</code></a> on GitHub for the idea.</p>
 </div>
 <div id="improved-parallel-efficiency" class="section level3" number="12.3.9">

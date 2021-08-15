@@ -369,22 +369,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="workaround" class="section level4" number="6.1.3.3">
 <h4><span class="header-section-number">6.1.3.3</span> Workaround</h4>
 <p>As a workaround, you can write custom functions to create temporary instances of these non-exportable/non-hashable objects and clean them up after the task is done. The following sketch creates a target that returns a database table while managing a transient connection object.</p>
-<div class="sourceCode" id="cb77"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb77-1"><a href="practices.html#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
-<span id="cb77-2"><a href="practices.html#cb77-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb77-3"><a href="practices.html#cb77-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb77-4"><a href="practices.html#cb77-4" aria-hidden="true" tabindex="-1"></a>get_from_database <span class="ot">&lt;-</span> <span class="cf">function</span>(table, ...) {</span>
-<span id="cb77-5"><a href="practices.html#cb77-5" aria-hidden="true" tabindex="-1"></a>  con <span class="ot">&lt;-</span> DBI<span class="sc">::</span><span class="fu">dbConnect</span>(...)</span>
-<span id="cb77-6"><a href="practices.html#cb77-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">on.exit</span>(<span class="fu">close</span>(con))</span>
-<span id="cb77-7"><a href="practices.html#cb77-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dbReadTable</span>(con, table)</span>
-<span id="cb77-8"><a href="practices.html#cb77-8" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb77-9"><a href="practices.html#cb77-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb77-10"><a href="practices.html#cb77-10" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb77-11"><a href="practices.html#cb77-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
-<span id="cb77-12"><a href="practices.html#cb77-12" aria-hidden="true" tabindex="-1"></a>    table_from_database,</span>
-<span id="cb77-13"><a href="practices.html#cb77-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">get_from_database</span>(<span class="st">&quot;my_table&quot;</span>, ...), <span class="co"># ... has use-case-specific arguments.</span></span>
-<span id="cb77-14"><a href="practices.html#cb77-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">format =</span> <span class="st">&quot;feather&quot;</span> <span class="co"># Requires that the return value is a data frame.</span></span>
-<span id="cb77-15"><a href="practices.html#cb77-15" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb77-16"><a href="practices.html#cb77-16" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb78-1"><a href="practices.html#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb78-2"><a href="practices.html#cb78-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb78-3"><a href="practices.html#cb78-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb78-4"><a href="practices.html#cb78-4" aria-hidden="true" tabindex="-1"></a>get_from_database <span class="ot">&lt;-</span> <span class="cf">function</span>(table, ...) {</span>
+<span id="cb78-5"><a href="practices.html#cb78-5" aria-hidden="true" tabindex="-1"></a>  con <span class="ot">&lt;-</span> DBI<span class="sc">::</span><span class="fu">dbConnect</span>(...)</span>
+<span id="cb78-6"><a href="practices.html#cb78-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">on.exit</span>(<span class="fu">close</span>(con))</span>
+<span id="cb78-7"><a href="practices.html#cb78-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dbReadTable</span>(con, table)</span>
+<span id="cb78-8"><a href="practices.html#cb78-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb78-9"><a href="practices.html#cb78-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb78-10"><a href="practices.html#cb78-10" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb78-11"><a href="practices.html#cb78-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb78-12"><a href="practices.html#cb78-12" aria-hidden="true" tabindex="-1"></a>    table_from_database,</span>
+<span id="cb78-13"><a href="practices.html#cb78-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">get_from_database</span>(<span class="st">&quot;my_table&quot;</span>, ...), <span class="co"># ... has use-case-specific arguments.</span></span>
+<span id="cb78-14"><a href="practices.html#cb78-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">format =</span> <span class="st">&quot;feather&quot;</span> <span class="co"># Requires that the return value is a data frame.</span></span>
+<span id="cb78-15"><a href="practices.html#cb78-15" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb78-16"><a href="practices.html#cb78-16" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 </div>
 </div>
 </div>
@@ -411,10 +411,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="dependencies" class="section level2" number="6.3">
 <h2><span class="header-section-number">6.3</span> Dependencies</h2>
 <p>Adept pipeline construction requires an understanding of dependency detection. To identify the targets and global objects that each target depends on, the <code>targets</code> package uses static code analysis with <a href="https://CRAN.R-project.org/package=codetools"><code>codetools</code></a>, and you can emulate this process with <code>tar_deps()</code>. Let us look at the dependencies of the <code>raw_data</code> target.</p>
-<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb78-1"><a href="practices.html#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_deps</span>(<span class="cf">function</span>() {</span>
-<span id="cb78-2"><a href="practices.html#cb78-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">read_csv</span>(raw_data_file, <span class="at">col_types =</span> <span class="fu">cols</span>())</span>
-<span id="cb78-3"><a href="practices.html#cb78-3" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb78-4"><a href="practices.html#cb78-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;{&quot;             &quot;cols&quot;          &quot;raw_data_file&quot; &quot;read_csv&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb79-1"><a href="practices.html#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_deps</span>(<span class="cf">function</span>() {</span>
+<span id="cb79-2"><a href="practices.html#cb79-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">read_csv</span>(raw_data_file, <span class="at">col_types =</span> <span class="fu">cols</span>())</span>
+<span id="cb79-3"><a href="practices.html#cb79-3" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb79-4"><a href="practices.html#cb79-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;{&quot;             &quot;cols&quot;          &quot;raw_data_file&quot; &quot;read_csv&quot;</span></span></code></pre></div>
 <p>The <code>raw_data</code> target depends on target <code>raw_data_file</code> because the command for <code>raw_data</code> mentions the symbol <code>raw_data_file</code>. Similarly, if we were to create a user-defined <code>read_csv()</code> function, the <code>raw_data</code> target would also depend on <code>read_csv()</code> and any other user-defined global functions and objects nested inside <code>read_csv()</code>. Changes to any of these objects would cause the <code>raw_data</code> target to rerun on the next <code>tar_make()</code>.</p>
 <p>Not all of the objects from <code>tar_deps()</code> actually register as dependencies. When it comes to detecting dependencies, <code>targets</code> only recognizes</p>
 <ol style="list-style-type: decimal">
@@ -448,14 +448,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Fully install these packages with <code>install.packages()</code> or equivalent. <code>devtools::load_all()</code> is insufficient because it does not make the packages available to <a href="hpc.html#hpc">parallel workers</a>.</li>
 <li>Write the following in your target script file (default: <code>_targets.R</code>):</li>
 </ol>
-<div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb79-1"><a href="practices.html#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
-<span id="cb79-2"><a href="practices.html#cb79-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb79-3"><a href="practices.html#cb79-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(</span>
-<span id="cb79-4"><a href="practices.html#cb79-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">packages =</span> <span class="fu">c</span>(<span class="st">&quot;package1&quot;</span>, <span class="st">&quot;package2&quot;</span>, ...), <span class="co"># `...` is for other packages.</span></span>
-<span id="cb79-5"><a href="practices.html#cb79-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">imports =</span> <span class="fu">c</span>(<span class="st">&quot;package1&quot;</span>, <span class="st">&quot;package2&quot;</span>)</span>
-<span id="cb79-6"><a href="practices.html#cb79-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb79-7"><a href="practices.html#cb79-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Write the rest of _targets.R below.</span></span>
-<span id="cb79-8"><a href="practices.html#cb79-8" aria-hidden="true" tabindex="-1"></a><span class="co"># ...</span></span></code></pre></div>
+<div class="sourceCode" id="cb80"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb80-1"><a href="practices.html#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb80-2"><a href="practices.html#cb80-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb80-3"><a href="practices.html#cb80-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(</span>
+<span id="cb80-4"><a href="practices.html#cb80-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">packages =</span> <span class="fu">c</span>(<span class="st">&quot;package1&quot;</span>, <span class="st">&quot;package2&quot;</span>, ...), <span class="co"># `...` is for other packages.</span></span>
+<span id="cb80-5"><a href="practices.html#cb80-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">imports =</span> <span class="fu">c</span>(<span class="st">&quot;package1&quot;</span>, <span class="st">&quot;package2&quot;</span>)</span>
+<span id="cb80-6"><a href="practices.html#cb80-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb80-7"><a href="practices.html#cb80-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Write the rest of _targets.R below.</span></span>
+<span id="cb80-8"><a href="practices.html#cb80-8" aria-hidden="true" tabindex="-1"></a><span class="co"># ...</span></span></code></pre></div>
 <p><code>packages = c("package1", "package2", ...)</code> tells <code>targets</code> to call <code>library(package1)</code>, <code>library(package2)</code>, etc. before running each target. <code>imports = c("package1", "package2")</code> tells <code>targets</code> to dive into the environments of <code>package1</code> and <code>package2</code> and reproducibly track all the objects it finds. For example, if you define a function <code>f()</code> in <code>package1</code>, then you should see a function node for <code>f()</code> in the graph produced by <code>tar_visnetwork(targets_only = FALSE)</code>, and targets downstream of <code>f()</code> will invalidate if you install an update to <code>package1</code> with a new version of <code>f()</code>. The next time you call <code>tar_make()</code>, those invalidated targets will automatically rerun.</p>
 </div>
 <div id="working-with-tools-outside-r" class="section level2" number="6.6">
@@ -470,34 +470,34 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><code>tar_visnetwork()</code>, <code>tar_progress_summary()</code>, <code>tar_progress_branches()</code>, and <code>tar_progress()</code> show runtime information at a single moment in time.</li>
 <li><code>tar_watch()</code> launches an Shiny app that automatically refreshes the graph every few seconds. Try it out in the example below.</li>
 </ol>
-<div class="sourceCode" id="cb80"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb80-1"><a href="practices.html#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define an example target script file with a slow pipeline.</span></span>
-<span id="cb80-2"><a href="practices.html#cb80-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb80-3"><a href="practices.html#cb80-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_script</span>({</span>
-<span id="cb80-4"><a href="practices.html#cb80-4" aria-hidden="true" tabindex="-1"></a>  sleep_run <span class="ot">&lt;-</span> <span class="cf">function</span>(...) {</span>
-<span id="cb80-5"><a href="practices.html#cb80-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Sys.sleep</span>(<span class="dv">10</span>)</span>
-<span id="cb80-6"><a href="practices.html#cb80-6" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb80-7"><a href="practices.html#cb80-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
-<span id="cb80-8"><a href="practices.html#cb80-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(settings, <span class="fu">sleep_run</span>()),</span>
-<span id="cb80-9"><a href="practices.html#cb80-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(data1, <span class="fu">sleep_run</span>(settings)),</span>
-<span id="cb80-10"><a href="practices.html#cb80-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(data2, <span class="fu">sleep_run</span>(settings)),</span>
-<span id="cb80-11"><a href="practices.html#cb80-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(data3, <span class="fu">sleep_run</span>(settings)),</span>
-<span id="cb80-12"><a href="practices.html#cb80-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(model1, <span class="fu">sleep_run</span>(data1)),</span>
-<span id="cb80-13"><a href="practices.html#cb80-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(model2, <span class="fu">sleep_run</span>(data2)),</span>
-<span id="cb80-14"><a href="practices.html#cb80-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(model3, <span class="fu">sleep_run</span>(data3)),</span>
-<span id="cb80-15"><a href="practices.html#cb80-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(figure1, <span class="fu">sleep_run</span>(model1)),</span>
-<span id="cb80-16"><a href="practices.html#cb80-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(figure2, <span class="fu">sleep_run</span>(model2)),</span>
-<span id="cb80-17"><a href="practices.html#cb80-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(figure3, <span class="fu">sleep_run</span>(model3)),</span>
-<span id="cb80-18"><a href="practices.html#cb80-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(conclusions, <span class="fu">sleep_run</span>(<span class="fu">c</span>(figure1, figure2, figure3)))</span>
-<span id="cb80-19"><a href="practices.html#cb80-19" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb80-20"><a href="practices.html#cb80-20" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb80-21"><a href="practices.html#cb80-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb80-22"><a href="practices.html#cb80-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Launch the app in a background process.</span></span>
-<span id="cb80-23"><a href="practices.html#cb80-23" aria-hidden="true" tabindex="-1"></a><span class="co"># You may need to refresh the browser if the app is slow to start.</span></span>
-<span id="cb80-24"><a href="practices.html#cb80-24" aria-hidden="true" tabindex="-1"></a><span class="co"># The graph automatically refreshes every 10 seconds</span></span>
-<span id="cb80-25"><a href="practices.html#cb80-25" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_watch</span>(<span class="at">seconds =</span> <span class="dv">10</span>, <span class="at">outdated =</span> <span class="cn">FALSE</span>, <span class="at">targets_only =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb80-26"><a href="practices.html#cb80-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb80-27"><a href="practices.html#cb80-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Now run the pipeline and watch the graph change.</span></span>
-<span id="cb80-28"><a href="practices.html#cb80-28" aria-hidden="true" tabindex="-1"></a>px <span class="ot">&lt;-</span> <span class="fu">tar_make</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb81"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb81-1"><a href="practices.html#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define an example target script file with a slow pipeline.</span></span>
+<span id="cb81-2"><a href="practices.html#cb81-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb81-3"><a href="practices.html#cb81-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_script</span>({</span>
+<span id="cb81-4"><a href="practices.html#cb81-4" aria-hidden="true" tabindex="-1"></a>  sleep_run <span class="ot">&lt;-</span> <span class="cf">function</span>(...) {</span>
+<span id="cb81-5"><a href="practices.html#cb81-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Sys.sleep</span>(<span class="dv">10</span>)</span>
+<span id="cb81-6"><a href="practices.html#cb81-6" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb81-7"><a href="practices.html#cb81-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb81-8"><a href="practices.html#cb81-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(settings, <span class="fu">sleep_run</span>()),</span>
+<span id="cb81-9"><a href="practices.html#cb81-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(data1, <span class="fu">sleep_run</span>(settings)),</span>
+<span id="cb81-10"><a href="practices.html#cb81-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(data2, <span class="fu">sleep_run</span>(settings)),</span>
+<span id="cb81-11"><a href="practices.html#cb81-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(data3, <span class="fu">sleep_run</span>(settings)),</span>
+<span id="cb81-12"><a href="practices.html#cb81-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(model1, <span class="fu">sleep_run</span>(data1)),</span>
+<span id="cb81-13"><a href="practices.html#cb81-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(model2, <span class="fu">sleep_run</span>(data2)),</span>
+<span id="cb81-14"><a href="practices.html#cb81-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(model3, <span class="fu">sleep_run</span>(data3)),</span>
+<span id="cb81-15"><a href="practices.html#cb81-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(figure1, <span class="fu">sleep_run</span>(model1)),</span>
+<span id="cb81-16"><a href="practices.html#cb81-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(figure2, <span class="fu">sleep_run</span>(model2)),</span>
+<span id="cb81-17"><a href="practices.html#cb81-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(figure3, <span class="fu">sleep_run</span>(model3)),</span>
+<span id="cb81-18"><a href="practices.html#cb81-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(conclusions, <span class="fu">sleep_run</span>(<span class="fu">c</span>(figure1, figure2, figure3)))</span>
+<span id="cb81-19"><a href="practices.html#cb81-19" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb81-20"><a href="practices.html#cb81-20" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb81-21"><a href="practices.html#cb81-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb81-22"><a href="practices.html#cb81-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Launch the app in a background process.</span></span>
+<span id="cb81-23"><a href="practices.html#cb81-23" aria-hidden="true" tabindex="-1"></a><span class="co"># You may need to refresh the browser if the app is slow to start.</span></span>
+<span id="cb81-24"><a href="practices.html#cb81-24" aria-hidden="true" tabindex="-1"></a><span class="co"># The graph automatically refreshes every 10 seconds</span></span>
+<span id="cb81-25"><a href="practices.html#cb81-25" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_watch</span>(<span class="at">seconds =</span> <span class="dv">10</span>, <span class="at">outdated =</span> <span class="cn">FALSE</span>, <span class="at">targets_only =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb81-26"><a href="practices.html#cb81-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb81-27"><a href="practices.html#cb81-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Now run the pipeline and watch the graph change.</span></span>
+<span id="cb81-28"><a href="practices.html#cb81-28" aria-hidden="true" tabindex="-1"></a>px <span class="ot">&lt;-</span> <span class="fu">tar_make</span>()</span></code></pre></div>
 <p><img src="man/figures/tar_watch.png" />
 <code>tar_watch_ui()</code> and <code>tar_watch_server()</code> make this functionality available to other apps through a Shiny module.</p>
 <p>Unfortunately, none of these options can tell you if any <a href="hpc.html#hpc">parallel workers</a> or external processes are still running. You can monitor local processes with a utility like <code>top</code> or <code>htop</code>, and traditional HPC scheduler like SLURM or SGE support their own polling utilities such as <code>squeue</code> and <code>qstat</code>. <code>tar_process()</code> and <code>tar_pid()</code> get the process ID of the main R process that last attempted to run the pipeline.</p>

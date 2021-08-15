@@ -491,13 +491,13 @@ tar_read(hist)
 <pre><code>```{r}
 tar_visnetwork()
 ```</code></pre>
-<div id="htmlwidget-08b7864e99dad262d019" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
-<script type="application/json" data-for="htmlwidget-08b7864e99dad262d019">{"x":{"nodes":{"name":["data","fit","hist","raw_data","create_plot"],"type":["stem","stem","stem","stem","function"],"status":["uptodate","uptodate","uptodate","uptodate","uptodate"],"seconds":[0.009,0.004,0.013,0.446,null],"bytes":[1079,1575,44521,1261,null],"branches":[null,null,null,null,null],"id":["data","fit","hist","raw_data","create_plot"],"label":["data","fit","hist","raw_data","create_plot"],"level":[2,3,3,1,1],"color":["#354823","#354823","#354823","#354823","#354823"],"shape":["dot","dot","dot","dot","triangle"]},"edges":{"from":["data","create_plot","data","raw_data"],"to":["fit","hist","hist","data"],"arrows":["to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Up to date","Stem","Function"],"color":["#354823","#899DA4","#899DA4"],"shape":["dot","dot","triangle"]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-39defdec781f1fdf1ea7" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-39defdec781f1fdf1ea7">{"x":{"nodes":{"name":["data","fit","hist","raw_data","create_plot"],"type":["stem","stem","stem","stem","function"],"status":["uptodate","uptodate","uptodate","uptodate","uptodate"],"seconds":[0.009,0.004,0.015,0.5,null],"bytes":[1079,1575,44521,1261,null],"branches":[null,null,null,null,null],"id":["data","fit","hist","raw_data","create_plot"],"label":["data","fit","hist","raw_data","create_plot"],"level":[2,3,3,1,1],"color":["#354823","#354823","#354823","#354823","#354823"],"shape":["dot","dot","dot","dot","triangle"]},"edges":{"from":["data","create_plot","data","raw_data"],"to":["fit","hist","hist","data"],"arrows":["to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Up to date","Stem","Function"],"color":["#354823","#899DA4","#899DA4"],"shape":["dot","dot","triangle"]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
 <p>At this point, you can go back and run <code>{targets}</code> chunks in interactive mode without interfering with the code or data of the non-interactive pipeline.</p>
 </div>
 <div id="conditioning-on-interactive-mode" class="section level2" number="3.10">
 <h2><span class="header-section-number">3.10</span> Conditioning on interactive mode</h2>
-<p><code>targets</code> version 0.6.0.9001 and above supports the <code>tar_interactive()</code> function, which suppresses code unless Target Markdown interactive mode is turned on. Similarly, <code>tar_noninteractive()</code> suppresses code in interactive mode.</p>
+<p><code>targets</code> version 0.6.0.9001 and above supports the <code>tar_interactive()</code> function, which suppresses code unless Target Markdown interactive mode is turned on. Similarly, <code>tar_noninteractive()</code> suppresses code in interactive mode, and <code>tar_toggle()</code> selects alternative pieces of code based on the current mode.</p>
 <p><code>tar_interactive()</code> is useful for dynamic branching. If a dynamic target branches over a target from a different chunk, this ordinarily breaks interactive mode.</p>
 <pre><code>```{targets condition, tar_interactive = TRUE}
 tar_target(y, x ^ 2, pattern = map(x))
@@ -512,6 +512,25 @@ list(
 )
 ```</code></pre>
 <pre><code>#&gt; Run targets and assign them to the environment.</code></pre>
+<p><code>tar_toggle()</code> is useful for scaling up and down the amount of work based on the current mode. Interactive mode should finish quickly for prototyping and testing, and non-interactive mode should take on the full level work required for a serious pipeline. Below, <code>tar_toggle()</code> seamlessly scales up and down the number of simulations repetitions in the example target from <a href="https://wlandau.github.io/rmedicine2021-pipeline/#target-definitions" class="uri">https://wlandau.github.io/rmedicine2021-pipeline/#target-definitions</a>. To learn more about <code>stantargets</code>, visit <a href="https://docs.ropensci.org/stantargets/" class="uri">https://docs.ropensci.org/stantargets/</a>.</p>
+<pre><code>```{targets bayesian-model-validation, tar_interactive = TRUE}
+tar_stan_mcmc_rep_summary(
+  name = mcmc,
+  stan_files = &quot;model.stan&quot;,
+  data = simulate_data(), # Defined in another code chunk.
+  batches = tar_toggle(1, 100),
+  reps = tar_toggle(1, 10),
+  chains = tar_toggle(1, 4),
+  parallel_chains = tar_toggle(1, 4),
+  iter_warmup = tar_toggle(100, 4e4),
+  iter_sampling = tar_toggle(100, 4e4),
+  summaries = list(
+    ~posterior::quantile2(.x, probs = c(0.025, 0.25, 0.5, 0.75, 0.975)),
+    rhat = ~posterior::rhat(.x)
+  ),
+  deployment = &quot;worker&quot;
+)
+```</code></pre>
 </div>
 <div id="chunk-options" class="section level2" number="3.11">
 <h2><span class="header-section-number">3.11</span> Chunk options</h2>
