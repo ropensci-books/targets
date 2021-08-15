@@ -263,7 +263,7 @@ At this point, you can go back and run `{targets}` chunks in interactive mode wi
 
 ## Conditioning on interactive mode
 
-`targets` version 0.6.0.9001 and above supports the `tar_interactive()` function, which suppresses code unless Target Markdown interactive mode is turned on. Similarly, `tar_noninteractive()` suppresses code in interactive mode.
+`targets` version 0.6.0.9001 and above supports the `tar_interactive()` function, which suppresses code unless Target Markdown interactive mode is turned on. Similarly, `tar_noninteractive()` suppresses code in interactive mode, and `tar_toggle()` selects alternative pieces of code based on the current mode.
 
 `tar_interactive()` is useful for dynamic branching. If a dynamic target branches over a target from a different chunk, this ordinarily breaks interactive mode.
 
@@ -294,6 +294,29 @@ list(
   tar_target(y, x ^ 2, pattern = map(x))
 )
 ```
+
+`tar_toggle()` is useful for scaling up and down the amount of work based on the current mode. Interactive mode should finish quickly for prototyping and testing, and non-interactive mode should take on the full level work required for a serious pipeline. Below, `tar_toggle()` seamlessly scales up and down the number of simulations repetitions in the example target from <https://wlandau.github.io/rmedicine2021-pipeline/#target-definitions>. To learn more about `stantargets`, visit <https://docs.ropensci.org/stantargets/>.
+
+````
+`r ''````{targets bayesian-model-validation, tar_interactive = TRUE}
+tar_stan_mcmc_rep_summary(
+  name = mcmc,
+  stan_files = "model.stan",
+  data = simulate_data(), # Defined in another code chunk.
+  batches = tar_toggle(1, 100),
+  reps = tar_toggle(1, 10),
+  chains = tar_toggle(1, 4),
+  parallel_chains = tar_toggle(1, 4),
+  iter_warmup = tar_toggle(100, 4e4),
+  iter_sampling = tar_toggle(100, 4e4),
+  summaries = list(
+    ~posterior::quantile2(.x, probs = c(0.025, 0.25, 0.5, 0.75, 0.975)),
+    rhat = ~posterior::rhat(.x)
+  ),
+  deployment = "worker"
+)
+```
+````
 
 ## Chunk options
 
