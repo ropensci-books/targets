@@ -6,12 +6,12 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 7 External files and literate programming | The targets R Package User Manual</title>
   <meta name="description" content="In-depth discussion of the major functionality of targets." />
-  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.23 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 7 External files and literate programming | The targets R Package User Manual" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://books.ropensci.org/targets" />
-  <meta property="og:image" content="https://books.ropensci.org/targets//man/figures/logo.png" />
+  <meta property="og:image" content="https://books.ropensci.org/targets/man/figures/logo.png" />
   <meta property="og:description" content="In-depth discussion of the major functionality of targets." />
   <meta name="github-repo" content="ropensci-books/targets" />
 
@@ -19,7 +19,7 @@
   <meta name="twitter:title" content="Chapter 7 External files and literate programming | The targets R Package User Manual" />
   
   <meta name="twitter:description" content="In-depth discussion of the major functionality of targets." />
-  <meta name="twitter:image" content="https://books.ropensci.org/targets//man/figures/logo.png" />
+  <meta name="twitter:image" content="https://books.ropensci.org/targets/man/figures/logo.png" />
 
 <meta name="author" content="Will Landau" />
 <meta name="author" content="Copyright Eli Lilly and Company" />
@@ -34,7 +34,7 @@
 <link rel="prev" href="practices.html"/>
 <link rel="next" href="dynamic.html"/>
 <script src="libs/header-attrs-2.10/header-attrs.js"></script>
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -183,7 +183,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.7" data-path="markdown.html"><a href="markdown.html#targets"><i class="fa fa-check"></i><b>3.7</b> Targets</a></li>
 <li class="chapter" data-level="3.8" data-path="markdown.html"><a href="markdown.html#pipeline"><i class="fa fa-check"></i><b>3.8</b> Pipeline</a></li>
 <li class="chapter" data-level="3.9" data-path="markdown.html"><a href="markdown.html#output"><i class="fa fa-check"></i><b>3.9</b> Output</a></li>
-<li class="chapter" data-level="3.10" data-path="markdown.html"><a href="markdown.html#chunk-options"><i class="fa fa-check"></i><b>3.10</b> Chunk options</a></li>
+<li class="chapter" data-level="3.10" data-path="markdown.html"><a href="markdown.html#conditioning-on-interactive-mode"><i class="fa fa-check"></i><b>3.10</b> Conditioning on interactive mode</a></li>
+<li class="chapter" data-level="3.11" data-path="markdown.html"><a href="markdown.html#chunk-options"><i class="fa fa-check"></i><b>3.11</b> Chunk options</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="debugging.html"><a href="debugging.html"><i class="fa fa-check"></i><b>4</b> Debugging</a>
 <ul>
@@ -364,67 +365,67 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ol>
 <p>When the target runs in the pipeline, the returned character vector gets recorded in <code>_targets/meta</code>, and <code>targets</code> watches the data file and invalidates the target when that file changes. To track multiple files this way, simply define a multi-element character vector where each element is a path. Each element can also be a directory, but this directory must not be empty at the time the target runs.</p>
 <p>The first two targets of the <a href="https://github.com/ropensci/targets-minimal">minimal example</a> demonstrate how to track an input file.</p>
-<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb78-1"><a href="files.html#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
-<span id="cb78-2"><a href="files.html#cb78-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb78-3"><a href="files.html#cb78-3" aria-hidden="true" tabindex="-1"></a>path_to_data <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
-<span id="cb78-4"><a href="files.html#cb78-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;data/raw_data.csv&quot;</span></span>
-<span id="cb78-5"><a href="files.html#cb78-5" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb78-6"><a href="files.html#cb78-6" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb78-7"><a href="files.html#cb78-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
-<span id="cb78-8"><a href="files.html#cb78-8" aria-hidden="true" tabindex="-1"></a>    raw_data_file,</span>
-<span id="cb78-9"><a href="files.html#cb78-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">path_to_data</span>(),</span>
-<span id="cb78-10"><a href="files.html#cb78-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">format =</span> <span class="st">&quot;file&quot;</span></span>
-<span id="cb78-11"><a href="files.html#cb78-11" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb78-12"><a href="files.html#cb78-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
-<span id="cb78-13"><a href="files.html#cb78-13" aria-hidden="true" tabindex="-1"></a>    raw_data,</span>
-<span id="cb78-14"><a href="files.html#cb78-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">read_csv</span>(raw_data_file, <span class="at">col_types =</span> <span class="fu">cols</span>())</span>
-<span id="cb78-15"><a href="files.html#cb78-15" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb78-16"><a href="files.html#cb78-16" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb82-1"><a href="files.html#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb82-2"><a href="files.html#cb82-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb82-3"><a href="files.html#cb82-3" aria-hidden="true" tabindex="-1"></a>path_to_data <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb82-4"><a href="files.html#cb82-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;data/raw_data.csv&quot;</span></span>
+<span id="cb82-5"><a href="files.html#cb82-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb82-6"><a href="files.html#cb82-6" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb82-7"><a href="files.html#cb82-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb82-8"><a href="files.html#cb82-8" aria-hidden="true" tabindex="-1"></a>    raw_data_file,</span>
+<span id="cb82-9"><a href="files.html#cb82-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">path_to_data</span>(),</span>
+<span id="cb82-10"><a href="files.html#cb82-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">format =</span> <span class="st">&quot;file&quot;</span></span>
+<span id="cb82-11"><a href="files.html#cb82-11" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb82-12"><a href="files.html#cb82-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb82-13"><a href="files.html#cb82-13" aria-hidden="true" tabindex="-1"></a>    raw_data,</span>
+<span id="cb82-14"><a href="files.html#cb82-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">read_csv</span>(raw_data_file, <span class="at">col_types =</span> <span class="fu">cols</span>())</span>
+<span id="cb82-15"><a href="files.html#cb82-15" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb82-16"><a href="files.html#cb82-16" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <p>Above, <code>raw_data_file</code> is the dynamic file target. The file <code>data/raw_data.csv</code> exists before we ever run the pipeline, and the R expression for the target returns the character vector <code>"data/raw_data.csv"</code>. (We use the <code>path_to_data()</code> function to demonstrate that you need not literally write <code>"data/raw_data.csv"</code> as long as the path is returned somehow.)</p>
 <p>All subsequent targets that depend on the file must reference the file using the symbol <code>raw_data_file</code>. This allows <code>targets</code>’ automatic static code analysis routines to detect which targets depend on the file. Because the <code>raw_data</code> target literally mentions the symbol <code>raw_data_file</code>, <code>targets</code> knows <code>raw_data</code> depends on <code>raw_data_file</code>. This ensures that</p>
 <ol style="list-style-type: decimal">
 <li><code>raw_data_file</code> gets processed before <code>raw_data</code>, and</li>
 <li><code>tar_make()</code> automatically reruns <code>raw_data</code> if <code>raw_data_file</code> or <code>"data/raw_data.csv"</code> change.</li>
 </ol>
-<div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb79-1"><a href="files.html#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_visnetwork</span>()</span></code></pre></div>
-<div id="htmlwidget-4a66a3fe6bee3967e7e5" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
-<script type="application/json" data-for="htmlwidget-4a66a3fe6bee3967e7e5">{"x":{"nodes":{"name":["raw_data","raw_data_file","path_to_data"],"type":["stem","stem","function"],"status":["outdated","outdated","outdated"],"seconds":[null,null,null],"bytes":[null,null,null],"branches":[null,null,null],"id":["raw_data","raw_data_file","path_to_data"],"label":["raw_data","raw_data_file","path_to_data"],"level":[3,2,1],"color":["#78B7C5","#78B7C5","#78B7C5"],"shape":["dot","dot","triangle"]},"edges":{"from":["raw_data_file","path_to_data"],"to":["raw_data","raw_data_file"],"arrows":["to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Outdated","Stem","Function"],"color":["#78B7C5","#899DA4","#899DA4"],"shape":["dot","dot","triangle"]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
+<div class="sourceCode" id="cb83"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb83-1"><a href="files.html#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_visnetwork</span>()</span></code></pre></div>
+<div id="htmlwidget-78d280cd1017d605de21" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-78d280cd1017d605de21">{"x":{"nodes":{"name":["raw_data","raw_data_file","path_to_data"],"type":["stem","stem","function"],"status":["outdated","outdated","outdated"],"seconds":[null,null,null],"bytes":[null,null,null],"branches":[null,null,null],"id":["raw_data","raw_data_file","path_to_data"],"label":["raw_data","raw_data_file","path_to_data"],"level":[3,2,1],"color":["#78B7C5","#78B7C5","#78B7C5"],"shape":["dot","dot","triangle"]},"edges":{"from":["raw_data_file","path_to_data"],"to":["raw_data","raw_data_file"],"arrows":["to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Outdated","Stem","Function"],"color":["#78B7C5","#899DA4","#899DA4"],"shape":["dot","dot","triangle"]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
 <p>If we were to omit the symbol <code>raw_data_file</code> from the R expression of <code>raw_data</code>, those targets would be disconnected in the graph and <code>tar_make()</code> would make incorrect decisions.</p>
-<div class="sourceCode" id="cb80"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb80-1"><a href="files.html#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
-<span id="cb80-2"><a href="files.html#cb80-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb80-3"><a href="files.html#cb80-3" aria-hidden="true" tabindex="-1"></a>path_to_data <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
-<span id="cb80-4"><a href="files.html#cb80-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;data/raw_data.csv&quot;</span></span>
-<span id="cb80-5"><a href="files.html#cb80-5" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb80-6"><a href="files.html#cb80-6" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb80-7"><a href="files.html#cb80-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
-<span id="cb80-8"><a href="files.html#cb80-8" aria-hidden="true" tabindex="-1"></a>    raw_data_file,</span>
-<span id="cb80-9"><a href="files.html#cb80-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">path_to_data</span>(),</span>
-<span id="cb80-10"><a href="files.html#cb80-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">format =</span> <span class="st">&quot;file&quot;</span></span>
-<span id="cb80-11"><a href="files.html#cb80-11" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb80-12"><a href="files.html#cb80-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
-<span id="cb80-13"><a href="files.html#cb80-13" aria-hidden="true" tabindex="-1"></a>    raw_data,</span>
-<span id="cb80-14"><a href="files.html#cb80-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">read_csv</span>(<span class="st">&quot;data/raw_data.csv&quot;</span>, <span class="at">col_types =</span> <span class="fu">cols</span>()) <span class="co"># incorrect</span></span>
-<span id="cb80-15"><a href="files.html#cb80-15" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb80-16"><a href="files.html#cb80-16" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<div class="sourceCode" id="cb81"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb81-1"><a href="files.html#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_visnetwork</span>()</span></code></pre></div>
-<div id="htmlwidget-b73380a63dc1ee24d8d7" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
-<script type="application/json" data-for="htmlwidget-b73380a63dc1ee24d8d7">{"x":{"nodes":{"name":["raw_data","raw_data_file","path_to_data"],"type":["stem","stem","function"],"status":["outdated","outdated","outdated"],"seconds":[null,null,null],"bytes":[null,null,null],"branches":[null,null,null],"id":["raw_data","raw_data_file","path_to_data"],"label":["raw_data","raw_data_file","path_to_data"],"level":[0,2,1],"color":["#78B7C5","#78B7C5","#78B7C5"],"shape":["dot","dot","triangle"]},"edges":{"from":["path_to_data"],"to":["raw_data_file"],"arrows":["to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Outdated","Stem","Function"],"color":["#78B7C5","#899DA4","#899DA4"],"shape":["dot","dot","triangle"]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
+<div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb84-1"><a href="files.html#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb84-2"><a href="files.html#cb84-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb84-3"><a href="files.html#cb84-3" aria-hidden="true" tabindex="-1"></a>path_to_data <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb84-4"><a href="files.html#cb84-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;data/raw_data.csv&quot;</span></span>
+<span id="cb84-5"><a href="files.html#cb84-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb84-6"><a href="files.html#cb84-6" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb84-7"><a href="files.html#cb84-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb84-8"><a href="files.html#cb84-8" aria-hidden="true" tabindex="-1"></a>    raw_data_file,</span>
+<span id="cb84-9"><a href="files.html#cb84-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">path_to_data</span>(),</span>
+<span id="cb84-10"><a href="files.html#cb84-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">format =</span> <span class="st">&quot;file&quot;</span></span>
+<span id="cb84-11"><a href="files.html#cb84-11" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb84-12"><a href="files.html#cb84-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb84-13"><a href="files.html#cb84-13" aria-hidden="true" tabindex="-1"></a>    raw_data,</span>
+<span id="cb84-14"><a href="files.html#cb84-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">read_csv</span>(<span class="st">&quot;data/raw_data.csv&quot;</span>, <span class="at">col_types =</span> <span class="fu">cols</span>()) <span class="co"># incorrect</span></span>
+<span id="cb84-15"><a href="files.html#cb84-15" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb84-16"><a href="files.html#cb84-16" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb85"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb85-1"><a href="files.html#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_visnetwork</span>()</span></code></pre></div>
+<div id="htmlwidget-a54f1e3bf44418c71092" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-a54f1e3bf44418c71092">{"x":{"nodes":{"name":["raw_data","raw_data_file","path_to_data"],"type":["stem","stem","function"],"status":["outdated","outdated","outdated"],"seconds":[null,null,null],"bytes":[null,null,null],"branches":[null,null,null],"id":["raw_data","raw_data_file","path_to_data"],"label":["raw_data","raw_data_file","path_to_data"],"level":[0,2,1],"color":["#78B7C5","#78B7C5","#78B7C5"],"shape":["dot","dot","triangle"]},"edges":{"from":["path_to_data"],"to":["raw_data_file"],"arrows":["to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Outdated","Stem","Function"],"color":["#78B7C5","#899DA4","#899DA4"],"shape":["dot","dot","triangle"]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="external-output-files" class="section level2" number="7.3">
 <h2><span class="header-section-number">7.3</span> External output files</h2>
 <p>Output files have the same mechanics as input files. The target uses <code>format = "file"</code>, and the return value is a character value of paths to existing files and nonempty directories. The only difference here is that the target’s R command writes to storage before it returns a value. For example, here is an output file target that saves a visualization.</p>
-<div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb82-1"><a href="files.html#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_target</span>(</span>
-<span id="cb82-2"><a href="files.html#cb82-2" aria-hidden="true" tabindex="-1"></a>  plot_file,</span>
-<span id="cb82-3"><a href="files.html#cb82-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">save_plot_and_return_path</span>(),</span>
-<span id="cb82-4"><a href="files.html#cb82-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">format =</span> <span class="st">&quot;file&quot;</span></span>
-<span id="cb82-5"><a href="files.html#cb82-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb86-1"><a href="files.html#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_target</span>(</span>
+<span id="cb86-2"><a href="files.html#cb86-2" aria-hidden="true" tabindex="-1"></a>  plot_file,</span>
+<span id="cb86-3"><a href="files.html#cb86-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">save_plot_and_return_path</span>(),</span>
+<span id="cb86-4"><a href="files.html#cb86-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">format =</span> <span class="st">&quot;file&quot;</span></span>
+<span id="cb86-5"><a href="files.html#cb86-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <p>Here, our custom <code>save_plot_and_return_path()</code> function does exactly what the name describes.</p>
-<div class="sourceCode" id="cb83"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb83-1"><a href="files.html#cb83-1" aria-hidden="true" tabindex="-1"></a>save_plot_and_return_path <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
-<span id="cb83-2"><a href="files.html#cb83-2" aria-hidden="true" tabindex="-1"></a>  plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(mtcars) <span class="sc">+</span></span>
-<span id="cb83-3"><a href="files.html#cb83-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> wt, <span class="at">y =</span> mpg))</span>
-<span id="cb83-4"><a href="files.html#cb83-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggsave</span>(<span class="st">&quot;plot_file.png&quot;</span>, plot, <span class="at">width =</span> <span class="dv">7</span>, <span class="at">height =</span> <span class="dv">7</span>)</span>
-<span id="cb83-5"><a href="files.html#cb83-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="st">&quot;plot_file.png&quot;</span>)</span>
-<span id="cb83-6"><a href="files.html#cb83-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb87"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb87-1"><a href="files.html#cb87-1" aria-hidden="true" tabindex="-1"></a>save_plot_and_return_path <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb87-2"><a href="files.html#cb87-2" aria-hidden="true" tabindex="-1"></a>  plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(mtcars) <span class="sc">+</span></span>
+<span id="cb87-3"><a href="files.html#cb87-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> wt, <span class="at">y =</span> mpg))</span>
+<span id="cb87-4"><a href="files.html#cb87-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggsave</span>(<span class="st">&quot;plot_file.png&quot;</span>, plot, <span class="at">width =</span> <span class="dv">7</span>, <span class="at">height =</span> <span class="dv">7</span>)</span>
+<span id="cb87-5"><a href="files.html#cb87-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="st">&quot;plot_file.png&quot;</span>)</span>
+<span id="cb87-6"><a href="files.html#cb87-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 <div id="literate-programming" class="section level2" number="7.4">
 <h2><span class="header-section-number">7.4</span> Literate programming</h2>
@@ -443,38 +444,38 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Sets convenient default options such as <code>deployment = "main"</code> in <code>tar_target()</code> and <code>quiet = TRUE</code> in <code>rmarkdown::render()</code>.</li>
 </ol>
 <p>The target definition looks like this.</p>
-<div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb84-1"><a href="files.html#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
-<span id="cb84-2"><a href="files.html#cb84-2" aria-hidden="true" tabindex="-1"></a>target <span class="ot">&lt;-</span> <span class="fu">tar_render</span>(report, <span class="st">&quot;report.Rmd&quot;</span>) <span class="co"># Just defines a target object.</span></span>
-<span id="cb84-3"><a href="files.html#cb84-3" aria-hidden="true" tabindex="-1"></a>target<span class="sc">$</span>command<span class="sc">$</span>expr[[<span class="dv">1</span>]]</span>
-<span id="cb84-4"><a href="files.html#cb84-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; tarchetypes::tar_render_run(path = &quot;report.Rmd&quot;, args = list(input = &quot;report.Rmd&quot;, </span></span>
-<span id="cb84-5"><a href="files.html#cb84-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     knit_root_dir = getwd(), quiet = TRUE), deps = list(fit, </span></span>
-<span id="cb84-6"><a href="files.html#cb84-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     hist))</span></span></code></pre></div>
+<div class="sourceCode" id="cb88"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb88-1"><a href="files.html#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
+<span id="cb88-2"><a href="files.html#cb88-2" aria-hidden="true" tabindex="-1"></a>target <span class="ot">&lt;-</span> <span class="fu">tar_render</span>(report, <span class="st">&quot;report.Rmd&quot;</span>) <span class="co"># Just defines a target object.</span></span>
+<span id="cb88-3"><a href="files.html#cb88-3" aria-hidden="true" tabindex="-1"></a>target<span class="sc">$</span>command<span class="sc">$</span>expr[[<span class="dv">1</span>]]</span>
+<span id="cb88-4"><a href="files.html#cb88-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; tarchetypes::tar_render_run(path = &quot;report.Rmd&quot;, args = list(input = &quot;report.Rmd&quot;, </span></span>
+<span id="cb88-5"><a href="files.html#cb88-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     knit_root_dir = getwd(), quiet = TRUE), deps = list(fit, </span></span>
+<span id="cb88-6"><a href="files.html#cb88-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     hist))</span></span></code></pre></div>
 <p>Because symbols <code>fit</code> and <code>hist</code> appear in the command, <code>targets</code> knows that <code>report</code> depends on <code>fit</code> and <code>hist</code>. When we put the <code>report</code> target in the pipeline, these dependency relationships show up in the graph.</p>
-<div class="sourceCode" id="cb85"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb85-1"><a href="files.html#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
-<span id="cb85-2"><a href="files.html#cb85-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb85-3"><a href="files.html#cb85-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
-<span id="cb85-4"><a href="files.html#cb85-4" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions.R&quot;</span>)</span>
-<span id="cb85-5"><a href="files.html#cb85-5" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb85-6"><a href="files.html#cb85-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
-<span id="cb85-7"><a href="files.html#cb85-7" aria-hidden="true" tabindex="-1"></a>    raw_data_file,</span>
-<span id="cb85-8"><a href="files.html#cb85-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;data/raw_data.csv&quot;</span>,</span>
-<span id="cb85-9"><a href="files.html#cb85-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">format =</span> <span class="st">&quot;file&quot;</span></span>
-<span id="cb85-10"><a href="files.html#cb85-10" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb85-11"><a href="files.html#cb85-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
-<span id="cb85-12"><a href="files.html#cb85-12" aria-hidden="true" tabindex="-1"></a>    raw_data,</span>
-<span id="cb85-13"><a href="files.html#cb85-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">read_csv</span>(raw_data_file, <span class="at">col_types =</span> <span class="fu">cols</span>())</span>
-<span id="cb85-14"><a href="files.html#cb85-14" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb85-15"><a href="files.html#cb85-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
-<span id="cb85-16"><a href="files.html#cb85-16" aria-hidden="true" tabindex="-1"></a>    data,</span>
-<span id="cb85-17"><a href="files.html#cb85-17" aria-hidden="true" tabindex="-1"></a>    raw_data <span class="sc">%&gt;%</span></span>
-<span id="cb85-18"><a href="files.html#cb85-18" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">Ozone =</span> <span class="fu">replace_na</span>(Ozone, <span class="fu">mean</span>(Ozone, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)))</span>
-<span id="cb85-19"><a href="files.html#cb85-19" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb85-20"><a href="files.html#cb85-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(hist, <span class="fu">create_plot</span>(data)),</span>
-<span id="cb85-21"><a href="files.html#cb85-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(fit, <span class="fu">biglm</span>(Ozone <span class="sc">~</span> Wind <span class="sc">+</span> Temp, data)),</span>
-<span id="cb85-22"><a href="files.html#cb85-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_render</span>(report, <span class="st">&quot;report.Rmd&quot;</span>) <span class="co"># Here is our call to tar_render().</span></span>
-<span id="cb85-23"><a href="files.html#cb85-23" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb86-1"><a href="files.html#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
-<span id="cb86-2"><a href="files.html#cb86-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_visnetwork</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb89"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb89-1"><a href="files.html#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb89-2"><a href="files.html#cb89-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb89-3"><a href="files.html#cb89-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
+<span id="cb89-4"><a href="files.html#cb89-4" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions.R&quot;</span>)</span>
+<span id="cb89-5"><a href="files.html#cb89-5" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb89-6"><a href="files.html#cb89-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb89-7"><a href="files.html#cb89-7" aria-hidden="true" tabindex="-1"></a>    raw_data_file,</span>
+<span id="cb89-8"><a href="files.html#cb89-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;data/raw_data.csv&quot;</span>,</span>
+<span id="cb89-9"><a href="files.html#cb89-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">format =</span> <span class="st">&quot;file&quot;</span></span>
+<span id="cb89-10"><a href="files.html#cb89-10" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb89-11"><a href="files.html#cb89-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb89-12"><a href="files.html#cb89-12" aria-hidden="true" tabindex="-1"></a>    raw_data,</span>
+<span id="cb89-13"><a href="files.html#cb89-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">read_csv</span>(raw_data_file, <span class="at">col_types =</span> <span class="fu">cols</span>())</span>
+<span id="cb89-14"><a href="files.html#cb89-14" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb89-15"><a href="files.html#cb89-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb89-16"><a href="files.html#cb89-16" aria-hidden="true" tabindex="-1"></a>    data,</span>
+<span id="cb89-17"><a href="files.html#cb89-17" aria-hidden="true" tabindex="-1"></a>    raw_data <span class="sc">%&gt;%</span></span>
+<span id="cb89-18"><a href="files.html#cb89-18" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">Ozone =</span> <span class="fu">replace_na</span>(Ozone, <span class="fu">mean</span>(Ozone, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)))</span>
+<span id="cb89-19"><a href="files.html#cb89-19" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb89-20"><a href="files.html#cb89-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(hist, <span class="fu">create_plot</span>(data)),</span>
+<span id="cb89-21"><a href="files.html#cb89-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(fit, <span class="fu">biglm</span>(Ozone <span class="sc">~</span> Wind <span class="sc">+</span> Temp, data)),</span>
+<span id="cb89-22"><a href="files.html#cb89-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_render</span>(report, <span class="st">&quot;report.Rmd&quot;</span>) <span class="co"># Here is our call to tar_render().</span></span>
+<span id="cb89-23"><a href="files.html#cb89-23" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb90-1"><a href="files.html#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
+<span id="cb90-2"><a href="files.html#cb90-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_visnetwork</span>()</span></code></pre></div>
 <p><img src="man/figures/knitr-graph.png" /></p>
 </div>
 <div id="parameterized-r-markdown" class="section level2" number="7.5">
@@ -483,62 +484,62 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="single-parameter-set" class="section level3" number="7.5.1">
 <h3><span class="header-section-number">7.5.1</span> Single parameter set</h3>
 <p>In this scenario, the pipeline renders your <a href="https://rmarkdown.rstudio.com/developer_parameterized_reports.html">parameterized R Markdown</a> report one time using a single set of parameters. These parameters can be upstream targets, global objects, or fixed values. Simply pass a <code>params</code> argument to <a href="https://docs.ropensci.org/tarchetypes/reference/tar_render.html"><code>tarchetypes::tar_render()</code></a>:</p>
-<div class="sourceCode" id="cb87"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb87-1"><a href="files.html#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
-<span id="cb87-2"><a href="files.html#cb87-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb87-3"><a href="files.html#cb87-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
-<span id="cb87-4"><a href="files.html#cb87-4" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb87-5"><a href="files.html#cb87-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data, <span class="fu">data.frame</span>(<span class="at">x =</span> <span class="fu">seq_len</span>(<span class="dv">26</span>), <span class="at">y =</span> letters))</span>
-<span id="cb87-6"><a href="files.html#cb87-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_render</span>(report, <span class="st">&quot;report.Rmd&quot;</span>, <span class="at">params =</span> <span class="fu">list</span>(<span class="at">your_param =</span> data))</span>
-<span id="cb87-7"><a href="files.html#cb87-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb91"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb91-1"><a href="files.html#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb91-2"><a href="files.html#cb91-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb91-3"><a href="files.html#cb91-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
+<span id="cb91-4"><a href="files.html#cb91-4" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb91-5"><a href="files.html#cb91-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data, <span class="fu">data.frame</span>(<span class="at">x =</span> <span class="fu">seq_len</span>(<span class="dv">26</span>), <span class="at">y =</span> letters))</span>
+<span id="cb91-6"><a href="files.html#cb91-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_render</span>(report, <span class="st">&quot;report.Rmd&quot;</span>, <span class="at">params =</span> <span class="fu">list</span>(<span class="at">your_param =</span> data))</span>
+<span id="cb91-7"><a href="files.html#cb91-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <p>the <code>report</code> target will run:</p>
-<div class="sourceCode" id="cb88"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb88-1"><a href="files.html#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
-<span id="cb88-2"><a href="files.html#cb88-2" aria-hidden="true" tabindex="-1"></a>rmarkdown<span class="sc">::</span><span class="fu">render</span>(<span class="st">&quot;report.Rmd&quot;</span>, <span class="at">params =</span> <span class="fu">list</span>(<span class="at">your_param =</span> your_target))</span></code></pre></div>
+<div class="sourceCode" id="cb92"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb92-1"><a href="files.html#cb92-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
+<span id="cb92-2"><a href="files.html#cb92-2" aria-hidden="true" tabindex="-1"></a>rmarkdown<span class="sc">::</span><span class="fu">render</span>(<span class="st">&quot;report.Rmd&quot;</span>, <span class="at">params =</span> <span class="fu">list</span>(<span class="at">your_param =</span> your_target))</span></code></pre></div>
 <p>where <code>report.Rmd</code> has the following YAML front matter:</p>
-<div class="sourceCode" id="cb89"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb89-1"><a href="files.html#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
-<span id="cb89-2"><a href="files.html#cb89-2" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> report</span></span>
-<span id="cb89-3"><a href="files.html#cb89-3" aria-hidden="true" tabindex="-1"></a><span class="fu">output_format</span><span class="kw">:</span><span class="at"> html_document</span></span>
-<span id="cb89-4"><a href="files.html#cb89-4" aria-hidden="true" tabindex="-1"></a><span class="fu">params</span><span class="kw">:</span></span>
-<span id="cb89-5"><a href="files.html#cb89-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">your_param</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;default value&quot;</span></span>
-<span id="cb89-6"><a href="files.html#cb89-6" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code></pre></div>
+<div class="sourceCode" id="cb93"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb93-1"><a href="files.html#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb93-2"><a href="files.html#cb93-2" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> report</span></span>
+<span id="cb93-3"><a href="files.html#cb93-3" aria-hidden="true" tabindex="-1"></a><span class="fu">output_format</span><span class="kw">:</span><span class="at"> html_document</span></span>
+<span id="cb93-4"><a href="files.html#cb93-4" aria-hidden="true" tabindex="-1"></a><span class="fu">params</span><span class="kw">:</span></span>
+<span id="cb93-5"><a href="files.html#cb93-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">your_param</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;default value&quot;</span></span>
+<span id="cb93-6"><a href="files.html#cb93-6" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code></pre></div>
 <p>and the following code chunk:</p>
-<div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb90-1"><a href="files.html#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(params<span class="sc">$</span>your_param)</span></code></pre></div>
+<div class="sourceCode" id="cb94"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb94-1"><a href="files.html#cb94-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(params<span class="sc">$</span>your_param)</span></code></pre></div>
 <p>See <a href="https://docs.ropensci.org/tarchetypes/reference/tar_render.html#examples">these examples</a> for a demonstration.</p>
 </div>
 <div id="multiple-parameter-sets" class="section level3" number="7.5.2">
 <h3><span class="header-section-number">7.5.2</span> Multiple parameter sets</h3>
 <p>In this scenario, you still have a single report, but you render it multiple times over multiple sets of <a href="https://rmarkdown.rstudio.com/developer_parameterized_reports.html">R Markdown parameters</a>. This time, use <a href="https://docs.ropensci.org/tarchetypes/reference/tar_render_rep.html"><code>tarchetypes::tar_render_rep()</code></a> and write code to reference or generate a grid of parameters with one row per rendered report and one column per parameter. Optionally, you can also include an <code>output_file</code> column to control the file paths of the generated reports, and you can set the number of batches to reduce the overhead that would otherwise ensue from creating a large number of targets.</p>
-<div class="sourceCode" id="cb91"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb91-1"><a href="files.html#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
-<span id="cb91-2"><a href="files.html#cb91-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb91-3"><a href="files.html#cb91-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
-<span id="cb91-4"><a href="files.html#cb91-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">packages =</span> <span class="st">&quot;tibble&quot;</span>)</span>
-<span id="cb91-5"><a href="files.html#cb91-5" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb91-6"><a href="files.html#cb91-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(x, <span class="st">&quot;value_of_x&quot;</span>),</span>
-<span id="cb91-7"><a href="files.html#cb91-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_render_rep</span>(</span>
-<span id="cb91-8"><a href="files.html#cb91-8" aria-hidden="true" tabindex="-1"></a>    report,</span>
-<span id="cb91-9"><a href="files.html#cb91-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;report.Rmd&quot;</span>,</span>
-<span id="cb91-10"><a href="files.html#cb91-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">params =</span> <span class="fu">tibble</span>(</span>
-<span id="cb91-11"><a href="files.html#cb91-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">par =</span> <span class="fu">c</span>(<span class="st">&quot;par_val_1&quot;</span>, <span class="st">&quot;par_val_2&quot;</span>, <span class="st">&quot;par_val_3&quot;</span>, <span class="st">&quot;par_val_4&quot;</span>),</span>
-<span id="cb91-12"><a href="files.html#cb91-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">output_file =</span> <span class="fu">c</span>(<span class="st">&quot;f1.html&quot;</span>, <span class="st">&quot;f2.html&quot;</span>, <span class="st">&quot;f3.html&quot;</span>, <span class="st">&quot;f4.html&quot;</span>)</span>
-<span id="cb91-13"><a href="files.html#cb91-13" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb91-14"><a href="files.html#cb91-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">batches =</span> <span class="dv">2</span></span>
-<span id="cb91-15"><a href="files.html#cb91-15" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb91-16"><a href="files.html#cb91-16" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb95"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb95-1"><a href="files.html#cb95-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb95-2"><a href="files.html#cb95-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb95-3"><a href="files.html#cb95-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
+<span id="cb95-4"><a href="files.html#cb95-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">packages =</span> <span class="st">&quot;tibble&quot;</span>)</span>
+<span id="cb95-5"><a href="files.html#cb95-5" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb95-6"><a href="files.html#cb95-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(x, <span class="st">&quot;value_of_x&quot;</span>),</span>
+<span id="cb95-7"><a href="files.html#cb95-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_render_rep</span>(</span>
+<span id="cb95-8"><a href="files.html#cb95-8" aria-hidden="true" tabindex="-1"></a>    report,</span>
+<span id="cb95-9"><a href="files.html#cb95-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;report.Rmd&quot;</span>,</span>
+<span id="cb95-10"><a href="files.html#cb95-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">params =</span> <span class="fu">tibble</span>(</span>
+<span id="cb95-11"><a href="files.html#cb95-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">par =</span> <span class="fu">c</span>(<span class="st">&quot;par_val_1&quot;</span>, <span class="st">&quot;par_val_2&quot;</span>, <span class="st">&quot;par_val_3&quot;</span>, <span class="st">&quot;par_val_4&quot;</span>),</span>
+<span id="cb95-12"><a href="files.html#cb95-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">output_file =</span> <span class="fu">c</span>(<span class="st">&quot;f1.html&quot;</span>, <span class="st">&quot;f2.html&quot;</span>, <span class="st">&quot;f3.html&quot;</span>, <span class="st">&quot;f4.html&quot;</span>)</span>
+<span id="cb95-13"><a href="files.html#cb95-13" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb95-14"><a href="files.html#cb95-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">batches =</span> <span class="dv">2</span></span>
+<span id="cb95-15"><a href="files.html#cb95-15" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb95-16"><a href="files.html#cb95-16" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <p>where <code>report.Rmd</code> has the following YAML front matter:</p>
-<div class="sourceCode" id="cb92"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb92-1"><a href="files.html#cb92-1" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> report</span></span>
-<span id="cb92-2"><a href="files.html#cb92-2" aria-hidden="true" tabindex="-1"></a><span class="fu">output_format</span><span class="kw">:</span><span class="at"> html_document</span></span>
-<span id="cb92-3"><a href="files.html#cb92-3" aria-hidden="true" tabindex="-1"></a><span class="fu">params</span><span class="kw">:</span></span>
-<span id="cb92-4"><a href="files.html#cb92-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">par</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;default value&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb96"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb96-1"><a href="files.html#cb96-1" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> report</span></span>
+<span id="cb96-2"><a href="files.html#cb96-2" aria-hidden="true" tabindex="-1"></a><span class="fu">output_format</span><span class="kw">:</span><span class="at"> html_document</span></span>
+<span id="cb96-3"><a href="files.html#cb96-3" aria-hidden="true" tabindex="-1"></a><span class="fu">params</span><span class="kw">:</span></span>
+<span id="cb96-4"><a href="files.html#cb96-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">par</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;default value&quot;</span></span></code></pre></div>
 <p>and the following R code chunk:</p>
-<div class="sourceCode" id="cb93"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb93-1"><a href="files.html#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(params<span class="sc">$</span>par)</span>
-<span id="cb93-2"><a href="files.html#cb93-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">tar_read</span>(x))</span></code></pre></div>
+<div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb97-1"><a href="files.html#cb97-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(params<span class="sc">$</span>par)</span>
+<span id="cb97-2"><a href="files.html#cb97-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">tar_read</span>(x))</span></code></pre></div>
 <p><code>tar_render_rep()</code> creates multiple targets to set up the R Markdown part of the workflow, including a target for the grid of parameters and a <a href="dynamic.html#dynamic">dynamic branching</a> target to iterate over the parameters in batches. In this case, we have two batches (dynamic branches) and each one renders the report twice.</p>
-<div class="sourceCode" id="cb94"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb94-1"><a href="files.html#cb94-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
-<span id="cb94-2"><a href="files.html#cb94-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
-<span id="cb94-3"><a href="files.html#cb94-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target x</span></span>
-<span id="cb94-4"><a href="files.html#cb94-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target report_params</span></span>
-<span id="cb94-5"><a href="files.html#cb94-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run branch report_9e7470a1</span></span>
-<span id="cb94-6"><a href="files.html#cb94-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run branch report_457829de</span></span>
-<span id="cb94-7"><a href="files.html#cb94-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● end pipeline</span></span></code></pre></div>
+<div class="sourceCode" id="cb98"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb98-1"><a href="files.html#cb98-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
+<span id="cb98-2"><a href="files.html#cb98-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
+<span id="cb98-3"><a href="files.html#cb98-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target x</span></span>
+<span id="cb98-4"><a href="files.html#cb98-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target report_params</span></span>
+<span id="cb98-5"><a href="files.html#cb98-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run branch report_9e7470a1</span></span>
+<span id="cb98-6"><a href="files.html#cb98-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run branch report_457829de</span></span>
+<span id="cb98-7"><a href="files.html#cb98-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● end pipeline</span></span></code></pre></div>
 <p>The third output file <code>f3.html</code> is below, and the rest look similar.</p>
 <p><img src="man/figures/dynamic-rmarkdown-params.png" /></p>
 <p>For more information, see <a href="https://docs.ropensci.org/tarchetypes/reference/tar_render_rep.html#examples">these examples</a>.</p>
@@ -589,6 +590,10 @@ gitbook.start({
 "text": null
 },
 "download": null,
+"search": {
+"engine": "lunr",
+"options": null
+},
 "toc": {
 "collapse": "subsection"
 }
