@@ -83,7 +83,7 @@ Ozone,Solar.R,Wind,Temp,Month,Day
 ...
 ```
 
-`functions.R` contains our custom user-defined functions. (See the [best practices chapter](#practices) for a discussion of function-oriented workflows.)
+`functions.R` contains our custom user-defined functions. (See the [functions chapter](#functions) for a discussion of function-oriented workflows.)
 
 ```{r, eval = FALSE}
 # functions.R
@@ -256,7 +256,7 @@ tar_make()
 tar_read(hist)
 ```
 
-There is also a `tar_load()` function, which supports [`tidyselect`](https://tidyselect.r-lib.org/) verbs like `starts_with()`
+There is also a `tar_load()` function, which loads the return values of targets into the current environment (or the environment of your choosing) and returns nothing (`NULL`). `tar_load()` supports [`tidyselect`](https://tidyselect.r-lib.org/) verbs like `starts_with()`
 
 ```{r, eval = TRUE}
 tar_load(starts_with("fit"))
