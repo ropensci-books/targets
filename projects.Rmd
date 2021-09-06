@@ -9,15 +9,17 @@ library(targets)
 
 # Projects {#projects}
 
-This chapter explains best practices when it comes to organizing and configuring `targets` projects.
+A project is a `targets` pipeline together with its supporting source code, data, and configuration settings. This chapter explains best practices when it comes to organizing and configuring `targets` projects.
 
 ## Extra reproducibility
 
-For extra reproducibility, it is good practice to use the `renv` R package for package management and Git/Github for code version control. The entire `_targets/` data store should generally not be committed to Git because of its large size. However, you may wish to commit `_targets/meta/meta`, which is critical to checking the status of each target and reading targets into memory. The broader R community has excellent resources and tutorials on getting started with these third-party tools.
+For extra reproducibility, it is good practice to use the `renv` R package for package management and Git/Github for code version control. The entire `_targets/` data store should generally not be committed to Git because of its large size.^[However, you may wish to commit `_targets/meta/meta`, which is critical to checking the status of each target and reading targets into memory.] The broader R community has excellent resources and tutorials on getting started with these third-party tools.
 
 ## Files
 
-`targets` is mostly indifferent to how you organize the files in your project. However, it is good practice to follow the structure of a research compendium or R package (not necessarily with a `DESCRIPTION` file). The [walkthrough chapter](#walkthrough) shows the file structure for a minimal `targets` project. For more serious projects, the file system may look something like this:
+`targets` is mostly indifferent to how you organize the files in your project. However, it is good practice to follow the overall structure of a research compendium or R package (not necessarily with a `DESCRIPTION` file). It also is good practice to give each project its own unique folder with one `targets` pipeline, one `renv` library for package management, and one Git/GitHub repository for code version control. As described later, it is possible to create multiple overlapping projects within a single folder, but this is not recommended for most situations.
+
+The [walkthrough chapter](#walkthrough) shows the file structure for a minimal `targets` project. For more serious projects, the file system may expand to look something like this:
 
 ```{r, eval = FALSE}
 ├── .git/
@@ -48,11 +50,18 @@ Some of these files are optional, and they have the following roles.
 * `R/`: directory of scripts containing custom user-defined R code. Most of the code will likely contain [custom functions](#functions) you write to support your targets. You can load these functions with `source("R/function_script.R")` or `eval(parse(text = "R/function_script.R")`, either in a `tar_globals = TRUE` code chunk in [Target Markdown](#markdown) or directly in `_targets.R` if you are not using [Target Markdown](#markdown).
 * `data/`: directory of local input data files. As described in the [files chapter](#files), it is good practice to track input files using `format = "file"` in `tar_target()` and then reference those file targets in downstream targets that directly depend on those files.
 
+## Multiple projects
 
-## Scope
+It is generally good practice to give each project its own unique folder with one `targets` pipeline, one `renv` library for package management, and one Git/GitHub repository for code version control. However, sometimes it is reasonable to maintain multiple pipelines within a project: for example, if different pipelines have similar research goals and share the same code base of custom user-defined functions. This section explains how to maintain and navigate such a collection of projects. The functionality below assumes you have `targets` version 0.7.0.9001 or higher, which you may need to install from GitHub with `remotes::install_github("ropensci/targets")`.
 
-It is good practice to treat each `targets` pipeline as its own independent project, with its own directory, its own `renv` library, and its own Git/GitHub repository for code version control. In the previous section, the project only had one `_targets.R` file with a single pipeline. This pattern works well for most projects. Maintaining multiple pipelines in a single project is usually cumbersome, messy, and difficult to maintain.
+To begin, write the shared code base of custom user-defined functions in `R/`, and write one `targets` pipeline per project. For convenience, we will give each project its own [Target Markdown](#markdown) source file to generate the project's [target script file](https://docs.ropensci.org/targets/reference/tar_script.html), but the same principles generalize to projects without [Target Markdown](#markdown). The file structure looks something like this
 
-## Sub-projects
+```{r, eval = FALSE}
+├── project_a.Rmd
+├── project_b.Rmd
+├── project_c.Rmd
+├── R/
+...
+```
 
-However, in certain situations, it is reasonable to 
+All projects share the same functions defined in the scripts in `R/`, and each project will generate its own independent target script file and its own independent data store, 
