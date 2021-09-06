@@ -37,7 +37,7 @@ Target Markdown supports a special `{targets}` [language engine](https://bookdow
 
 The following example is based on the minimal `targets` project at https://github.com/wlandau/targets-minimal/. We process the base `airquality` dataset, fit a model, and display a histogram of ozone concentration.
 
-## Packages
+## Required packages
 
 This example requires several R packages, and `targets` must be version 0.6.0 or above.
 
@@ -124,7 +124,7 @@ create_plot <- function(data) {
 
 It is good practice to assign explicit chunk labels or set the `tar_name` chunk option on a chunk-by-chunk basis. Each chunk writes code to a script path that depends on the name, and all script paths need to be unique.^[In addition, for `bookdown` projects, chunk labels should only use alphanumeric characters and dashes.]
 
-## Targets
+## Target definitions
 
 To define targets of the pipeline, use the `{targets}` language engine with the `tar_globals` chunk option equal `FALSE` or `NULL` (default). The return value of the chunk must be a target object or a list of target objects, created by `tar_target()` or a similar function.
 
