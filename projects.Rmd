@@ -113,7 +113,7 @@ author: "You"
 Sys.setenv(TAR_PROJECT = "project_b")
 ```
 ````
-b
+
 Then, when you run each report and its `targets` pipeline, [Target Markdown](#markdown) code chunks functions and functions like `tar_make()` will automatically write to the [script](https://docs.ropensci.org/targets/reference/tar_script.html) and [store](#files) defined for each separate project. This is because many default arguments of critical functions come from `tar_config_get()`, which reads from the project-specific configuration in `_targets.yaml`^[To use a different YAML file, set the `TAR_CONFIG` environment variable to the appropriate path.]. The file system will end up looking something like this:
 
 ```{r, eval = FALSE}
