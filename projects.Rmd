@@ -77,8 +77,9 @@ To begin, write the shared code base of custom user-defined functions in `R/`, a
 
 All projects share the same functions defined in the scripts in `R/`, and each project uses a different [target script](https://docs.ropensci.org/targets/reference/tar_script.html) and [data store](#files). `script_a.R` defines the targets for Project A.
 
-```{r}
+```{r, eval = FALSE}
 # script_a.R
+library(targets)
 source("R/functions_data.R")
 source("R/functions_analysis.R")
 source("R/functions_visualization.R")
@@ -91,12 +92,12 @@ list(
 
 Likewise, `script_b.R` defines the targets for Project B.
 
-```{r}
+```{r, eval = FALSE}
 # script_b.R
+library(targets)
 source("R/functions_data.R")
 source("R/functions_analysis.R")
 source("R/functions_visualization.R")
-source("R/functions.R")
 tar_option_set(packages = "tidyverse")
 list(
   tar_target(target_123, f(...)),
@@ -148,3 +149,55 @@ tar_read(target_abc, sctore = "store_b")
 ```
 
 ### Interdependent projects
+
+For some workflows, the output of one project serves as the input to another project. The easiest way to set this up is through global objects. The first project remains unchanged, and the second project reads from the first before the pipeline begins.
+
+```{r, eval = FALSE}
+# script_b.R
+library(targets)
+source("R/functions_data.R")
+source("R/functions_analysis.R")
+source("R/functions_visualization.R")
+tar_option_set(packages = "tidyverse")
+
+object_from_project_a <- tar_read(target_from_project_a, store = "store_a")
+
+list(
+  tar_target(new_target, some_function(object_from_project_a)),
+  ...
+)
+```
+
+This approach is the most convenient, but it can be inefficient if `target_from_project_a` is large. A higher-performant solution for large data is to export the target from Project A as an external data file and then establish that file as a file target in Project B.
+
+```{r, eval = FALSE}
+# script_a.R
+library(targets)
+source("R/functions_data.R")
+source("R/functions_analysis.R")
+source("R/functions_visualization.R")
+tar_option_set(packages = "tidyverse")
+list(
+  ...,
+  tar_target(results_a, final_results(previous_target)),
+  tar_target(file_a, {
+    saveRDS(results_a, "results_a.rds")
+    "results_a.rds"
+  })
+)
+```
+
+```{r, eval = FALSE}
+# script_b.R
+library(targets)
+source("R/functions_data.R")
+source("R/functions_analysis.R")
+source("R/functions_visualization.R")
+tar_option_set(packages = "tidyverse")
+list(
+  tar_target(file_from_project_a, "results_a.rds", format = "file"),
+  tar_target(data_from_project_a, readRDS(file_from_project_a)),
+  tar_target(new_target, analyze_data(data_from_project_a)),
+  ...
+)
+```
