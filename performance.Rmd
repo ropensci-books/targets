@@ -1,0 +1,73 @@
+```{r, message = FALSE, warning = FALSE, echo = FALSE}
+knitr::opts_knit$set(root.dir = fs::dir_create(tempfile()))
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = TRUE)
+```
+
+```{r, message = FALSE, warning = FALSE, echo = FALSE}
+library(targets)
+```
+
+# Performance {#performance}
+
+This chapter explains how to monitor the progress of your pipeline and troubleshoot performance issues.
+
+## Monitoring the pipeline
+
+If you are using `targets`, then you probably have an intense computation like Bayesian data analysis or machine learning. These tasks take a long time to run, and it is a good idea to monitor them. Here are some options built directly into `targets`:
+
+1. `tar_poll()` continuously refreshes a text summary of runtime progress in the R console. Run it in a new R session at the project root directory. (Only supported in `targets` version 0.3.1.9000 and higher.)
+1. `tar_visnetwork()`, `tar_progress_summary()`, `tar_progress_branches()`, and `tar_progress()` show runtime information at a single moment in time.
+1. `tar_watch()` launches an Shiny app that automatically refreshes the graph every few seconds. Try it out in the example below.
+
+```{r, eval = FALSE}
+# Define an example target script file with a slow pipeline.
+library(targets)
+tar_script({
+  sleep_run <- function(...) {
+    Sys.sleep(10)
+  }
+  list(
+    tar_target(settings, sleep_run()),
+    tar_target(data1, sleep_run(settings)),
+    tar_target(data2, sleep_run(settings)),
+    tar_target(data3, sleep_run(settings)),
+    tar_target(model1, sleep_run(data1)),
+    tar_target(model2, sleep_run(data2)),
+    tar_target(model3, sleep_run(data3)),
+    tar_target(figure1, sleep_run(model1)),
+    tar_target(figure2, sleep_run(model2)),
+    tar_target(figure3, sleep_run(model3)),
+    tar_target(conclusions, sleep_run(c(figure1, figure2, figure3)))
+  )
+})
+
+# Launch the app in a background process.
+# You may need to refresh the browser if the app is slow to start.
+# The graph automatically refreshes every 10 seconds
+tar_watch(seconds = 10, outdated = FALSE, targets_only = TRUE)
+
+# Now run the pipeline and watch the graph change.
+px <- tar_make()
+```
+
+![](./man/figures/tar_watch.png)
+`tar_watch_ui()` and `tar_watch_server()` make this functionality available to other apps through a Shiny module.
+
+Unfortunately, none of these options can tell you if any [parallel workers](#hpc) or external processes are still running. You can monitor local processes with a utility like `top` or `htop`, and traditional HPC scheduler like SLURM or SGE support their own polling utilities such as `squeue` and `qstat`. `tar_process()` and `tar_pid()` get the process ID of the main R process that last attempted to run the pipeline.
+
+## Performance
+
+If your pipeline has several thousand targets, functions like `tar_make()`, `tar_outdated()`, and `tar_visnetwork()` may take longer to run. There is an inevitable per-target runtime cost because package needs to check the code and data of each target individually. If this overhead becomes too much, consider batching your work into a smaller group of heavier targets. Using your custom functions, you can make each target perform multiple iterations of a task that was previously given to targets one at a time. For details and an example, please see the discussion on batching at the bottom of the [dynamic branching chapter](#dynamic).
+
+With dynamic branching, it is super easy to create an enormous number of targets. But when the number of targets starts to exceed a couple hundred, `tar_make()` slows down, and graphs from `tar_visnetwork()` start to become unmanageable.
+
+In `targets` version 0.5.0.9000, the `names` and `shortcut` arguments to `tar_make()` provide an alternative workaround. `tar_make(names = all_of("only", "these", "targets"), shortcut = TRUE)` can completely omit thousands of upstream targets for the sake of concentrating on one section at a time. However, this technique is only a temporary measure, and it is best to eventually revert back to the default `names = NULL` and `shortcut = FALSE` to ensure reproducibility.
+
+In the case of dynamic branching, another temporary workaround is to temporarily select subsets of branches. For example, instead of `pattern = map(large_target)` in `tar_target()`, you could prototype on a target that uses `pattern = head(map(large_target), n = 1)` or `pattern = slice(map(large_target), c(4, 5, 6))`. In the case of `slice()`, the `tar_branch_index()` function (only in `targets` version 0.5.0.9000 and above) can help you find the required integer indexes  corresponding to individual branch names you may want.
+
+Alternatively, if you see slowness in your project, you can contribute to the package with a profiling study. These contributions are great because they help improve the package. Here are the recommended steps.
+
+1. Install the [`proffer`](https://github.com/r-prof/proffer) R package and its dependencies.
+1. Run `proffer::pprof(tar_make(callr_function = NULL))` on your project.
+1. When a web browser pops up with `pprof`, select the flame graph and screenshot it.
+1. Post the flame graph, along with any code and data you can share, to the [`targets` package issue tracker](https://github.com/ropensci/targets/issues). The maintainer will have a look and try to make the package faster for your use case if speedups are possible.

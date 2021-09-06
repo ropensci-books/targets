@@ -1,0 +1,100 @@
+```{r, message = FALSE, warning = FALSE, echo = FALSE}
+knitr::opts_knit$set(root.dir = fs::dir_create(tempfile()))
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = TRUE)
+```
+
+```{r, message = FALSE, warning = FALSE, echo = FALSE}
+library(targets)
+```
+
+# Target construction {#targets}
+
+Targets are high-level steps of the workflow that run the work you define in your functions. A target runs some R code and saves the returned R object to storage, usually a single file inside `_targets/objects/`. 
+
+## What a target should do
+
+Like a good function, a good target generally does one of three things:
+
+1. Create a dataset.
+2. Analyze a dataset with a model.
+3. Summarize an analysis or dataset.
+
+If a function gets too long, you can split it into nested sub-functions that make your larger function easier to read and maintain.
+
+## How much a target should do
+
+The `targets` package automatically skips targets that are already up to date, so it is best to define targets that maximize time savings. Good targets usually
+
+1. Are large enough to subtract a decent amount of runtime when skipped.
+1. Are small enough that some targets can be skipped even if others need to run.
+1. Invoke no side effects such as modifications to the global environment. (But targets with `tar_target(format = "file")` can save files.)
+1. Return a single value that is
+    i. Easy to understand and introspect.
+    i. Meaningful to the project.
+    i. Easy to save as a file, e.g. with `readRDS()`. Please avoid [non-exportable objects](https://cran.r-project.org/web/packages/future/vignettes/future-4-non-exportable-objects.html) as target return values or global variables.
+
+Regarding the last point above, it is possible to customize the storage format of the target. For details, enter `?tar_target` in the console and scroll down to the description of the `format` argument.
+
+## Working with tools outside R
+
+Each target runs R code, so to invoke a tool outside R, consider `system2()` or [`processx`](https://processx.r-lib.org) to call the appropriate system commands. This technique allows you to run shell scripts, Python scripts, etc. from within R. External scripts should ideally be tracked as input files using `tar_target(format = "file")` as described in [section on external input files](#files). There are also specialized R packages to retrieve data from remote sources and invoke web APIs, including [`rnoaa`](https://github.com/ropensci/rnoaa), [`ots`](https://github.com/ropensci/ots), and [`aws.s3`](https://github.com/cloudyr/aws.s3), and you may wish to use [custom cues](https://docs.ropensci.org/targets/reference/tar_cue.html) to automatically invalidate a target when the upstream remote data changes.
+
+## Side effects
+
+Like a good pure function, a good target should return a single value and not produce side effects. (The exception is [output file targets](#files) which create files and return their paths.) Avoid modifying the global environment with calls to `data()` or `source()`. If you need to source scripts to define global objects, please do so at the top of your target script file (default: `_targets.R`) just like `source("R/functions.R")` from the [walkthrough vignette](#walkthrough).
+
+## Dependencies
+
+`targets` automatically loads dependencies into memory when they are required, so it is rarely advisable to call `tar_read()` or `tar_load()` from inside a target. Except in rare circumstances, `tar_read()` and `tar_load()` are only for exploratory data analysis and [literate programming](#files).
+
+Because dependency detection is implicit, adept target construction requires an understanding of how it works. To identify the targets and global objects that each target depends on, the `targets` package uses static code analysis with [`codetools`](https://CRAN.R-project.org/package=codetools), and you can emulate this process with `tar_deps()`. Let us look at the dependencies of the `raw_data` target.
+
+```{r, eval = TRUE}
+tar_deps(function() {
+  read_csv(raw_data_file, col_types = cols())
+})
+```
+
+The `raw_data` target depends on target `raw_data_file` because the command for `raw_data` mentions the symbol `raw_data_file`. Similarly, if we were to create a user-defined `read_csv()` function, the `raw_data` target would also depend on `read_csv()` and any other user-defined global functions and objects nested inside `read_csv()`. Changes to any of these objects would cause the `raw_data` target to rerun on the next `tar_make()`.
+
+Not all of the objects from `tar_deps()` actually register as dependencies. When it comes to detecting dependencies, `targets` only recognizes
+
+1. Other targets (such as `raw_data_file`).
+1. Functions and objects in the main environment. This environment is almost always the global environment of the R process that runs the target script file (default: `_targets.R`) so these dependencies are usually going to be the custom functions and objects you write yourself.
+
+This process excludes many objects from dependency detection. For example, both `{` and `cols()` are excluded because they are defined in the environments of packages (`base` and `readr`, respectively). Functions and objects from packages are ignored unless you supply the package name to the `packages` and `imports` fields of `tar_option_set()` as described later on in this chapter.^[It is also possible to supply an alternative environment to the `envir` argument of `tar_option_set()`, which changes the environment where `targets` detects non-package global objects and functions, but there is rarely ever a need to do this.]
+
+## Return value
+
+The return value of a target should be an R object that can be saved to disk and hashed.
+
+### Saving
+
+The object should be compatible with the storage format you choose using the `format` argument of `tar_target()` or `tar_option_set()`. For example, if the format is `"rds"` (default), then the target should return an R object that can be saved with `saveRDS()` and safely loaded properly into another session. Please avoid returning [non-exportable objects](https://cran.r-project.org/web/packages/future/vignettes/future-4-non-exportable-objects.html) such as connection objects, `Rcpp` pointers, `xgboost` matrices, and `greta` models^[Special exceptions are granted to Keras and Torch models, which can be safely returned from targets if you specify `format = "keras"` or `format = "torch"`.].
+
+### Hashing
+
+Once a target is saved to disk, `targets` computes a [`digest`](https://eddelbuettel.github.io/digest/) hash to track changes to the data file(s). These hashes are used to decide whether each target is up to date or needs to rerun. In order for the hash to be useful, the data you return from a target must be an accurate reflection of the underlying content of the data. So please try to return the actual data instead of an object that wraps or points to the data. Otherwise, the package will make incorrect decisions regarding which targets can skip and which need to rerun.
+
+### Workaround
+
+As a workaround, you can write custom functions to create temporary instances of these non-exportable/non-hashable objects and clean them up after the task is done. The following sketch creates a target that returns a database table while managing a transient connection object.
+
+```{r, eval = FALSE}
+# _targets.R
+library(targets)
+
+get_from_database <- function(table, ...) {
+  con <- DBI::dbConnect(...)
+  on.exit(close(con))
+  dbReadTable(con, table)
+}
+
+list(
+  tar_target(
+    table_from_database,
+    get_from_database("my_table", ...), # ... has use-case-specific arguments.
+    format = "feather" # Requires that the return value is a data frame.
+  )
+)
+```

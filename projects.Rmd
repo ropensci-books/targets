@@ -1,0 +1,58 @@
+```{r, message = FALSE, warning = FALSE, echo = FALSE}
+knitr::opts_knit$set(root.dir = fs::dir_create(tempfile()))
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = TRUE)
+```
+
+```{r, message = FALSE, warning = FALSE, echo = FALSE}
+library(targets)
+```
+
+# Projects {#projects}
+
+This chapter explains best practices when it comes to organizing and configuring `targets` projects.
+
+## Extra reproducibility
+
+For extra reproducibility, it is good practice to use the `renv` R package for package management and Git/Github for code version control. The entire `_targets/` data store should generally not be committed to Git because of its large size. However, you may wish to commit `_targets/meta/meta`, which is critical to checking the status of each target and reading targets into memory. The broader R community has excellent resources and tutorials on getting started with these third-party tools.
+
+## Files
+
+`targets` is mostly indifferent to how you organize the files in your project. However, it is good practice to follow the structure of a research compendium or R package (not necessarily with a `DESCRIPTION` file). The [walkthrough chapter](#walkthrough) shows the file structure for a minimal `targets` project. For more serious projects, the file system may look something like this:
+
+```{r, eval = FALSE}
+├── .git/
+├── .Rprofile
+├── .Renviron
+├── renv/
+├── index.Rmd
+├── _targets/
+├── _targets.R
+├── _targets.yaml
+├── R/
+├──── functions_data.R
+├──── functions_analysis.R
+├──── functions_visualization.R
+├── data/
+└──── input_data.csv
+```
+
+Some of these files are optional, and they have the following roles.
+
+* `.git/`: a folder automatically created by Git for version control purposes.
+* `.Rprofile`: a text file automatically created by `renv` to automatically load the project library when you start R at the project root folder. You may wish to add other global configuration here, e.g. declare package precedence using the `conflicted` package.
+* `.Renviron`: a text file of key-value pairs defining project-level environment variables, e.g. API keys and package settings. See `Sys.getenv()` for more information on environment variables and how to work with them in R.  
+* `index.Rmd`: [Target Markdown](#markdown) report source file to define the pipeline. 
+* `_targets/`: the data store where `tar_make()` and similar functions write target storage and metadata when they run the pipeline.
+* `_targets.R`: the [target script file](https://docs.ropensci.org/targets/reference/tar_script.html). All `targets` pipelines must have a target script file that returns a target list at the end. If you use [Target Markdown](#markdown) (e.g. `index.Rmd` above) then the target script will be written automatically. Otherwise, you may write it by hand. Unless you apply the custom configuration described later in this chapter, the target script file will always be called `_targets.R` and live at the project root folder.
+* `_targets.yaml`: a YAML file to set default arguments to critical functions like `tar_make()`. As described below, you can access and modify this file with functions `tar_config_get()`, `tar_config_set()`, and `tar_config_unset()`. `targets` will attempt to look for `_targets.yaml` unless you set a different path  in the `TAR_CONFIG` environment variable.
+* `R/`: directory of scripts containing custom user-defined R code. Most of the code will likely contain [custom functions](#functions) you write to support your targets. You can load these functions with `source("R/function_script.R")` or `eval(parse(text = "R/function_script.R")`, either in a `tar_globals = TRUE` code chunk in [Target Markdown](#markdown) or directly in `_targets.R` if you are not using [Target Markdown](#markdown).
+* `data/`: directory of local input data files. As described in the [files chapter](#files), it is good practice to track input files using `format = "file"` in `tar_target()` and then reference those file targets in downstream targets that directly depend on those files.
+
+
+## Scope
+
+It is good practice to treat each `targets` pipeline as its own independent project, with its own directory, its own `renv` library, and its own Git/GitHub repository for code version control. In the previous section, the project only had one `_targets.R` file with a single pipeline. This pattern works well for most projects. Maintaining multiple pipelines in a single project is usually cumbersome, messy, and difficult to maintain.
+
+## Sub-projects
+
+However, in certain situations, it is reasonable to 
