@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 14 Cloud integration | The targets R Package User Manual</title>
+  <title>Chapter 9 Projects | The targets R Package User Manual</title>
   <meta name="description" content="In-depth discussion of the major functionality of targets." />
   <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 14 Cloud integration | The targets R Package User Manual" />
+  <meta property="og:title" content="Chapter 9 Projects | The targets R Package User Manual" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://books.ropensci.org/targets" />
   <meta property="og:image" content="https://books.ropensci.org/targets/man/figures/logo.png" />
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="ropensci-books/targets" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 14 Cloud integration | The targets R Package User Manual" />
+  <meta name="twitter:title" content="Chapter 9 Projects | The targets R Package User Manual" />
   
   <meta name="twitter:description" content="In-depth discussion of the major functionality of targets." />
   <meta name="twitter:image" content="https://books.ropensci.org/targets/man/figures/logo.png" />
@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <link rel="apple-touch-icon-precomposed" sizes="120x120" href="man/figures/apple-touch-icon.png" />
   <link rel="shortcut icon" href="man/figures/favicon.ico" type="image/x-icon" />
-<link rel="prev" href="hpc.html"/>
-<link rel="next" href="drake.html"/>
+<link rel="prev" href="packages.html"/>
+<link rel="next" href="files.html"/>
 <script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
@@ -360,118 +360,163 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="cloud" class="section level1" number="14">
-<h1><span class="header-section-number">Chapter 14</span> Cloud integration</h1>
-<p><code>targets</code> has built-in cloud capabilities to help scale pipelines up and out. Cloud storage solutions are already available, and cloud computing computing solutions are in the works.</p>
-<p>Before getting started, please familiarize yourself with the <a href="https://aws.amazon.com/pricing/">pricing model</a> and <a href="https://docs.aws.amazon.com/account-billing/index.html">cost management and monitoring tools</a> of <a href="https://aws.amazon.com/">Amazon Web Services</a>. Everything has a cost, from <a href="https://aws.amazon.com/ec2/">virtual instances</a> to <a href="https://docs.aws.amazon.com/#user_guides">web API calls</a>. <a href="https://aws.amazon.com/free/">Free tier accounts</a> give you a modest monthly budget for some services for the first year, but it is easy to exceed the limits. Developers of reusable software should consider applying for <a href="https://aws.amazon.com/blogs/opensource/aws-promotional-credits-open-source-projects/">promotional credit</a> using <a href="https://pages.awscloud.com/AWS-Credits-for-Open-Source-Projects">this application form</a>.</p>
-<div id="compute" class="section level2" number="14.1">
-<h2><span class="header-section-number">14.1</span> Compute</h2>
-<p>Right now, <code>targets</code> does not have built-in cloud-based distributed computing support. However, future development plans include seamless integration with <a href="https://aws.amazon.com/batch/">AWS Batch</a>. As a temporary workaround, it is possible to deploy a burstable <a href="https://slurm.schedmd.com/documentation.html">SLURM</a> cluster using <a href="https://aws.amazon.com/hpc/parallelcluster/">AWS ParallelCluster</a> and leverage <code>targets</code>’ <a href="hpc.html#hpc">existing support for traditional schedulers</a>.</p>
+<div id="projects" class="section level1" number="9">
+<h1><span class="header-section-number">Chapter 9</span> Projects</h1>
+<p>A project is a <code>targets</code> pipeline together with its supporting source code, data, and configuration settings. This chapter explains best practices when it comes to organizing and configuring <code>targets</code> projects.</p>
+<div id="extra-reproducibility" class="section level2" number="9.1">
+<h2><span class="header-section-number">9.1</span> Extra reproducibility</h2>
+<p>For extra reproducibility, it is good practice to use the <code>renv</code> R package for package management and Git/GitHub for code version control. The entire <code>_targets/</code> data store should generally not be committed to Git because of its large size.<a href="#fn12" class="footnote-ref" id="fnref12"><sup>12</sup></a> The broader R community has excellent resources and tutorials on getting started with these third-party tools.</p>
 </div>
-<div id="storage" class="section level2" number="14.2">
-<h2><span class="header-section-number">14.2</span> Storage</h2>
-<p><code>targets</code> supports cloud storage on a target-by-target basis using <a href="https://aws.amazon.com/s3/">Amazon Simple Storage Service, or S3</a>. After a target completes, the return value is uploaded to a user-defined S3 bucket <a href="https://docs.aws.amazon.com/AmazonS3/latest/user-guide/create-bucket.html">S3 bucket</a>. Follow these steps to get started.</p>
-<div id="a-disclaimer" class="section level3" number="14.2.1">
-<h3><span class="header-section-number">14.2.1</span> A disclaimer</h3>
-<p>Please be aware of your resource and monetary constraints when using AWS. The AWS-backed storage capabilities in <code>targets</code> sends individual data files to S3 buckets on a target-by-target basis and periodically queries the HTML header data. For a large number of S3-backed targets, the pipeline may slow down, and it may incur monetary costs due to a large number of API requests, both for uploading new targets and checking if existing targets are up to date. It may be best to select a small number of important or large targets to send to S3 buckets, while putting the majority of small targets under source code version control, e.g. Git/GitHub. To put the whole <code>_targets/</code> data store in a single S3 bucket, including metadata, it is best to run the pipeline locally first and then invoke <code>aws.s3::s3sync()</code> or similar.</p>
+<div id="project-files" class="section level2" number="9.2">
+<h2><span class="header-section-number">9.2</span> Project files</h2>
+<p><code>targets</code> is mostly indifferent to how you organize the files in your project. However, it is good practice to follow the overall structure of a research compendium or R package (not necessarily with a <code>DESCRIPTION</code> file). It also is good practice to give each project its own unique folder with one <code>targets</code> pipeline, one <code>renv</code> library for package management, and one Git/GitHub repository for code version control. As described later, it is possible to create multiple overlapping projects within a single folder, but this is not recommended for most situations.</p>
+<p>The <a href="walkthrough.html#walkthrough">walkthrough chapter</a> shows the file structure for a minimal <code>targets</code> project. For more serious projects, the file system may expand to look something like this:</p>
+<div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb82-1"><a href="projects.html#cb82-1" aria-hidden="true" tabindex="-1"></a>├── .git<span class="sc">/</span></span>
+<span id="cb82-2"><a href="projects.html#cb82-2" aria-hidden="true" tabindex="-1"></a>├── .Rprofile</span>
+<span id="cb82-3"><a href="projects.html#cb82-3" aria-hidden="true" tabindex="-1"></a>├── .Renviron</span>
+<span id="cb82-4"><a href="projects.html#cb82-4" aria-hidden="true" tabindex="-1"></a>├── renv<span class="sc">/</span></span>
+<span id="cb82-5"><a href="projects.html#cb82-5" aria-hidden="true" tabindex="-1"></a>├── index.Rmd</span>
+<span id="cb82-6"><a href="projects.html#cb82-6" aria-hidden="true" tabindex="-1"></a>├── _targets<span class="sc">/</span></span>
+<span id="cb82-7"><a href="projects.html#cb82-7" aria-hidden="true" tabindex="-1"></a>├── _targets.R</span>
+<span id="cb82-8"><a href="projects.html#cb82-8" aria-hidden="true" tabindex="-1"></a>├── _targets.yaml</span>
+<span id="cb82-9"><a href="projects.html#cb82-9" aria-hidden="true" tabindex="-1"></a>├── R<span class="sc">/</span></span>
+<span id="cb82-10"><a href="projects.html#cb82-10" aria-hidden="true" tabindex="-1"></a>├──── functions_data.R</span>
+<span id="cb82-11"><a href="projects.html#cb82-11" aria-hidden="true" tabindex="-1"></a>├──── functions_analysis.R</span>
+<span id="cb82-12"><a href="projects.html#cb82-12" aria-hidden="true" tabindex="-1"></a>├──── functions_visualization.R</span>
+<span id="cb82-13"><a href="projects.html#cb82-13" aria-hidden="true" tabindex="-1"></a>├── data<span class="sc">/</span></span>
+<span id="cb82-14"><a href="projects.html#cb82-14" aria-hidden="true" tabindex="-1"></a>└──── input_data.csv</span></code></pre></div>
+<p>Some of these files are optional, and they have the following roles.</p>
+<ul>
+<li><code>.git/</code>: a folder automatically created by Git for version control purposes.</li>
+<li><code>.Rprofile</code>: a text file automatically created by <code>renv</code> to automatically load the project library when you start R at the project root folder. You may wish to add other global configuration here, e.g. declare package precedence using the <code>conflicted</code> package.</li>
+<li><code>.Renviron</code>: a text file of key-value pairs defining project-level environment variables, e.g. API keys and package settings. See <code>Sys.getenv()</code> for more information on environment variables and how to work with them in R.<br />
+</li>
+<li><code>index.Rmd</code>: <a href="markdown.html#markdown">Target Markdown</a> report source file to define the pipeline.</li>
+<li><code>_targets/</code>: the data store where <code>tar_make()</code> and similar functions write target storage and metadata when they run the pipeline.</li>
+<li><code>_targets.R</code>: the <a href="https://docs.ropensci.org/targets/reference/tar_script.html">target script file</a>. All <code>targets</code> pipelines must have a target script file that returns a target list at the end. If you use <a href="markdown.html#markdown">Target Markdown</a> (e.g. <code>index.Rmd</code> above) then the target script will be written automatically. Otherwise, you may write it by hand. Unless you apply the custom configuration described later in this chapter, the target script file will always be called <code>_targets.R</code> and live at the project root folder.</li>
+<li><code>_targets.yaml</code>: a YAML file to set default arguments to critical functions like <code>tar_make()</code>. As described below, you can access and modify this file with functions <code>tar_config_get()</code>, <code>tar_config_set()</code>, and <code>tar_config_unset()</code>. <code>targets</code> will attempt to look for <code>_targets.yaml</code> unless you set a different path in the <code>TAR_CONFIG</code> environment variable.</li>
+<li><code>R/</code>: directory of scripts containing custom user-defined R code. Most of the code will likely contain <a href="functions.html#functions">custom functions</a> you write to support your targets. You can load these functions with <code>source("R/function_script.R")</code> or <code>eval(parse(text = "R/function_script.R")</code>, either in a <code>tar_globals = TRUE</code> code chunk in <a href="markdown.html#markdown">Target Markdown</a> or directly in <code>_targets.R</code> if you are not using <a href="markdown.html#markdown">Target Markdown</a>.</li>
+<li><code>data/</code>: directory of local input data files. As described in the <a href="files.html#files">files chapter</a>, it is good practice to track input files using <code>format = "file"</code> in <code>tar_target()</code> and then reference those file targets in downstream targets that directly depend on those files.</li>
+</ul>
 </div>
-<div id="communicate-with-your-collaborators" class="section level3" number="14.2.2">
-<h3><span class="header-section-number">14.2.2</span> Communicate with your collaborators</h3>
-<p>An S3 bucket can be a shared file space. If you have access to someone else’s bucket, running their pipeline could accidentally overwrite their cloud data. It is best if you and your colleagues decide in advance who will write to the bucket at any given time.</p>
+<div id="multiple-projects" class="section level2" number="9.3">
+<h2><span class="header-section-number">9.3</span> Multiple projects</h2>
+<p>It is generally good practice to give each project its own unique folder with one <code>targets</code> pipeline, one <code>renv</code> library for package management, and one Git/GitHub repository for code version control. However, sometimes it is reasonable to maintain multiple pipelines within a project: for example, if different pipelines have similar research goals and share the same code base of custom user-defined functions. This section explains how to maintain and navigate such a collection of overlapping projects.</p>
+<p>The functionality below assumes you have <code>targets</code> version 0.7.0.9001 or higher, which you may need to install from GitHub.</p>
+<div class="sourceCode" id="cb83"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb83-1"><a href="projects.html#cb83-1" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;ropensci/targets&quot;</span>)</span></code></pre></div>
+<div id="create-each-project." class="section level3" number="9.3.1">
+<h3><span class="header-section-number">9.3.1</span> Create each project.</h3>
+<p>To begin, write the shared code base of custom user-defined functions in <code>R/</code>, and write one <code>targets</code> pipeline per project. For convenience, we will directly write to the targets script files, but the principles generalize to <a href="markdown.html#markdown">Target Markdown</a>. The file structure looks something like this:</p>
+<div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb84-1"><a href="projects.html#cb84-1" aria-hidden="true" tabindex="-1"></a>├── _targets.yaml</span>
+<span id="cb84-2"><a href="projects.html#cb84-2" aria-hidden="true" tabindex="-1"></a>├── script_a.R</span>
+<span id="cb84-3"><a href="projects.html#cb84-3" aria-hidden="true" tabindex="-1"></a>├── script_b.R</span>
+<span id="cb84-4"><a href="projects.html#cb84-4" aria-hidden="true" tabindex="-1"></a>├── R<span class="sc">/</span></span>
+<span id="cb84-5"><a href="projects.html#cb84-5" aria-hidden="true" tabindex="-1"></a>├──── functions_data.R</span>
+<span id="cb84-6"><a href="projects.html#cb84-6" aria-hidden="true" tabindex="-1"></a>├──── functions_analysis.R</span>
+<span id="cb84-7"><a href="projects.html#cb84-7" aria-hidden="true" tabindex="-1"></a>├──── functions_visualization.R</span>
+<span id="cb84-8"><a href="projects.html#cb84-8" aria-hidden="true" tabindex="-1"></a>...</span></code></pre></div>
+<p>All projects share the same functions defined in the scripts in <code>R/</code>, and each project uses a different <a href="https://docs.ropensci.org/targets/reference/tar_script.html">target script</a> and <a href="files.html#files">data store</a>. <code>script_a.R</code> defines the targets for Project A.</p>
+<div class="sourceCode" id="cb85"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb85-1"><a href="projects.html#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="co"># script_a.R</span></span>
+<span id="cb85-2"><a href="projects.html#cb85-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb85-3"><a href="projects.html#cb85-3" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions_data.R&quot;</span>)</span>
+<span id="cb85-4"><a href="projects.html#cb85-4" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions_analysis.R&quot;</span>)</span>
+<span id="cb85-5"><a href="projects.html#cb85-5" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions_visualization.R&quot;</span>)</span>
+<span id="cb85-6"><a href="projects.html#cb85-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">packages =</span> <span class="st">&quot;tidyverse&quot;</span>)</span>
+<span id="cb85-7"><a href="projects.html#cb85-7" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb85-8"><a href="projects.html#cb85-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(target_abc, <span class="fu">f</span>(..)),</span>
+<span id="cb85-9"><a href="projects.html#cb85-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(tarbet_xyz, <span class="fu">g</span>(...))</span>
+<span id="cb85-10"><a href="projects.html#cb85-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<p>Likewise, <code>script_b.R</code> defines the targets for Project B.</p>
+<div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb86-1"><a href="projects.html#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="co"># script_b.R</span></span>
+<span id="cb86-2"><a href="projects.html#cb86-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb86-3"><a href="projects.html#cb86-3" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions_data.R&quot;</span>)</span>
+<span id="cb86-4"><a href="projects.html#cb86-4" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions_analysis.R&quot;</span>)</span>
+<span id="cb86-5"><a href="projects.html#cb86-5" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions_visualization.R&quot;</span>)</span>
+<span id="cb86-6"><a href="projects.html#cb86-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">packages =</span> <span class="st">&quot;tidyverse&quot;</span>)</span>
+<span id="cb86-7"><a href="projects.html#cb86-7" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb86-8"><a href="projects.html#cb86-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(target_123, <span class="fu">f</span>(...)),</span>
+<span id="cb86-9"><a href="projects.html#cb86-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(target_456, <span class="fu">h</span>(...))</span>
+<span id="cb86-10"><a href="projects.html#cb86-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 </div>
-<div id="get-started-with-the-amazon-s3-web-console" class="section level3" number="14.2.3">
-<h3><span class="header-section-number">14.2.3</span> Get started with the Amazon S3 web console</h3>
-<p>If you do not already have an Amazon Web Services account, sign up for the free tier at <a href="https://aws.amazon.com/free" class="uri">https://aws.amazon.com/free</a>. Then, follow <a href="https://docs.aws.amazon.com/AmazonS3/latest/gsg/GetStartedWithS3.html">these step-by-step instructions</a> to practice using Amazon S3 through the web console at <a href="https://console.aws.amazon.com/s3/" class="uri">https://console.aws.amazon.com/s3/</a>.</p>
+<div id="configure-each-project." class="section level3" number="9.3.2">
+<h3><span class="header-section-number">9.3.2</span> Configure each project.</h3>
+<p>To establish a different store and script per project, write a top-level <code>_targets.yaml</code> configuration to specify these paths explicitly. You can do this from R with <code>tar_config_set()</code>.</p>
+<div class="sourceCode" id="cb87"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb87-1"><a href="projects.html#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_config_set</span>(<span class="at">script =</span> <span class="st">&quot;script_a.R&quot;</span>, <span class="at">store =</span> <span class="st">&quot;store_a&quot;</span>, <span class="at">project =</span> <span class="st">&quot;project_a&quot;</span>)</span>
+<span id="cb87-2"><a href="projects.html#cb87-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_config_set</span>(<span class="at">script =</span> <span class="st">&quot;script_b.R&quot;</span>, <span class="at">store =</span> <span class="st">&quot;store_b&quot;</span>, <span class="at">project =</span> <span class="st">&quot;project_b&quot;</span>)</span></code></pre></div>
+<p>The R code above writes the following <code>_targets.yaml</code> configuration file.</p>
+<pre><code>project_a:
+  store: store_a
+  script: script_a.R
+project_b:
+  store: store_b
+  script: script_b.R</code></pre>
 </div>
-<div id="configure-your-local-machine" class="section level3" number="14.2.4">
-<h3><span class="header-section-number">14.2.4</span> Configure your local machine</h3>
-<p><code>targets</code> uses the <a href="https://github.com/cloudyr/aws.s3"><code>aws.s3</code></a> package behind the scenes. It is not a strict dependency of <code>targets</code>, so you will need to install it yourself.</p>
-<div class="sourceCode" id="cb201"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb201-1"><a href="cloud.html#cb201-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;aws.s3&quot;</span>)</span></code></pre></div>
-<p>Next, <code>aws.s3</code> needs an access ID, secret access key, and default region. Follow <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html#cli-configure-quickstart-creds">these steps</a> to generate the keys, and choose a region from <a href="https://docs.aws.amazon.com/general/latest/gr/s3.html">this table of endpoints</a>. Then, open the <code>.Renviron</code> file in your home directory with <code>usethis::edit_r_environ()</code> and store this information in <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html">special environment variables</a>. Here is an example <code>.Renviron</code> file.</p>
-<div class="sourceCode" id="cb202"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb202-1"><a href="cloud.html#cb202-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example .Renviron file</span></span>
-<span id="cb202-2"><a href="cloud.html#cb202-2" aria-hidden="true" tabindex="-1"></a>AWS_ACCESS_KEY_ID<span class="ot">=</span>AKIAIOSFODNN7EXAMPLE</span>
-<span id="cb202-3"><a href="cloud.html#cb202-3" aria-hidden="true" tabindex="-1"></a>AWS_SECRET_ACCESS_KEY<span class="ot">=</span>wJalrXUtnFEMI<span class="sc">/</span>K7MDENG<span class="sc">/</span>bPxRfiCYEXAMPLEKEY</span>
-<span id="cb202-4"><a href="cloud.html#cb202-4" aria-hidden="true" tabindex="-1"></a>AWS_DEFAULT_REGION<span class="ot">=</span>us<span class="sc">-</span>east<span class="dv">-1</span></span></code></pre></div>
-<p>Restart your R session so the changes take effect. Your keys are sensitive personal information. You can print them in your private console to verify correctness, but otherwise please avoid saving them to any persistent documents other than <code>.Renviron</code>.</p>
-<div class="sourceCode" id="cb203"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb203-1"><a href="cloud.html#cb203-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.getenv</span>(<span class="st">&quot;AWS_ACCESS_KEY_ID&quot;</span>)</span>
-<span id="cb203-2"><a href="cloud.html#cb203-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;AKIAIOSFODNN7EXAMPLE&quot;</span></span>
-<span id="cb203-3"><a href="cloud.html#cb203-3" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.getenv</span>(<span class="st">&quot;AWS_SECRET_ACCESS_KEY&quot;</span>)</span>
-<span id="cb203-4"><a href="cloud.html#cb203-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY&quot;</span></span>
-<span id="cb203-5"><a href="cloud.html#cb203-5" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.getenv</span>(<span class="st">&quot;AWS_DEFAULT_REGION&quot;</span>)</span>
-<span id="cb203-6"><a href="cloud.html#cb203-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;us-east-1&quot;</span></span></code></pre></div>
+<div id="run-each-project" class="section level3" number="9.3.3">
+<h3><span class="header-section-number">9.3.3</span> Run each project</h3>
+<p>To run each project, run <code>tar_make()</code> with the correct target script and data store. To select the correct script and store, set the <code>TAR_PROJECT</code> environment variable to the correct project name. that way, <code>tar_config_get()</code> automatically supplies the correct <code>script</code> and <code>store</code> arguments to <code>tar_make()</code>.</p>
+<div class="sourceCode" id="cb89"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb89-1"><a href="projects.html#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.setenv</span>(<span class="at">TAR_PROJECT =</span> <span class="st">&quot;project_a&quot;</span>)</span>
+<span id="cb89-2"><a href="projects.html#cb89-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
+<span id="cb89-3"><a href="projects.html#cb89-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(target_abc)</span>
+<span id="cb89-4"><a href="projects.html#cb89-4" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.setenv</span>(<span class="at">TAR_PROJECT =</span> <span class="st">&quot;project_b&quot;</span>)</span>
+<span id="cb89-5"><a href="projects.html#cb89-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
+<span id="cb89-6"><a href="projects.html#cb89-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(target_123)</span></code></pre></div>
+<p>Alternatively, you can manually select the appropriate script and store for each project. This is a less convenient approach, but you do it, you do not need to set the <code>TAR_PROJECT</code> environment variable or rely on <code>_targets.yaml</code>.</p>
+<div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb90-1"><a href="projects.html#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>(<span class="at">script =</span> <span class="st">&quot;script_a.R&quot;</span>, <span class="at">store =</span> <span class="st">&quot;store_a&quot;</span>)</span>
+<span id="cb90-2"><a href="projects.html#cb90-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(target_abc, <span class="at">sctore =</span> <span class="st">&quot;store_a&quot;</span>)</span>
+<span id="cb90-3"><a href="projects.html#cb90-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>(<span class="at">script =</span> <span class="st">&quot;script_b.R&quot;</span>, <span class="at">store =</span> <span class="st">&quot;store_b&quot;</span>)</span>
+<span id="cb90-4"><a href="projects.html#cb90-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(target_abc, <span class="at">sctore =</span> <span class="st">&quot;store_b&quot;</span>)</span></code></pre></div>
 </div>
-<div id="create-s3-buckets" class="section level3" number="14.2.5">
-<h3><span class="header-section-number">14.2.5</span> Create S3 buckets</h3>
-<p>Now, you are ready to create one or more <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingBucket.html">S3 buckets</a> for your <code>targets</code> pipeline. Each pipeline should have its own set of buckets. Create one through the web console or with <code>aws.s3::put_bucket()</code>.</p>
-<div class="sourceCode" id="cb204"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb204-1"><a href="cloud.html#cb204-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(aws.s3)</span>
-<span id="cb204-2"><a href="cloud.html#cb204-2" aria-hidden="true" tabindex="-1"></a><span class="fu">put_bucket</span>(<span class="st">&quot;my-test-bucket-25edb4956460647d&quot;</span>)</span>
-<span id="cb204-3"><a href="cloud.html#cb204-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
-<p>Sign in to <a href="https://s3.console.aws.amazon.com/s3" class="uri">https://s3.console.aws.amazon.com/s3</a> to verify that the bucket exists.</p>
-</div>
-<div id="configure-the-pipeline" class="section level3" number="14.2.6">
-<h3><span class="header-section-number">14.2.6</span> Configure the pipeline</h3>
-<p>To connect your pipeline with S3,</p>
-<ol style="list-style-type: decimal">
-<li>Supply your bucket name to <code>resources</code> in <code>tar_option_set()</code>. To use different buckets for different targets, set <code>resources</code> directly in <code>tar_target()</code>. In older version of <code>targets</code>, <code>resources</code> was a named list. In <code>targets</code> &gt;= 0.5.0.9000, please create the <code>resources</code> argument with helpers <code>tar_resources()</code> and <code>tar_resources_aws()</code>.</li>
-<li>Supply AWS-powered storage formats to <code>tar_option_set()</code> and/or <code>tar_target()</code>. See the <a href="https://docs.ropensci.org/targets/reference/tar_target.html#arguments"><code>tar_target()</code> help file</a> for the full list of formats.</li>
-</ol>
-<p>Your target script file file will look something like this.</p>
-<div class="sourceCode" id="cb205"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb205-1"><a href="cloud.html#cb205-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example _targets.R</span></span>
-<span id="cb205-2"><a href="cloud.html#cb205-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb205-3"><a href="cloud.html#cb205-3" aria-hidden="true" tabindex="-1"></a><span class="co"># With older versions of targets:</span></span>
-<span id="cb205-4"><a href="cloud.html#cb205-4" aria-hidden="true" tabindex="-1"></a><span class="co"># tar_option_set(resources = list(bucket = &quot;my-test-bucket-25edb4956460647d&quot;))</span></span>
-<span id="cb205-5"><a href="cloud.html#cb205-5" aria-hidden="true" tabindex="-1"></a><span class="co"># With targets &gt;= 0.5.0.9000:</span></span>
-<span id="cb205-6"><a href="cloud.html#cb205-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(</span>
-<span id="cb205-7"><a href="cloud.html#cb205-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">resources =</span> <span class="fu">tar_resources</span>(</span>
-<span id="cb205-8"><a href="cloud.html#cb205-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">aws =</span> <span class="fu">tar_resources_aws</span>(<span class="at">bucket =</span> <span class="st">&quot;my-test-bucket-25edb4956460647d&quot;</span>)</span>
-<span id="cb205-9"><a href="cloud.html#cb205-9" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb205-10"><a href="cloud.html#cb205-10" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb205-11"><a href="cloud.html#cb205-11" aria-hidden="true" tabindex="-1"></a>write_mean <span class="ot">&lt;-</span> <span class="cf">function</span>(data) {</span>
-<span id="cb205-12"><a href="cloud.html#cb205-12" aria-hidden="true" tabindex="-1"></a>  tmp <span class="ot">&lt;-</span> <span class="fu">tempfile</span>()</span>
-<span id="cb205-13"><a href="cloud.html#cb205-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">writeLines</span>(<span class="fu">as.character</span>(<span class="fu">mean</span>(data)), tmp)</span>
-<span id="cb205-14"><a href="cloud.html#cb205-14" aria-hidden="true" tabindex="-1"></a>  tmp</span>
-<span id="cb205-15"><a href="cloud.html#cb205-15" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb205-16"><a href="cloud.html#cb205-16" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb205-17"><a href="cloud.html#cb205-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data, <span class="fu">rnorm</span>(<span class="dv">5</span>), <span class="at">format =</span> <span class="st">&quot;aws_qs&quot;</span>),</span>
-<span id="cb205-18"><a href="cloud.html#cb205-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(mean_file, <span class="fu">write_mean</span>(data), <span class="at">format =</span> <span class="st">&quot;aws_file&quot;</span>)</span>
-<span id="cb205-19"><a href="cloud.html#cb205-19" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-</div>
-<div id="run-the-pipeline-1" class="section level3" number="14.2.7">
-<h3><span class="header-section-number">14.2.7</span> Run the pipeline</h3>
-<p>When you run the pipeline above with <a href="https://docs.ropensci.org/targets/reference/tar_make.html"><code>tar_make()</code></a>, your local R session computes <code>rnorm(5)</code>, saves it to a temporary <a href="https://github.com/traversc/qs"><code>qs</code></a> file on disk, and then uploads it to a file called <code>_targets/objects/data</code> on your S3 bucket. Likewise for <code>mean_file</code>, but because the format is <code>"aws_file"</code>, you are responsible for supplying the path to the file that gets uploaded to <code>_targets/objects/mean_file</code>.</p>
-<div class="sourceCode" id="cb206"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb206-1"><a href="cloud.html#cb206-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
-<span id="cb206-2"><a href="cloud.html#cb206-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target data</span></span>
-<span id="cb206-3"><a href="cloud.html#cb206-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target mean_file</span></span>
-<span id="cb206-4"><a href="cloud.html#cb206-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● end pipeline</span></span></code></pre></div>
-<p>And of course, your targets stay up to date if you make no changes.</p>
-<div class="sourceCode" id="cb207"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb207-1"><a href="cloud.html#cb207-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
-<span id="cb207-2"><a href="cloud.html#cb207-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✓ skip target data</span></span>
-<span id="cb207-3"><a href="cloud.html#cb207-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✓ skip target mean_file</span></span>
-<span id="cb207-4"><a href="cloud.html#cb207-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✓ skip pipeline</span></span></code></pre></div>
-</div>
-<div id="manage-the-data" class="section level3" number="14.2.8">
-<h3><span class="header-section-number">14.2.8</span> Manage the data</h3>
-<p>Log into <a href="https://s3.console.aws.amazon.com/s3" class="uri">https://s3.console.aws.amazon.com/s3</a>. You should see objects <code>_targets/objects/data</code> and <code>_targets/objects/mean_file</code> in your bucket. To download this data locally, use <code>tar_read()</code> and <code>tar_load()</code> like before. These functions download the data from the bucket and load it into R.</p>
-<div class="sourceCode" id="cb208"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb208-1"><a href="cloud.html#cb208-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(data)</span>
-<span id="cb208-2"><a href="cloud.html#cb208-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] -0.74654607 -0.59593497 -1.57229983  0.40915323  0.02579023</span></span></code></pre></div>
-<p>The <code>"aws_file"</code> format is different from the other AWS-powered formats. <code>tar_read()</code> and <code>tar_load()</code> download the object to a local path (where the target saved it locally before it was uploaded) and return the path so you can process it yourself.<a href="#fn16" class="footnote-ref" id="fnref16"><sup>16</sup></a></p>
-<div class="sourceCode" id="cb209"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb209-1"><a href="cloud.html#cb209-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_load</span>(mean_file)</span>
-<span id="cb209-2"><a href="cloud.html#cb209-2" aria-hidden="true" tabindex="-1"></a>mean_file</span>
-<span id="cb209-3"><a href="cloud.html#cb209-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;_targets/scratch/mean_fileff086e70876d&quot;</span></span></code></pre></div>
-<div class="sourceCode" id="cb210"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb210-1"><a href="cloud.html#cb210-1" aria-hidden="true" tabindex="-1"></a><span class="fu">readLines</span>(mean_file)</span>
-<span id="cb210-2"><a href="cloud.html#cb210-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;-0.495967480886693&quot;</span></span></code></pre></div>
-<p>When you are done with these temporary files and the pipeline is no longer running, you can safely remove everything in <code>_targets/scratch/</code>.</p>
-<div class="sourceCode" id="cb211"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb211-1"><a href="cloud.html#cb211-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unlink</span>(<span class="st">&quot;_targets/scratch/&quot;</span>, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
-<p>Lastly, if you want to erase the whole project or start over from scratch, consider removing the S3 bucket to avoid incurring storage fees. The easiest way to do this is through the <a href="https://s3.console.aws.amazon.com/s3">S3 console</a>. You can alternatively call <code>aws.s3::delete_bucket()</code>, but you have to make sure the bucket is empty first.</p>
-<div class="sourceCode" id="cb212"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb212-1"><a href="cloud.html#cb212-1" aria-hidden="true" tabindex="-1"></a><span class="fu">delete_bucket</span>(<span class="st">&quot;my-test-bucket-25edb4956460647d&quot;</span>)</span></code></pre></div>
+<div id="interdependent-projects" class="section level3" number="9.3.4">
+<h3><span class="header-section-number">9.3.4</span> Interdependent projects</h3>
+<p>For some workflows, the output of one project serves as the input to another project. The easiest way to set this up is through global objects. The first project remains unchanged, and the second project reads from the first before the pipeline begins.</p>
+<div class="sourceCode" id="cb91"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb91-1"><a href="projects.html#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="co"># script_b.R</span></span>
+<span id="cb91-2"><a href="projects.html#cb91-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb91-3"><a href="projects.html#cb91-3" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions_data.R&quot;</span>)</span>
+<span id="cb91-4"><a href="projects.html#cb91-4" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions_analysis.R&quot;</span>)</span>
+<span id="cb91-5"><a href="projects.html#cb91-5" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions_visualization.R&quot;</span>)</span>
+<span id="cb91-6"><a href="projects.html#cb91-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">packages =</span> <span class="st">&quot;tidyverse&quot;</span>)</span>
+<span id="cb91-7"><a href="projects.html#cb91-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb91-8"><a href="projects.html#cb91-8" aria-hidden="true" tabindex="-1"></a>object_from_project_a <span class="ot">&lt;-</span> <span class="fu">tar_read</span>(target_from_project_a, <span class="at">store =</span> <span class="st">&quot;store_a&quot;</span>)</span>
+<span id="cb91-9"><a href="projects.html#cb91-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb91-10"><a href="projects.html#cb91-10" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb91-11"><a href="projects.html#cb91-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(new_target, <span class="fu">some_function</span>(object_from_project_a)),</span>
+<span id="cb91-12"><a href="projects.html#cb91-12" aria-hidden="true" tabindex="-1"></a>  ...</span>
+<span id="cb91-13"><a href="projects.html#cb91-13" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<p>This approach is the most convenient, but it can be inefficient if <code>target_from_project_a</code> is large. A higher-performant solution for large data is to export the target from Project A as an external data file and then establish that file as a file target in Project B.</p>
+<div class="sourceCode" id="cb92"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb92-1"><a href="projects.html#cb92-1" aria-hidden="true" tabindex="-1"></a><span class="co"># script_a.R</span></span>
+<span id="cb92-2"><a href="projects.html#cb92-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb92-3"><a href="projects.html#cb92-3" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions_data.R&quot;</span>)</span>
+<span id="cb92-4"><a href="projects.html#cb92-4" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions_analysis.R&quot;</span>)</span>
+<span id="cb92-5"><a href="projects.html#cb92-5" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions_visualization.R&quot;</span>)</span>
+<span id="cb92-6"><a href="projects.html#cb92-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">packages =</span> <span class="st">&quot;tidyverse&quot;</span>)</span>
+<span id="cb92-7"><a href="projects.html#cb92-7" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb92-8"><a href="projects.html#cb92-8" aria-hidden="true" tabindex="-1"></a>  ...,</span>
+<span id="cb92-9"><a href="projects.html#cb92-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(results_a, <span class="fu">final_results</span>(previous_target)),</span>
+<span id="cb92-10"><a href="projects.html#cb92-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(file_a, {</span>
+<span id="cb92-11"><a href="projects.html#cb92-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">saveRDS</span>(results_a, <span class="st">&quot;results_a.rds&quot;</span>)</span>
+<span id="cb92-12"><a href="projects.html#cb92-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;results_a.rds&quot;</span></span>
+<span id="cb92-13"><a href="projects.html#cb92-13" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb92-14"><a href="projects.html#cb92-14" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb93"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb93-1"><a href="projects.html#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="co"># script_b.R</span></span>
+<span id="cb93-2"><a href="projects.html#cb93-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb93-3"><a href="projects.html#cb93-3" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions_data.R&quot;</span>)</span>
+<span id="cb93-4"><a href="projects.html#cb93-4" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions_analysis.R&quot;</span>)</span>
+<span id="cb93-5"><a href="projects.html#cb93-5" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions_visualization.R&quot;</span>)</span>
+<span id="cb93-6"><a href="projects.html#cb93-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">packages =</span> <span class="st">&quot;tidyverse&quot;</span>)</span>
+<span id="cb93-7"><a href="projects.html#cb93-7" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb93-8"><a href="projects.html#cb93-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(file_from_project_a, <span class="st">&quot;results_a.rds&quot;</span>, <span class="at">format =</span> <span class="st">&quot;file&quot;</span>),</span>
+<span id="cb93-9"><a href="projects.html#cb93-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data_from_project_a, <span class="fu">readRDS</span>(file_from_project_a)),</span>
+<span id="cb93-10"><a href="projects.html#cb93-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(new_target, <span class="fu">analyze_data</span>(data_from_project_a)),</span>
+<span id="cb93-11"><a href="projects.html#cb93-11" aria-hidden="true" tabindex="-1"></a>  ...</span>
+<span id="cb93-12"><a href="projects.html#cb93-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 
 </div>
 </div>
 </div>
 <div class="footnotes">
 <hr />
-<ol start="16">
-<li id="fn16"><p>Non-“file” AWS formats also download files, but they are temporary and immediately discarded after the data is read into memory.<a href="cloud.html#fnref16" class="footnote-back">↩︎</a></p></li>
+<ol start="12">
+<li id="fn12"><p>However, you may wish to commit <code>_targets/meta/meta</code>, which is critical to checking the status of each target and reading targets into memory.<a href="projects.html#fnref12" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 <div style = "background: #1C356D; color: white; padding: 10px 10px 10px 25px; font-size: 1em; width: 100%;">
@@ -482,8 +527,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="hpc.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="drake.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="packages.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="files.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -504,11 +549,11 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/ropensci-books/targets/edit/main/cloud.Rmd",
+"link": "https://github.com/ropensci-books/targets/edit/main/projects.Rmd",
 "text": "Edit this chapter"
 },
 "history": {
-"link": "https://github.com/ropensci-books/targets/commits/main/cloud.Rmd",
+"link": "https://github.com/ropensci-books/targets/commits/main/projects.Rmd",
 "text": "Chapter edit history"
 },
 "view": {

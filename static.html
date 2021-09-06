@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 9 Static branching | The targets R Package User Manual</title>
+  <title>Chapter 12 Static branching | The targets R Package User Manual</title>
   <meta name="description" content="In-depth discussion of the major functionality of targets." />
-  <meta name="generator" content="bookdown 0.23 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 9 Static branching | The targets R Package User Manual" />
+  <meta property="og:title" content="Chapter 12 Static branching | The targets R Package User Manual" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://books.ropensci.org/targets" />
   <meta property="og:image" content="https://books.ropensci.org/targets/man/figures/logo.png" />
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="ropensci-books/targets" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 9 Static branching | The targets R Package User Manual" />
+  <meta name="twitter:title" content="Chapter 12 Static branching | The targets R Package User Manual" />
   
   <meta name="twitter:description" content="In-depth discussion of the major functionality of targets." />
   <meta name="twitter:image" content="https://books.ropensci.org/targets/man/figures/logo.png" />
@@ -35,6 +35,7 @@
 <link rel="next" href="hpc.html"/>
 <script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -42,7 +43,6 @@
 <link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
-
 
 
 
@@ -177,10 +177,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.1" data-path="markdown.html"><a href="markdown.html#access"><i class="fa fa-check"></i><b>3.1</b> Access</a></li>
 <li class="chapter" data-level="3.2" data-path="markdown.html"><a href="markdown.html#purpose"><i class="fa fa-check"></i><b>3.2</b> Purpose</a></li>
 <li class="chapter" data-level="3.3" data-path="markdown.html"><a href="markdown.html#example"><i class="fa fa-check"></i><b>3.3</b> Example</a></li>
-<li class="chapter" data-level="3.4" data-path="markdown.html"><a href="markdown.html#packages"><i class="fa fa-check"></i><b>3.4</b> Packages</a></li>
+<li class="chapter" data-level="3.4" data-path="markdown.html"><a href="markdown.html#required-packages"><i class="fa fa-check"></i><b>3.4</b> Required packages</a></li>
 <li class="chapter" data-level="3.5" data-path="markdown.html"><a href="markdown.html#setup"><i class="fa fa-check"></i><b>3.5</b> Setup</a></li>
 <li class="chapter" data-level="3.6" data-path="markdown.html"><a href="markdown.html#globals"><i class="fa fa-check"></i><b>3.6</b> Globals</a></li>
-<li class="chapter" data-level="3.7" data-path="markdown.html"><a href="markdown.html#targets"><i class="fa fa-check"></i><b>3.7</b> Targets</a></li>
+<li class="chapter" data-level="3.7" data-path="markdown.html"><a href="markdown.html#target-definitions"><i class="fa fa-check"></i><b>3.7</b> Target definitions</a></li>
 <li class="chapter" data-level="3.8" data-path="markdown.html"><a href="markdown.html#pipeline"><i class="fa fa-check"></i><b>3.8</b> Pipeline</a></li>
 <li class="chapter" data-level="3.9" data-path="markdown.html"><a href="markdown.html#output"><i class="fa fa-check"></i><b>3.9</b> Output</a></li>
 <li class="chapter" data-level="3.10" data-path="markdown.html"><a href="markdown.html#conditioning-on-interactive-mode"><i class="fa fa-check"></i><b>3.10</b> Conditioning on interactive mode</a>
@@ -198,125 +198,146 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.4" data-path="debugging.html"><a href="debugging.html#workspaces"><i class="fa fa-check"></i><b>4.4</b> Workspaces</a></li>
 <li class="chapter" data-level="4.5" data-path="debugging.html"><a href="debugging.html#tradeoffs"><i class="fa fa-check"></i><b>4.5</b> Tradeoffs</a></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="functions.html"><a href="functions.html"><i class="fa fa-check"></i><b>5</b> Functions</a>
+<li class="chapter" data-level="5" data-path="performance.html"><a href="performance.html"><i class="fa fa-check"></i><b>5</b> Performance</a>
 <ul>
-<li class="chapter" data-level="5.1" data-path="functions.html"><a href="functions.html#problems-with-script-based-workflows"><i class="fa fa-check"></i><b>5.1</b> Problems with script-based workflows</a></li>
-<li class="chapter" data-level="5.2" data-path="functions.html"><a href="functions.html#functions-1"><i class="fa fa-check"></i><b>5.2</b> Functions</a></li>
-<li class="chapter" data-level="5.3" data-path="functions.html"><a href="functions.html#writing-functions"><i class="fa fa-check"></i><b>5.3</b> Writing functions</a></li>
-<li class="chapter" data-level="5.4" data-path="functions.html"><a href="functions.html#functions-in-pipelines"><i class="fa fa-check"></i><b>5.4</b> Functions in pipelines</a></li>
+<li class="chapter" data-level="5.1" data-path="performance.html"><a href="performance.html#monitoring-the-pipeline"><i class="fa fa-check"></i><b>5.1</b> Monitoring the pipeline</a></li>
+<li class="chapter" data-level="5.2" data-path="performance.html"><a href="performance.html#performance-1"><i class="fa fa-check"></i><b>5.2</b> Performance</a></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="practices.html"><a href="practices.html"><i class="fa fa-check"></i><b>6</b> Best practices</a>
+<li class="chapter" data-level="6" data-path="functions.html"><a href="functions.html"><i class="fa fa-check"></i><b>6</b> Functions</a>
 <ul>
-<li class="chapter" data-level="6.1" data-path="practices.html"><a href="practices.html#how-to-define-good-targets"><i class="fa fa-check"></i><b>6.1</b> How to define good targets</a>
-<ul>
-<li class="chapter" data-level="6.1.1" data-path="practices.html"><a href="practices.html#what-a-target-should-do"><i class="fa fa-check"></i><b>6.1.1</b> What a target should do</a></li>
-<li class="chapter" data-level="6.1.2" data-path="practices.html"><a href="practices.html#loading-dependencies"><i class="fa fa-check"></i><b>6.1.2</b> Loading dependencies</a></li>
-<li class="chapter" data-level="6.1.3" data-path="practices.html"><a href="practices.html#return-value"><i class="fa fa-check"></i><b>6.1.3</b> Return value</a></li>
+<li class="chapter" data-level="6.1" data-path="functions.html"><a href="functions.html#problems-with-script-based-workflows"><i class="fa fa-check"></i><b>6.1</b> Problems with script-based workflows</a></li>
+<li class="chapter" data-level="6.2" data-path="functions.html"><a href="functions.html#functions-1"><i class="fa fa-check"></i><b>6.2</b> Functions</a></li>
+<li class="chapter" data-level="6.3" data-path="functions.html"><a href="functions.html#writing-functions"><i class="fa fa-check"></i><b>6.3</b> Writing functions</a></li>
+<li class="chapter" data-level="6.4" data-path="functions.html"><a href="functions.html#functions-in-pipelines"><i class="fa fa-check"></i><b>6.4</b> Functions in pipelines</a></li>
 </ul></li>
-<li class="chapter" data-level="6.2" data-path="practices.html"><a href="practices.html#side-effects"><i class="fa fa-check"></i><b>6.2</b> Side effects</a>
+<li class="chapter" data-level="7" data-path="targets.html"><a href="targets.html"><i class="fa fa-check"></i><b>7</b> Target construction</a>
 <ul>
-<li class="chapter" data-level="6.2.1" data-path="practices.html"><a href="practices.html#how-much-a-target-should-do"><i class="fa fa-check"></i><b>6.2.1</b> How much a target should do</a></li>
-</ul></li>
-<li class="chapter" data-level="6.3" data-path="practices.html"><a href="practices.html#dependencies"><i class="fa fa-check"></i><b>6.3</b> Dependencies</a></li>
-<li class="chapter" data-level="6.4" data-path="practices.html"><a href="practices.html#loading-and-configuring-r-packages"><i class="fa fa-check"></i><b>6.4</b> Loading and configuring R packages</a></li>
-<li class="chapter" data-level="6.5" data-path="practices.html"><a href="practices.html#packages-based-invalidation"><i class="fa fa-check"></i><b>6.5</b> Packages-based invalidation</a></li>
-<li class="chapter" data-level="6.6" data-path="practices.html"><a href="practices.html#working-with-tools-outside-r"><i class="fa fa-check"></i><b>6.6</b> Working with tools outside R</a></li>
-<li class="chapter" data-level="6.7" data-path="practices.html"><a href="practices.html#monitoring-the-pipeline"><i class="fa fa-check"></i><b>6.7</b> Monitoring the pipeline</a></li>
-<li class="chapter" data-level="6.8" data-path="practices.html"><a href="practices.html#performance"><i class="fa fa-check"></i><b>6.8</b> Performance</a></li>
-<li class="chapter" data-level="6.9" data-path="practices.html"><a href="practices.html#cleaning-up"><i class="fa fa-check"></i><b>6.9</b> Cleaning up</a></li>
-</ul></li>
-<li class="chapter" data-level="7" data-path="files.html"><a href="files.html"><i class="fa fa-check"></i><b>7</b> External files and literate programming</a>
+<li class="chapter" data-level="7.1" data-path="targets.html"><a href="targets.html#what-a-target-should-do"><i class="fa fa-check"></i><b>7.1</b> What a target should do</a></li>
+<li class="chapter" data-level="7.2" data-path="targets.html"><a href="targets.html#how-much-a-target-should-do"><i class="fa fa-check"></i><b>7.2</b> How much a target should do</a></li>
+<li class="chapter" data-level="7.3" data-path="targets.html"><a href="targets.html#working-with-tools-outside-r"><i class="fa fa-check"></i><b>7.3</b> Working with tools outside R</a></li>
+<li class="chapter" data-level="7.4" data-path="targets.html"><a href="targets.html#side-effects"><i class="fa fa-check"></i><b>7.4</b> Side effects</a></li>
+<li class="chapter" data-level="7.5" data-path="targets.html"><a href="targets.html#dependencies"><i class="fa fa-check"></i><b>7.5</b> Dependencies</a></li>
+<li class="chapter" data-level="7.6" data-path="targets.html"><a href="targets.html#return-value"><i class="fa fa-check"></i><b>7.6</b> Return value</a>
 <ul>
-<li class="chapter" data-level="7.1" data-path="files.html"><a href="files.html#internal-files"><i class="fa fa-check"></i><b>7.1</b> Internal files</a></li>
-<li class="chapter" data-level="7.2" data-path="files.html"><a href="files.html#external-input-files"><i class="fa fa-check"></i><b>7.2</b> External input files</a></li>
-<li class="chapter" data-level="7.3" data-path="files.html"><a href="files.html#external-output-files"><i class="fa fa-check"></i><b>7.3</b> External output files</a></li>
-<li class="chapter" data-level="7.4" data-path="files.html"><a href="files.html#literate-programming"><i class="fa fa-check"></i><b>7.4</b> Literate programming</a></li>
-<li class="chapter" data-level="7.5" data-path="files.html"><a href="files.html#parameterized-r-markdown"><i class="fa fa-check"></i><b>7.5</b> Parameterized R Markdown</a>
-<ul>
-<li class="chapter" data-level="7.5.1" data-path="files.html"><a href="files.html#single-parameter-set"><i class="fa fa-check"></i><b>7.5.1</b> Single parameter set</a></li>
-<li class="chapter" data-level="7.5.2" data-path="files.html"><a href="files.html#multiple-parameter-sets"><i class="fa fa-check"></i><b>7.5.2</b> Multiple parameter sets</a></li>
+<li class="chapter" data-level="7.6.1" data-path="targets.html"><a href="targets.html#saving"><i class="fa fa-check"></i><b>7.6.1</b> Saving</a></li>
+<li class="chapter" data-level="7.6.2" data-path="targets.html"><a href="targets.html#hashing"><i class="fa fa-check"></i><b>7.6.2</b> Hashing</a></li>
+<li class="chapter" data-level="7.6.3" data-path="targets.html"><a href="targets.html#workaround"><i class="fa fa-check"></i><b>7.6.3</b> Workaround</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="8" data-path="dynamic.html"><a href="dynamic.html"><i class="fa fa-check"></i><b>8</b> Dynamic branching</a>
+<li class="chapter" data-level="8" data-path="packages.html"><a href="packages.html"><i class="fa fa-check"></i><b>8</b> Packages</a>
 <ul>
-<li class="chapter" data-level="8.1" data-path="dynamic.html"><a href="dynamic.html#branching"><i class="fa fa-check"></i><b>8.1</b> Branching</a></li>
-<li class="chapter" data-level="8.2" data-path="dynamic.html"><a href="dynamic.html#about-dynamic-branching"><i class="fa fa-check"></i><b>8.2</b> About dynamic branching</a></li>
-<li class="chapter" data-level="8.3" data-path="dynamic.html"><a href="dynamic.html#patterns"><i class="fa fa-check"></i><b>8.3</b> Patterns</a></li>
-<li class="chapter" data-level="8.4" data-path="dynamic.html"><a href="dynamic.html#pattern-construction"><i class="fa fa-check"></i><b>8.4</b> Pattern construction</a></li>
-<li class="chapter" data-level="8.5" data-path="dynamic.html"><a href="dynamic.html#branch-provenance"><i class="fa fa-check"></i><b>8.5</b> Branch provenance</a></li>
-<li class="chapter" data-level="8.6" data-path="dynamic.html"><a href="dynamic.html#testing-patterns"><i class="fa fa-check"></i><b>8.6</b> Testing patterns</a></li>
-<li class="chapter" data-level="8.7" data-path="dynamic.html"><a href="dynamic.html#branching-over-files"><i class="fa fa-check"></i><b>8.7</b> Branching over files</a></li>
-<li class="chapter" data-level="8.8" data-path="dynamic.html"><a href="dynamic.html#branching-over-rows"><i class="fa fa-check"></i><b>8.8</b> Branching over rows</a></li>
-<li class="chapter" data-level="8.9" data-path="dynamic.html"><a href="dynamic.html#iteration"><i class="fa fa-check"></i><b>8.9</b> Iteration</a>
-<ul>
-<li class="chapter" data-level="8.9.1" data-path="dynamic.html"><a href="dynamic.html#vector-iteration"><i class="fa fa-check"></i><b>8.9.1</b> Vector iteration</a></li>
-<li class="chapter" data-level="8.9.2" data-path="dynamic.html"><a href="dynamic.html#list-iteration"><i class="fa fa-check"></i><b>8.9.2</b> List iteration</a></li>
-<li class="chapter" data-level="8.9.3" data-path="dynamic.html"><a href="dynamic.html#group-iteration"><i class="fa fa-check"></i><b>8.9.3</b> Group iteration</a></li>
+<li class="chapter" data-level="8.1" data-path="packages.html"><a href="packages.html#loading-and-configuring-r-packages"><i class="fa fa-check"></i><b>8.1</b> Loading and configuring R packages</a></li>
+<li class="chapter" data-level="8.2" data-path="packages.html"><a href="packages.html#r-packages-as-projects"><i class="fa fa-check"></i><b>8.2</b> R packages as projects</a></li>
+<li class="chapter" data-level="8.3" data-path="packages.html"><a href="packages.html#target-factories"><i class="fa fa-check"></i><b>8.3</b> Target Factories</a></li>
+<li class="chapter" data-level="8.4" data-path="packages.html"><a href="packages.html#package-based-invalidation"><i class="fa fa-check"></i><b>8.4</b> Package-based invalidation</a></li>
 </ul></li>
-<li class="chapter" data-level="8.10" data-path="dynamic.html"><a href="dynamic.html#dynamic-branching-performance"><i class="fa fa-check"></i><b>8.10</b> Dynamic branching performance</a></li>
-<li class="chapter" data-level="8.11" data-path="dynamic.html"><a href="dynamic.html#batching"><i class="fa fa-check"></i><b>8.11</b> Batching</a></li>
-</ul></li>
-<li class="chapter" data-level="9" data-path="static.html"><a href="static.html"><i class="fa fa-check"></i><b>9</b> Static branching</a>
+<li class="chapter" data-level="9" data-path="projects.html"><a href="projects.html"><i class="fa fa-check"></i><b>9</b> Projects</a>
 <ul>
-<li class="chapter" data-level="9.1" data-path="static.html"><a href="static.html#branching-1"><i class="fa fa-check"></i><b>9.1</b> Branching</a></li>
-<li class="chapter" data-level="9.2" data-path="static.html"><a href="static.html#when-to-use-static-branching"><i class="fa fa-check"></i><b>9.2</b> When to use static branching</a></li>
-<li class="chapter" data-level="9.3" data-path="static.html"><a href="static.html#map"><i class="fa fa-check"></i><b>9.3</b> Map</a></li>
-<li class="chapter" data-level="9.4" data-path="static.html"><a href="static.html#dynamic-within-static-branching"><i class="fa fa-check"></i><b>9.4</b> Dynamic-within-static branching</a></li>
-<li class="chapter" data-level="9.5" data-path="static.html"><a href="static.html#combine"><i class="fa fa-check"></i><b>9.5</b> Combine</a></li>
-<li class="chapter" data-level="9.6" data-path="static.html"><a href="static.html#metaprogramming"><i class="fa fa-check"></i><b>9.6</b> Metaprogramming</a></li>
-<li class="chapter" data-level="9.7" data-path="static.html"><a href="static.html#hooks"><i class="fa fa-check"></i><b>9.7</b> Hooks</a></li>
-</ul></li>
-<li class="chapter" data-level="10" data-path="hpc.html"><a href="hpc.html"><i class="fa fa-check"></i><b>10</b> High-performance computing</a>
+<li class="chapter" data-level="9.1" data-path="projects.html"><a href="projects.html#extra-reproducibility"><i class="fa fa-check"></i><b>9.1</b> Extra reproducibility</a></li>
+<li class="chapter" data-level="9.2" data-path="projects.html"><a href="projects.html#project-files"><i class="fa fa-check"></i><b>9.2</b> Project files</a></li>
+<li class="chapter" data-level="9.3" data-path="projects.html"><a href="projects.html#multiple-projects"><i class="fa fa-check"></i><b>9.3</b> Multiple projects</a>
 <ul>
-<li class="chapter" data-level="10.1" data-path="hpc.html"><a href="hpc.html#clustermq"><i class="fa fa-check"></i><b>10.1</b> Clustermq</a>
-<ul>
-<li class="chapter" data-level="10.1.1" data-path="hpc.html"><a href="hpc.html#persistent-workers"><i class="fa fa-check"></i><b>10.1.1</b> Persistent workers</a></li>
-<li class="chapter" data-level="10.1.2" data-path="hpc.html"><a href="hpc.html#clustermq-installation"><i class="fa fa-check"></i><b>10.1.2</b> Clustermq installation</a></li>
-<li class="chapter" data-level="10.1.3" data-path="hpc.html"><a href="hpc.html#clustermq-locally"><i class="fa fa-check"></i><b>10.1.3</b> Clustermq locally</a></li>
-<li class="chapter" data-level="10.1.4" data-path="hpc.html"><a href="hpc.html#clustermq-remotely"><i class="fa fa-check"></i><b>10.1.4</b> Clustermq remotely</a></li>
-<li class="chapter" data-level="10.1.5" data-path="hpc.html"><a href="hpc.html#clustermq-configuration"><i class="fa fa-check"></i><b>10.1.5</b> Clustermq configuration</a></li>
-</ul></li>
-<li class="chapter" data-level="10.2" data-path="hpc.html"><a href="hpc.html#future"><i class="fa fa-check"></i><b>10.2</b> Future</a>
-<ul>
-<li class="chapter" data-level="10.2.1" data-path="hpc.html"><a href="hpc.html#transient-workers"><i class="fa fa-check"></i><b>10.2.1</b> Transient workers</a></li>
-<li class="chapter" data-level="10.2.2" data-path="hpc.html"><a href="hpc.html#future-installation"><i class="fa fa-check"></i><b>10.2.2</b> Future installation</a></li>
-<li class="chapter" data-level="10.2.3" data-path="hpc.html"><a href="hpc.html#future-locally"><i class="fa fa-check"></i><b>10.2.3</b> Future locally</a></li>
-<li class="chapter" data-level="10.2.4" data-path="hpc.html"><a href="hpc.html#future-remotely"><i class="fa fa-check"></i><b>10.2.4</b> Future remotely</a></li>
-<li class="chapter" data-level="10.2.5" data-path="hpc.html"><a href="hpc.html#future-configuration"><i class="fa fa-check"></i><b>10.2.5</b> Future configuration</a></li>
-</ul></li>
-<li class="chapter" data-level="10.3" data-path="hpc.html"><a href="hpc.html#advanced"><i class="fa fa-check"></i><b>10.3</b> Advanced</a></li>
-</ul></li>
-<li class="chapter" data-level="11" data-path="cloud.html"><a href="cloud.html"><i class="fa fa-check"></i><b>11</b> Cloud integration</a>
-<ul>
-<li class="chapter" data-level="11.1" data-path="cloud.html"><a href="cloud.html#compute"><i class="fa fa-check"></i><b>11.1</b> Compute</a></li>
-<li class="chapter" data-level="11.2" data-path="cloud.html"><a href="cloud.html#storage"><i class="fa fa-check"></i><b>11.2</b> Storage</a>
-<ul>
-<li class="chapter" data-level="11.2.1" data-path="cloud.html"><a href="cloud.html#a-disclaimer"><i class="fa fa-check"></i><b>11.2.1</b> A disclaimer</a></li>
-<li class="chapter" data-level="11.2.2" data-path="cloud.html"><a href="cloud.html#communicate-with-your-collaborators"><i class="fa fa-check"></i><b>11.2.2</b> Communicate with your collaborators</a></li>
-<li class="chapter" data-level="11.2.3" data-path="cloud.html"><a href="cloud.html#get-started-with-the-amazon-s3-web-console"><i class="fa fa-check"></i><b>11.2.3</b> Get started with the Amazon S3 web console</a></li>
-<li class="chapter" data-level="11.2.4" data-path="cloud.html"><a href="cloud.html#configure-your-local-machine"><i class="fa fa-check"></i><b>11.2.4</b> Configure your local machine</a></li>
-<li class="chapter" data-level="11.2.5" data-path="cloud.html"><a href="cloud.html#create-s3-buckets"><i class="fa fa-check"></i><b>11.2.5</b> Create S3 buckets</a></li>
-<li class="chapter" data-level="11.2.6" data-path="cloud.html"><a href="cloud.html#configure-the-pipeline"><i class="fa fa-check"></i><b>11.2.6</b> Configure the pipeline</a></li>
-<li class="chapter" data-level="11.2.7" data-path="cloud.html"><a href="cloud.html#run-the-pipeline-1"><i class="fa fa-check"></i><b>11.2.7</b> Run the pipeline</a></li>
-<li class="chapter" data-level="11.2.8" data-path="cloud.html"><a href="cloud.html#manage-the-data"><i class="fa fa-check"></i><b>11.2.8</b> Manage the data</a></li>
+<li class="chapter" data-level="9.3.1" data-path="projects.html"><a href="projects.html#create-each-project."><i class="fa fa-check"></i><b>9.3.1</b> Create each project.</a></li>
+<li class="chapter" data-level="9.3.2" data-path="projects.html"><a href="projects.html#configure-each-project."><i class="fa fa-check"></i><b>9.3.2</b> Configure each project.</a></li>
+<li class="chapter" data-level="9.3.3" data-path="projects.html"><a href="projects.html#run-each-project"><i class="fa fa-check"></i><b>9.3.3</b> Run each project</a></li>
+<li class="chapter" data-level="9.3.4" data-path="projects.html"><a href="projects.html#interdependent-projects"><i class="fa fa-check"></i><b>9.3.4</b> Interdependent projects</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="12" data-path="drake.html"><a href="drake.html"><i class="fa fa-check"></i><b>12</b> What about <code>drake</code>?</a>
+<li class="chapter" data-level="10" data-path="files.html"><a href="files.html"><i class="fa fa-check"></i><b>10</b> External files and literate programming</a>
 <ul>
-<li class="chapter" data-level="12.1" data-path="drake.html"><a href="drake.html#why-is-drake-superseded"><i class="fa fa-check"></i><b>12.1</b> Why is <code>drake</code> superseded?</a></li>
-<li class="chapter" data-level="12.2" data-path="drake.html"><a href="drake.html#transitioning-to-targets"><i class="fa fa-check"></i><b>12.2</b> Transitioning to <code>targets</code></a></li>
-<li class="chapter" data-level="12.3" data-path="drake.html"><a href="drake.html#advantages-of-targets-over-drake"><i class="fa fa-check"></i><b>12.3</b> Advantages of <code>targets</code> over <code>drake</code></a>
+<li class="chapter" data-level="10.1" data-path="files.html"><a href="files.html#internal-files"><i class="fa fa-check"></i><b>10.1</b> Internal files</a>
 <ul>
-<li class="chapter" data-level="12.3.1" data-path="drake.html"><a href="drake.html#better-guardrails-by-design"><i class="fa fa-check"></i><b>12.3.1</b> Better guardrails by design</a></li>
-<li class="chapter" data-level="12.3.2" data-path="drake.html"><a href="drake.html#enhanced-debugging-support"><i class="fa fa-check"></i><b>12.3.2</b> Enhanced debugging support</a></li>
-<li class="chapter" data-level="12.3.3" data-path="drake.html"><a href="drake.html#improved-tracking-of-package-functions"><i class="fa fa-check"></i><b>12.3.3</b> Improved tracking of package functions</a></li>
-<li class="chapter" data-level="12.3.4" data-path="drake.html"><a href="drake.html#lighter-friendlier-data-management"><i class="fa fa-check"></i><b>12.3.4</b> Lighter, friendlier data management</a></li>
-<li class="chapter" data-level="12.3.5" data-path="drake.html"><a href="drake.html#cloud-storage"><i class="fa fa-check"></i><b>12.3.5</b> Cloud storage</a></li>
-<li class="chapter" data-level="12.3.6" data-path="drake.html"><a href="drake.html#show-status-of-functions-and-global-objects"><i class="fa fa-check"></i><b>12.3.6</b> Show status of functions and global objects</a></li>
-<li class="chapter" data-level="12.3.7" data-path="drake.html"><a href="drake.html#dynamic-branching-with-dplyrgroup_by"><i class="fa fa-check"></i><b>12.3.7</b> Dynamic branching with <code>dplyr::group_by()</code></a></li>
-<li class="chapter" data-level="12.3.8" data-path="drake.html"><a href="drake.html#composable-dynamic-branching"><i class="fa fa-check"></i><b>12.3.8</b> Composable dynamic branching</a></li>
-<li class="chapter" data-level="12.3.9" data-path="drake.html"><a href="drake.html#improved-parallel-efficiency"><i class="fa fa-check"></i><b>12.3.9</b> Improved parallel efficiency</a></li>
-<li class="chapter" data-level="12.3.10" data-path="drake.html"><a href="drake.html#metaprogramming-1"><i class="fa fa-check"></i><b>12.3.10</b> Metaprogramming</a></li>
+<li class="chapter" data-level="10.1.1" data-path="files.html"><a href="files.html#cleaning-up"><i class="fa fa-check"></i><b>10.1.1</b> Cleaning up</a></li>
+</ul></li>
+<li class="chapter" data-level="10.2" data-path="files.html"><a href="files.html#external-input-files"><i class="fa fa-check"></i><b>10.2</b> External input files</a></li>
+<li class="chapter" data-level="10.3" data-path="files.html"><a href="files.html#external-output-files"><i class="fa fa-check"></i><b>10.3</b> External output files</a></li>
+<li class="chapter" data-level="10.4" data-path="files.html"><a href="files.html#literate-programming"><i class="fa fa-check"></i><b>10.4</b> Literate programming</a></li>
+<li class="chapter" data-level="10.5" data-path="files.html"><a href="files.html#parameterized-r-markdown"><i class="fa fa-check"></i><b>10.5</b> Parameterized R Markdown</a>
+<ul>
+<li class="chapter" data-level="10.5.1" data-path="files.html"><a href="files.html#single-parameter-set"><i class="fa fa-check"></i><b>10.5.1</b> Single parameter set</a></li>
+<li class="chapter" data-level="10.5.2" data-path="files.html"><a href="files.html#multiple-parameter-sets"><i class="fa fa-check"></i><b>10.5.2</b> Multiple parameter sets</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="dynamic.html"><a href="dynamic.html"><i class="fa fa-check"></i><b>11</b> Dynamic branching</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="dynamic.html"><a href="dynamic.html#branching"><i class="fa fa-check"></i><b>11.1</b> Branching</a></li>
+<li class="chapter" data-level="11.2" data-path="dynamic.html"><a href="dynamic.html#about-dynamic-branching"><i class="fa fa-check"></i><b>11.2</b> About dynamic branching</a></li>
+<li class="chapter" data-level="11.3" data-path="dynamic.html"><a href="dynamic.html#patterns"><i class="fa fa-check"></i><b>11.3</b> Patterns</a></li>
+<li class="chapter" data-level="11.4" data-path="dynamic.html"><a href="dynamic.html#pattern-construction"><i class="fa fa-check"></i><b>11.4</b> Pattern construction</a></li>
+<li class="chapter" data-level="11.5" data-path="dynamic.html"><a href="dynamic.html#branch-provenance"><i class="fa fa-check"></i><b>11.5</b> Branch provenance</a></li>
+<li class="chapter" data-level="11.6" data-path="dynamic.html"><a href="dynamic.html#testing-patterns"><i class="fa fa-check"></i><b>11.6</b> Testing patterns</a></li>
+<li class="chapter" data-level="11.7" data-path="dynamic.html"><a href="dynamic.html#branching-over-files"><i class="fa fa-check"></i><b>11.7</b> Branching over files</a></li>
+<li class="chapter" data-level="11.8" data-path="dynamic.html"><a href="dynamic.html#branching-over-rows"><i class="fa fa-check"></i><b>11.8</b> Branching over rows</a></li>
+<li class="chapter" data-level="11.9" data-path="dynamic.html"><a href="dynamic.html#iteration"><i class="fa fa-check"></i><b>11.9</b> Iteration</a>
+<ul>
+<li class="chapter" data-level="11.9.1" data-path="dynamic.html"><a href="dynamic.html#vector-iteration"><i class="fa fa-check"></i><b>11.9.1</b> Vector iteration</a></li>
+<li class="chapter" data-level="11.9.2" data-path="dynamic.html"><a href="dynamic.html#list-iteration"><i class="fa fa-check"></i><b>11.9.2</b> List iteration</a></li>
+<li class="chapter" data-level="11.9.3" data-path="dynamic.html"><a href="dynamic.html#group-iteration"><i class="fa fa-check"></i><b>11.9.3</b> Group iteration</a></li>
+</ul></li>
+<li class="chapter" data-level="11.10" data-path="dynamic.html"><a href="dynamic.html#dynamic-branching-performance"><i class="fa fa-check"></i><b>11.10</b> Dynamic branching performance</a></li>
+<li class="chapter" data-level="11.11" data-path="dynamic.html"><a href="dynamic.html#batching"><i class="fa fa-check"></i><b>11.11</b> Batching</a></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="static.html"><a href="static.html"><i class="fa fa-check"></i><b>12</b> Static branching</a>
+<ul>
+<li class="chapter" data-level="12.1" data-path="static.html"><a href="static.html#branching-1"><i class="fa fa-check"></i><b>12.1</b> Branching</a></li>
+<li class="chapter" data-level="12.2" data-path="static.html"><a href="static.html#when-to-use-static-branching"><i class="fa fa-check"></i><b>12.2</b> When to use static branching</a></li>
+<li class="chapter" data-level="12.3" data-path="static.html"><a href="static.html#map"><i class="fa fa-check"></i><b>12.3</b> Map</a></li>
+<li class="chapter" data-level="12.4" data-path="static.html"><a href="static.html#dynamic-within-static-branching"><i class="fa fa-check"></i><b>12.4</b> Dynamic-within-static branching</a></li>
+<li class="chapter" data-level="12.5" data-path="static.html"><a href="static.html#combine"><i class="fa fa-check"></i><b>12.5</b> Combine</a></li>
+<li class="chapter" data-level="12.6" data-path="static.html"><a href="static.html#metaprogramming"><i class="fa fa-check"></i><b>12.6</b> Metaprogramming</a></li>
+<li class="chapter" data-level="12.7" data-path="static.html"><a href="static.html#hooks"><i class="fa fa-check"></i><b>12.7</b> Hooks</a></li>
+</ul></li>
+<li class="chapter" data-level="13" data-path="hpc.html"><a href="hpc.html"><i class="fa fa-check"></i><b>13</b> High-performance computing</a>
+<ul>
+<li class="chapter" data-level="13.1" data-path="hpc.html"><a href="hpc.html#clustermq"><i class="fa fa-check"></i><b>13.1</b> Clustermq</a>
+<ul>
+<li class="chapter" data-level="13.1.1" data-path="hpc.html"><a href="hpc.html#persistent-workers"><i class="fa fa-check"></i><b>13.1.1</b> Persistent workers</a></li>
+<li class="chapter" data-level="13.1.2" data-path="hpc.html"><a href="hpc.html#clustermq-installation"><i class="fa fa-check"></i><b>13.1.2</b> Clustermq installation</a></li>
+<li class="chapter" data-level="13.1.3" data-path="hpc.html"><a href="hpc.html#clustermq-locally"><i class="fa fa-check"></i><b>13.1.3</b> Clustermq locally</a></li>
+<li class="chapter" data-level="13.1.4" data-path="hpc.html"><a href="hpc.html#clustermq-remotely"><i class="fa fa-check"></i><b>13.1.4</b> Clustermq remotely</a></li>
+<li class="chapter" data-level="13.1.5" data-path="hpc.html"><a href="hpc.html#clustermq-configuration"><i class="fa fa-check"></i><b>13.1.5</b> Clustermq configuration</a></li>
+</ul></li>
+<li class="chapter" data-level="13.2" data-path="hpc.html"><a href="hpc.html#future"><i class="fa fa-check"></i><b>13.2</b> Future</a>
+<ul>
+<li class="chapter" data-level="13.2.1" data-path="hpc.html"><a href="hpc.html#transient-workers"><i class="fa fa-check"></i><b>13.2.1</b> Transient workers</a></li>
+<li class="chapter" data-level="13.2.2" data-path="hpc.html"><a href="hpc.html#future-installation"><i class="fa fa-check"></i><b>13.2.2</b> Future installation</a></li>
+<li class="chapter" data-level="13.2.3" data-path="hpc.html"><a href="hpc.html#future-locally"><i class="fa fa-check"></i><b>13.2.3</b> Future locally</a></li>
+<li class="chapter" data-level="13.2.4" data-path="hpc.html"><a href="hpc.html#future-remotely"><i class="fa fa-check"></i><b>13.2.4</b> Future remotely</a></li>
+<li class="chapter" data-level="13.2.5" data-path="hpc.html"><a href="hpc.html#future-configuration"><i class="fa fa-check"></i><b>13.2.5</b> Future configuration</a></li>
+</ul></li>
+<li class="chapter" data-level="13.3" data-path="hpc.html"><a href="hpc.html#advanced"><i class="fa fa-check"></i><b>13.3</b> Advanced</a></li>
+</ul></li>
+<li class="chapter" data-level="14" data-path="cloud.html"><a href="cloud.html"><i class="fa fa-check"></i><b>14</b> Cloud integration</a>
+<ul>
+<li class="chapter" data-level="14.1" data-path="cloud.html"><a href="cloud.html#compute"><i class="fa fa-check"></i><b>14.1</b> Compute</a></li>
+<li class="chapter" data-level="14.2" data-path="cloud.html"><a href="cloud.html#storage"><i class="fa fa-check"></i><b>14.2</b> Storage</a>
+<ul>
+<li class="chapter" data-level="14.2.1" data-path="cloud.html"><a href="cloud.html#a-disclaimer"><i class="fa fa-check"></i><b>14.2.1</b> A disclaimer</a></li>
+<li class="chapter" data-level="14.2.2" data-path="cloud.html"><a href="cloud.html#communicate-with-your-collaborators"><i class="fa fa-check"></i><b>14.2.2</b> Communicate with your collaborators</a></li>
+<li class="chapter" data-level="14.2.3" data-path="cloud.html"><a href="cloud.html#get-started-with-the-amazon-s3-web-console"><i class="fa fa-check"></i><b>14.2.3</b> Get started with the Amazon S3 web console</a></li>
+<li class="chapter" data-level="14.2.4" data-path="cloud.html"><a href="cloud.html#configure-your-local-machine"><i class="fa fa-check"></i><b>14.2.4</b> Configure your local machine</a></li>
+<li class="chapter" data-level="14.2.5" data-path="cloud.html"><a href="cloud.html#create-s3-buckets"><i class="fa fa-check"></i><b>14.2.5</b> Create S3 buckets</a></li>
+<li class="chapter" data-level="14.2.6" data-path="cloud.html"><a href="cloud.html#configure-the-pipeline"><i class="fa fa-check"></i><b>14.2.6</b> Configure the pipeline</a></li>
+<li class="chapter" data-level="14.2.7" data-path="cloud.html"><a href="cloud.html#run-the-pipeline-1"><i class="fa fa-check"></i><b>14.2.7</b> Run the pipeline</a></li>
+<li class="chapter" data-level="14.2.8" data-path="cloud.html"><a href="cloud.html#manage-the-data"><i class="fa fa-check"></i><b>14.2.8</b> Manage the data</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="15" data-path="drake.html"><a href="drake.html"><i class="fa fa-check"></i><b>15</b> What about <code>drake</code>?</a>
+<ul>
+<li class="chapter" data-level="15.1" data-path="drake.html"><a href="drake.html#why-is-drake-superseded"><i class="fa fa-check"></i><b>15.1</b> Why is <code>drake</code> superseded?</a></li>
+<li class="chapter" data-level="15.2" data-path="drake.html"><a href="drake.html#transitioning-to-targets"><i class="fa fa-check"></i><b>15.2</b> Transitioning to <code>targets</code></a></li>
+<li class="chapter" data-level="15.3" data-path="drake.html"><a href="drake.html#advantages-of-targets-over-drake"><i class="fa fa-check"></i><b>15.3</b> Advantages of <code>targets</code> over <code>drake</code></a>
+<ul>
+<li class="chapter" data-level="15.3.1" data-path="drake.html"><a href="drake.html#better-guardrails-by-design"><i class="fa fa-check"></i><b>15.3.1</b> Better guardrails by design</a></li>
+<li class="chapter" data-level="15.3.2" data-path="drake.html"><a href="drake.html#enhanced-debugging-support"><i class="fa fa-check"></i><b>15.3.2</b> Enhanced debugging support</a></li>
+<li class="chapter" data-level="15.3.3" data-path="drake.html"><a href="drake.html#improved-tracking-of-package-functions"><i class="fa fa-check"></i><b>15.3.3</b> Improved tracking of package functions</a></li>
+<li class="chapter" data-level="15.3.4" data-path="drake.html"><a href="drake.html#lighter-friendlier-data-management"><i class="fa fa-check"></i><b>15.3.4</b> Lighter, friendlier data management</a></li>
+<li class="chapter" data-level="15.3.5" data-path="drake.html"><a href="drake.html#cloud-storage"><i class="fa fa-check"></i><b>15.3.5</b> Cloud storage</a></li>
+<li class="chapter" data-level="15.3.6" data-path="drake.html"><a href="drake.html#show-status-of-functions-and-global-objects"><i class="fa fa-check"></i><b>15.3.6</b> Show status of functions and global objects</a></li>
+<li class="chapter" data-level="15.3.7" data-path="drake.html"><a href="drake.html#dynamic-branching-with-dplyrgroup_by"><i class="fa fa-check"></i><b>15.3.7</b> Dynamic branching with <code>dplyr::group_by()</code></a></li>
+<li class="chapter" data-level="15.3.8" data-path="drake.html"><a href="drake.html#composable-dynamic-branching"><i class="fa fa-check"></i><b>15.3.8</b> Composable dynamic branching</a></li>
+<li class="chapter" data-level="15.3.9" data-path="drake.html"><a href="drake.html#improved-parallel-efficiency"><i class="fa fa-check"></i><b>15.3.9</b> Improved parallel efficiency</a></li>
+<li class="chapter" data-level="15.3.10" data-path="drake.html"><a href="drake.html#metaprogramming-1"><i class="fa fa-check"></i><b>15.3.10</b> Metaprogramming</a></li>
 </ul></li>
 </ul></li>
 <li class="divider"></li>
@@ -339,254 +360,254 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="static" class="section level1" number="9">
-<h1><span class="header-section-number">Chapter 9</span> Static branching</h1>
-<div id="branching-1" class="section level2" number="9.1">
-<h2><span class="header-section-number">9.1</span> Branching</h2>
+<div id="static" class="section level1" number="12">
+<h1><span class="header-section-number">Chapter 12</span> Static branching</h1>
+<div id="branching-1" class="section level2" number="12.1">
+<h2><span class="header-section-number">12.1</span> Branching</h2>
 <p>Sometimes, a pipeline contains more targets than a user can comfortably type by hand. For projects with hundreds of targets, branching can make the <code>_targets.R</code> file more concise and easier to read and maintain.</p>
 <p><code>targets</code> supports two types of branching: dynamic branching and <a href="static.html#static">static branching</a>. Some projects are better suited to dynamic branching, while others benefit more from <a href="static.html#static">static branching</a> or a combination of both. Some users understand dynamic branching more easily because it avoids metaprogramming, while others prefer <a href="static.html#static">static branching</a> because <code>tar_manifest()</code> and <code>tar_visnetwork()</code> provide immediate feedback. Except for the <a href="static.html#dynamic-within-static-branching">section on dynamic-within-static branching</a>, you can read the two chapters on branching in any order (or skip them) depending on your needs.</p>
 </div>
-<div id="when-to-use-static-branching" class="section level2" number="9.2">
-<h2><span class="header-section-number">9.2</span> When to use static branching</h2>
+<div id="when-to-use-static-branching" class="section level2" number="12.2">
+<h2><span class="header-section-number">12.2</span> When to use static branching</h2>
 <p>Static branching is the act of defining a group of targets in bulk before the pipeline starts. Whereas dynamic branching uses last-minute dependency data to define the branches, static branching uses metaprogramming to modify the code of the pipeline up front. Whereas dynamic branching excels at creating a large number of very similar targets, static branching is most useful for smaller number of heterogeneous targets. Some users find it more convenient because they can use <code>tar_manifest()</code> and <code>tar_visnetwork()</code> to check the correctness of static branching before launching the pipeline.</p>
 </div>
-<div id="map" class="section level2" number="9.3">
-<h2><span class="header-section-number">9.3</span> Map</h2>
+<div id="map" class="section level2" number="12.3">
+<h2><span class="header-section-number">12.3</span> Map</h2>
 <p><a href="https://docs.ropensci.org/tarchetypes/reference/tar_map.html"><code>tar_map()</code></a> from the <a href="https://github.com/ropensci/tarchetypes"><code>tarchetypes</code></a> package creates copies of existing target objects, where each new command is a variation on the original. In the example below, we have a data analysis workflow that iterates over datasets and analysis methods. The <code>values</code> data frame has the operational parameters of each data analysis, and <code>tar_map()</code> creates one new target per row.</p>
-<div class="sourceCode" id="cb146"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb146-1"><a href="static.html#cb146-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R file:</span></span>
-<span id="cb146-2"><a href="static.html#cb146-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb146-3"><a href="static.html#cb146-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
-<span id="cb146-4"><a href="static.html#cb146-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
-<span id="cb146-5"><a href="static.html#cb146-5" aria-hidden="true" tabindex="-1"></a>values <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
-<span id="cb146-6"><a href="static.html#cb146-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">method_function =</span> rlang<span class="sc">::</span><span class="fu">syms</span>(<span class="fu">c</span>(<span class="st">&quot;method1&quot;</span>, <span class="st">&quot;method2&quot;</span>)),</span>
-<span id="cb146-7"><a href="static.html#cb146-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">data_source =</span> <span class="fu">c</span>(<span class="st">&quot;NIH&quot;</span>, <span class="st">&quot;NIAID&quot;</span>)</span>
-<span id="cb146-8"><a href="static.html#cb146-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb146-9"><a href="static.html#cb146-9" aria-hidden="true" tabindex="-1"></a>targets <span class="ot">&lt;-</span> <span class="fu">tar_map</span>(</span>
-<span id="cb146-10"><a href="static.html#cb146-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">values =</span> values,</span>
-<span id="cb146-11"><a href="static.html#cb146-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(analysis, <span class="fu">method_function</span>(data_source, <span class="at">reps =</span> <span class="dv">10</span>)),</span>
-<span id="cb146-12"><a href="static.html#cb146-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(summary, <span class="fu">summarize_analysis</span>(analysis, data_source))</span>
-<span id="cb146-13"><a href="static.html#cb146-13" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb146-14"><a href="static.html#cb146-14" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(targets)</span></code></pre></div>
-<div class="sourceCode" id="cb147"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb147-1"><a href="static.html#cb147-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_manifest</span>()</span>
-<span id="cb147-2"><a href="static.html#cb147-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 4 × 3</span></span>
-<span id="cb147-3"><a href="static.html#cb147-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   name                   command                                         pattern</span></span>
-<span id="cb147-4"><a href="static.html#cb147-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;                  &lt;chr&gt;                                           &lt;chr&gt;  </span></span>
-<span id="cb147-5"><a href="static.html#cb147-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 analysis_method2_NIAID &quot;method2(\&quot;NIAID\&quot;, reps = 10)&quot;                 &lt;NA&gt;   </span></span>
-<span id="cb147-6"><a href="static.html#cb147-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 analysis_method1_NIH   &quot;method1(\&quot;NIH\&quot;, reps = 10)&quot;                   &lt;NA&gt;   </span></span>
-<span id="cb147-7"><a href="static.html#cb147-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 summary_method2_NIAID  &quot;summarize_analysis(analysis_method2_NIAID, \&quot;… &lt;NA&gt;   </span></span>
-<span id="cb147-8"><a href="static.html#cb147-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 summary_method1_NIH    &quot;summarize_analysis(analysis_method1_NIH, \&quot;NI… &lt;NA&gt;</span></span></code></pre></div>
-<div class="sourceCode" id="cb148"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb148-1"><a href="static.html#cb148-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_visnetwork</span>(<span class="at">targets_only =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
-<div id="htmlwidget-e5e47e3579a2ae9ba6ab" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
-<script type="application/json" data-for="htmlwidget-e5e47e3579a2ae9ba6ab">{"x":{"nodes":{"name":["analysis_method1_NIH","analysis_method2_NIAID","summary_method1_NIH","summary_method2_NIAID"],"type":["stem","stem","stem","stem"],"status":["outdated","outdated","outdated","outdated"],"seconds":[null,null,null,null],"bytes":[null,null,null,null],"branches":[null,null,null,null],"id":["analysis_method1_NIH","analysis_method2_NIAID","summary_method1_NIH","summary_method2_NIAID"],"label":["analysis_method1_NIH","analysis_method2_NIAID","summary_method1_NIH","summary_method2_NIAID"],"level":[1,1,2,2],"color":["#78B7C5","#78B7C5","#78B7C5","#78B7C5"],"shape":["dot","dot","dot","dot"]},"edges":{"from":["analysis_method1_NIH","analysis_method2_NIAID"],"to":["summary_method1_NIH","summary_method2_NIAID"],"arrows":["to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Outdated","Stem"],"color":["#78B7C5","#899DA4"],"shape":["dot","dot"]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
+<div class="sourceCode" id="cb158"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb158-1"><a href="static.html#cb158-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R file:</span></span>
+<span id="cb158-2"><a href="static.html#cb158-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb158-3"><a href="static.html#cb158-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
+<span id="cb158-4"><a href="static.html#cb158-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
+<span id="cb158-5"><a href="static.html#cb158-5" aria-hidden="true" tabindex="-1"></a>values <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb158-6"><a href="static.html#cb158-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">method_function =</span> rlang<span class="sc">::</span><span class="fu">syms</span>(<span class="fu">c</span>(<span class="st">&quot;method1&quot;</span>, <span class="st">&quot;method2&quot;</span>)),</span>
+<span id="cb158-7"><a href="static.html#cb158-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">data_source =</span> <span class="fu">c</span>(<span class="st">&quot;NIH&quot;</span>, <span class="st">&quot;NIAID&quot;</span>)</span>
+<span id="cb158-8"><a href="static.html#cb158-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb158-9"><a href="static.html#cb158-9" aria-hidden="true" tabindex="-1"></a>targets <span class="ot">&lt;-</span> <span class="fu">tar_map</span>(</span>
+<span id="cb158-10"><a href="static.html#cb158-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">values =</span> values,</span>
+<span id="cb158-11"><a href="static.html#cb158-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(analysis, <span class="fu">method_function</span>(data_source, <span class="at">reps =</span> <span class="dv">10</span>)),</span>
+<span id="cb158-12"><a href="static.html#cb158-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(summary, <span class="fu">summarize_analysis</span>(analysis, data_source))</span>
+<span id="cb158-13"><a href="static.html#cb158-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb158-14"><a href="static.html#cb158-14" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(targets)</span></code></pre></div>
+<div class="sourceCode" id="cb159"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb159-1"><a href="static.html#cb159-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_manifest</span>()</span>
+<span id="cb159-2"><a href="static.html#cb159-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 4 × 3</span></span>
+<span id="cb159-3"><a href="static.html#cb159-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   name                   command                                         pattern</span></span>
+<span id="cb159-4"><a href="static.html#cb159-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;                  &lt;chr&gt;                                           &lt;chr&gt;  </span></span>
+<span id="cb159-5"><a href="static.html#cb159-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 analysis_method2_NIAID &quot;method2(\&quot;NIAID\&quot;, reps = 10)&quot;                 &lt;NA&gt;   </span></span>
+<span id="cb159-6"><a href="static.html#cb159-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 analysis_method1_NIH   &quot;method1(\&quot;NIH\&quot;, reps = 10)&quot;                   &lt;NA&gt;   </span></span>
+<span id="cb159-7"><a href="static.html#cb159-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 summary_method2_NIAID  &quot;summarize_analysis(analysis_method2_NIAID, \&quot;… &lt;NA&gt;   </span></span>
+<span id="cb159-8"><a href="static.html#cb159-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 summary_method1_NIH    &quot;summarize_analysis(analysis_method1_NIH, \&quot;NI… &lt;NA&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb160"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb160-1"><a href="static.html#cb160-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_visnetwork</span>(<span class="at">targets_only =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<div id="htmlwidget-0438197c65822df1c8e1" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-0438197c65822df1c8e1">{"x":{"nodes":{"name":["analysis_method1_NIH","analysis_method2_NIAID","summary_method1_NIH","summary_method2_NIAID"],"type":["stem","stem","stem","stem"],"status":["outdated","outdated","outdated","outdated"],"seconds":[null,null,null,null],"bytes":[null,null,null,null],"branches":[null,null,null,null],"id":["analysis_method1_NIH","analysis_method2_NIAID","summary_method1_NIH","summary_method2_NIAID"],"label":["analysis_method1_NIH","analysis_method2_NIAID","summary_method1_NIH","summary_method2_NIAID"],"level":[1,1,2,2],"color":["#78B7C5","#78B7C5","#78B7C5","#78B7C5"],"shape":["dot","dot","dot","dot"]},"edges":{"from":["analysis_method1_NIH","analysis_method2_NIAID"],"to":["summary_method1_NIH","summary_method2_NIAID"],"arrows":["to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Outdated","Stem"],"color":["#78B7C5","#899DA4"],"shape":["dot","dot"]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
 <p>For shorter target names, use the <code>names</code> argument of <code>tar_map()</code>. And for more combinations of settings, use <code>tidyr::expand_grid()</code> on <code>values</code>.</p>
-<div class="sourceCode" id="cb149"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb149-1"><a href="static.html#cb149-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R file:</span></span>
-<span id="cb149-2"><a href="static.html#cb149-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb149-3"><a href="static.html#cb149-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
-<span id="cb149-4"><a href="static.html#cb149-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
-<span id="cb149-5"><a href="static.html#cb149-5" aria-hidden="true" tabindex="-1"></a>values <span class="ot">&lt;-</span> <span class="fu">expand_grid</span>( <span class="co"># Use all possible combinations of input settings.</span></span>
-<span id="cb149-6"><a href="static.html#cb149-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">method_function =</span> rlang<span class="sc">::</span><span class="fu">syms</span>(<span class="fu">c</span>(<span class="st">&quot;method1&quot;</span>, <span class="st">&quot;method2&quot;</span>)),</span>
-<span id="cb149-7"><a href="static.html#cb149-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">data_source =</span> <span class="fu">c</span>(<span class="st">&quot;NIH&quot;</span>, <span class="st">&quot;NIAID&quot;</span>)</span>
-<span id="cb149-8"><a href="static.html#cb149-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb149-9"><a href="static.html#cb149-9" aria-hidden="true" tabindex="-1"></a>targets <span class="ot">&lt;-</span> <span class="fu">tar_map</span>(</span>
-<span id="cb149-10"><a href="static.html#cb149-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">values =</span> values,</span>
-<span id="cb149-11"><a href="static.html#cb149-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">names =</span> <span class="st">&quot;data_source&quot;</span>, <span class="co"># Select columns from `values` for target names.</span></span>
-<span id="cb149-12"><a href="static.html#cb149-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(analysis, <span class="fu">method_function</span>(data_source, <span class="at">reps =</span> <span class="dv">10</span>)),</span>
-<span id="cb149-13"><a href="static.html#cb149-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(summary, <span class="fu">summarize_analysis</span>(analysis, data_source))</span>
-<span id="cb149-14"><a href="static.html#cb149-14" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb149-15"><a href="static.html#cb149-15" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(targets)</span></code></pre></div>
-<div class="sourceCode" id="cb150"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb150-1"><a href="static.html#cb150-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_manifest</span>()</span>
-<span id="cb150-2"><a href="static.html#cb150-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 8 × 3</span></span>
-<span id="cb150-3"><a href="static.html#cb150-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   name             command                                           pattern</span></span>
-<span id="cb150-4"><a href="static.html#cb150-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;            &lt;chr&gt;                                             &lt;chr&gt;  </span></span>
-<span id="cb150-5"><a href="static.html#cb150-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 analysis_NIAID_1 &quot;method2(\&quot;NIAID\&quot;, reps = 10)&quot;                   &lt;NA&gt;   </span></span>
-<span id="cb150-6"><a href="static.html#cb150-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 analysis_NIAID   &quot;method1(\&quot;NIAID\&quot;, reps = 10)&quot;                   &lt;NA&gt;   </span></span>
-<span id="cb150-7"><a href="static.html#cb150-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 analysis_NIH_1   &quot;method2(\&quot;NIH\&quot;, reps = 10)&quot;                     &lt;NA&gt;   </span></span>
-<span id="cb150-8"><a href="static.html#cb150-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 analysis_NIH     &quot;method1(\&quot;NIH\&quot;, reps = 10)&quot;                     &lt;NA&gt;   </span></span>
-<span id="cb150-9"><a href="static.html#cb150-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 summary_NIAID_1  &quot;summarize_analysis(analysis_NIAID_1, \&quot;NIAID\&quot;)&quot; &lt;NA&gt;   </span></span>
-<span id="cb150-10"><a href="static.html#cb150-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 summary_NIAID    &quot;summarize_analysis(analysis_NIAID, \&quot;NIAID\&quot;)&quot;   &lt;NA&gt;   </span></span>
-<span id="cb150-11"><a href="static.html#cb150-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 7 summary_NIH_1    &quot;summarize_analysis(analysis_NIH_1, \&quot;NIH\&quot;)&quot;     &lt;NA&gt;   </span></span>
-<span id="cb150-12"><a href="static.html#cb150-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 8 summary_NIH      &quot;summarize_analysis(analysis_NIH, \&quot;NIH\&quot;)&quot;       &lt;NA&gt;</span></span></code></pre></div>
-<div class="sourceCode" id="cb151"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb151-1"><a href="static.html#cb151-1" aria-hidden="true" tabindex="-1"></a><span class="co"># You may need to zoom out on this interactive graph to see all 8 targets.</span></span>
-<span id="cb151-2"><a href="static.html#cb151-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_visnetwork</span>(<span class="at">targets_only =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
-<div id="htmlwidget-3b4a1162ae497276b57f" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
-<script type="application/json" data-for="htmlwidget-3b4a1162ae497276b57f">{"x":{"nodes":{"name":["analysis_NIAID","analysis_NIAID_1","analysis_NIH","analysis_NIH_1","summary_NIAID","summary_NIAID_1","summary_NIH","summary_NIH_1"],"type":["stem","stem","stem","stem","stem","stem","stem","stem"],"status":["outdated","outdated","outdated","outdated","outdated","outdated","outdated","outdated"],"seconds":[null,null,null,null,null,null,null,null],"bytes":[null,null,null,null,null,null,null,null],"branches":[null,null,null,null,null,null,null,null],"id":["analysis_NIAID","analysis_NIAID_1","analysis_NIH","analysis_NIH_1","summary_NIAID","summary_NIAID_1","summary_NIH","summary_NIH_1"],"label":["analysis_NIAID","analysis_NIAID_1","analysis_NIH","analysis_NIH_1","summary_NIAID","summary_NIAID_1","summary_NIH","summary_NIH_1"],"level":[1,1,1,1,2,2,2,2],"color":["#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5"],"shape":["dot","dot","dot","dot","dot","dot","dot","dot"]},"edges":{"from":["analysis_NIAID","analysis_NIH_1","analysis_NIAID_1","analysis_NIH"],"to":["summary_NIAID","summary_NIH_1","summary_NIAID_1","summary_NIH"],"arrows":["to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Outdated","Stem"],"color":["#78B7C5","#899DA4"],"shape":["dot","dot"]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
+<div class="sourceCode" id="cb161"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb161-1"><a href="static.html#cb161-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R file:</span></span>
+<span id="cb161-2"><a href="static.html#cb161-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb161-3"><a href="static.html#cb161-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
+<span id="cb161-4"><a href="static.html#cb161-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb161-5"><a href="static.html#cb161-5" aria-hidden="true" tabindex="-1"></a>values <span class="ot">&lt;-</span> <span class="fu">expand_grid</span>( <span class="co"># Use all possible combinations of input settings.</span></span>
+<span id="cb161-6"><a href="static.html#cb161-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">method_function =</span> rlang<span class="sc">::</span><span class="fu">syms</span>(<span class="fu">c</span>(<span class="st">&quot;method1&quot;</span>, <span class="st">&quot;method2&quot;</span>)),</span>
+<span id="cb161-7"><a href="static.html#cb161-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">data_source =</span> <span class="fu">c</span>(<span class="st">&quot;NIH&quot;</span>, <span class="st">&quot;NIAID&quot;</span>)</span>
+<span id="cb161-8"><a href="static.html#cb161-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb161-9"><a href="static.html#cb161-9" aria-hidden="true" tabindex="-1"></a>targets <span class="ot">&lt;-</span> <span class="fu">tar_map</span>(</span>
+<span id="cb161-10"><a href="static.html#cb161-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">values =</span> values,</span>
+<span id="cb161-11"><a href="static.html#cb161-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">names =</span> <span class="st">&quot;data_source&quot;</span>, <span class="co"># Select columns from `values` for target names.</span></span>
+<span id="cb161-12"><a href="static.html#cb161-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(analysis, <span class="fu">method_function</span>(data_source, <span class="at">reps =</span> <span class="dv">10</span>)),</span>
+<span id="cb161-13"><a href="static.html#cb161-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(summary, <span class="fu">summarize_analysis</span>(analysis, data_source))</span>
+<span id="cb161-14"><a href="static.html#cb161-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb161-15"><a href="static.html#cb161-15" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(targets)</span></code></pre></div>
+<div class="sourceCode" id="cb162"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb162-1"><a href="static.html#cb162-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_manifest</span>()</span>
+<span id="cb162-2"><a href="static.html#cb162-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 8 × 3</span></span>
+<span id="cb162-3"><a href="static.html#cb162-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   name             command                                           pattern</span></span>
+<span id="cb162-4"><a href="static.html#cb162-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;            &lt;chr&gt;                                             &lt;chr&gt;  </span></span>
+<span id="cb162-5"><a href="static.html#cb162-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 analysis_NIAID_1 &quot;method2(\&quot;NIAID\&quot;, reps = 10)&quot;                   &lt;NA&gt;   </span></span>
+<span id="cb162-6"><a href="static.html#cb162-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 analysis_NIAID   &quot;method1(\&quot;NIAID\&quot;, reps = 10)&quot;                   &lt;NA&gt;   </span></span>
+<span id="cb162-7"><a href="static.html#cb162-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 analysis_NIH_1   &quot;method2(\&quot;NIH\&quot;, reps = 10)&quot;                     &lt;NA&gt;   </span></span>
+<span id="cb162-8"><a href="static.html#cb162-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 analysis_NIH     &quot;method1(\&quot;NIH\&quot;, reps = 10)&quot;                     &lt;NA&gt;   </span></span>
+<span id="cb162-9"><a href="static.html#cb162-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 summary_NIAID_1  &quot;summarize_analysis(analysis_NIAID_1, \&quot;NIAID\&quot;)&quot; &lt;NA&gt;   </span></span>
+<span id="cb162-10"><a href="static.html#cb162-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 summary_NIAID    &quot;summarize_analysis(analysis_NIAID, \&quot;NIAID\&quot;)&quot;   &lt;NA&gt;   </span></span>
+<span id="cb162-11"><a href="static.html#cb162-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 7 summary_NIH_1    &quot;summarize_analysis(analysis_NIH_1, \&quot;NIH\&quot;)&quot;     &lt;NA&gt;   </span></span>
+<span id="cb162-12"><a href="static.html#cb162-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 8 summary_NIH      &quot;summarize_analysis(analysis_NIH, \&quot;NIH\&quot;)&quot;       &lt;NA&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb163"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb163-1"><a href="static.html#cb163-1" aria-hidden="true" tabindex="-1"></a><span class="co"># You may need to zoom out on this interactive graph to see all 8 targets.</span></span>
+<span id="cb163-2"><a href="static.html#cb163-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_visnetwork</span>(<span class="at">targets_only =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<div id="htmlwidget-c4881ab413e153396db6" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-c4881ab413e153396db6">{"x":{"nodes":{"name":["analysis_NIAID","analysis_NIAID_1","analysis_NIH","analysis_NIH_1","summary_NIAID","summary_NIAID_1","summary_NIH","summary_NIH_1"],"type":["stem","stem","stem","stem","stem","stem","stem","stem"],"status":["outdated","outdated","outdated","outdated","outdated","outdated","outdated","outdated"],"seconds":[null,null,null,null,null,null,null,null],"bytes":[null,null,null,null,null,null,null,null],"branches":[null,null,null,null,null,null,null,null],"id":["analysis_NIAID","analysis_NIAID_1","analysis_NIH","analysis_NIH_1","summary_NIAID","summary_NIAID_1","summary_NIH","summary_NIH_1"],"label":["analysis_NIAID","analysis_NIAID_1","analysis_NIH","analysis_NIH_1","summary_NIAID","summary_NIAID_1","summary_NIH","summary_NIH_1"],"level":[1,1,1,1,2,2,2,2],"color":["#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5"],"shape":["dot","dot","dot","dot","dot","dot","dot","dot"]},"edges":{"from":["analysis_NIAID","analysis_NIH_1","analysis_NIAID_1","analysis_NIH"],"to":["summary_NIAID","summary_NIH_1","summary_NIAID_1","summary_NIH"],"arrows":["to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Outdated","Stem"],"color":["#78B7C5","#899DA4"],"shape":["dot","dot"]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
 </div>
-<div id="dynamic-within-static-branching" class="section level2" number="9.4">
-<h2><span class="header-section-number">9.4</span> Dynamic-within-static branching</h2>
+<div id="dynamic-within-static-branching" class="section level2" number="12.4">
+<h2><span class="header-section-number">12.4</span> Dynamic-within-static branching</h2>
 <p>You can even combine together static and dynamic branching. The static <code>tar_map()</code> is an excellent outer layer on top of targets with patterns. The following is a sketch of a pipeline that runs each of two data analysis methods 10 times, once per random seed. Static branching iterates over the method functions, while dynamic branching iterates over the seeds. <code>tar_map()</code> creates new patterns as well as new commands. So below, the summary methods map over the analysis methods both statically and dynamically.</p>
-<div class="sourceCode" id="cb152"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb152-1"><a href="static.html#cb152-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R file:</span></span>
-<span id="cb152-2"><a href="static.html#cb152-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb152-3"><a href="static.html#cb152-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
-<span id="cb152-4"><a href="static.html#cb152-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
-<span id="cb152-5"><a href="static.html#cb152-5" aria-hidden="true" tabindex="-1"></a>random_seed_target <span class="ot">&lt;-</span> <span class="fu">tar_target</span>(random_seed, <span class="fu">seq_len</span>(<span class="dv">10</span>))</span>
-<span id="cb152-6"><a href="static.html#cb152-6" aria-hidden="true" tabindex="-1"></a>targets <span class="ot">&lt;-</span> <span class="fu">tar_map</span>(</span>
-<span id="cb152-7"><a href="static.html#cb152-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">values =</span> <span class="fu">tibble</span>(<span class="at">method_function =</span> rlang<span class="sc">::</span><span class="fu">syms</span>(<span class="fu">c</span>(<span class="st">&quot;method1&quot;</span>, <span class="st">&quot;method2&quot;</span>))),</span>
-<span id="cb152-8"><a href="static.html#cb152-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
-<span id="cb152-9"><a href="static.html#cb152-9" aria-hidden="true" tabindex="-1"></a>    analysis,</span>
-<span id="cb152-10"><a href="static.html#cb152-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">method_function</span>(<span class="st">&quot;NIH&quot;</span>, <span class="at">seed =</span> random_seed),</span>
-<span id="cb152-11"><a href="static.html#cb152-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">pattern =</span> <span class="fu">map</span>(random_seed)</span>
-<span id="cb152-12"><a href="static.html#cb152-12" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb152-13"><a href="static.html#cb152-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
-<span id="cb152-14"><a href="static.html#cb152-14" aria-hidden="true" tabindex="-1"></a>    summary,</span>
-<span id="cb152-15"><a href="static.html#cb152-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarize_analysis</span>(analysis),</span>
-<span id="cb152-16"><a href="static.html#cb152-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">pattern =</span> <span class="fu">map</span>(analysis)</span>
-<span id="cb152-17"><a href="static.html#cb152-17" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb152-18"><a href="static.html#cb152-18" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb152-19"><a href="static.html#cb152-19" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(random_seed_target, targets)</span></code></pre></div>
-<div class="sourceCode" id="cb153"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb153-1"><a href="static.html#cb153-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_manifest</span>()</span>
-<span id="cb153-2"><a href="static.html#cb153-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 5 × 3</span></span>
-<span id="cb153-3"><a href="static.html#cb153-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   name             command                                pattern              </span></span>
-<span id="cb153-4"><a href="static.html#cb153-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;            &lt;chr&gt;                                  &lt;chr&gt;                </span></span>
-<span id="cb153-5"><a href="static.html#cb153-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 random_seed      &quot;seq_len(10)&quot;                          &lt;NA&gt;                 </span></span>
-<span id="cb153-6"><a href="static.html#cb153-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 analysis_method1 &quot;method1(\&quot;NIH\&quot;, seed = random_seed)&quot; map(random_seed)     </span></span>
-<span id="cb153-7"><a href="static.html#cb153-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 analysis_method2 &quot;method2(\&quot;NIH\&quot;, seed = random_seed)&quot; map(random_seed)     </span></span>
-<span id="cb153-8"><a href="static.html#cb153-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 summary_method1  &quot;summarize_analysis(analysis_method1)&quot; map(analysis_method1)</span></span>
-<span id="cb153-9"><a href="static.html#cb153-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 summary_method2  &quot;summarize_analysis(analysis_method2)&quot; map(analysis_method2)</span></span></code></pre></div>
-<div class="sourceCode" id="cb154"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb154-1"><a href="static.html#cb154-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_visnetwork</span>(<span class="at">targets_only =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
-<div id="htmlwidget-bfeef0bfcd82b8505e91" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
-<script type="application/json" data-for="htmlwidget-bfeef0bfcd82b8505e91">{"x":{"nodes":{"name":["analysis_method1","analysis_method2","random_seed","summary_method1","summary_method2"],"type":["pattern","pattern","stem","pattern","pattern"],"status":["outdated","outdated","outdated","outdated","outdated"],"seconds":[null,null,null,null,null],"bytes":[null,null,null,null,null],"branches":[null,null,null,null,null],"id":["analysis_method1","analysis_method2","random_seed","summary_method1","summary_method2"],"label":["analysis_method1","analysis_method2","random_seed","summary_method1","summary_method2"],"level":[2,2,1,3,3],"color":["#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5"],"shape":["square","square","dot","square","square"]},"edges":{"from":["random_seed","random_seed","analysis_method1","analysis_method2"],"to":["analysis_method1","analysis_method2","summary_method1","summary_method2"],"arrows":["to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Outdated","Pattern","Stem"],"color":["#78B7C5","#899DA4","#899DA4"],"shape":["dot","square","dot"]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
+<div class="sourceCode" id="cb164"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb164-1"><a href="static.html#cb164-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R file:</span></span>
+<span id="cb164-2"><a href="static.html#cb164-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb164-3"><a href="static.html#cb164-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
+<span id="cb164-4"><a href="static.html#cb164-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
+<span id="cb164-5"><a href="static.html#cb164-5" aria-hidden="true" tabindex="-1"></a>random_seed_target <span class="ot">&lt;-</span> <span class="fu">tar_target</span>(random_seed, <span class="fu">seq_len</span>(<span class="dv">10</span>))</span>
+<span id="cb164-6"><a href="static.html#cb164-6" aria-hidden="true" tabindex="-1"></a>targets <span class="ot">&lt;-</span> <span class="fu">tar_map</span>(</span>
+<span id="cb164-7"><a href="static.html#cb164-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">values =</span> <span class="fu">tibble</span>(<span class="at">method_function =</span> rlang<span class="sc">::</span><span class="fu">syms</span>(<span class="fu">c</span>(<span class="st">&quot;method1&quot;</span>, <span class="st">&quot;method2&quot;</span>))),</span>
+<span id="cb164-8"><a href="static.html#cb164-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb164-9"><a href="static.html#cb164-9" aria-hidden="true" tabindex="-1"></a>    analysis,</span>
+<span id="cb164-10"><a href="static.html#cb164-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">method_function</span>(<span class="st">&quot;NIH&quot;</span>, <span class="at">seed =</span> random_seed),</span>
+<span id="cb164-11"><a href="static.html#cb164-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">pattern =</span> <span class="fu">map</span>(random_seed)</span>
+<span id="cb164-12"><a href="static.html#cb164-12" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb164-13"><a href="static.html#cb164-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb164-14"><a href="static.html#cb164-14" aria-hidden="true" tabindex="-1"></a>    summary,</span>
+<span id="cb164-15"><a href="static.html#cb164-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarize_analysis</span>(analysis),</span>
+<span id="cb164-16"><a href="static.html#cb164-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">pattern =</span> <span class="fu">map</span>(analysis)</span>
+<span id="cb164-17"><a href="static.html#cb164-17" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb164-18"><a href="static.html#cb164-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb164-19"><a href="static.html#cb164-19" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(random_seed_target, targets)</span></code></pre></div>
+<div class="sourceCode" id="cb165"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb165-1"><a href="static.html#cb165-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_manifest</span>()</span>
+<span id="cb165-2"><a href="static.html#cb165-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 5 × 3</span></span>
+<span id="cb165-3"><a href="static.html#cb165-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   name             command                                pattern              </span></span>
+<span id="cb165-4"><a href="static.html#cb165-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;            &lt;chr&gt;                                  &lt;chr&gt;                </span></span>
+<span id="cb165-5"><a href="static.html#cb165-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 random_seed      &quot;seq_len(10)&quot;                          &lt;NA&gt;                 </span></span>
+<span id="cb165-6"><a href="static.html#cb165-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 analysis_method1 &quot;method1(\&quot;NIH\&quot;, seed = random_seed)&quot; map(random_seed)     </span></span>
+<span id="cb165-7"><a href="static.html#cb165-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 analysis_method2 &quot;method2(\&quot;NIH\&quot;, seed = random_seed)&quot; map(random_seed)     </span></span>
+<span id="cb165-8"><a href="static.html#cb165-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 summary_method1  &quot;summarize_analysis(analysis_method1)&quot; map(analysis_method1)</span></span>
+<span id="cb165-9"><a href="static.html#cb165-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 summary_method2  &quot;summarize_analysis(analysis_method2)&quot; map(analysis_method2)</span></span></code></pre></div>
+<div class="sourceCode" id="cb166"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb166-1"><a href="static.html#cb166-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_visnetwork</span>(<span class="at">targets_only =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<div id="htmlwidget-ff086f0851093327a4ce" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-ff086f0851093327a4ce">{"x":{"nodes":{"name":["analysis_method1","analysis_method2","random_seed","summary_method1","summary_method2"],"type":["pattern","pattern","stem","pattern","pattern"],"status":["outdated","outdated","outdated","outdated","outdated"],"seconds":[null,null,null,null,null],"bytes":[null,null,null,null,null],"branches":[null,null,null,null,null],"id":["analysis_method1","analysis_method2","random_seed","summary_method1","summary_method2"],"label":["analysis_method1","analysis_method2","random_seed","summary_method1","summary_method2"],"level":[2,2,1,3,3],"color":["#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5"],"shape":["square","square","dot","square","square"]},"edges":{"from":["random_seed","random_seed","analysis_method1","analysis_method2"],"to":["analysis_method1","analysis_method2","summary_method1","summary_method2"],"arrows":["to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Outdated","Pattern","Stem"],"color":["#78B7C5","#899DA4","#899DA4"],"shape":["dot","square","dot"]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
 </div>
-<div id="combine" class="section level2" number="9.5">
-<h2><span class="header-section-number">9.5</span> Combine</h2>
+<div id="combine" class="section level2" number="12.5">
+<h2><span class="header-section-number">12.5</span> Combine</h2>
 <p><a href="https://docs.ropensci.org/tarchetypes/reference/tar_combine.html"><code>tar_combine()</code></a> from the <a href="https://github.com/ropensci/tarchetypes"><code>tarchetypes</code></a> package creates a new target to aggregate the results of upstream targets. In the simple example below, our combined target simply aggregates the rows returned from two other targets.</p>
-<div class="sourceCode" id="cb155"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb155-1"><a href="static.html#cb155-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R file:</span></span>
-<span id="cb155-2"><a href="static.html#cb155-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb155-3"><a href="static.html#cb155-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
-<span id="cb155-4"><a href="static.html#cb155-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
-<span id="cb155-5"><a href="static.html#cb155-5" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">crayon.enabled =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb155-6"><a href="static.html#cb155-6" aria-hidden="true" tabindex="-1"></a>target1 <span class="ot">&lt;-</span> <span class="fu">tar_target</span>(head, <span class="fu">head</span>(mtcars, <span class="dv">1</span>))</span>
-<span id="cb155-7"><a href="static.html#cb155-7" aria-hidden="true" tabindex="-1"></a>target2 <span class="ot">&lt;-</span> <span class="fu">tar_target</span>(tail, <span class="fu">tail</span>(mtcars, <span class="dv">1</span>))</span>
-<span id="cb155-8"><a href="static.html#cb155-8" aria-hidden="true" tabindex="-1"></a>target3 <span class="ot">&lt;-</span> <span class="fu">tar_combine</span>(combined_target, target1, target2)</span>
-<span id="cb155-9"><a href="static.html#cb155-9" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(target1, target2, target3)</span></code></pre></div>
-<div class="sourceCode" id="cb156"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb156-1"><a href="static.html#cb156-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_manifest</span>()</span>
-<span id="cb156-2"><a href="static.html#cb156-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 3</span></span>
-<span id="cb156-3"><a href="static.html#cb156-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   name            command                                                pattern</span></span>
-<span id="cb156-4"><a href="static.html#cb156-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;           &lt;chr&gt;                                                  &lt;chr&gt;  </span></span>
-<span id="cb156-5"><a href="static.html#cb156-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 head_mtcars     head(mtcars, 1)                                        &lt;NA&gt;   </span></span>
-<span id="cb156-6"><a href="static.html#cb156-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 tail_mtcars     tail(mtcars, 1)                                        &lt;NA&gt;   </span></span>
-<span id="cb156-7"><a href="static.html#cb156-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 combined_target vctrs::vec_c(head_mtcars = head_mtcars, tail_mtcars =… &lt;NA&gt;</span></span></code></pre></div>
-<div class="sourceCode" id="cb157"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb157-1"><a href="static.html#cb157-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_visnetwork</span>(<span class="at">targets_only =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
-<div id="htmlwidget-0c0e90817fd0460b6f2d" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
-<script type="application/json" data-for="htmlwidget-0c0e90817fd0460b6f2d">{"x":{"nodes":{"name":["combined_target","head_mtcars","tail_mtcars"],"type":["stem","stem","stem"],"status":["outdated","outdated","outdated"],"seconds":[null,null,null],"bytes":[null,null,null],"branches":[null,null,null],"id":["combined_target","head_mtcars","tail_mtcars"],"label":["combined_target","head_mtcars","tail_mtcars"],"level":[2,1,1],"color":["#78B7C5","#78B7C5","#78B7C5"],"shape":["dot","dot","dot"]},"edges":{"from":["head_mtcars","tail_mtcars"],"to":["combined_target","combined_target"],"arrows":["to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Outdated","Stem"],"color":["#78B7C5","#899DA4"],"shape":["dot","dot"]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
-<div class="sourceCode" id="cb158"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb158-1"><a href="static.html#cb158-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
-<span id="cb158-2"><a href="static.html#cb158-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start target head_mtcars</span></span>
-<span id="cb158-3"><a href="static.html#cb158-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built target head_mtcars</span></span>
-<span id="cb158-4"><a href="static.html#cb158-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start target tail_mtcars</span></span>
-<span id="cb158-5"><a href="static.html#cb158-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built target tail_mtcars</span></span>
-<span id="cb158-6"><a href="static.html#cb158-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start target combined_target</span></span>
-<span id="cb158-7"><a href="static.html#cb158-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built target combined_target</span></span>
-<span id="cb158-8"><a href="static.html#cb158-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • end pipeline</span></span></code></pre></div>
-<div class="sourceCode" id="cb159"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb159-1"><a href="static.html#cb159-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(combined_target)</span>
-<span id="cb159-2"><a href="static.html#cb159-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;             mpg cyl disp  hp drat   wt  qsec vs am gear carb</span></span>
-<span id="cb159-3"><a href="static.html#cb159-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Mazda RX4  21.0   6  160 110 3.90 2.62 16.46  0  1    4    4</span></span>
-<span id="cb159-4"><a href="static.html#cb159-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Volvo 142E 21.4   4  121 109 4.11 2.78 18.60  1  1    4    2</span></span></code></pre></div>
+<div class="sourceCode" id="cb167"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb167-1"><a href="static.html#cb167-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R file:</span></span>
+<span id="cb167-2"><a href="static.html#cb167-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb167-3"><a href="static.html#cb167-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
+<span id="cb167-4"><a href="static.html#cb167-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
+<span id="cb167-5"><a href="static.html#cb167-5" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">crayon.enabled =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb167-6"><a href="static.html#cb167-6" aria-hidden="true" tabindex="-1"></a>target1 <span class="ot">&lt;-</span> <span class="fu">tar_target</span>(head, <span class="fu">head</span>(mtcars, <span class="dv">1</span>))</span>
+<span id="cb167-7"><a href="static.html#cb167-7" aria-hidden="true" tabindex="-1"></a>target2 <span class="ot">&lt;-</span> <span class="fu">tar_target</span>(tail, <span class="fu">tail</span>(mtcars, <span class="dv">1</span>))</span>
+<span id="cb167-8"><a href="static.html#cb167-8" aria-hidden="true" tabindex="-1"></a>target3 <span class="ot">&lt;-</span> <span class="fu">tar_combine</span>(combined_target, target1, target2)</span>
+<span id="cb167-9"><a href="static.html#cb167-9" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(target1, target2, target3)</span></code></pre></div>
+<div class="sourceCode" id="cb168"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb168-1"><a href="static.html#cb168-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_manifest</span>()</span>
+<span id="cb168-2"><a href="static.html#cb168-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 3</span></span>
+<span id="cb168-3"><a href="static.html#cb168-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   name            command                                                pattern</span></span>
+<span id="cb168-4"><a href="static.html#cb168-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;           &lt;chr&gt;                                                  &lt;chr&gt;  </span></span>
+<span id="cb168-5"><a href="static.html#cb168-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 head_mtcars     head(mtcars, 1)                                        &lt;NA&gt;   </span></span>
+<span id="cb168-6"><a href="static.html#cb168-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 tail_mtcars     tail(mtcars, 1)                                        &lt;NA&gt;   </span></span>
+<span id="cb168-7"><a href="static.html#cb168-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 combined_target vctrs::vec_c(head_mtcars = head_mtcars, tail_mtcars =… &lt;NA&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb169"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb169-1"><a href="static.html#cb169-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_visnetwork</span>(<span class="at">targets_only =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<div id="htmlwidget-2a27c4f48fcdbbf11dc4" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-2a27c4f48fcdbbf11dc4">{"x":{"nodes":{"name":["combined_target","head_mtcars","tail_mtcars"],"type":["stem","stem","stem"],"status":["outdated","outdated","outdated"],"seconds":[null,null,null],"bytes":[null,null,null],"branches":[null,null,null],"id":["combined_target","head_mtcars","tail_mtcars"],"label":["combined_target","head_mtcars","tail_mtcars"],"level":[2,1,1],"color":["#78B7C5","#78B7C5","#78B7C5"],"shape":["dot","dot","dot"]},"edges":{"from":["head_mtcars","tail_mtcars"],"to":["combined_target","combined_target"],"arrows":["to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Outdated","Stem"],"color":["#78B7C5","#899DA4"],"shape":["dot","dot"]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
+<div class="sourceCode" id="cb170"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb170-1"><a href="static.html#cb170-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
+<span id="cb170-2"><a href="static.html#cb170-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start target head_mtcars</span></span>
+<span id="cb170-3"><a href="static.html#cb170-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built target head_mtcars</span></span>
+<span id="cb170-4"><a href="static.html#cb170-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start target tail_mtcars</span></span>
+<span id="cb170-5"><a href="static.html#cb170-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built target tail_mtcars</span></span>
+<span id="cb170-6"><a href="static.html#cb170-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start target combined_target</span></span>
+<span id="cb170-7"><a href="static.html#cb170-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built target combined_target</span></span>
+<span id="cb170-8"><a href="static.html#cb170-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • end pipeline</span></span></code></pre></div>
+<div class="sourceCode" id="cb171"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb171-1"><a href="static.html#cb171-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(combined_target)</span>
+<span id="cb171-2"><a href="static.html#cb171-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;             mpg cyl disp  hp drat   wt  qsec vs am gear carb</span></span>
+<span id="cb171-3"><a href="static.html#cb171-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Mazda RX4  21.0   6  160 110 3.90 2.62 16.46  0  1    4    4</span></span>
+<span id="cb171-4"><a href="static.html#cb171-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Volvo 142E 21.4   4  121 109 4.11 2.78 18.60  1  1    4    2</span></span></code></pre></div>
 <p>To use <code>tar_combine()</code> and <code>tar_map()</code> together in more complicated situations, you may need to supply <code>unlist = FALSE</code> to <code>tar_map()</code>. That way, <code>tar_map()</code> will return a nested list of target objects, and you can combine the ones you want. The pipeline extends our previous <code>tar_map()</code> example by combining just the summaries, omitting the analyses from <code>tar_combine()</code>. Also note the use of <code>bind_rows(!!!.x)</code> below. This is how you supply custom code to combine the return values of other targets. <code>.x</code> is a placeholder for the return values, and <code>!!!</code> is the “unquote-splice” operator from the <code>rlang</code> package.</p>
-<div class="sourceCode" id="cb160"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb160-1"><a href="static.html#cb160-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R file:</span></span>
-<span id="cb160-2"><a href="static.html#cb160-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb160-3"><a href="static.html#cb160-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
-<span id="cb160-4"><a href="static.html#cb160-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
-<span id="cb160-5"><a href="static.html#cb160-5" aria-hidden="true" tabindex="-1"></a>random_seed <span class="ot">&lt;-</span> <span class="fu">tar_target</span>(random_seed, <span class="fu">seq_len</span>(<span class="dv">10</span>))</span>
-<span id="cb160-6"><a href="static.html#cb160-6" aria-hidden="true" tabindex="-1"></a>mapped <span class="ot">&lt;-</span> <span class="fu">tar_map</span>(</span>
-<span id="cb160-7"><a href="static.html#cb160-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">unlist =</span> <span class="cn">FALSE</span>, <span class="co"># Return a nested list from tar_map()</span></span>
-<span id="cb160-8"><a href="static.html#cb160-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">values =</span> <span class="fu">tibble</span>(<span class="at">method_function =</span> rlang<span class="sc">::</span><span class="fu">syms</span>(<span class="fu">c</span>(<span class="st">&quot;method1&quot;</span>, <span class="st">&quot;method2&quot;</span>))),</span>
-<span id="cb160-9"><a href="static.html#cb160-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
-<span id="cb160-10"><a href="static.html#cb160-10" aria-hidden="true" tabindex="-1"></a>    analysis,</span>
-<span id="cb160-11"><a href="static.html#cb160-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">method_function</span>(<span class="st">&quot;NIH&quot;</span>, <span class="at">seed =</span> random_seed),</span>
-<span id="cb160-12"><a href="static.html#cb160-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">pattern =</span> <span class="fu">map</span>(random_seed)</span>
-<span id="cb160-13"><a href="static.html#cb160-13" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb160-14"><a href="static.html#cb160-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
-<span id="cb160-15"><a href="static.html#cb160-15" aria-hidden="true" tabindex="-1"></a>    summary,</span>
-<span id="cb160-16"><a href="static.html#cb160-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarize_analysis</span>(analysis),</span>
-<span id="cb160-17"><a href="static.html#cb160-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">pattern =</span> <span class="fu">map</span>(analysis)</span>
-<span id="cb160-18"><a href="static.html#cb160-18" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb160-19"><a href="static.html#cb160-19" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb160-20"><a href="static.html#cb160-20" aria-hidden="true" tabindex="-1"></a>combined <span class="ot">&lt;-</span> <span class="fu">tar_combine</span>(</span>
-<span id="cb160-21"><a href="static.html#cb160-21" aria-hidden="true" tabindex="-1"></a>  combined_summaries,</span>
-<span id="cb160-22"><a href="static.html#cb160-22" aria-hidden="true" tabindex="-1"></a>  mapped[[<span class="dv">2</span>]],</span>
-<span id="cb160-23"><a href="static.html#cb160-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">command =</span> dplyr<span class="sc">::</span><span class="fu">bind_rows</span>(<span class="sc">!!!</span>.x, <span class="at">.id =</span> <span class="st">&quot;method&quot;</span>)</span>
-<span id="cb160-24"><a href="static.html#cb160-24" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb160-25"><a href="static.html#cb160-25" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(random_seed, mapped, combined)</span></code></pre></div>
-<div class="sourceCode" id="cb161"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb161-1"><a href="static.html#cb161-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_manifest</span>()</span>
-<span id="cb161-2"><a href="static.html#cb161-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 3</span></span>
-<span id="cb161-3"><a href="static.html#cb161-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   name               command                                      pattern       </span></span>
-<span id="cb161-4"><a href="static.html#cb161-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;              &lt;chr&gt;                                        &lt;chr&gt;         </span></span>
-<span id="cb161-5"><a href="static.html#cb161-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 random_seed        &quot;seq_len(10)&quot;                                &lt;NA&gt;          </span></span>
-<span id="cb161-6"><a href="static.html#cb161-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 analysis_method1   &quot;method1(\&quot;NIH\&quot;, seed = random_seed)&quot;       map(random_se…</span></span>
-<span id="cb161-7"><a href="static.html#cb161-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 analysis_method2   &quot;method2(\&quot;NIH\&quot;, seed = random_seed)&quot;       map(random_se…</span></span>
-<span id="cb161-8"><a href="static.html#cb161-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 summary_method1    &quot;summarize_analysis(analysis_method1)&quot;       map(analysis_…</span></span>
-<span id="cb161-9"><a href="static.html#cb161-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 summary_method2    &quot;summarize_analysis(analysis_method2)&quot;       map(analysis_…</span></span>
-<span id="cb161-10"><a href="static.html#cb161-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 combined_summaries &quot;dplyr::bind_rows(summary_method1 = summary… &lt;NA&gt;</span></span></code></pre></div>
-<div class="sourceCode" id="cb162"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb162-1"><a href="static.html#cb162-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_visnetwork</span>(<span class="at">targets_only =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
-<div id="htmlwidget-31b09fa881ebbfaa3d70" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
-<script type="application/json" data-for="htmlwidget-31b09fa881ebbfaa3d70">{"x":{"nodes":{"name":["analysis_method1","analysis_method2","combined_summaries","random_seed","summary_method1","summary_method2"],"type":["pattern","pattern","stem","stem","pattern","pattern"],"status":["outdated","outdated","outdated","outdated","outdated","outdated"],"seconds":[null,null,null,null,null,null],"bytes":[null,null,null,null,null,null],"branches":[null,null,null,null,null,null],"id":["analysis_method1","analysis_method2","combined_summaries","random_seed","summary_method1","summary_method2"],"label":["analysis_method1","analysis_method2","combined_summaries","random_seed","summary_method1","summary_method2"],"level":[2,2,4,1,3,3],"color":["#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5"],"shape":["square","square","dot","dot","square","square"]},"edges":{"from":["random_seed","random_seed","summary_method1","summary_method2","analysis_method1","analysis_method2"],"to":["analysis_method1","analysis_method2","combined_summaries","combined_summaries","summary_method1","summary_method2"],"arrows":["to","to","to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Outdated","Pattern","Stem"],"color":["#78B7C5","#899DA4","#899DA4"],"shape":["dot","square","dot"]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
+<div class="sourceCode" id="cb172"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb172-1"><a href="static.html#cb172-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R file:</span></span>
+<span id="cb172-2"><a href="static.html#cb172-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb172-3"><a href="static.html#cb172-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
+<span id="cb172-4"><a href="static.html#cb172-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
+<span id="cb172-5"><a href="static.html#cb172-5" aria-hidden="true" tabindex="-1"></a>random_seed <span class="ot">&lt;-</span> <span class="fu">tar_target</span>(random_seed, <span class="fu">seq_len</span>(<span class="dv">10</span>))</span>
+<span id="cb172-6"><a href="static.html#cb172-6" aria-hidden="true" tabindex="-1"></a>mapped <span class="ot">&lt;-</span> <span class="fu">tar_map</span>(</span>
+<span id="cb172-7"><a href="static.html#cb172-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">unlist =</span> <span class="cn">FALSE</span>, <span class="co"># Return a nested list from tar_map()</span></span>
+<span id="cb172-8"><a href="static.html#cb172-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">values =</span> <span class="fu">tibble</span>(<span class="at">method_function =</span> rlang<span class="sc">::</span><span class="fu">syms</span>(<span class="fu">c</span>(<span class="st">&quot;method1&quot;</span>, <span class="st">&quot;method2&quot;</span>))),</span>
+<span id="cb172-9"><a href="static.html#cb172-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb172-10"><a href="static.html#cb172-10" aria-hidden="true" tabindex="-1"></a>    analysis,</span>
+<span id="cb172-11"><a href="static.html#cb172-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">method_function</span>(<span class="st">&quot;NIH&quot;</span>, <span class="at">seed =</span> random_seed),</span>
+<span id="cb172-12"><a href="static.html#cb172-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">pattern =</span> <span class="fu">map</span>(random_seed)</span>
+<span id="cb172-13"><a href="static.html#cb172-13" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb172-14"><a href="static.html#cb172-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb172-15"><a href="static.html#cb172-15" aria-hidden="true" tabindex="-1"></a>    summary,</span>
+<span id="cb172-16"><a href="static.html#cb172-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarize_analysis</span>(analysis),</span>
+<span id="cb172-17"><a href="static.html#cb172-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">pattern =</span> <span class="fu">map</span>(analysis)</span>
+<span id="cb172-18"><a href="static.html#cb172-18" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb172-19"><a href="static.html#cb172-19" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb172-20"><a href="static.html#cb172-20" aria-hidden="true" tabindex="-1"></a>combined <span class="ot">&lt;-</span> <span class="fu">tar_combine</span>(</span>
+<span id="cb172-21"><a href="static.html#cb172-21" aria-hidden="true" tabindex="-1"></a>  combined_summaries,</span>
+<span id="cb172-22"><a href="static.html#cb172-22" aria-hidden="true" tabindex="-1"></a>  mapped[[<span class="dv">2</span>]],</span>
+<span id="cb172-23"><a href="static.html#cb172-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">command =</span> dplyr<span class="sc">::</span><span class="fu">bind_rows</span>(<span class="sc">!!!</span>.x, <span class="at">.id =</span> <span class="st">&quot;method&quot;</span>)</span>
+<span id="cb172-24"><a href="static.html#cb172-24" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb172-25"><a href="static.html#cb172-25" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(random_seed, mapped, combined)</span></code></pre></div>
+<div class="sourceCode" id="cb173"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb173-1"><a href="static.html#cb173-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_manifest</span>()</span>
+<span id="cb173-2"><a href="static.html#cb173-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 3</span></span>
+<span id="cb173-3"><a href="static.html#cb173-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   name               command                                      pattern       </span></span>
+<span id="cb173-4"><a href="static.html#cb173-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;              &lt;chr&gt;                                        &lt;chr&gt;         </span></span>
+<span id="cb173-5"><a href="static.html#cb173-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 random_seed        &quot;seq_len(10)&quot;                                &lt;NA&gt;          </span></span>
+<span id="cb173-6"><a href="static.html#cb173-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 analysis_method1   &quot;method1(\&quot;NIH\&quot;, seed = random_seed)&quot;       map(random_se…</span></span>
+<span id="cb173-7"><a href="static.html#cb173-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 analysis_method2   &quot;method2(\&quot;NIH\&quot;, seed = random_seed)&quot;       map(random_se…</span></span>
+<span id="cb173-8"><a href="static.html#cb173-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 summary_method1    &quot;summarize_analysis(analysis_method1)&quot;       map(analysis_…</span></span>
+<span id="cb173-9"><a href="static.html#cb173-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 summary_method2    &quot;summarize_analysis(analysis_method2)&quot;       map(analysis_…</span></span>
+<span id="cb173-10"><a href="static.html#cb173-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 combined_summaries &quot;dplyr::bind_rows(summary_method1 = summary… &lt;NA&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb174"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb174-1"><a href="static.html#cb174-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_visnetwork</span>(<span class="at">targets_only =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<div id="htmlwidget-0dcbfee70ad2778f6470" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-0dcbfee70ad2778f6470">{"x":{"nodes":{"name":["analysis_method1","analysis_method2","combined_summaries","random_seed","summary_method1","summary_method2"],"type":["pattern","pattern","stem","stem","pattern","pattern"],"status":["outdated","outdated","outdated","outdated","outdated","outdated"],"seconds":[null,null,null,null,null,null],"bytes":[null,null,null,null,null,null],"branches":[null,null,null,null,null,null],"id":["analysis_method1","analysis_method2","combined_summaries","random_seed","summary_method1","summary_method2"],"label":["analysis_method1","analysis_method2","combined_summaries","random_seed","summary_method1","summary_method2"],"level":[2,2,4,1,3,3],"color":["#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5"],"shape":["square","square","dot","dot","square","square"]},"edges":{"from":["random_seed","random_seed","summary_method1","summary_method2","analysis_method1","analysis_method2"],"to":["analysis_method1","analysis_method2","combined_summaries","combined_summaries","summary_method1","summary_method2"],"arrows":["to","to","to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Outdated","Pattern","Stem"],"color":["#78B7C5","#899DA4","#899DA4"],"shape":["dot","square","dot"]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
 </div>
-<div id="metaprogramming" class="section level2" number="9.6">
-<h2><span class="header-section-number">9.6</span> Metaprogramming</h2>
+<div id="metaprogramming" class="section level2" number="12.6">
+<h2><span class="header-section-number">12.6</span> Metaprogramming</h2>
 <p>Custom metaprogramming is a more flexible alternative to <a href="https://docs.ropensci.org/tarchetypes/reference/tar_map.html"><code>tar_map()</code></a> and <a href="https://docs.ropensci.org/tarchetypes/reference/tar_combine.html"><code>tar_combine()</code></a>. <a href="https://docs.ropensci.org/tarchetypes/reference/tar_eval.html"><code>tar_eval()</code></a> from <a href="https://github.com/ropensci/tarchetypes"><code>tarchetypes</code></a> accepts an arbitrary expression and iteratively plugs in symbols. Below, we use it to branch over datasets.</p>
-<div class="sourceCode" id="cb163"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb163-1"><a href="static.html#cb163-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
-<span id="cb163-2"><a href="static.html#cb163-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rlang)</span>
-<span id="cb163-3"><a href="static.html#cb163-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb163-4"><a href="static.html#cb163-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
-<span id="cb163-5"><a href="static.html#cb163-5" aria-hidden="true" tabindex="-1"></a>string <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;gapminder&quot;</span>, <span class="st">&quot;who&quot;</span>, <span class="st">&quot;imf&quot;</span>)</span>
-<span id="cb163-6"><a href="static.html#cb163-6" aria-hidden="true" tabindex="-1"></a>symbol <span class="ot">&lt;-</span> <span class="fu">syms</span>(string)</span>
-<span id="cb163-7"><a href="static.html#cb163-7" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_eval</span>(</span>
-<span id="cb163-8"><a href="static.html#cb163-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(symbol, <span class="fu">get_data</span>(string)),</span>
-<span id="cb163-9"><a href="static.html#cb163-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">values =</span> <span class="fu">list</span>(<span class="at">string =</span> string, <span class="at">symbol =</span> symbol)</span>
-<span id="cb163-10"><a href="static.html#cb163-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb175"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb175-1"><a href="static.html#cb175-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb175-2"><a href="static.html#cb175-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rlang)</span>
+<span id="cb175-3"><a href="static.html#cb175-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb175-4"><a href="static.html#cb175-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
+<span id="cb175-5"><a href="static.html#cb175-5" aria-hidden="true" tabindex="-1"></a>string <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;gapminder&quot;</span>, <span class="st">&quot;who&quot;</span>, <span class="st">&quot;imf&quot;</span>)</span>
+<span id="cb175-6"><a href="static.html#cb175-6" aria-hidden="true" tabindex="-1"></a>symbol <span class="ot">&lt;-</span> <span class="fu">syms</span>(string)</span>
+<span id="cb175-7"><a href="static.html#cb175-7" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_eval</span>(</span>
+<span id="cb175-8"><a href="static.html#cb175-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(symbol, <span class="fu">get_data</span>(string)),</span>
+<span id="cb175-9"><a href="static.html#cb175-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">values =</span> <span class="fu">list</span>(<span class="at">string =</span> string, <span class="at">symbol =</span> symbol)</span>
+<span id="cb175-10"><a href="static.html#cb175-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <p><a href="https://docs.ropensci.org/tarchetypes/reference/tar_eval.html"><code>tar_eval()</code></a> has fewer guardrails than <a href="https://docs.ropensci.org/tarchetypes/reference/tar_map.html"><code>tar_map()</code></a> or <a href="https://docs.ropensci.org/tarchetypes/reference/tar_combine.html"><code>tar_combine()</code></a>, so <a href="https://docs.ropensci.org/targets/reference/tar_manifest.html"><code>tar_manifest()</code></a> is especially important for checking the correctness of your metaprogramming.</p>
-<div class="sourceCode" id="cb164"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb164-1"><a href="static.html#cb164-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_manifest</span>(<span class="at">fields =</span> command)</span>
-<span id="cb164-2"><a href="static.html#cb164-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 2</span></span>
-<span id="cb164-3"><a href="static.html#cb164-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   name      command                  </span></span>
-<span id="cb164-4"><a href="static.html#cb164-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;     &lt;chr&gt;                    </span></span>
-<span id="cb164-5"><a href="static.html#cb164-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 imf       &quot;get_data(\&quot;imf\&quot;)&quot;      </span></span>
-<span id="cb164-6"><a href="static.html#cb164-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 gapminder &quot;get_data(\&quot;gapminder\&quot;)&quot;</span></span>
-<span id="cb164-7"><a href="static.html#cb164-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 who       &quot;get_data(\&quot;who\&quot;)&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb176"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb176-1"><a href="static.html#cb176-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_manifest</span>(<span class="at">fields =</span> command)</span>
+<span id="cb176-2"><a href="static.html#cb176-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 2</span></span>
+<span id="cb176-3"><a href="static.html#cb176-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   name      command                  </span></span>
+<span id="cb176-4"><a href="static.html#cb176-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;     &lt;chr&gt;                    </span></span>
+<span id="cb176-5"><a href="static.html#cb176-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 imf       &quot;get_data(\&quot;imf\&quot;)&quot;      </span></span>
+<span id="cb176-6"><a href="static.html#cb176-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 gapminder &quot;get_data(\&quot;gapminder\&quot;)&quot;</span></span>
+<span id="cb176-7"><a href="static.html#cb176-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 who       &quot;get_data(\&quot;who\&quot;)&quot;</span></span></code></pre></div>
 </div>
-<div id="hooks" class="section level2" number="9.7">
-<h2><span class="header-section-number">9.7</span> Hooks</h2>
+<div id="hooks" class="section level2" number="12.7">
+<h2><span class="header-section-number">12.7</span> Hooks</h2>
 <p>Hooks are supported in <code>tarchtypes</code> version 0.2.0 and above, and they allow you to prepend or wrap code in multiple targets at a time. For example, <code>tar_hook_before()</code> is a robust way to invoke the <a href="https://conflicted.r-lib.org"><code>conflicted</code></a> package to resolve namespace conflicts that works with <a href="hpc.html#hpc">distributed computing</a> and does not require a project-level <code>.Rprofile</code> file.</p>
-<div class="sourceCode" id="cb165"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb165-1"><a href="static.html#cb165-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R file</span></span>
-<span id="cb165-2"><a href="static.html#cb165-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
-<span id="cb165-3"><a href="static.html#cb165-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(magrittr)</span>
-<span id="cb165-4"><a href="static.html#cb165-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">packages =</span> <span class="fu">c</span>(<span class="st">&quot;conflicted&quot;</span>, <span class="st">&quot;dplyr&quot;</span>))</span>
-<span id="cb165-5"><a href="static.html#cb165-5" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions.R&quot;</span>)</span>
-<span id="cb165-6"><a href="static.html#cb165-6" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb165-7"><a href="static.html#cb165-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data, <span class="fu">get_time_series_data</span>()),</span>
-<span id="cb165-8"><a href="static.html#cb165-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(analysis1, <span class="fu">analyze_months</span>(data)),</span>
-<span id="cb165-9"><a href="static.html#cb165-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(analysis2, <span class="fu">analyze_weeks</span>(data))</span>
-<span id="cb165-10"><a href="static.html#cb165-10" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb165-11"><a href="static.html#cb165-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_hook_before</span>(</span>
-<span id="cb165-12"><a href="static.html#cb165-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">hook =</span> <span class="fu">conflicted_prefer</span>(<span class="st">&quot;filter&quot;</span>, <span class="st">&quot;dplyr&quot;</span>),</span>
-<span id="cb165-13"><a href="static.html#cb165-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">names =</span> <span class="fu">starts_with</span>(<span class="st">&quot;analysis&quot;</span>)</span>
-<span id="cb165-14"><a href="static.html#cb165-14" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
-<div class="sourceCode" id="cb166"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb166-1"><a href="static.html#cb166-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
-<span id="cb166-2"><a href="static.html#cb166-2" aria-hidden="true" tabindex="-1"></a>targets<span class="sc">::</span><span class="fu">tar_manifest</span>(<span class="at">fields =</span> command)</span>
-<span id="cb166-3"><a href="static.html#cb166-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 2</span></span>
-<span id="cb166-4"><a href="static.html#cb166-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   name      command                                                             </span></span>
-<span id="cb166-5"><a href="static.html#cb166-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;     &lt;chr&gt;                                                               </span></span>
-<span id="cb166-6"><a href="static.html#cb166-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 data      &quot;get_time_series_data()&quot;                                            </span></span>
-<span id="cb166-7"><a href="static.html#cb166-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 analysis1 &quot;{ \\n     conflicted_prefer(\&quot;filter\&quot;, \&quot;dplyr\&quot;) \\n     analyze…</span></span>
-<span id="cb166-8"><a href="static.html#cb166-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 analysis2 &quot;{ \\n     conflicted_prefer(\&quot;filter\&quot;, \&quot;dplyr\&quot;) \\n     analyze…</span></span></code></pre></div>
+<div class="sourceCode" id="cb177"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb177-1"><a href="static.html#cb177-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R file</span></span>
+<span id="cb177-2"><a href="static.html#cb177-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
+<span id="cb177-3"><a href="static.html#cb177-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(magrittr)</span>
+<span id="cb177-4"><a href="static.html#cb177-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">packages =</span> <span class="fu">c</span>(<span class="st">&quot;conflicted&quot;</span>, <span class="st">&quot;dplyr&quot;</span>))</span>
+<span id="cb177-5"><a href="static.html#cb177-5" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions.R&quot;</span>)</span>
+<span id="cb177-6"><a href="static.html#cb177-6" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb177-7"><a href="static.html#cb177-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data, <span class="fu">get_time_series_data</span>()),</span>
+<span id="cb177-8"><a href="static.html#cb177-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(analysis1, <span class="fu">analyze_months</span>(data)),</span>
+<span id="cb177-9"><a href="static.html#cb177-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(analysis2, <span class="fu">analyze_weeks</span>(data))</span>
+<span id="cb177-10"><a href="static.html#cb177-10" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb177-11"><a href="static.html#cb177-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_hook_before</span>(</span>
+<span id="cb177-12"><a href="static.html#cb177-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">hook =</span> <span class="fu">conflicted_prefer</span>(<span class="st">&quot;filter&quot;</span>, <span class="st">&quot;dplyr&quot;</span>),</span>
+<span id="cb177-13"><a href="static.html#cb177-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">names =</span> <span class="fu">starts_with</span>(<span class="st">&quot;analysis&quot;</span>)</span>
+<span id="cb177-14"><a href="static.html#cb177-14" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb178"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb178-1"><a href="static.html#cb178-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
+<span id="cb178-2"><a href="static.html#cb178-2" aria-hidden="true" tabindex="-1"></a>targets<span class="sc">::</span><span class="fu">tar_manifest</span>(<span class="at">fields =</span> command)</span>
+<span id="cb178-3"><a href="static.html#cb178-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 2</span></span>
+<span id="cb178-4"><a href="static.html#cb178-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   name      command                                                             </span></span>
+<span id="cb178-5"><a href="static.html#cb178-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;     &lt;chr&gt;                                                               </span></span>
+<span id="cb178-6"><a href="static.html#cb178-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 data      &quot;get_time_series_data()&quot;                                            </span></span>
+<span id="cb178-7"><a href="static.html#cb178-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 analysis1 &quot;{ \\n     conflicted_prefer(\&quot;filter\&quot;, \&quot;dplyr\&quot;) \\n     analyze…</span></span>
+<span id="cb178-8"><a href="static.html#cb178-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 analysis2 &quot;{ \\n     conflicted_prefer(\&quot;filter\&quot;, \&quot;dplyr\&quot;) \\n     analyze…</span></span></code></pre></div>
 <p>Similarly, <code>tar_hook_outer()</code> wraps expressions around target commands, and <code>tar_hook_inner()</code> wraps expressions around target dependencies. These hooks could potentially help encrypt targets before storage in <code>_targets/</code> and decrypt targets before retrieval, as demonstrated in the sketch below.</p>
 <p>Data security is the sole responsibility of the user and not the responsibility of <code>targets</code>, <code>tarchetypes</code>, or related pipeline packages. You as the user are responsible for validating your own target specifications and custom code and applying additional security precautions as appropriate for the situation.</p>
-<div class="sourceCode" id="cb167"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb167-1"><a href="static.html#cb167-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R file</span></span>
-<span id="cb167-2"><a href="static.html#cb167-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
-<span id="cb167-3"><a href="static.html#cb167-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(magrittr)</span>
-<span id="cb167-4"><a href="static.html#cb167-4" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb167-5"><a href="static.html#cb167-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data1, <span class="fu">get_data1</span>()),</span>
-<span id="cb167-6"><a href="static.html#cb167-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data2, <span class="fu">get_data2</span>()),</span>
-<span id="cb167-7"><a href="static.html#cb167-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(analysis, <span class="fu">analyze</span>(data1, data2))</span>
-<span id="cb167-8"><a href="static.html#cb167-8" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb167-9"><a href="static.html#cb167-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_hook_outer</span>(<span class="fu">encrypt</span>(.x, <span class="at">threads =</span> <span class="dv">2</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb167-10"><a href="static.html#cb167-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_hook_inner</span>(<span class="fu">decrypt</span>(.x))</span></code></pre></div>
-<div class="sourceCode" id="cb168"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb168-1"><a href="static.html#cb168-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
-<span id="cb168-2"><a href="static.html#cb168-2" aria-hidden="true" tabindex="-1"></a>targets<span class="sc">::</span><span class="fu">tar_manifest</span>(<span class="at">fields =</span> command)</span>
-<span id="cb168-3"><a href="static.html#cb168-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 2</span></span>
-<span id="cb168-4"><a href="static.html#cb168-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   name     command                                                      </span></span>
-<span id="cb168-5"><a href="static.html#cb168-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;    &lt;chr&gt;                                                        </span></span>
-<span id="cb168-6"><a href="static.html#cb168-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 data1    encrypt(get_data1(), threads = 2)                            </span></span>
-<span id="cb168-7"><a href="static.html#cb168-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 data2    encrypt(get_data2(), threads = 2)                            </span></span>
-<span id="cb168-8"><a href="static.html#cb168-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 analysis encrypt(analyze(decrypt(data1), decrypt(data2)), threads = 2)</span></span></code></pre></div>
+<div class="sourceCode" id="cb179"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb179-1"><a href="static.html#cb179-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R file</span></span>
+<span id="cb179-2"><a href="static.html#cb179-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
+<span id="cb179-3"><a href="static.html#cb179-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(magrittr)</span>
+<span id="cb179-4"><a href="static.html#cb179-4" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb179-5"><a href="static.html#cb179-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data1, <span class="fu">get_data1</span>()),</span>
+<span id="cb179-6"><a href="static.html#cb179-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data2, <span class="fu">get_data2</span>()),</span>
+<span id="cb179-7"><a href="static.html#cb179-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(analysis, <span class="fu">analyze</span>(data1, data2))</span>
+<span id="cb179-8"><a href="static.html#cb179-8" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb179-9"><a href="static.html#cb179-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_hook_outer</span>(<span class="fu">encrypt</span>(.x, <span class="at">threads =</span> <span class="dv">2</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb179-10"><a href="static.html#cb179-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_hook_inner</span>(<span class="fu">decrypt</span>(.x))</span></code></pre></div>
+<div class="sourceCode" id="cb180"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb180-1"><a href="static.html#cb180-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
+<span id="cb180-2"><a href="static.html#cb180-2" aria-hidden="true" tabindex="-1"></a>targets<span class="sc">::</span><span class="fu">tar_manifest</span>(<span class="at">fields =</span> command)</span>
+<span id="cb180-3"><a href="static.html#cb180-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 2</span></span>
+<span id="cb180-4"><a href="static.html#cb180-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   name     command                                                      </span></span>
+<span id="cb180-5"><a href="static.html#cb180-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;    &lt;chr&gt;                                                        </span></span>
+<span id="cb180-6"><a href="static.html#cb180-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 data1    encrypt(get_data1(), threads = 2)                            </span></span>
+<span id="cb180-7"><a href="static.html#cb180-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 data2    encrypt(get_data2(), threads = 2)                            </span></span>
+<span id="cb180-8"><a href="static.html#cb180-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 analysis encrypt(analyze(decrypt(data1), decrypt(data2)), threads = 2)</span></span></code></pre></div>
 
 </div>
 </div>
@@ -603,7 +624,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
 <script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
@@ -634,7 +654,7 @@ gitbook.start({
 },
 "download": null,
 "search": {
-"engine": "lunr",
+"engine": "fuse",
 "options": null
 },
 "toc": {

@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 14 Cloud integration | The targets R Package User Manual</title>
+  <title>Chapter 5 Performance | The targets R Package User Manual</title>
   <meta name="description" content="In-depth discussion of the major functionality of targets." />
   <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 14 Cloud integration | The targets R Package User Manual" />
+  <meta property="og:title" content="Chapter 5 Performance | The targets R Package User Manual" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://books.ropensci.org/targets" />
   <meta property="og:image" content="https://books.ropensci.org/targets/man/figures/logo.png" />
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="ropensci-books/targets" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 14 Cloud integration | The targets R Package User Manual" />
+  <meta name="twitter:title" content="Chapter 5 Performance | The targets R Package User Manual" />
   
   <meta name="twitter:description" content="In-depth discussion of the major functionality of targets." />
   <meta name="twitter:image" content="https://books.ropensci.org/targets/man/figures/logo.png" />
@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <link rel="apple-touch-icon-precomposed" sizes="120x120" href="man/figures/apple-touch-icon.png" />
   <link rel="shortcut icon" href="man/figures/favicon.ico" type="image/x-icon" />
-<link rel="prev" href="hpc.html"/>
-<link rel="next" href="drake.html"/>
+<link rel="prev" href="debugging.html"/>
+<link rel="next" href="functions.html"/>
 <script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
@@ -360,119 +360,64 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="cloud" class="section level1" number="14">
-<h1><span class="header-section-number">Chapter 14</span> Cloud integration</h1>
-<p><code>targets</code> has built-in cloud capabilities to help scale pipelines up and out. Cloud storage solutions are already available, and cloud computing computing solutions are in the works.</p>
-<p>Before getting started, please familiarize yourself with the <a href="https://aws.amazon.com/pricing/">pricing model</a> and <a href="https://docs.aws.amazon.com/account-billing/index.html">cost management and monitoring tools</a> of <a href="https://aws.amazon.com/">Amazon Web Services</a>. Everything has a cost, from <a href="https://aws.amazon.com/ec2/">virtual instances</a> to <a href="https://docs.aws.amazon.com/#user_guides">web API calls</a>. <a href="https://aws.amazon.com/free/">Free tier accounts</a> give you a modest monthly budget for some services for the first year, but it is easy to exceed the limits. Developers of reusable software should consider applying for <a href="https://aws.amazon.com/blogs/opensource/aws-promotional-credits-open-source-projects/">promotional credit</a> using <a href="https://pages.awscloud.com/AWS-Credits-for-Open-Source-Projects">this application form</a>.</p>
-<div id="compute" class="section level2" number="14.1">
-<h2><span class="header-section-number">14.1</span> Compute</h2>
-<p>Right now, <code>targets</code> does not have built-in cloud-based distributed computing support. However, future development plans include seamless integration with <a href="https://aws.amazon.com/batch/">AWS Batch</a>. As a temporary workaround, it is possible to deploy a burstable <a href="https://slurm.schedmd.com/documentation.html">SLURM</a> cluster using <a href="https://aws.amazon.com/hpc/parallelcluster/">AWS ParallelCluster</a> and leverage <code>targets</code>’ <a href="hpc.html#hpc">existing support for traditional schedulers</a>.</p>
-</div>
-<div id="storage" class="section level2" number="14.2">
-<h2><span class="header-section-number">14.2</span> Storage</h2>
-<p><code>targets</code> supports cloud storage on a target-by-target basis using <a href="https://aws.amazon.com/s3/">Amazon Simple Storage Service, or S3</a>. After a target completes, the return value is uploaded to a user-defined S3 bucket <a href="https://docs.aws.amazon.com/AmazonS3/latest/user-guide/create-bucket.html">S3 bucket</a>. Follow these steps to get started.</p>
-<div id="a-disclaimer" class="section level3" number="14.2.1">
-<h3><span class="header-section-number">14.2.1</span> A disclaimer</h3>
-<p>Please be aware of your resource and monetary constraints when using AWS. The AWS-backed storage capabilities in <code>targets</code> sends individual data files to S3 buckets on a target-by-target basis and periodically queries the HTML header data. For a large number of S3-backed targets, the pipeline may slow down, and it may incur monetary costs due to a large number of API requests, both for uploading new targets and checking if existing targets are up to date. It may be best to select a small number of important or large targets to send to S3 buckets, while putting the majority of small targets under source code version control, e.g. Git/GitHub. To put the whole <code>_targets/</code> data store in a single S3 bucket, including metadata, it is best to run the pipeline locally first and then invoke <code>aws.s3::s3sync()</code> or similar.</p>
-</div>
-<div id="communicate-with-your-collaborators" class="section level3" number="14.2.2">
-<h3><span class="header-section-number">14.2.2</span> Communicate with your collaborators</h3>
-<p>An S3 bucket can be a shared file space. If you have access to someone else’s bucket, running their pipeline could accidentally overwrite their cloud data. It is best if you and your colleagues decide in advance who will write to the bucket at any given time.</p>
-</div>
-<div id="get-started-with-the-amazon-s3-web-console" class="section level3" number="14.2.3">
-<h3><span class="header-section-number">14.2.3</span> Get started with the Amazon S3 web console</h3>
-<p>If you do not already have an Amazon Web Services account, sign up for the free tier at <a href="https://aws.amazon.com/free" class="uri">https://aws.amazon.com/free</a>. Then, follow <a href="https://docs.aws.amazon.com/AmazonS3/latest/gsg/GetStartedWithS3.html">these step-by-step instructions</a> to practice using Amazon S3 through the web console at <a href="https://console.aws.amazon.com/s3/" class="uri">https://console.aws.amazon.com/s3/</a>.</p>
-</div>
-<div id="configure-your-local-machine" class="section level3" number="14.2.4">
-<h3><span class="header-section-number">14.2.4</span> Configure your local machine</h3>
-<p><code>targets</code> uses the <a href="https://github.com/cloudyr/aws.s3"><code>aws.s3</code></a> package behind the scenes. It is not a strict dependency of <code>targets</code>, so you will need to install it yourself.</p>
-<div class="sourceCode" id="cb201"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb201-1"><a href="cloud.html#cb201-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;aws.s3&quot;</span>)</span></code></pre></div>
-<p>Next, <code>aws.s3</code> needs an access ID, secret access key, and default region. Follow <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html#cli-configure-quickstart-creds">these steps</a> to generate the keys, and choose a region from <a href="https://docs.aws.amazon.com/general/latest/gr/s3.html">this table of endpoints</a>. Then, open the <code>.Renviron</code> file in your home directory with <code>usethis::edit_r_environ()</code> and store this information in <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html">special environment variables</a>. Here is an example <code>.Renviron</code> file.</p>
-<div class="sourceCode" id="cb202"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb202-1"><a href="cloud.html#cb202-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example .Renviron file</span></span>
-<span id="cb202-2"><a href="cloud.html#cb202-2" aria-hidden="true" tabindex="-1"></a>AWS_ACCESS_KEY_ID<span class="ot">=</span>AKIAIOSFODNN7EXAMPLE</span>
-<span id="cb202-3"><a href="cloud.html#cb202-3" aria-hidden="true" tabindex="-1"></a>AWS_SECRET_ACCESS_KEY<span class="ot">=</span>wJalrXUtnFEMI<span class="sc">/</span>K7MDENG<span class="sc">/</span>bPxRfiCYEXAMPLEKEY</span>
-<span id="cb202-4"><a href="cloud.html#cb202-4" aria-hidden="true" tabindex="-1"></a>AWS_DEFAULT_REGION<span class="ot">=</span>us<span class="sc">-</span>east<span class="dv">-1</span></span></code></pre></div>
-<p>Restart your R session so the changes take effect. Your keys are sensitive personal information. You can print them in your private console to verify correctness, but otherwise please avoid saving them to any persistent documents other than <code>.Renviron</code>.</p>
-<div class="sourceCode" id="cb203"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb203-1"><a href="cloud.html#cb203-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.getenv</span>(<span class="st">&quot;AWS_ACCESS_KEY_ID&quot;</span>)</span>
-<span id="cb203-2"><a href="cloud.html#cb203-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;AKIAIOSFODNN7EXAMPLE&quot;</span></span>
-<span id="cb203-3"><a href="cloud.html#cb203-3" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.getenv</span>(<span class="st">&quot;AWS_SECRET_ACCESS_KEY&quot;</span>)</span>
-<span id="cb203-4"><a href="cloud.html#cb203-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY&quot;</span></span>
-<span id="cb203-5"><a href="cloud.html#cb203-5" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.getenv</span>(<span class="st">&quot;AWS_DEFAULT_REGION&quot;</span>)</span>
-<span id="cb203-6"><a href="cloud.html#cb203-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;us-east-1&quot;</span></span></code></pre></div>
-</div>
-<div id="create-s3-buckets" class="section level3" number="14.2.5">
-<h3><span class="header-section-number">14.2.5</span> Create S3 buckets</h3>
-<p>Now, you are ready to create one or more <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingBucket.html">S3 buckets</a> for your <code>targets</code> pipeline. Each pipeline should have its own set of buckets. Create one through the web console or with <code>aws.s3::put_bucket()</code>.</p>
-<div class="sourceCode" id="cb204"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb204-1"><a href="cloud.html#cb204-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(aws.s3)</span>
-<span id="cb204-2"><a href="cloud.html#cb204-2" aria-hidden="true" tabindex="-1"></a><span class="fu">put_bucket</span>(<span class="st">&quot;my-test-bucket-25edb4956460647d&quot;</span>)</span>
-<span id="cb204-3"><a href="cloud.html#cb204-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
-<p>Sign in to <a href="https://s3.console.aws.amazon.com/s3" class="uri">https://s3.console.aws.amazon.com/s3</a> to verify that the bucket exists.</p>
-</div>
-<div id="configure-the-pipeline" class="section level3" number="14.2.6">
-<h3><span class="header-section-number">14.2.6</span> Configure the pipeline</h3>
-<p>To connect your pipeline with S3,</p>
+<div id="performance" class="section level1" number="5">
+<h1><span class="header-section-number">Chapter 5</span> Performance</h1>
+<p>This chapter explains how to monitor the progress of your pipeline and troubleshoot performance issues.</p>
+<div id="monitoring-the-pipeline" class="section level2" number="5.1">
+<h2><span class="header-section-number">5.1</span> Monitoring the pipeline</h2>
+<p>If you are using <code>targets</code>, then you probably have an intense computation like Bayesian data analysis or machine learning. These tasks take a long time to run, and it is a good idea to monitor them. Here are some options built directly into <code>targets</code>:</p>
 <ol style="list-style-type: decimal">
-<li>Supply your bucket name to <code>resources</code> in <code>tar_option_set()</code>. To use different buckets for different targets, set <code>resources</code> directly in <code>tar_target()</code>. In older version of <code>targets</code>, <code>resources</code> was a named list. In <code>targets</code> &gt;= 0.5.0.9000, please create the <code>resources</code> argument with helpers <code>tar_resources()</code> and <code>tar_resources_aws()</code>.</li>
-<li>Supply AWS-powered storage formats to <code>tar_option_set()</code> and/or <code>tar_target()</code>. See the <a href="https://docs.ropensci.org/targets/reference/tar_target.html#arguments"><code>tar_target()</code> help file</a> for the full list of formats.</li>
+<li><code>tar_poll()</code> continuously refreshes a text summary of runtime progress in the R console. Run it in a new R session at the project root directory. (Only supported in <code>targets</code> version 0.3.1.9000 and higher.)</li>
+<li><code>tar_visnetwork()</code>, <code>tar_progress_summary()</code>, <code>tar_progress_branches()</code>, and <code>tar_progress()</code> show runtime information at a single moment in time.</li>
+<li><code>tar_watch()</code> launches an Shiny app that automatically refreshes the graph every few seconds. Try it out in the example below.</li>
 </ol>
-<p>Your target script file file will look something like this.</p>
-<div class="sourceCode" id="cb205"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb205-1"><a href="cloud.html#cb205-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example _targets.R</span></span>
-<span id="cb205-2"><a href="cloud.html#cb205-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb205-3"><a href="cloud.html#cb205-3" aria-hidden="true" tabindex="-1"></a><span class="co"># With older versions of targets:</span></span>
-<span id="cb205-4"><a href="cloud.html#cb205-4" aria-hidden="true" tabindex="-1"></a><span class="co"># tar_option_set(resources = list(bucket = &quot;my-test-bucket-25edb4956460647d&quot;))</span></span>
-<span id="cb205-5"><a href="cloud.html#cb205-5" aria-hidden="true" tabindex="-1"></a><span class="co"># With targets &gt;= 0.5.0.9000:</span></span>
-<span id="cb205-6"><a href="cloud.html#cb205-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(</span>
-<span id="cb205-7"><a href="cloud.html#cb205-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">resources =</span> <span class="fu">tar_resources</span>(</span>
-<span id="cb205-8"><a href="cloud.html#cb205-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">aws =</span> <span class="fu">tar_resources_aws</span>(<span class="at">bucket =</span> <span class="st">&quot;my-test-bucket-25edb4956460647d&quot;</span>)</span>
-<span id="cb205-9"><a href="cloud.html#cb205-9" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb205-10"><a href="cloud.html#cb205-10" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb205-11"><a href="cloud.html#cb205-11" aria-hidden="true" tabindex="-1"></a>write_mean <span class="ot">&lt;-</span> <span class="cf">function</span>(data) {</span>
-<span id="cb205-12"><a href="cloud.html#cb205-12" aria-hidden="true" tabindex="-1"></a>  tmp <span class="ot">&lt;-</span> <span class="fu">tempfile</span>()</span>
-<span id="cb205-13"><a href="cloud.html#cb205-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">writeLines</span>(<span class="fu">as.character</span>(<span class="fu">mean</span>(data)), tmp)</span>
-<span id="cb205-14"><a href="cloud.html#cb205-14" aria-hidden="true" tabindex="-1"></a>  tmp</span>
-<span id="cb205-15"><a href="cloud.html#cb205-15" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb205-16"><a href="cloud.html#cb205-16" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb205-17"><a href="cloud.html#cb205-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data, <span class="fu">rnorm</span>(<span class="dv">5</span>), <span class="at">format =</span> <span class="st">&quot;aws_qs&quot;</span>),</span>
-<span id="cb205-18"><a href="cloud.html#cb205-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(mean_file, <span class="fu">write_mean</span>(data), <span class="at">format =</span> <span class="st">&quot;aws_file&quot;</span>)</span>
-<span id="cb205-19"><a href="cloud.html#cb205-19" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb66-1"><a href="performance.html#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define an example target script file with a slow pipeline.</span></span>
+<span id="cb66-2"><a href="performance.html#cb66-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb66-3"><a href="performance.html#cb66-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_script</span>({</span>
+<span id="cb66-4"><a href="performance.html#cb66-4" aria-hidden="true" tabindex="-1"></a>  sleep_run <span class="ot">&lt;-</span> <span class="cf">function</span>(...) {</span>
+<span id="cb66-5"><a href="performance.html#cb66-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Sys.sleep</span>(<span class="dv">10</span>)</span>
+<span id="cb66-6"><a href="performance.html#cb66-6" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb66-7"><a href="performance.html#cb66-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb66-8"><a href="performance.html#cb66-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(settings, <span class="fu">sleep_run</span>()),</span>
+<span id="cb66-9"><a href="performance.html#cb66-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(data1, <span class="fu">sleep_run</span>(settings)),</span>
+<span id="cb66-10"><a href="performance.html#cb66-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(data2, <span class="fu">sleep_run</span>(settings)),</span>
+<span id="cb66-11"><a href="performance.html#cb66-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(data3, <span class="fu">sleep_run</span>(settings)),</span>
+<span id="cb66-12"><a href="performance.html#cb66-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(model1, <span class="fu">sleep_run</span>(data1)),</span>
+<span id="cb66-13"><a href="performance.html#cb66-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(model2, <span class="fu">sleep_run</span>(data2)),</span>
+<span id="cb66-14"><a href="performance.html#cb66-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(model3, <span class="fu">sleep_run</span>(data3)),</span>
+<span id="cb66-15"><a href="performance.html#cb66-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(figure1, <span class="fu">sleep_run</span>(model1)),</span>
+<span id="cb66-16"><a href="performance.html#cb66-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(figure2, <span class="fu">sleep_run</span>(model2)),</span>
+<span id="cb66-17"><a href="performance.html#cb66-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(figure3, <span class="fu">sleep_run</span>(model3)),</span>
+<span id="cb66-18"><a href="performance.html#cb66-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(conclusions, <span class="fu">sleep_run</span>(<span class="fu">c</span>(figure1, figure2, figure3)))</span>
+<span id="cb66-19"><a href="performance.html#cb66-19" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb66-20"><a href="performance.html#cb66-20" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb66-21"><a href="performance.html#cb66-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-22"><a href="performance.html#cb66-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Launch the app in a background process.</span></span>
+<span id="cb66-23"><a href="performance.html#cb66-23" aria-hidden="true" tabindex="-1"></a><span class="co"># You may need to refresh the browser if the app is slow to start.</span></span>
+<span id="cb66-24"><a href="performance.html#cb66-24" aria-hidden="true" tabindex="-1"></a><span class="co"># The graph automatically refreshes every 10 seconds</span></span>
+<span id="cb66-25"><a href="performance.html#cb66-25" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_watch</span>(<span class="at">seconds =</span> <span class="dv">10</span>, <span class="at">outdated =</span> <span class="cn">FALSE</span>, <span class="at">targets_only =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb66-26"><a href="performance.html#cb66-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-27"><a href="performance.html#cb66-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Now run the pipeline and watch the graph change.</span></span>
+<span id="cb66-28"><a href="performance.html#cb66-28" aria-hidden="true" tabindex="-1"></a>px <span class="ot">&lt;-</span> <span class="fu">tar_make</span>()</span></code></pre></div>
+<p><img src="man/figures/tar_watch.png" />
+<code>tar_watch_ui()</code> and <code>tar_watch_server()</code> make this functionality available to other apps through a Shiny module.</p>
+<p>Unfortunately, none of these options can tell you if any <a href="hpc.html#hpc">parallel workers</a> or external processes are still running. You can monitor local processes with a utility like <code>top</code> or <code>htop</code>, and traditional HPC scheduler like SLURM or SGE support their own polling utilities such as <code>squeue</code> and <code>qstat</code>. <code>tar_process()</code> and <code>tar_pid()</code> get the process ID of the main R process that last attempted to run the pipeline.</p>
 </div>
-<div id="run-the-pipeline-1" class="section level3" number="14.2.7">
-<h3><span class="header-section-number">14.2.7</span> Run the pipeline</h3>
-<p>When you run the pipeline above with <a href="https://docs.ropensci.org/targets/reference/tar_make.html"><code>tar_make()</code></a>, your local R session computes <code>rnorm(5)</code>, saves it to a temporary <a href="https://github.com/traversc/qs"><code>qs</code></a> file on disk, and then uploads it to a file called <code>_targets/objects/data</code> on your S3 bucket. Likewise for <code>mean_file</code>, but because the format is <code>"aws_file"</code>, you are responsible for supplying the path to the file that gets uploaded to <code>_targets/objects/mean_file</code>.</p>
-<div class="sourceCode" id="cb206"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb206-1"><a href="cloud.html#cb206-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
-<span id="cb206-2"><a href="cloud.html#cb206-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target data</span></span>
-<span id="cb206-3"><a href="cloud.html#cb206-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target mean_file</span></span>
-<span id="cb206-4"><a href="cloud.html#cb206-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● end pipeline</span></span></code></pre></div>
-<p>And of course, your targets stay up to date if you make no changes.</p>
-<div class="sourceCode" id="cb207"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb207-1"><a href="cloud.html#cb207-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
-<span id="cb207-2"><a href="cloud.html#cb207-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✓ skip target data</span></span>
-<span id="cb207-3"><a href="cloud.html#cb207-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✓ skip target mean_file</span></span>
-<span id="cb207-4"><a href="cloud.html#cb207-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✓ skip pipeline</span></span></code></pre></div>
-</div>
-<div id="manage-the-data" class="section level3" number="14.2.8">
-<h3><span class="header-section-number">14.2.8</span> Manage the data</h3>
-<p>Log into <a href="https://s3.console.aws.amazon.com/s3" class="uri">https://s3.console.aws.amazon.com/s3</a>. You should see objects <code>_targets/objects/data</code> and <code>_targets/objects/mean_file</code> in your bucket. To download this data locally, use <code>tar_read()</code> and <code>tar_load()</code> like before. These functions download the data from the bucket and load it into R.</p>
-<div class="sourceCode" id="cb208"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb208-1"><a href="cloud.html#cb208-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(data)</span>
-<span id="cb208-2"><a href="cloud.html#cb208-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] -0.74654607 -0.59593497 -1.57229983  0.40915323  0.02579023</span></span></code></pre></div>
-<p>The <code>"aws_file"</code> format is different from the other AWS-powered formats. <code>tar_read()</code> and <code>tar_load()</code> download the object to a local path (where the target saved it locally before it was uploaded) and return the path so you can process it yourself.<a href="#fn16" class="footnote-ref" id="fnref16"><sup>16</sup></a></p>
-<div class="sourceCode" id="cb209"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb209-1"><a href="cloud.html#cb209-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_load</span>(mean_file)</span>
-<span id="cb209-2"><a href="cloud.html#cb209-2" aria-hidden="true" tabindex="-1"></a>mean_file</span>
-<span id="cb209-3"><a href="cloud.html#cb209-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;_targets/scratch/mean_fileff086e70876d&quot;</span></span></code></pre></div>
-<div class="sourceCode" id="cb210"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb210-1"><a href="cloud.html#cb210-1" aria-hidden="true" tabindex="-1"></a><span class="fu">readLines</span>(mean_file)</span>
-<span id="cb210-2"><a href="cloud.html#cb210-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;-0.495967480886693&quot;</span></span></code></pre></div>
-<p>When you are done with these temporary files and the pipeline is no longer running, you can safely remove everything in <code>_targets/scratch/</code>.</p>
-<div class="sourceCode" id="cb211"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb211-1"><a href="cloud.html#cb211-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unlink</span>(<span class="st">&quot;_targets/scratch/&quot;</span>, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
-<p>Lastly, if you want to erase the whole project or start over from scratch, consider removing the S3 bucket to avoid incurring storage fees. The easiest way to do this is through the <a href="https://s3.console.aws.amazon.com/s3">S3 console</a>. You can alternatively call <code>aws.s3::delete_bucket()</code>, but you have to make sure the bucket is empty first.</p>
-<div class="sourceCode" id="cb212"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb212-1"><a href="cloud.html#cb212-1" aria-hidden="true" tabindex="-1"></a><span class="fu">delete_bucket</span>(<span class="st">&quot;my-test-bucket-25edb4956460647d&quot;</span>)</span></code></pre></div>
+<div id="performance-1" class="section level2" number="5.2">
+<h2><span class="header-section-number">5.2</span> Performance</h2>
+<p>If your pipeline has several thousand targets, functions like <code>tar_make()</code>, <code>tar_outdated()</code>, and <code>tar_visnetwork()</code> may take longer to run. There is an inevitable per-target runtime cost because package needs to check the code and data of each target individually. If this overhead becomes too much, consider batching your work into a smaller group of heavier targets. Using your custom functions, you can make each target perform multiple iterations of a task that was previously given to targets one at a time. For details and an example, please see the discussion on batching at the bottom of the <a href="dynamic.html#dynamic">dynamic branching chapter</a>.</p>
+<p>With dynamic branching, it is super easy to create an enormous number of targets. But when the number of targets starts to exceed a couple hundred, <code>tar_make()</code> slows down, and graphs from <code>tar_visnetwork()</code> start to become unmanageable.</p>
+<p>In <code>targets</code> version 0.5.0.9000, the <code>names</code> and <code>shortcut</code> arguments to <code>tar_make()</code> provide an alternative workaround. <code>tar_make(names = all_of("only", "these", "targets"), shortcut = TRUE)</code> can completely omit thousands of upstream targets for the sake of concentrating on one section at a time. However, this technique is only a temporary measure, and it is best to eventually revert back to the default <code>names = NULL</code> and <code>shortcut = FALSE</code> to ensure reproducibility.</p>
+<p>In the case of dynamic branching, another temporary workaround is to temporarily select subsets of branches. For example, instead of <code>pattern = map(large_target)</code> in <code>tar_target()</code>, you could prototype on a target that uses <code>pattern = head(map(large_target), n = 1)</code> or <code>pattern = slice(map(large_target), c(4, 5, 6))</code>. In the case of <code>slice()</code>, the <code>tar_branch_index()</code> function (only in <code>targets</code> version 0.5.0.9000 and above) can help you find the required integer indexes corresponding to individual branch names you may want.</p>
+<p>Alternatively, if you see slowness in your project, you can contribute to the package with a profiling study. These contributions are great because they help improve the package. Here are the recommended steps.</p>
+<ol style="list-style-type: decimal">
+<li>Install the <a href="https://github.com/r-prof/proffer"><code>proffer</code></a> R package and its dependencies.</li>
+<li>Run <code>proffer::pprof(tar_make(callr_function = NULL))</code> on your project.</li>
+<li>When a web browser pops up with <code>pprof</code>, select the flame graph and screenshot it.</li>
+<li>Post the flame graph, along with any code and data you can share, to the <a href="https://github.com/ropensci/targets/issues"><code>targets</code> package issue tracker</a>. The maintainer will have a look and try to make the package faster for your use case if speedups are possible.</li>
+</ol>
 
 </div>
-</div>
-</div>
-<div class="footnotes">
-<hr />
-<ol start="16">
-<li id="fn16"><p>Non-“file” AWS formats also download files, but they are temporary and immediately discarded after the data is read into memory.<a href="cloud.html#fnref16" class="footnote-back">↩︎</a></p></li>
-</ol>
 </div>
 <div style = "background: #1C356D; color: white; padding: 10px 10px 10px 25px; font-size: 1em; width: 100%;">
   Copyright Eli Lilly and Company
@@ -482,8 +427,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="hpc.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="drake.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="debugging.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="functions.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -504,11 +449,11 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/ropensci-books/targets/edit/main/cloud.Rmd",
+"link": "https://github.com/ropensci-books/targets/edit/main/performance.Rmd",
 "text": "Edit this chapter"
 },
 "history": {
-"link": "https://github.com/ropensci-books/targets/commits/main/cloud.Rmd",
+"link": "https://github.com/ropensci-books/targets/commits/main/performance.Rmd",
 "text": "Chapter edit history"
 },
 "view": {

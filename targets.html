@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 14 Cloud integration | The targets R Package User Manual</title>
+  <title>Chapter 7 Target construction | The targets R Package User Manual</title>
   <meta name="description" content="In-depth discussion of the major functionality of targets." />
   <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 14 Cloud integration | The targets R Package User Manual" />
+  <meta property="og:title" content="Chapter 7 Target construction | The targets R Package User Manual" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://books.ropensci.org/targets" />
   <meta property="og:image" content="https://books.ropensci.org/targets/man/figures/logo.png" />
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="ropensci-books/targets" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 14 Cloud integration | The targets R Package User Manual" />
+  <meta name="twitter:title" content="Chapter 7 Target construction | The targets R Package User Manual" />
   
   <meta name="twitter:description" content="In-depth discussion of the major functionality of targets." />
   <meta name="twitter:image" content="https://books.ropensci.org/targets/man/figures/logo.png" />
@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <link rel="apple-touch-icon-precomposed" sizes="120x120" href="man/figures/apple-touch-icon.png" />
   <link rel="shortcut icon" href="man/figures/favicon.ico" type="image/x-icon" />
-<link rel="prev" href="hpc.html"/>
-<link rel="next" href="drake.html"/>
+<link rel="prev" href="functions.html"/>
+<link rel="next" href="packages.html"/>
 <script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
@@ -360,118 +360,98 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="cloud" class="section level1" number="14">
-<h1><span class="header-section-number">Chapter 14</span> Cloud integration</h1>
-<p><code>targets</code> has built-in cloud capabilities to help scale pipelines up and out. Cloud storage solutions are already available, and cloud computing computing solutions are in the works.</p>
-<p>Before getting started, please familiarize yourself with the <a href="https://aws.amazon.com/pricing/">pricing model</a> and <a href="https://docs.aws.amazon.com/account-billing/index.html">cost management and monitoring tools</a> of <a href="https://aws.amazon.com/">Amazon Web Services</a>. Everything has a cost, from <a href="https://aws.amazon.com/ec2/">virtual instances</a> to <a href="https://docs.aws.amazon.com/#user_guides">web API calls</a>. <a href="https://aws.amazon.com/free/">Free tier accounts</a> give you a modest monthly budget for some services for the first year, but it is easy to exceed the limits. Developers of reusable software should consider applying for <a href="https://aws.amazon.com/blogs/opensource/aws-promotional-credits-open-source-projects/">promotional credit</a> using <a href="https://pages.awscloud.com/AWS-Credits-for-Open-Source-Projects">this application form</a>.</p>
-<div id="compute" class="section level2" number="14.1">
-<h2><span class="header-section-number">14.1</span> Compute</h2>
-<p>Right now, <code>targets</code> does not have built-in cloud-based distributed computing support. However, future development plans include seamless integration with <a href="https://aws.amazon.com/batch/">AWS Batch</a>. As a temporary workaround, it is possible to deploy a burstable <a href="https://slurm.schedmd.com/documentation.html">SLURM</a> cluster using <a href="https://aws.amazon.com/hpc/parallelcluster/">AWS ParallelCluster</a> and leverage <code>targets</code>’ <a href="hpc.html#hpc">existing support for traditional schedulers</a>.</p>
-</div>
-<div id="storage" class="section level2" number="14.2">
-<h2><span class="header-section-number">14.2</span> Storage</h2>
-<p><code>targets</code> supports cloud storage on a target-by-target basis using <a href="https://aws.amazon.com/s3/">Amazon Simple Storage Service, or S3</a>. After a target completes, the return value is uploaded to a user-defined S3 bucket <a href="https://docs.aws.amazon.com/AmazonS3/latest/user-guide/create-bucket.html">S3 bucket</a>. Follow these steps to get started.</p>
-<div id="a-disclaimer" class="section level3" number="14.2.1">
-<h3><span class="header-section-number">14.2.1</span> A disclaimer</h3>
-<p>Please be aware of your resource and monetary constraints when using AWS. The AWS-backed storage capabilities in <code>targets</code> sends individual data files to S3 buckets on a target-by-target basis and periodically queries the HTML header data. For a large number of S3-backed targets, the pipeline may slow down, and it may incur monetary costs due to a large number of API requests, both for uploading new targets and checking if existing targets are up to date. It may be best to select a small number of important or large targets to send to S3 buckets, while putting the majority of small targets under source code version control, e.g. Git/GitHub. To put the whole <code>_targets/</code> data store in a single S3 bucket, including metadata, it is best to run the pipeline locally first and then invoke <code>aws.s3::s3sync()</code> or similar.</p>
-</div>
-<div id="communicate-with-your-collaborators" class="section level3" number="14.2.2">
-<h3><span class="header-section-number">14.2.2</span> Communicate with your collaborators</h3>
-<p>An S3 bucket can be a shared file space. If you have access to someone else’s bucket, running their pipeline could accidentally overwrite their cloud data. It is best if you and your colleagues decide in advance who will write to the bucket at any given time.</p>
-</div>
-<div id="get-started-with-the-amazon-s3-web-console" class="section level3" number="14.2.3">
-<h3><span class="header-section-number">14.2.3</span> Get started with the Amazon S3 web console</h3>
-<p>If you do not already have an Amazon Web Services account, sign up for the free tier at <a href="https://aws.amazon.com/free" class="uri">https://aws.amazon.com/free</a>. Then, follow <a href="https://docs.aws.amazon.com/AmazonS3/latest/gsg/GetStartedWithS3.html">these step-by-step instructions</a> to practice using Amazon S3 through the web console at <a href="https://console.aws.amazon.com/s3/" class="uri">https://console.aws.amazon.com/s3/</a>.</p>
-</div>
-<div id="configure-your-local-machine" class="section level3" number="14.2.4">
-<h3><span class="header-section-number">14.2.4</span> Configure your local machine</h3>
-<p><code>targets</code> uses the <a href="https://github.com/cloudyr/aws.s3"><code>aws.s3</code></a> package behind the scenes. It is not a strict dependency of <code>targets</code>, so you will need to install it yourself.</p>
-<div class="sourceCode" id="cb201"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb201-1"><a href="cloud.html#cb201-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;aws.s3&quot;</span>)</span></code></pre></div>
-<p>Next, <code>aws.s3</code> needs an access ID, secret access key, and default region. Follow <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html#cli-configure-quickstart-creds">these steps</a> to generate the keys, and choose a region from <a href="https://docs.aws.amazon.com/general/latest/gr/s3.html">this table of endpoints</a>. Then, open the <code>.Renviron</code> file in your home directory with <code>usethis::edit_r_environ()</code> and store this information in <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html">special environment variables</a>. Here is an example <code>.Renviron</code> file.</p>
-<div class="sourceCode" id="cb202"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb202-1"><a href="cloud.html#cb202-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example .Renviron file</span></span>
-<span id="cb202-2"><a href="cloud.html#cb202-2" aria-hidden="true" tabindex="-1"></a>AWS_ACCESS_KEY_ID<span class="ot">=</span>AKIAIOSFODNN7EXAMPLE</span>
-<span id="cb202-3"><a href="cloud.html#cb202-3" aria-hidden="true" tabindex="-1"></a>AWS_SECRET_ACCESS_KEY<span class="ot">=</span>wJalrXUtnFEMI<span class="sc">/</span>K7MDENG<span class="sc">/</span>bPxRfiCYEXAMPLEKEY</span>
-<span id="cb202-4"><a href="cloud.html#cb202-4" aria-hidden="true" tabindex="-1"></a>AWS_DEFAULT_REGION<span class="ot">=</span>us<span class="sc">-</span>east<span class="dv">-1</span></span></code></pre></div>
-<p>Restart your R session so the changes take effect. Your keys are sensitive personal information. You can print them in your private console to verify correctness, but otherwise please avoid saving them to any persistent documents other than <code>.Renviron</code>.</p>
-<div class="sourceCode" id="cb203"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb203-1"><a href="cloud.html#cb203-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.getenv</span>(<span class="st">&quot;AWS_ACCESS_KEY_ID&quot;</span>)</span>
-<span id="cb203-2"><a href="cloud.html#cb203-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;AKIAIOSFODNN7EXAMPLE&quot;</span></span>
-<span id="cb203-3"><a href="cloud.html#cb203-3" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.getenv</span>(<span class="st">&quot;AWS_SECRET_ACCESS_KEY&quot;</span>)</span>
-<span id="cb203-4"><a href="cloud.html#cb203-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY&quot;</span></span>
-<span id="cb203-5"><a href="cloud.html#cb203-5" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.getenv</span>(<span class="st">&quot;AWS_DEFAULT_REGION&quot;</span>)</span>
-<span id="cb203-6"><a href="cloud.html#cb203-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;us-east-1&quot;</span></span></code></pre></div>
-</div>
-<div id="create-s3-buckets" class="section level3" number="14.2.5">
-<h3><span class="header-section-number">14.2.5</span> Create S3 buckets</h3>
-<p>Now, you are ready to create one or more <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingBucket.html">S3 buckets</a> for your <code>targets</code> pipeline. Each pipeline should have its own set of buckets. Create one through the web console or with <code>aws.s3::put_bucket()</code>.</p>
-<div class="sourceCode" id="cb204"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb204-1"><a href="cloud.html#cb204-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(aws.s3)</span>
-<span id="cb204-2"><a href="cloud.html#cb204-2" aria-hidden="true" tabindex="-1"></a><span class="fu">put_bucket</span>(<span class="st">&quot;my-test-bucket-25edb4956460647d&quot;</span>)</span>
-<span id="cb204-3"><a href="cloud.html#cb204-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
-<p>Sign in to <a href="https://s3.console.aws.amazon.com/s3" class="uri">https://s3.console.aws.amazon.com/s3</a> to verify that the bucket exists.</p>
-</div>
-<div id="configure-the-pipeline" class="section level3" number="14.2.6">
-<h3><span class="header-section-number">14.2.6</span> Configure the pipeline</h3>
-<p>To connect your pipeline with S3,</p>
+<div id="targets" class="section level1" number="7">
+<h1><span class="header-section-number">Chapter 7</span> Target construction</h1>
+<p>Targets are high-level steps of the workflow that run the work you define in your functions. A target runs some R code and saves the returned R object to storage, usually a single file inside <code>_targets/objects/</code>.</p>
+<div id="what-a-target-should-do" class="section level2" number="7.1">
+<h2><span class="header-section-number">7.1</span> What a target should do</h2>
+<p>Like a good function, a good target generally does one of three things:</p>
 <ol style="list-style-type: decimal">
-<li>Supply your bucket name to <code>resources</code> in <code>tar_option_set()</code>. To use different buckets for different targets, set <code>resources</code> directly in <code>tar_target()</code>. In older version of <code>targets</code>, <code>resources</code> was a named list. In <code>targets</code> &gt;= 0.5.0.9000, please create the <code>resources</code> argument with helpers <code>tar_resources()</code> and <code>tar_resources_aws()</code>.</li>
-<li>Supply AWS-powered storage formats to <code>tar_option_set()</code> and/or <code>tar_target()</code>. See the <a href="https://docs.ropensci.org/targets/reference/tar_target.html#arguments"><code>tar_target()</code> help file</a> for the full list of formats.</li>
+<li>Create a dataset.</li>
+<li>Analyze a dataset with a model.</li>
+<li>Summarize an analysis or dataset.</li>
 </ol>
-<p>Your target script file file will look something like this.</p>
-<div class="sourceCode" id="cb205"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb205-1"><a href="cloud.html#cb205-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example _targets.R</span></span>
-<span id="cb205-2"><a href="cloud.html#cb205-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb205-3"><a href="cloud.html#cb205-3" aria-hidden="true" tabindex="-1"></a><span class="co"># With older versions of targets:</span></span>
-<span id="cb205-4"><a href="cloud.html#cb205-4" aria-hidden="true" tabindex="-1"></a><span class="co"># tar_option_set(resources = list(bucket = &quot;my-test-bucket-25edb4956460647d&quot;))</span></span>
-<span id="cb205-5"><a href="cloud.html#cb205-5" aria-hidden="true" tabindex="-1"></a><span class="co"># With targets &gt;= 0.5.0.9000:</span></span>
-<span id="cb205-6"><a href="cloud.html#cb205-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(</span>
-<span id="cb205-7"><a href="cloud.html#cb205-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">resources =</span> <span class="fu">tar_resources</span>(</span>
-<span id="cb205-8"><a href="cloud.html#cb205-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">aws =</span> <span class="fu">tar_resources_aws</span>(<span class="at">bucket =</span> <span class="st">&quot;my-test-bucket-25edb4956460647d&quot;</span>)</span>
-<span id="cb205-9"><a href="cloud.html#cb205-9" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb205-10"><a href="cloud.html#cb205-10" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb205-11"><a href="cloud.html#cb205-11" aria-hidden="true" tabindex="-1"></a>write_mean <span class="ot">&lt;-</span> <span class="cf">function</span>(data) {</span>
-<span id="cb205-12"><a href="cloud.html#cb205-12" aria-hidden="true" tabindex="-1"></a>  tmp <span class="ot">&lt;-</span> <span class="fu">tempfile</span>()</span>
-<span id="cb205-13"><a href="cloud.html#cb205-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">writeLines</span>(<span class="fu">as.character</span>(<span class="fu">mean</span>(data)), tmp)</span>
-<span id="cb205-14"><a href="cloud.html#cb205-14" aria-hidden="true" tabindex="-1"></a>  tmp</span>
-<span id="cb205-15"><a href="cloud.html#cb205-15" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb205-16"><a href="cloud.html#cb205-16" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb205-17"><a href="cloud.html#cb205-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data, <span class="fu">rnorm</span>(<span class="dv">5</span>), <span class="at">format =</span> <span class="st">&quot;aws_qs&quot;</span>),</span>
-<span id="cb205-18"><a href="cloud.html#cb205-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(mean_file, <span class="fu">write_mean</span>(data), <span class="at">format =</span> <span class="st">&quot;aws_file&quot;</span>)</span>
-<span id="cb205-19"><a href="cloud.html#cb205-19" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<p>If a function gets too long, you can split it into nested sub-functions that make your larger function easier to read and maintain.</p>
 </div>
-<div id="run-the-pipeline-1" class="section level3" number="14.2.7">
-<h3><span class="header-section-number">14.2.7</span> Run the pipeline</h3>
-<p>When you run the pipeline above with <a href="https://docs.ropensci.org/targets/reference/tar_make.html"><code>tar_make()</code></a>, your local R session computes <code>rnorm(5)</code>, saves it to a temporary <a href="https://github.com/traversc/qs"><code>qs</code></a> file on disk, and then uploads it to a file called <code>_targets/objects/data</code> on your S3 bucket. Likewise for <code>mean_file</code>, but because the format is <code>"aws_file"</code>, you are responsible for supplying the path to the file that gets uploaded to <code>_targets/objects/mean_file</code>.</p>
-<div class="sourceCode" id="cb206"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb206-1"><a href="cloud.html#cb206-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
-<span id="cb206-2"><a href="cloud.html#cb206-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target data</span></span>
-<span id="cb206-3"><a href="cloud.html#cb206-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target mean_file</span></span>
-<span id="cb206-4"><a href="cloud.html#cb206-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● end pipeline</span></span></code></pre></div>
-<p>And of course, your targets stay up to date if you make no changes.</p>
-<div class="sourceCode" id="cb207"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb207-1"><a href="cloud.html#cb207-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
-<span id="cb207-2"><a href="cloud.html#cb207-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✓ skip target data</span></span>
-<span id="cb207-3"><a href="cloud.html#cb207-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✓ skip target mean_file</span></span>
-<span id="cb207-4"><a href="cloud.html#cb207-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✓ skip pipeline</span></span></code></pre></div>
+<div id="how-much-a-target-should-do" class="section level2" number="7.2">
+<h2><span class="header-section-number">7.2</span> How much a target should do</h2>
+<p>The <code>targets</code> package automatically skips targets that are already up to date, so it is best to define targets that maximize time savings. Good targets usually</p>
+<ol style="list-style-type: decimal">
+<li>Are large enough to subtract a decent amount of runtime when skipped.</li>
+<li>Are small enough that some targets can be skipped even if others need to run.</li>
+<li>Invoke no side effects such as modifications to the global environment. (But targets with <code>tar_target(format = "file")</code> can save files.)</li>
+<li>Return a single value that is
+<ol style="list-style-type: lower-roman">
+<li>Easy to understand and introspect.</li>
+<li>Meaningful to the project.</li>
+<li>Easy to save as a file, e.g. with <code>readRDS()</code>. Please avoid <a href="https://cran.r-project.org/web/packages/future/vignettes/future-4-non-exportable-objects.html">non-exportable objects</a> as target return values or global variables.</li>
+</ol></li>
+</ol>
+<p>Regarding the last point above, it is possible to customize the storage format of the target. For details, enter <code>?tar_target</code> in the console and scroll down to the description of the <code>format</code> argument.</p>
 </div>
-<div id="manage-the-data" class="section level3" number="14.2.8">
-<h3><span class="header-section-number">14.2.8</span> Manage the data</h3>
-<p>Log into <a href="https://s3.console.aws.amazon.com/s3" class="uri">https://s3.console.aws.amazon.com/s3</a>. You should see objects <code>_targets/objects/data</code> and <code>_targets/objects/mean_file</code> in your bucket. To download this data locally, use <code>tar_read()</code> and <code>tar_load()</code> like before. These functions download the data from the bucket and load it into R.</p>
-<div class="sourceCode" id="cb208"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb208-1"><a href="cloud.html#cb208-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(data)</span>
-<span id="cb208-2"><a href="cloud.html#cb208-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] -0.74654607 -0.59593497 -1.57229983  0.40915323  0.02579023</span></span></code></pre></div>
-<p>The <code>"aws_file"</code> format is different from the other AWS-powered formats. <code>tar_read()</code> and <code>tar_load()</code> download the object to a local path (where the target saved it locally before it was uploaded) and return the path so you can process it yourself.<a href="#fn16" class="footnote-ref" id="fnref16"><sup>16</sup></a></p>
-<div class="sourceCode" id="cb209"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb209-1"><a href="cloud.html#cb209-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_load</span>(mean_file)</span>
-<span id="cb209-2"><a href="cloud.html#cb209-2" aria-hidden="true" tabindex="-1"></a>mean_file</span>
-<span id="cb209-3"><a href="cloud.html#cb209-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;_targets/scratch/mean_fileff086e70876d&quot;</span></span></code></pre></div>
-<div class="sourceCode" id="cb210"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb210-1"><a href="cloud.html#cb210-1" aria-hidden="true" tabindex="-1"></a><span class="fu">readLines</span>(mean_file)</span>
-<span id="cb210-2"><a href="cloud.html#cb210-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;-0.495967480886693&quot;</span></span></code></pre></div>
-<p>When you are done with these temporary files and the pipeline is no longer running, you can safely remove everything in <code>_targets/scratch/</code>.</p>
-<div class="sourceCode" id="cb211"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb211-1"><a href="cloud.html#cb211-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unlink</span>(<span class="st">&quot;_targets/scratch/&quot;</span>, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
-<p>Lastly, if you want to erase the whole project or start over from scratch, consider removing the S3 bucket to avoid incurring storage fees. The easiest way to do this is through the <a href="https://s3.console.aws.amazon.com/s3">S3 console</a>. You can alternatively call <code>aws.s3::delete_bucket()</code>, but you have to make sure the bucket is empty first.</p>
-<div class="sourceCode" id="cb212"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb212-1"><a href="cloud.html#cb212-1" aria-hidden="true" tabindex="-1"></a><span class="fu">delete_bucket</span>(<span class="st">&quot;my-test-bucket-25edb4956460647d&quot;</span>)</span></code></pre></div>
+<div id="working-with-tools-outside-r" class="section level2" number="7.3">
+<h2><span class="header-section-number">7.3</span> Working with tools outside R</h2>
+<p>Each target runs R code, so to invoke a tool outside R, consider <code>system2()</code> or <a href="https://processx.r-lib.org"><code>processx</code></a> to call the appropriate system commands. This technique allows you to run shell scripts, Python scripts, etc. from within R. External scripts should ideally be tracked as input files using <code>tar_target(format = "file")</code> as described in <a href="files.html#files">section on external input files</a>. There are also specialized R packages to retrieve data from remote sources and invoke web APIs, including <a href="https://github.com/ropensci/rnoaa"><code>rnoaa</code></a>, <a href="https://github.com/ropensci/ots"><code>ots</code></a>, and <a href="https://github.com/cloudyr/aws.s3"><code>aws.s3</code></a>, and you may wish to use <a href="https://docs.ropensci.org/targets/reference/tar_cue.html">custom cues</a> to automatically invalidate a target when the upstream remote data changes.</p>
+</div>
+<div id="side-effects" class="section level2" number="7.4">
+<h2><span class="header-section-number">7.4</span> Side effects</h2>
+<p>Like a good pure function, a good target should return a single value and not produce side effects. (The exception is <a href="files.html#files">output file targets</a> which create files and return their paths.) Avoid modifying the global environment with calls to <code>data()</code> or <code>source()</code>. If you need to source scripts to define global objects, please do so at the top of your target script file (default: <code>_targets.R</code>) just like <code>source("R/functions.R")</code> from the <a href="walkthrough.html#walkthrough">walkthrough vignette</a>.</p>
+</div>
+<div id="dependencies" class="section level2" number="7.5">
+<h2><span class="header-section-number">7.5</span> Dependencies</h2>
+<p><code>targets</code> automatically loads dependencies into memory when they are required, so it is rarely advisable to call <code>tar_read()</code> or <code>tar_load()</code> from inside a target. Except in rare circumstances, <code>tar_read()</code> and <code>tar_load()</code> are only for exploratory data analysis and <a href="files.html#files">literate programming</a>.</p>
+<p>Because dependency detection is implicit, adept target construction requires an understanding of how it works. To identify the targets and global objects that each target depends on, the <code>targets</code> package uses static code analysis with <a href="https://CRAN.R-project.org/package=codetools"><code>codetools</code></a>, and you can emulate this process with <code>tar_deps()</code>. Let us look at the dependencies of the <code>raw_data</code> target.</p>
+<div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb79-1"><a href="targets.html#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_deps</span>(<span class="cf">function</span>() {</span>
+<span id="cb79-2"><a href="targets.html#cb79-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">read_csv</span>(raw_data_file, <span class="at">col_types =</span> <span class="fu">cols</span>())</span>
+<span id="cb79-3"><a href="targets.html#cb79-3" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb79-4"><a href="targets.html#cb79-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;{&quot;             &quot;cols&quot;          &quot;raw_data_file&quot; &quot;read_csv&quot;</span></span></code></pre></div>
+<p>The <code>raw_data</code> target depends on target <code>raw_data_file</code> because the command for <code>raw_data</code> mentions the symbol <code>raw_data_file</code>. Similarly, if we were to create a user-defined <code>read_csv()</code> function, the <code>raw_data</code> target would also depend on <code>read_csv()</code> and any other user-defined global functions and objects nested inside <code>read_csv()</code>. Changes to any of these objects would cause the <code>raw_data</code> target to rerun on the next <code>tar_make()</code>.</p>
+<p>Not all of the objects from <code>tar_deps()</code> actually register as dependencies. When it comes to detecting dependencies, <code>targets</code> only recognizes</p>
+<ol style="list-style-type: decimal">
+<li>Other targets (such as <code>raw_data_file</code>).</li>
+<li>Functions and objects in the main environment. This environment is almost always the global environment of the R process that runs the target script file (default: <code>_targets.R</code>) so these dependencies are usually going to be the custom functions and objects you write yourself.</li>
+</ol>
+<p>This process excludes many objects from dependency detection. For example, both <code>{</code> and <code>cols()</code> are excluded because they are defined in the environments of packages (<code>base</code> and <code>readr</code>, respectively). Functions and objects from packages are ignored unless you supply the package name to the <code>packages</code> and <code>imports</code> fields of <code>tar_option_set()</code> as described later on in this chapter.<a href="#fn10" class="footnote-ref" id="fnref10"><sup>10</sup></a></p>
+</div>
+<div id="return-value" class="section level2" number="7.6">
+<h2><span class="header-section-number">7.6</span> Return value</h2>
+<p>The return value of a target should be an R object that can be saved to disk and hashed.</p>
+<div id="saving" class="section level3" number="7.6.1">
+<h3><span class="header-section-number">7.6.1</span> Saving</h3>
+<p>The object should be compatible with the storage format you choose using the <code>format</code> argument of <code>tar_target()</code> or <code>tar_option_set()</code>. For example, if the format is <code>"rds"</code> (default), then the target should return an R object that can be saved with <code>saveRDS()</code> and safely loaded properly into another session. Please avoid returning <a href="https://cran.r-project.org/web/packages/future/vignettes/future-4-non-exportable-objects.html">non-exportable objects</a> such as connection objects, <code>Rcpp</code> pointers, <code>xgboost</code> matrices, and <code>greta</code> models<a href="#fn11" class="footnote-ref" id="fnref11"><sup>11</sup></a>.</p>
+</div>
+<div id="hashing" class="section level3" number="7.6.2">
+<h3><span class="header-section-number">7.6.2</span> Hashing</h3>
+<p>Once a target is saved to disk, <code>targets</code> computes a <a href="https://eddelbuettel.github.io/digest/"><code>digest</code></a> hash to track changes to the data file(s). These hashes are used to decide whether each target is up to date or needs to rerun. In order for the hash to be useful, the data you return from a target must be an accurate reflection of the underlying content of the data. So please try to return the actual data instead of an object that wraps or points to the data. Otherwise, the package will make incorrect decisions regarding which targets can skip and which need to rerun.</p>
+</div>
+<div id="workaround" class="section level3" number="7.6.3">
+<h3><span class="header-section-number">7.6.3</span> Workaround</h3>
+<p>As a workaround, you can write custom functions to create temporary instances of these non-exportable/non-hashable objects and clean them up after the task is done. The following sketch creates a target that returns a database table while managing a transient connection object.</p>
+<div class="sourceCode" id="cb80"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb80-1"><a href="targets.html#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb80-2"><a href="targets.html#cb80-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb80-3"><a href="targets.html#cb80-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb80-4"><a href="targets.html#cb80-4" aria-hidden="true" tabindex="-1"></a>get_from_database <span class="ot">&lt;-</span> <span class="cf">function</span>(table, ...) {</span>
+<span id="cb80-5"><a href="targets.html#cb80-5" aria-hidden="true" tabindex="-1"></a>  con <span class="ot">&lt;-</span> DBI<span class="sc">::</span><span class="fu">dbConnect</span>(...)</span>
+<span id="cb80-6"><a href="targets.html#cb80-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">on.exit</span>(<span class="fu">close</span>(con))</span>
+<span id="cb80-7"><a href="targets.html#cb80-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dbReadTable</span>(con, table)</span>
+<span id="cb80-8"><a href="targets.html#cb80-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb80-9"><a href="targets.html#cb80-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb80-10"><a href="targets.html#cb80-10" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb80-11"><a href="targets.html#cb80-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb80-12"><a href="targets.html#cb80-12" aria-hidden="true" tabindex="-1"></a>    table_from_database,</span>
+<span id="cb80-13"><a href="targets.html#cb80-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">get_from_database</span>(<span class="st">&quot;my_table&quot;</span>, ...), <span class="co"># ... has use-case-specific arguments.</span></span>
+<span id="cb80-14"><a href="targets.html#cb80-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">format =</span> <span class="st">&quot;feather&quot;</span> <span class="co"># Requires that the return value is a data frame.</span></span>
+<span id="cb80-15"><a href="targets.html#cb80-15" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb80-16"><a href="targets.html#cb80-16" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 
 </div>
 </div>
 </div>
 <div class="footnotes">
 <hr />
-<ol start="16">
-<li id="fn16"><p>Non-“file” AWS formats also download files, but they are temporary and immediately discarded after the data is read into memory.<a href="cloud.html#fnref16" class="footnote-back">↩︎</a></p></li>
+<ol start="10">
+<li id="fn10"><p>It is also possible to supply an alternative environment to the <code>envir</code> argument of <code>tar_option_set()</code>, which changes the environment where <code>targets</code> detects non-package global objects and functions, but there is rarely ever a need to do this.<a href="targets.html#fnref10" class="footnote-back">↩︎</a></p></li>
+<li id="fn11"><p>Special exceptions are granted to Keras and Torch models, which can be safely returned from targets if you specify <code>format = "keras"</code> or <code>format = "torch"</code>.<a href="targets.html#fnref11" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 <div style = "background: #1C356D; color: white; padding: 10px 10px 10px 25px; font-size: 1em; width: 100%;">
@@ -482,8 +462,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="hpc.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="drake.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="functions.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="packages.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -504,11 +484,11 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/ropensci-books/targets/edit/main/cloud.Rmd",
+"link": "https://github.com/ropensci-books/targets/edit/main/targets.Rmd",
 "text": "Edit this chapter"
 },
 "history": {
-"link": "https://github.com/ropensci-books/targets/commits/main/cloud.Rmd",
+"link": "https://github.com/ropensci-books/targets/commits/main/targets.Rmd",
 "text": "Chapter edit history"
 },
 "view": {
