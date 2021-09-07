@@ -75,7 +75,7 @@ To begin, write the shared code base of custom user-defined functions in `R/`, a
 ...
 ```
 
-All projects share the same functions defined in the scripts in `R/`, and each project uses a different [target script](https://docs.ropensci.org/targets/reference/tar_script.html) and [data store](#files). `script_a.R` defines the targets for Project A.
+All projects share the same functions defined in the scripts in `R/`, and each project uses a different [target script](https://docs.ropensci.org/targets/reference/tar_script.html) and [data store](#files). `script_a.R` defines the targets for project A.
 
 ```{r, eval = FALSE}
 # script_a.R
@@ -90,7 +90,7 @@ list(
 )
 ```
 
-Likewise, `script_b.R` defines the targets for Project B.
+Likewise, `script_b.R` defines the targets for project B.
 
 ```{r, eval = FALSE}
 # script_b.R
@@ -150,6 +150,36 @@ tar_read(target_abc, sctore = "store_b")
 
 ## Interdependent projects
 
+### Config inheritance
+
+`_targets.yaml` can control more than just the script and store, and different project can inherit settings from one another. In the following example, project B inherits from project A, so projects A and B both set `reporter = "summary"` and `shorcut = TRUE` by default in `tar_make()`.
+
+```{r}
+tar_config_set(
+  script = "script_a.R",
+  store = "store_a",
+  reporter_make = "summary",
+  shortcut = TRUE,
+  project = "project_a"
+)
+tar_config_set(
+  script = "script_b.R",
+  store = "store_b",
+  inherits = "project_a",
+  project = "project_b",
+)
+```
+
+```{r}
+writeLines(readLines("_targets.yaml"))
+Sys.setenv(TAR_PROJECT = "project_b")
+tar_config_get("script")
+tar_config_get("reporter_make")
+tar_config_get("shortcut")
+```
+
+### Sharing targets
+
 For some workflows, the output of one project serves as the input to another project. The easiest way to set this up is through global objects. The first project remains unchanged, and the second project reads from the first before the pipeline begins.
 
 ```{r, eval = FALSE}
@@ -168,24 +198,8 @@ list(
 )
 ```
 
-This approach is the most convenient, but it can be inefficient if `target_from_project_a` is large. A higher-performant solution for large data is to export the target from Project A as an external data file and then establish that file as a file target in Project B.
+This approach is the most convenient, but it can be inefficient if `target_from_project_a` is large. A higher-performant solution for large data is to treat the file in project A's data store as an [input file target](#files) in project B. (Unfortunately, this does break the conceptual abstraction of the `targets` data store.)
 
-```{r, eval = FALSE}
-# script_a.R
-library(targets)
-source("R/functions_data.R")
-source("R/functions_analysis.R")
-source("R/functions_visualization.R")
-tar_option_set(packages = "tidyverse")
-list(
-  ...,
-  tar_target(results_a, final_results(previous_target)),
-  tar_target(file_a, {
-    saveRDS(results_a, "results_a.rds")
-    "results_a.rds"
-  })
-)
-```
 
 ```{r, eval = FALSE}
 # script_b.R
@@ -195,9 +209,17 @@ source("R/functions_analysis.R")
 source("R/functions_visualization.R")
 tar_option_set(packages = "tidyverse")
 list(
-  tar_target(file_from_project_a, "results_a.rds", format = "file"),
-  tar_target(data_from_project_a, readRDS(file_from_project_a)),
+  tar_target(file_from_project_a, "store_a/objects/target_name", format = "file"),
+  tar_target(data_from_project_a, readRDS(file_from_project_a)), # Assumes format = "rds" in project A.
   tar_target(new_target, analyze_data(data_from_project_a)),
   ...
 )
 ```
+
+## The config package
+
+The `_targets.yaml` config interface borrows heavily from the ideas in the `config` R package. However, it does not actually use the `config` package, nor does it copy or use the `config` source code in any way. And there are major differences in user-side behavior:
+
+1. There is no requirement to have a configuration (i.e. project) named "default".
+2. The default project is called "main", and other projects do not inherit from it automatically.
+3. Not all fields need to be populated in `_targets.yaml` because the `targets` package already has system defaults.
