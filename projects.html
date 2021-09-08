@@ -53,7 +53,7 @@
 
 <link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
-<script src="libs/htmlwidgets-1.5.3/htmlwidgets.js"></script>
+<script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
 <link href="libs/vis-4.20.1/vis.css" rel="stylesheet" />
 <script src="libs/vis-4.20.1/vis.min.js"></script>
 <script src="libs/visNetwork-binding-2.0.9/visNetwork.js"></script>
@@ -465,7 +465,7 @@ project_b:
 <span id="cb89-4"><a href="projects.html#cb89-4" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.setenv</span>(<span class="at">TAR_PROJECT =</span> <span class="st">&quot;project_b&quot;</span>)</span>
 <span id="cb89-5"><a href="projects.html#cb89-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
 <span id="cb89-6"><a href="projects.html#cb89-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(target_123)</span></code></pre></div>
-<p>Alternatively, you can manually select the appropriate script and store for each project. This is a less convenient approach, but you do it, you do not need to set the <code>TAR_PROJECT</code> environment variable or rely on <code>_targets.yaml</code>.</p>
+<p>Alternatively, you can manually select the appropriate script and store for each project. This is a less convenient approach, but if you do it, you do not need to set the <code>TAR_PROJECT</code> environment variable or rely on <code>_targets.yaml</code>.</p>
 <div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb90-1"><a href="projects.html#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>(<span class="at">script =</span> <span class="st">&quot;script_a.R&quot;</span>, <span class="at">store =</span> <span class="st">&quot;store_a&quot;</span>)</span>
 <span id="cb90-2"><a href="projects.html#cb90-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(target_abc, <span class="at">sctore =</span> <span class="st">&quot;store_a&quot;</span>)</span>
 <span id="cb90-3"><a href="projects.html#cb90-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>(<span class="at">script =</span> <span class="st">&quot;script_b.R&quot;</span>, <span class="at">store =</span> <span class="st">&quot;store_b&quot;</span>)</span>
@@ -476,7 +476,7 @@ project_b:
 <h2><span class="header-section-number">9.4</span> Interdependent projects</h2>
 <div id="config-inheritance" class="section level3" number="9.4.1">
 <h3><span class="header-section-number">9.4.1</span> Config inheritance</h3>
-<p><code>_targets.yaml</code> can control more than just the script and store, and different project can inherit settings from one another. In the following example, project B inherits from project A, so projects A and B both set <code>reporter = "summary"</code> and <code>shorcut = TRUE</code> by default in <code>tar_make()</code>.</p>
+<p><code>_targets.yaml</code> can control more than just the script and store, and different projects can inherit settings from one another. In the following example, project B inherits from project A, so projects A and B both set <code>reporter = "summary"</code> and <code>shorcut = TRUE</code> by default in <code>tar_make()</code>.</p>
 <div class="sourceCode" id="cb91"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb91-1"><a href="projects.html#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_config_set</span>(</span>
 <span id="cb91-2"><a href="projects.html#cb91-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">script =</span> <span class="st">&quot;script_a.R&quot;</span>,</span>
 <span id="cb91-3"><a href="projects.html#cb91-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">store =</span> <span class="st">&quot;store_a&quot;</span>,</span>
