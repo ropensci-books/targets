@@ -263,7 +263,7 @@ exit 0 # Leave alone.
 
 ### Future configuration
 
-The `tar_target()`, `tar_target_raw()`, and `tar_option_set()` functions accept a `resources` argument. For example, if our `batchtools` template file has a wildcard for the number of cores for a job,
+The `tar_target()`, `tar_target_raw()`, and `tar_option_set()` functions accept a `resources` argument.^[The `resources` of `tar_target()` defaults to `tar_option_get("resources")`. You can set the default value for all targets using `tar_option_set()`.] For example, if our `batchtools` template file has a wildcard for the number of cores for a job,
 
 ```
 #!/bin/bash
@@ -278,7 +278,7 @@ Rscript -e 'batchtools::doJobCollection("<%= uri %>")'
 exit 0
 ```
 
-then you can set the number of cores for individual targets. In the case below, maybe the slow model needs 2 cores to run fast enough. Because of the `resources[["num_cores"]]` placeholder in the above template file, we can control the number of cores in each target through the `resoruces` argument of `tar_target()`. In older version of `targets`, `resources` was a named list. In `targets` version 0.5.0.9000 and above, please create the `resources` argument with helpers `tar_resources()` and `tar_resources_future()`.
+then you can set the number of cores for an individual target using a target-specific `future` plan. In the case below, maybe the slow model needs 2 cores to run fast enough. Because of the `resources[["num_cores"]]` placeholder in the above template file, we can control the number of cores in each target through its local plan.^[In older version of `targets`, `resources` was a named list. In `targets` version 0.5.0.9000 and above, please create the `resources` argument with helpers `tar_resources()` and `tar_resources_future()`.]
 
 ```{r, eval = FALSE}
 # _targets.R
@@ -295,7 +295,13 @@ list(
     slow_fit,
     fit_slow_model(data),
     resources = tar_resources(
-      future = tar_resources_future(resources = list(num_cores = 2))
+      future = tar_resources_future(
+        plan = tweak(
+          batchtools_sge,
+          template = "sge.tmpl",
+          resources = list(num_cores = 2)
+        )
+      )
     )
   ),
   tar_target(plot_1, make_plot(fast_fit)),
@@ -309,8 +315,6 @@ Then, run `tar_make_future()` as usual.
 # R console
 tar_make_future(workers = 2)
 ```
-
-The `resources` of `tar_target()` defaults to `tar_option_get("resources")`. You can set the default value for all targets using `tar_option_set()`.
 
 ## Advanced
 
