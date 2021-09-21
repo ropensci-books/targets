@@ -139,7 +139,7 @@ tar_make()
 tar_read(target_123)
 ```
 
-Alternatively, you can manually select the appropriate script and store for each project. This is a less convenient approach, but you do it, you do not need to set the `TAR_PROJECT` environment variable or rely on `_targets.yaml`.
+Alternatively, you can manually select the appropriate script and store for each project. This is a less convenient approach, but if you do it, you do not need to set the `TAR_PROJECT` environment variable or rely on `_targets.yaml`.
 
 ```{r, eval = FALSE}
 tar_make(script = "script_a.R", store = "store_a")
@@ -152,7 +152,7 @@ tar_read(target_abc, sctore = "store_b")
 
 ### Config inheritance
 
-`_targets.yaml` can control more than just the script and store, and different project can inherit settings from one another. In the following example, project B inherits from project A, so projects A and B both set `reporter = "summary"` and `shorcut = TRUE` by default in `tar_make()`.
+`_targets.yaml` can control more than just the script and store, and different projects can inherit settings from one another. In the following example, project B inherits from project A, so projects A and B both set `reporter = "summary"` and `shorcut = TRUE` by default in `tar_make()`.
 
 ```{r}
 tar_config_set(
