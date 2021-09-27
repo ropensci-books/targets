@@ -19,7 +19,7 @@ For most pipelines, it is straightforward to load the R packages that your targe
 1. Call `library()` at the top of the target script file (default: `_targets.R`) to load each package the conventional way, or
 2. Name the required packages using the `packages` argument of `tar_option_set()`. 
 
-(2) is often faster, especially for utilities like `tar_visnetwork()`, because it avoids loading packages unless absolutely necessary.
+2\. is often faster, especially for utilities like `tar_visnetwork()`, because it avoids loading packages unless absolutely necessary.
 
 Some package management workflows are more complicated. If your use special configuration with [conflicted](https://github.com/r-lib/conflicted), [`box`](https://klmr.me/box/), [`import`](https://import.rticulate.org/), or similar utility, please do your configuration inside a project-level `.Rprofile` file instead of the target script file (default: `_targets.R`). In addition, if you use distributed workers inside external containers (Docker, Singularity, AWS AMI, etc.) make sure each container has a copy of this same `.Rprofile` file where the R worker process spawns. This approach is ensures that all [remote workers](#hpc) are configured the same way as the local main process.
 
