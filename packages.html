@@ -375,9 +375,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Call <code>library()</code> at the top of the target script file (default: <code>_targets.R</code>) to load each package the conventional way, or</li>
 <li>Name the required packages using the <code>packages</code> argument of <code>tar_option_set()</code>.</li>
 </ol>
-<ol start="2" style="list-style-type: decimal">
-<li>is often faster, especially for utilities like <code>tar_visnetwork()</code>, because it avoids loading packages unless absolutely necessary.</li>
-</ol>
+<p>2. is often faster, especially for utilities like <code>tar_visnetwork()</code>, because it avoids loading packages unless absolutely necessary.</p>
 <p>Some package management workflows are more complicated. If your use special configuration with <a href="https://github.com/r-lib/conflicted">conflicted</a>, <a href="https://klmr.me/box/"><code>box</code></a>, <a href="https://import.rticulate.org/"><code>import</code></a>, or similar utility, please do your configuration inside a project-level <code>.Rprofile</code> file instead of the target script file (default: <code>_targets.R</code>). In addition, if you use distributed workers inside external containers (Docker, Singularity, AWS AMI, etc.) make sure each container has a copy of this same <code>.Rprofile</code> file where the R worker process spawns. This approach is ensures that all <a href="hpc.html#hpc">remote workers</a> are configured the same way as the local main process.</p>
 </div>
 <div id="r-packages-as-projects" class="section level2" number="8.2">
