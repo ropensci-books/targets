@@ -11,7 +11,7 @@ library(targets)
 
 The `targets` package automatically stores data and automatically responds to changed files to keep your targets up to date. The chapter below explains how to leverage this reproducibility for external datasets, external output files, and literate programming artifacts such as R Markdown reports. Real-world applications of these techniques are [linked from here](https://docs.ropensci.org/targets/index.html#examples).
 
-## Internal files
+## Internal data files
 
 Each project has a local data store. This is usually a special `_targets/` folder at the project root directory (where you call `tar_make()`). In `targets` version 0.3.1.9000 and above, you can set the location to something other than `_targets/` using [`tar_config_set()`](https://docs.ropensci.org/targets/reference/tar_config_set.html), which writes to a project-level `_targets.yaml` file at the project root. The files in the data store are structured as follows.
 
@@ -34,7 +34,7 @@ Spreadsheets `_targets/meta/meta` keeps track of target metadata, `_targets/meta
 
 A typical target returns an R object: for example, a dataset with `tar_target(dataset, data.frame(x = rnorm(1000)), format = "fst")` or a fitted model `tar_target(model, biglm(ozone ~ temp + wind), format = "qs")`. When you run the pipeline, `targets` computes this object and saves it as a file in `_targets/objects/`. The file name in `_targets/objects/` is always the target name, and type of the file is determined by the `format` argument of `tar_target()`, and formats `"fst"` and `"qs"` are two of many choices explained in the help file of `tar_target()`. No matter what format you pick, `targets` watches the file for changes and recomputes the target in `tar_make()` if the the file gets corrupted (unless you suppress the file cue with `tar_target(cue = tar_cue(file = FALSE))`).
 
-### Cleaning up
+### Cleaning up internal data files
 
 There are [multiple functions](https://docs.ropensci.org/targets/reference/index.html#section-clean) to remove target storage or modify the metadata to force one or more targets to rerun in the next call to `tar_make()`.
 
@@ -42,6 +42,26 @@ There are [multiple functions](https://docs.ropensci.org/targets/reference/index
 * [`tar_prune()`](https://docs.ropensci.org/targets/reference/tar_prune.html) deletes the data and metadata of all the targets no longer present in your current target script file (default: `_targets.R`). This is useful if you recently worked through multiple changes to your project and are now trying to discard irrelevant data while keeping the results that still matter.
 * [`tar_delete()`](https://docs.ropensci.org/targets/reference/tar_delete.html) is more selective than [`tar_destroy()`](https://docs.ropensci.org/targets/reference/tar_destroy.html) and [`tar_prune()`](https://docs.ropensci.org/targets/reference/tar_prune.html). It removes the individual data files of a given set of targets from `_targets/objects/` while leaving the metadata in `_targets/meta/meta` alone. If you have a small number of data-heavy targets you need to discard to conserve storage, this function can help.
 * [`tar_invalidate()`](https://docs.ropensci.org/targets/reference/tar_invalidate.html) is the opposite of [`tar_delete()`](https://docs.ropensci.org/targets/reference/tar_delete.html): for the selected targets, it deletes the metadata in `_targets/meta/meta` but keeps the return values in `_targets/objects/`. After invalidation, you will still be able to locate the data files with [`tar_path()`](https://docs.ropensci.org/targets/reference/tar_path.html) and manually salvage them in an emergency. However, [`tar_load()`](https://docs.ropensci.org/targets/reference/tar_load.html) and [`tar_read()`](https://docs.ropensci.org/targets/reference/tar_read.html) will not be able to read the data into R, and subesequent calls to [`tar_make()`](https://docs.ropensci.org/targets/reference/tar_make.html) will attempt to rebuild those targets.
+
+## Internal script files
+
+Target Markdown automatically supplies a `_targets.R` file and supporting scripts in a folder called `_targets_r/`. These paths can be customized together the `script` argument of [`tar_config_set()`](https://docs.ropensci.org/targets/reference/tar_config_set.html).
+
+```
+_targets_r/ # Can be customized with tar_config_set(script = "...").
+├── globals/ # Code chunks to define globals and settings (tar_globals = TRUE)
+├────── globals_chunk1.R # Names follow chunk names or the tar_name chunk opt.
+├────── globals_chunk2.R
+├────── ...
+├── targets/ # Code chunks to define groups of one or more targets
+├────── targets_chunk1.R
+├────── targets_chunk2.R
+└────── ...
+```
+
+### Cleaning up internal script files
+
+Over time, the number of script files in `_targets_r/` starts to build up, and `targets` has no way of automatically removing helper scripts files that are no longer necessary. To keep your pipeline up to date with the code chunks in the Target Markdown document(s), it is good practice to call [`tar_unscript()`](https://docs.ropensci.org/targets/reference/tar_unscript.html) at the beginning of your first Target Markdown document. That way, extraneous/discarded targets are automatically removed from the pipeline when the document starts render.
 
 ## External input files
 
