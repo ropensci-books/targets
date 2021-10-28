@@ -11,6 +11,10 @@ library(targets)
 
 Targets are high-level steps of the workflow that run the work you define in your functions. A target runs some R code and saves the returned R object to storage, usually a single file inside `_targets/objects/`. 
 
+## Target names
+
+A target is an abstraction. The `targets` package automatically manages data storage and retrieval under the hood, which means you do not need to reference a target's data file directly (e.g. `_targets/objects/your_target_name`). Instead, your R code should refer to a target name as if it were a variable in an R session. In other words, from the point of view of the user, a target is an R object in memory. That means a target name must be a valid visible symbol name for an R variable. The name must not begin with a dot, and it must be a string that lets you assign a value, e.g. `your_target_name <- TRUE`. For stylistic considerations, please refer to the [tidyverse style guide syntax chapter](https://style.tidyverse.org/syntax.html).
+
 ## What a target should do
 
 Like a good function, a good target generally does one of three things:
