@@ -373,8 +373,19 @@ tar_script({
     x
   }
   list(
-    tar_target(x, data.frame(a = c(1, 2), b = c("a", "b"))),
-    tar_target(y, print_and_return(x), pattern = map(x))
+    tar_target(
+      x,
+      data.frame(a = c(1, 2), b = c("a", "b")),
+      # Already the default unless tar_option_get(iteration") is not "vector":
+      iteration = "vector"
+    ),
+    tar_target(
+      y,
+      print_and_return(x),
+      pattern = map(x),
+      # Already the default unless tar_option_get(iteration") is not "vector":
+      iteration = "vector"
+    )
   )
 })
 ```
@@ -386,8 +397,19 @@ print_and_return <- function(x) {
   x
 }
 list(
-  tar_target(x, data.frame(a = c(1, 2), b = c("a", "b"))),
-  tar_target(y, print_and_return(x), pattern = map(x))
+  tar_target(
+    x,
+    data.frame(a = c(1, 2), b = c("a", "b")),
+    # Already the default unless tar_option_get(iteration") is not "vector":
+    iteration = "vector"
+  ),
+  tar_target(
+    y,
+    print_and_return(x),
+    pattern = map(x),
+    # Already the default unless tar_option_get(iteration") is not "vector":
+    iteration = "vector"
+  )
 )
 ```
 
@@ -403,7 +425,9 @@ tar_read(y)
 
 ### List iteration
 
-List iteration splits and aggregates targets as simple lists. If target `x` has `"list"` iteration, all branches of downstream patterns will get `x[[1]]`, `x[[2]]`, and so on. (`vctrs::vec_slice()` behaves more like `[]` than `[[]]`.)
+List iteration splits and aggregates targets as simple lists. If a non-dynamic target `x` has list iteration, then all branches of downstream patterns will get `x[[1]]`, `x[[2]]`, and so on. If a dynamic target `y` has list iteration, then all targets downstream of `y` will see `y` as a list, and `tar_read(y)` will be a list. 
+
+The following example demonstrates the slicing and aggregation behavior of list iteration. Because stem target `x` uses list iteration, the downstream target `y` maps over the columns of the data frame instead of the rows. Likewise, `tar_read(z)` is a list because `z` is a dynamic target with list iteration.
 
 ```{r, echo = FALSE, eval = TRUE}
 tar_script({
@@ -445,8 +469,6 @@ list(
 ```{r, eval = TRUE}
 tar_make()
 ```
-
-Aggregation also happens differently. In this case, the vector iteration in `y` is not ideal, and the list iteration in `z` gives us more sensible output. 
 
 ```{r, error = TRUE, eval = TRUE}
 tar_read(y)
