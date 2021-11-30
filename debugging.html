@@ -394,7 +394,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ol style="list-style-type: decimal">
 <li>In the target script file (default: <code>_targets.R</code>) write a call to <code>tar_option_set()</code> with <code>debug</code> equal to the target name.</li>
 <li>Launch a fresh clean new interactive R session with the target script file (default: <code>_targets.R</code>) script in your working directory.</li>
-<li>Run <code>targets::tar_make()</code> (or <code>targets::tar_make_clustermq()</code>, or <code>targets::tar_make_future()</code>) with <code>callr_function = NULL</code>. If you are using <code>targets</code> version 0.5.0.9000 or above, consider also setting <code>shortcut</code> to <code>TRUE</code> and supplying the target name to <code>names</code>.<a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a> This allows <code>tar_make()</code> to reach the desired target more quickly.</li>
+<li>Run <code>targets::tar_make()</code> (or <code>targets::tar_make_clustermq()</code>, or <code>targets::tar_make_future()</code>) with <code>callr_function = NULL</code>. If you are using <code>targets</code> version 0.5.0.9000 or above, consider also setting <code>shortcut</code> to <code>TRUE</code> and supplying the target name to <code>names</code>.<a href="drake.html#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a> This allows <code>tar_make()</code> to reach the desired target more quickly.</li>
 <li>When <code>targets</code> reaches the target you selected to debug, your R session will start an interactive debugger, and you should see <code>Browse[1]&gt;</code> in your console. Run <code>targets::tar_name()</code> to verify that you are debugging the correct target.</li>
 <li>Interactively run any R code that helps you troubleshoot the problem. For example, if the target invokes a function <code>f()</code>, enter <code>debug(f)</code> and then <code>c</code> to immediately enter the function’s calling environment where all its arguments are defined.</li>
 </ol>
@@ -474,7 +474,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb61-6"><a href="debugging.html#cb61-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;y_05f206d7&quot;</span></span></code></pre></div>
 <p><code>tar_workspace()</code> reads the special metadata in the workspace file and then loads the target’s dependencies from various locations in <code>_targets/objects</code> and/or the <a href="cloud.html#cloud">cloud</a>. It also sets the random number generator seed to the seed of the target, loads the required packages, and runs the target script file (default: <code>_targets.R</code>) to load other global object dependencies such as functions.</p>
 <div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="debugging.html#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_workspace</span>(y_05f206d7)</span></code></pre></div>
-<p>We now have the dependencies of <code>y_05f206d7</code> in memory, which allows you to try out any failed function calls in your local R session. <a href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a> <a href="#fn9" class="footnote-ref" id="fnref9"><sup>9</sup></a></p>
+<p>We now have the dependencies of <code>y_05f206d7</code> in memory, which allows you to try out any failed function calls in your local R session. <a href="drake.html#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a> <a href="drake.html#fn9" class="footnote-ref" id="fnref9"><sup>9</sup></a></p>
 <div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="debugging.html#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(x)</span>
 <span id="cb63-2"><a href="debugging.html#cb63-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 4</span></span>
 <span id="cb63-3"><a href="debugging.html#cb63-3" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(<span class="at">arg =</span> <span class="dv">0</span>, <span class="at">value =</span> <span class="st">&quot;my_value&quot;</span>, <span class="at">a =</span> <span class="dv">1</span>, <span class="at">b =</span> <span class="dv">2</span>, <span class="at">key =</span> <span class="st">&quot;my_api_key&quot;</span>)</span>
@@ -498,14 +498,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>For small to medium-sized workloads, the environment browser and the debug option are usually the best choices. These techniques immediately direct control to prewritten function calls and get you as close to the error as possible. However, this may not always be feasible in <a href="hpc.html#hpc">large distributed workloads</a>, e.g. <code>tar_make_clustermq()</code>, where most of your targets are not even running on the same computer as your main R process. For those complicated situations where it is not possible to access the R interpreter, workspaces are ideal because they store a persistent reproducible runtime state that you can recover locally.</p>
 
 </div>
-</div>
-<div class="footnotes">
-<hr />
-<ol start="7">
-<li id="fn7"><p>In the case of dynamic branching, <code>names</code> does not accept individual branch names, but you can still supply the name of the overarching dynamic target.<a href="debugging.html#fnref7" class="footnote-back">↩︎</a></p></li>
-<li id="fn8"><p>In addition, current random number generator seed (<code>.Random.seed</code>) is also the value <code>y_05f206d7</code> started with.<a href="debugging.html#fnref8" class="footnote-back">↩︎</a></p></li>
-<li id="fn9"><p>When you are finished debugging, you can remove all workspace files with <code>tar_destroy(destroy = "workspaces")</code>.<a href="debugging.html#fnref9" class="footnote-back">↩︎</a></p></li>
-</ol>
 </div>
 <div style = "background: #1C356D; color: white; padding: 10px 10px 10px 25px; font-size: 1em; width: 100%;">
   Copyright Eli Lilly and Company

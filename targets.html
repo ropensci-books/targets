@@ -425,14 +425,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Other targets (such as <code>raw_data_file</code>).</li>
 <li>Functions and objects in the main environment. This environment is almost always the global environment of the R process that runs the target script file (default: <code>_targets.R</code>) so these dependencies are usually going to be the custom functions and objects you write yourself.</li>
 </ol>
-<p>This process excludes many objects from dependency detection. For example, both <code>{</code> and <code>cols()</code> are excluded because they are defined in the environments of packages (<code>base</code> and <code>readr</code>, respectively). Functions and objects from packages are ignored unless you supply the package name to the <code>packages</code> and <code>imports</code> fields of <code>tar_option_set()</code> as described later on in this chapter.<a href="#fn10" class="footnote-ref" id="fnref10"><sup>10</sup></a></p>
+<p>This process excludes many objects from dependency detection. For example, both <code>{</code> and <code>cols()</code> are excluded because they are defined in the environments of packages (<code>base</code> and <code>readr</code>, respectively). Functions and objects from packages are ignored unless you supply the package name to the <code>packages</code> and <code>imports</code> fields of <code>tar_option_set()</code> as described later on in this chapter.<a href="drake.html#fn10" class="footnote-ref" id="fnref10"><sup>10</sup></a></p>
 </div>
 <div id="return-value" class="section level2" number="7.7">
 <h2><span class="header-section-number">7.7</span> Return value</h2>
 <p>The return value of a target should be an R object that can be saved to disk and hashed.</p>
 <div id="saving" class="section level3" number="7.7.1">
 <h3><span class="header-section-number">7.7.1</span> Saving</h3>
-<p>The object should be compatible with the storage format you choose using the <code>format</code> argument of <code>tar_target()</code> or <code>tar_option_set()</code>. For example, if the format is <code>"rds"</code> (default), then the target should return an R object that can be saved with <code>saveRDS()</code> and safely loaded properly into another session. Please avoid returning <a href="https://cran.r-project.org/web/packages/future/vignettes/future-4-non-exportable-objects.html">non-exportable objects</a> such as connection objects, <code>Rcpp</code> pointers, <code>xgboost</code> matrices, and <code>greta</code> models<a href="#fn11" class="footnote-ref" id="fnref11"><sup>11</sup></a>.</p>
+<p>The object should be compatible with the storage format you choose using the <code>format</code> argument of <code>tar_target()</code> or <code>tar_option_set()</code>. For example, if the format is <code>"rds"</code> (default), then the target should return an R object that can be saved with <code>saveRDS()</code> and safely loaded properly into another session. Please avoid returning <a href="https://cran.r-project.org/web/packages/future/vignettes/future-4-non-exportable-objects.html">non-exportable objects</a> such as connection objects, <code>Rcpp</code> pointers, <code>xgboost</code> matrices, and <code>greta</code> models<a href="drake.html#fn11" class="footnote-ref" id="fnref11"><sup>11</sup></a>.</p>
 </div>
 <div id="hashing" class="section level3" number="7.7.2">
 <h3><span class="header-section-number">7.7.2</span> Hashing</h3>
@@ -460,13 +460,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </div>
 </div>
-</div>
-<div class="footnotes">
-<hr />
-<ol start="10">
-<li id="fn10"><p>It is also possible to supply an alternative environment to the <code>envir</code> argument of <code>tar_option_set()</code>, which changes the environment where <code>targets</code> detects non-package global objects and functions, but there is rarely ever a need to do this.<a href="targets.html#fnref10" class="footnote-back">↩︎</a></p></li>
-<li id="fn11"><p>Special exceptions are granted to Keras and Torch models, which can be safely returned from targets if you specify <code>format = "keras"</code> or <code>format = "torch"</code>.<a href="targets.html#fnref11" class="footnote-back">↩︎</a></p></li>
-</ol>
 </div>
 <div style = "background: #1C356D; color: white; padding: 10px 10px 10px 25px; font-size: 1em; width: 100%;">
   Copyright Eli Lilly and Company

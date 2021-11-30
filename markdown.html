@@ -392,7 +392,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Interactively explore, prototype, and test the components of a <code>targets</code> pipeline using the R Markdown <a href="https://bookdown.org/yihui/rmarkdown/notebook.html">notebook interface</a>.</li>
 <li>Set up a <code>targets</code> pipeline using convenient R Markdown code chunks.</li>
 </ol>
-<p>Target Markdown supports a special <code>{targets}</code> <a href="https://bookdown.org/yihui/rmarkdown-cookbook/other-languages.html">language engine</a> with an interactive mode for (1) and a non-interactive mode for (2). By default, the mode is interactive in the <a href="https://bookdown.org/yihui/rmarkdown/notebook.html">notebook interface</a> and non-interactive when you knit/render the whole document.<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>. You can set the mode using the <code>tar_interactive</code> chunk option.</p>
+<p>Target Markdown supports a special <code>{targets}</code> <a href="https://bookdown.org/yihui/rmarkdown-cookbook/other-languages.html">language engine</a> with an interactive mode for (1) and a non-interactive mode for (2). By default, the mode is interactive in the <a href="https://bookdown.org/yihui/rmarkdown/notebook.html">notebook interface</a> and non-interactive when you knit/render the whole document.<a href="drake.html#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>. You can set the mode using the <code>tar_interactive</code> chunk option.</p>
 </div>
 <div id="example" class="section level2" number="3.3">
 <h2><span class="header-section-number">3.3</span> Example</h2>
@@ -439,9 +439,9 @@ create_plot &lt;- function(data) {
     theme_gray(24)
 }
 ```</code></pre>
-<p>In non-interactive mode, the chunk establishes a common <code>_targets.R</code> file and writes the R code to a script in <code>_targets_r/globals/</code>, and displays an informative message:<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a></p>
+<p>In non-interactive mode, the chunk establishes a common <code>_targets.R</code> file and writes the R code to a script in <code>_targets_r/globals/</code>, and displays an informative message:<a href="drake.html#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a></p>
 <pre><code>#&gt; Establish _targets.R and _targets_r/globals/chunk-name.R.</code></pre>
-<p>It is good practice to assign explicit chunk labels or set the <code>tar_name</code> chunk option on a chunk-by-chunk basis. Each chunk writes code to a script path that depends on the name, and all script paths need to be unique.<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a></p>
+<p>It is good practice to assign explicit chunk labels or set the <code>tar_name</code> chunk option on a chunk-by-chunk basis. Each chunk writes code to a script path that depends on the name, and all script paths need to be unique.<a href="drake.html#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a></p>
 </div>
 <div id="target-definitions" class="section level2" number="3.7">
 <h2><span class="header-section-number">3.7</span> Target definitions</h2>
@@ -526,8 +526,8 @@ tar_read(hist)
 <pre><code>```{r}
 tar_visnetwork()
 ```</code></pre>
-<div id="htmlwidget-fe26a23dc0d1c2337303" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
-<script type="application/json" data-for="htmlwidget-fe26a23dc0d1c2337303">{"x":{"nodes":{"name":["data","fit","hist","raw_data","create_plot"],"type":["stem","stem","stem","stem","function"],"status":["uptodate","uptodate","uptodate","uptodate","uptodate"],"seconds":[0.008,0.004,0.012,0.455,null],"bytes":[1079,1575,44521,1261,null],"branches":[null,null,null,null,null],"id":["data","fit","hist","raw_data","create_plot"],"label":["data","fit","hist","raw_data","create_plot"],"level":[2,3,3,1,1],"color":["#354823","#354823","#354823","#354823","#354823"],"shape":["dot","dot","dot","dot","triangle"]},"edges":{"from":["data","create_plot","data","raw_data"],"to":["fit","hist","hist","data"],"arrows":["to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Up to date","Stem","Function"],"color":["#354823","#899DA4","#899DA4"],"shape":["dot","dot","triangle"]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-74cb4004022d8fcf05fe" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-74cb4004022d8fcf05fe">{"x":{"nodes":{"name":["data","fit","hist","raw_data","create_plot"],"type":["stem","stem","stem","stem","function"],"status":["uptodate","uptodate","uptodate","uptodate","uptodate"],"seconds":[0.008,0.004,0.011,0.414,null],"bytes":[1081,1575,44521,1263,null],"branches":[null,null,null,null,null],"id":["data","fit","hist","raw_data","create_plot"],"label":["data","fit","hist","raw_data","create_plot"],"level":[2,3,3,1,1],"color":["#354823","#354823","#354823","#354823","#354823"],"shape":["dot","dot","dot","dot","triangle"]},"edges":{"from":["data","create_plot","data","raw_data"],"to":["fit","hist","hist","data"],"arrows":["to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Up to date","Stem","Function"],"color":["#354823","#899DA4","#899DA4"],"shape":["dot","dot","triangle"]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
 <p>At this point, you can go back and run <code>{targets}</code> chunks in interactive mode without interfering with the code or data of the non-interactive pipeline.</p>
 </div>
 <div id="conditioning-on-interactive-mode" class="section level2" number="3.10">
@@ -584,14 +584,6 @@ tar_stan_mcmc_rep_summary(
 </ul>
 
 </div>
-</div>
-<div class="footnotes">
-<hr />
-<ol start="4">
-<li id="fn4"><p>In <code>targets</code> version 0.6.0, the mode is interactive if <code>interactive()</code> is <code>TRUE</code>. In subsequent versions, the mode is interactive if <code>!isTRUE(getOption("knitr.in.progress"))</code> is <code>TRUE</code>.<a href="markdown.html#fnref4" class="footnote-back">↩︎</a></p></li>
-<li id="fn5"><p>The <code>_targets.R</code> file from Target Markdown never changes from chunk to chunk or report to report, so you can spread your work over multiple reports without worrying about aligning <code>_targets.R</code> scripts. Just be sure all your chunk names are unique across all the reports of a project, or you set the <code>tar_name</code> chunk option to specify base names of script file paths.<a href="markdown.html#fnref5" class="footnote-back">↩︎</a></p></li>
-<li id="fn6"><p>In addition, for <code>bookdown</code> projects, chunk labels should only use alphanumeric characters and dashes.<a href="markdown.html#fnref6" class="footnote-back">↩︎</a></p></li>
-</ol>
 </div>
 <div style = "background: #1C356D; color: white; padding: 10px 10px 10px 25px; font-size: 1em; width: 100%;">
   Copyright Eli Lilly and Company
