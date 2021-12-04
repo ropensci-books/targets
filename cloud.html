@@ -253,7 +253,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="10.1" data-path="files.html"><a href="files.html#internal-data-files"><i class="fa fa-check"></i><b>10.1</b> Internal data files</a>
 <ul>
-<li class="chapter" data-level="10.1.1" data-path="files.html"><a href="files.html#cleaning-up-internal-data-files"><i class="fa fa-check"></i><b>10.1.1</b> Cleaning up internal data files</a></li>
+<li class="chapter" data-level="10.1.1" data-path="files.html"><a href="files.html#data-version-control-and-the-cloud"><i class="fa fa-check"></i><b>10.1.1</b> Data version control and the cloud</a></li>
+<li class="chapter" data-level="10.1.2" data-path="files.html"><a href="files.html#cleaning-up-local-internal-data-files"><i class="fa fa-check"></i><b>10.1.2</b> Cleaning up local internal data files</a></li>
 </ul></li>
 <li class="chapter" data-level="10.2" data-path="files.html"><a href="files.html#internal-script-files"><i class="fa fa-check"></i><b>10.2</b> Internal script files</a>
 <ul>
@@ -322,14 +323,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="14.1" data-path="cloud.html"><a href="cloud.html#compute"><i class="fa fa-check"></i><b>14.1</b> Compute</a></li>
 <li class="chapter" data-level="14.2" data-path="cloud.html"><a href="cloud.html#storage"><i class="fa fa-check"></i><b>14.2</b> Storage</a>
 <ul>
-<li class="chapter" data-level="14.2.1" data-path="cloud.html"><a href="cloud.html#a-disclaimer"><i class="fa fa-check"></i><b>14.2.1</b> A disclaimer</a></li>
-<li class="chapter" data-level="14.2.2" data-path="cloud.html"><a href="cloud.html#communicate-with-your-collaborators"><i class="fa fa-check"></i><b>14.2.2</b> Communicate with your collaborators</a></li>
-<li class="chapter" data-level="14.2.3" data-path="cloud.html"><a href="cloud.html#get-started-with-the-amazon-s3-web-console"><i class="fa fa-check"></i><b>14.2.3</b> Get started with the Amazon S3 web console</a></li>
-<li class="chapter" data-level="14.2.4" data-path="cloud.html"><a href="cloud.html#configure-your-local-machine"><i class="fa fa-check"></i><b>14.2.4</b> Configure your local machine</a></li>
-<li class="chapter" data-level="14.2.5" data-path="cloud.html"><a href="cloud.html#create-s3-buckets"><i class="fa fa-check"></i><b>14.2.5</b> Create S3 buckets</a></li>
-<li class="chapter" data-level="14.2.6" data-path="cloud.html"><a href="cloud.html#configure-the-pipeline"><i class="fa fa-check"></i><b>14.2.6</b> Configure the pipeline</a></li>
-<li class="chapter" data-level="14.2.7" data-path="cloud.html"><a href="cloud.html#run-the-pipeline-1"><i class="fa fa-check"></i><b>14.2.7</b> Run the pipeline</a></li>
-<li class="chapter" data-level="14.2.8" data-path="cloud.html"><a href="cloud.html#manage-the-data"><i class="fa fa-check"></i><b>14.2.8</b> Manage the data</a></li>
+<li class="chapter" data-level="14.2.1" data-path="cloud.html"><a href="cloud.html#data-version-control"><i class="fa fa-check"></i><b>14.2.1</b> Data version control</a></li>
+<li class="chapter" data-level="14.2.2" data-path="cloud.html"><a href="cloud.html#a-disclaimer"><i class="fa fa-check"></i><b>14.2.2</b> A disclaimer</a></li>
+<li class="chapter" data-level="14.2.3" data-path="cloud.html"><a href="cloud.html#communicate-with-your-collaborators"><i class="fa fa-check"></i><b>14.2.3</b> Communicate with your collaborators</a></li>
+<li class="chapter" data-level="14.2.4" data-path="cloud.html"><a href="cloud.html#get-started-with-the-amazon-s3-web-console"><i class="fa fa-check"></i><b>14.2.4</b> Get started with the Amazon S3 web console</a></li>
+<li class="chapter" data-level="14.2.5" data-path="cloud.html"><a href="cloud.html#configure-your-local-machine"><i class="fa fa-check"></i><b>14.2.5</b> Configure your local machine</a></li>
+<li class="chapter" data-level="14.2.6" data-path="cloud.html"><a href="cloud.html#create-s3-buckets"><i class="fa fa-check"></i><b>14.2.6</b> Create S3 buckets</a></li>
+<li class="chapter" data-level="14.2.7" data-path="cloud.html"><a href="cloud.html#configure-the-pipeline"><i class="fa fa-check"></i><b>14.2.7</b> Configure the pipeline</a></li>
+<li class="chapter" data-level="14.2.8" data-path="cloud.html"><a href="cloud.html#run-the-pipeline-1"><i class="fa fa-check"></i><b>14.2.8</b> Run the pipeline</a></li>
+<li class="chapter" data-level="14.2.9" data-path="cloud.html"><a href="cloud.html#manage-the-data"><i class="fa fa-check"></i><b>14.2.9</b> Manage the data</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="15" data-path="drake.html"><a href="drake.html"><i class="fa fa-check"></i><b>15</b> What about <code>drake</code>?</a>
@@ -381,45 +383,52 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="storage" class="section level2" number="14.2">
 <h2><span class="header-section-number">14.2</span> Storage</h2>
 <p><code>targets</code> supports cloud storage on a target-by-target basis using <a href="https://aws.amazon.com/s3/">Amazon Simple Storage Service, or S3</a>. After a target completes, the return value is uploaded to a user-defined S3 bucket <a href="https://docs.aws.amazon.com/AmazonS3/latest/user-guide/create-bucket.html">S3 bucket</a>. Follow these steps to get started.</p>
-<div id="a-disclaimer" class="section level3" number="14.2.1">
-<h3><span class="header-section-number">14.2.1</span> A disclaimer</h3>
-<p>Please be aware of your resource and monetary constraints when using AWS. The AWS-backed storage capabilities in <code>targets</code> sends individual data files to S3 buckets on a target-by-target basis and periodically queries the HTML header data. For a large number of S3-backed targets, the pipeline may slow down, and it may incur monetary costs due to a large number of API requests, both for uploading new targets and checking if existing targets are up to date. It may be best to select a small number of important or large targets to send to S3 buckets, while putting the majority of small targets under source code version control, e.g. Git/GitHub. To put the whole <code>_targets/</code> data store in a single S3 bucket, including metadata, it is best to run the pipeline locally first and then invoke <code>aws.s3::s3sync()</code> or similar.</p>
+<div id="data-version-control" class="section level3" number="14.2.1">
+<h3><span class="header-section-number">14.2.1</span> Data version control</h3>
+<p>In addition, if your bucket has <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/Versioning.html">versioing enabled</a>, then <code>targets</code> &gt;= 0.8.1.9000 tracks the version of each target in the bucket automatically. That means if you revert your code and metadata file to a prior state, then your pipeline will revert to prior versions of your targets in the cloud, and those targets may be up to date. This is extremely useful if you are managing your project code and <code>targets</code> metadata with version control (e.g. Git) and frequently move among multiple branches.</p>
 </div>
-<div id="communicate-with-your-collaborators" class="section level3" number="14.2.2">
-<h3><span class="header-section-number">14.2.2</span> Communicate with your collaborators</h3>
+<div id="a-disclaimer" class="section level3" number="14.2.2">
+<h3><span class="header-section-number">14.2.2</span> A disclaimer</h3>
+<p>Please be aware of your resource and monetary constraints when using AWS. The AWS-backed storage capabilities in <code>targets</code> sends individual data files to S3 buckets on a target-by-target basis and periodically queries the HTML header data. For a large number of S3-backed targets, the pipeline may slow down, and it may incur monetary costs due to a large number of API requests, both for uploading new targets and checking if existing targets are up to date. It may be best to select a small number of important or large targets to send to S3 buckets, while putting the majority of small targets under source code version control, e.g. Git/GitHub. To put the whole <code>_targets/</code> data store in a single S3 bucket, including metadata, it is best to run the pipeline locally first and then invoke a function like <code>aws.s3::s3sync()</code> at only the most important strategic milestones.</p>
+</div>
+<div id="communicate-with-your-collaborators" class="section level3" number="14.2.3">
+<h3><span class="header-section-number">14.2.3</span> Communicate with your collaborators</h3>
 <p>An S3 bucket can be a shared file space. If you have access to someone else’s bucket, running their pipeline could accidentally overwrite their cloud data. It is best if you and your colleagues decide in advance who will write to the bucket at any given time.</p>
 </div>
-<div id="get-started-with-the-amazon-s3-web-console" class="section level3" number="14.2.3">
-<h3><span class="header-section-number">14.2.3</span> Get started with the Amazon S3 web console</h3>
+<div id="get-started-with-the-amazon-s3-web-console" class="section level3" number="14.2.4">
+<h3><span class="header-section-number">14.2.4</span> Get started with the Amazon S3 web console</h3>
 <p>If you do not already have an Amazon Web Services account, sign up for the free tier at <a href="https://aws.amazon.com/free" class="uri">https://aws.amazon.com/free</a>. Then, follow <a href="https://docs.aws.amazon.com/AmazonS3/latest/gsg/GetStartedWithS3.html">these step-by-step instructions</a> to practice using Amazon S3 through the web console at <a href="https://console.aws.amazon.com/s3/" class="uri">https://console.aws.amazon.com/s3/</a>.</p>
 </div>
-<div id="configure-your-local-machine" class="section level3" number="14.2.4">
-<h3><span class="header-section-number">14.2.4</span> Configure your local machine</h3>
-<p><code>targets</code> uses the <a href="https://github.com/cloudyr/aws.s3"><code>aws.s3</code></a> package behind the scenes. It is not a strict dependency of <code>targets</code>, so you will need to install it yourself.</p>
-<div class="sourceCode" id="cb203"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb203-1"><a href="cloud.html#cb203-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;aws.s3&quot;</span>)</span></code></pre></div>
-<p>Next, <code>aws.s3</code> needs an access ID, secret access key, and default region. Follow <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html#cli-configure-quickstart-creds">these steps</a> to generate the keys, and choose a region from <a href="https://docs.aws.amazon.com/general/latest/gr/s3.html">this table of endpoints</a>. Then, open the <code>.Renviron</code> file in your home directory with <code>usethis::edit_r_environ()</code> and store this information in <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html">special environment variables</a>. Here is an example <code>.Renviron</code> file.</p>
+<div id="configure-your-local-machine" class="section level3" number="14.2.5">
+<h3><span class="header-section-number">14.2.5</span> Configure your local machine</h3>
+<p>As of version 0.8.1.9000, <code>targets</code> uses the <a href="https://github.com/paws-r/paws"><code>paws</code></a> package behind the scenes. It is not a strict dependency of <code>targets</code>, so you will need to install it yourself.</p>
+<div class="sourceCode" id="cb203"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb203-1"><a href="cloud.html#cb203-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;paws&quot;</span>)</span></code></pre></div>
+<p>Next, <code>paws</code> needs an access ID, secret access key, and default region. Please refer to the credentials section of the <a href="https://github.com/paws-r/paws/blob/main/README.md"><code>paws</code> README</a> for a list of the appropriate environment variables. Then, set these values in your user-level <code>.Renviron</code> with <code>usethis::edit_r_environ()</code>. Visit <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html" class="uri">https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html</a> for more details. Here is an example <code>.Renviron</code> file.</p>
 <div class="sourceCode" id="cb204"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb204-1"><a href="cloud.html#cb204-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example .Renviron file</span></span>
 <span id="cb204-2"><a href="cloud.html#cb204-2" aria-hidden="true" tabindex="-1"></a>AWS_ACCESS_KEY_ID<span class="ot">=</span>AKIAIOSFODNN7EXAMPLE</span>
 <span id="cb204-3"><a href="cloud.html#cb204-3" aria-hidden="true" tabindex="-1"></a>AWS_SECRET_ACCESS_KEY<span class="ot">=</span>wJalrXUtnFEMI<span class="sc">/</span>K7MDENG<span class="sc">/</span>bPxRfiCYEXAMPLEKEY</span>
-<span id="cb204-4"><a href="cloud.html#cb204-4" aria-hidden="true" tabindex="-1"></a>AWS_DEFAULT_REGION<span class="ot">=</span>us<span class="sc">-</span>east<span class="dv">-1</span></span></code></pre></div>
+<span id="cb204-4"><a href="cloud.html#cb204-4" aria-hidden="true" tabindex="-1"></a>AWS_REGION<span class="ot">=</span>us<span class="sc">-</span>east<span class="dv">-1</span> <span class="co"># The paws package and thus targets &gt;= 0.8.1.9000 use this.</span></span>
+<span id="cb204-5"><a href="cloud.html#cb204-5" aria-hidden="true" tabindex="-1"></a>AWS_DEFAULT_REGION<span class="ot">=</span>us<span class="sc">-</span>east<span class="dv">-1</span> <span class="co"># For back compatibility with targets &lt;= 0.8.1.</span></span></code></pre></div>
 <p>Restart your R session so the changes take effect. Your keys are sensitive personal information. You can print them in your private console to verify correctness, but otherwise please avoid saving them to any persistent documents other than <code>.Renviron</code>.</p>
 <div class="sourceCode" id="cb205"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb205-1"><a href="cloud.html#cb205-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.getenv</span>(<span class="st">&quot;AWS_ACCESS_KEY_ID&quot;</span>)</span>
 <span id="cb205-2"><a href="cloud.html#cb205-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;AKIAIOSFODNN7EXAMPLE&quot;</span></span>
 <span id="cb205-3"><a href="cloud.html#cb205-3" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.getenv</span>(<span class="st">&quot;AWS_SECRET_ACCESS_KEY&quot;</span>)</span>
 <span id="cb205-4"><a href="cloud.html#cb205-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY&quot;</span></span>
-<span id="cb205-5"><a href="cloud.html#cb205-5" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.getenv</span>(<span class="st">&quot;AWS_DEFAULT_REGION&quot;</span>)</span>
-<span id="cb205-6"><a href="cloud.html#cb205-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;us-east-1&quot;</span></span></code></pre></div>
+<span id="cb205-5"><a href="cloud.html#cb205-5" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.getenv</span>(<span class="st">&quot;AWS_REGION&quot;</span>)</span>
+<span id="cb205-6"><a href="cloud.html#cb205-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;us-east-1&quot;</span></span>
+<span id="cb205-7"><a href="cloud.html#cb205-7" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.getenv</span>(<span class="st">&quot;AWS_DEFAULT_REGION&quot;</span>)</span>
+<span id="cb205-8"><a href="cloud.html#cb205-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;us-east-1&quot;</span></span></code></pre></div>
 </div>
-<div id="create-s3-buckets" class="section level3" number="14.2.5">
-<h3><span class="header-section-number">14.2.5</span> Create S3 buckets</h3>
+<div id="create-s3-buckets" class="section level3" number="14.2.6">
+<h3><span class="header-section-number">14.2.6</span> Create S3 buckets</h3>
 <p>Now, you are ready to create one or more <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingBucket.html">S3 buckets</a> for your <code>targets</code> pipeline. Each pipeline should have its own set of buckets. Create one through the web console or with <code>aws.s3::put_bucket()</code>.</p>
-<div class="sourceCode" id="cb206"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb206-1"><a href="cloud.html#cb206-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(aws.s3)</span>
-<span id="cb206-2"><a href="cloud.html#cb206-2" aria-hidden="true" tabindex="-1"></a><span class="fu">put_bucket</span>(<span class="st">&quot;my-test-bucket-25edb4956460647d&quot;</span>)</span>
-<span id="cb206-3"><a href="cloud.html#cb206-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
+<div class="sourceCode" id="cb206"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb206-1"><a href="cloud.html#cb206-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(paws)</span>
+<span id="cb206-2"><a href="cloud.html#cb206-2" aria-hidden="true" tabindex="-1"></a>s3 <span class="ot">&lt;-</span> <span class="fu">s3</span>()</span>
+<span id="cb206-3"><a href="cloud.html#cb206-3" aria-hidden="true" tabindex="-1"></a>s3<span class="sc">$</span><span class="fu">create_bucket</span>(<span class="at">Bucket =</span> <span class="st">&quot;my-test-bucket-25edb4956460647d&quot;</span>)</span></code></pre></div>
 <p>Sign in to <a href="https://s3.console.aws.amazon.com/s3" class="uri">https://s3.console.aws.amazon.com/s3</a> to verify that the bucket exists.</p>
 </div>
-<div id="configure-the-pipeline" class="section level3" number="14.2.6">
-<h3><span class="header-section-number">14.2.6</span> Configure the pipeline</h3>
+<div id="configure-the-pipeline" class="section level3" number="14.2.7">
+<h3><span class="header-section-number">14.2.7</span> Configure the pipeline</h3>
 <p>To connect your pipeline with S3,</p>
 <ol style="list-style-type: decimal">
 <li>Supply your bucket name to <code>resources</code> in <code>tar_option_set()</code>. To use different buckets for different targets, set <code>resources</code> directly in <code>tar_target()</code>. In older version of <code>targets</code>, <code>resources</code> was a named list. In <code>targets</code> &gt;= 0.5.0.9000, please create the <code>resources</code> argument with helpers <code>tar_resources()</code> and <code>tar_resources_aws()</code>.</li>
@@ -446,8 +455,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb207-18"><a href="cloud.html#cb207-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(mean_file, <span class="fu">write_mean</span>(data), <span class="at">format =</span> <span class="st">&quot;aws_file&quot;</span>)</span>
 <span id="cb207-19"><a href="cloud.html#cb207-19" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 </div>
-<div id="run-the-pipeline-1" class="section level3" number="14.2.7">
-<h3><span class="header-section-number">14.2.7</span> Run the pipeline</h3>
+<div id="run-the-pipeline-1" class="section level3" number="14.2.8">
+<h3><span class="header-section-number">14.2.8</span> Run the pipeline</h3>
 <p>When you run the pipeline above with <a href="https://docs.ropensci.org/targets/reference/tar_make.html"><code>tar_make()</code></a>, your local R session computes <code>rnorm(5)</code>, saves it to a temporary <a href="https://github.com/traversc/qs"><code>qs</code></a> file on disk, and then uploads it to a file called <code>_targets/objects/data</code> on your S3 bucket. Likewise for <code>mean_file</code>, but because the format is <code>"aws_file"</code>, you are responsible for supplying the path to the file that gets uploaded to <code>_targets/objects/mean_file</code>.</p>
 <div class="sourceCode" id="cb208"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb208-1"><a href="cloud.html#cb208-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
 <span id="cb208-2"><a href="cloud.html#cb208-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target data</span></span>
@@ -459,8 +468,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb209-3"><a href="cloud.html#cb209-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✓ skip target mean_file</span></span>
 <span id="cb209-4"><a href="cloud.html#cb209-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✓ skip pipeline</span></span></code></pre></div>
 </div>
-<div id="manage-the-data" class="section level3" number="14.2.8">
-<h3><span class="header-section-number">14.2.8</span> Manage the data</h3>
+<div id="manage-the-data" class="section level3" number="14.2.9">
+<h3><span class="header-section-number">14.2.9</span> Manage the data</h3>
 <p>Log into <a href="https://s3.console.aws.amazon.com/s3" class="uri">https://s3.console.aws.amazon.com/s3</a>. You should see objects <code>_targets/objects/data</code> and <code>_targets/objects/mean_file</code> in your bucket. To download this data locally, use <code>tar_read()</code> and <code>tar_load()</code> like before. These functions download the data from the bucket and load it into R.</p>
 <div class="sourceCode" id="cb210"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb210-1"><a href="cloud.html#cb210-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(data)</span>
 <span id="cb210-2"><a href="cloud.html#cb210-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] -0.74654607 -0.59593497 -1.57229983  0.40915323  0.02579023</span></span></code></pre></div>
@@ -472,8 +481,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb212-2"><a href="cloud.html#cb212-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;-0.495967480886693&quot;</span></span></code></pre></div>
 <p>When you are done with these temporary files and the pipeline is no longer running, you can safely remove everything in <code>_targets/scratch/</code>.</p>
 <div class="sourceCode" id="cb213"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb213-1"><a href="cloud.html#cb213-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unlink</span>(<span class="st">&quot;_targets/scratch/&quot;</span>, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
-<p>Lastly, if you want to erase the whole project or start over from scratch, consider removing the S3 bucket to avoid incurring storage fees. The easiest way to do this is through the <a href="https://s3.console.aws.amazon.com/s3">S3 console</a>. You can alternatively call <code>aws.s3::delete_bucket()</code>, but you have to make sure the bucket is empty first.</p>
-<div class="sourceCode" id="cb214"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb214-1"><a href="cloud.html#cb214-1" aria-hidden="true" tabindex="-1"></a><span class="fu">delete_bucket</span>(<span class="st">&quot;my-test-bucket-25edb4956460647d&quot;</span>)</span></code></pre></div>
+<p>Lastly, if you want to erase the whole project or start over from scratch, consider removing the S3 bucket to avoid incurring storage fees. The easiest way to do this is through the <a href="https://s3.console.aws.amazon.com/s3">S3 console</a>. Alternatively, you can programmatically delete the bucket using functions in <code>paws</code>. Either way, the bucket must be empty before it is deleted, including past versions of objects in a versioning-enabled bucket.</p>
 
 </div>
 </div>
