@@ -34,7 +34,13 @@ Spreadsheets `_targets/meta/meta` keeps track of target metadata, `_targets/meta
 
 A typical target returns an R object: for example, a dataset with `tar_target(dataset, data.frame(x = rnorm(1000)), format = "fst")` or a fitted model `tar_target(model, biglm(ozone ~ temp + wind), format = "qs")`. When you run the pipeline, `targets` computes this object and saves it as a file in `_targets/objects/`. The file name in `_targets/objects/` is always the target name, and type of the file is determined by the `format` argument of `tar_target()`, and formats `"fst"` and `"qs"` are two of many choices explained in the help file of `tar_target()`. No matter what format you pick, `targets` watches the file for changes and recomputes the target in `tar_make()` if the the file gets corrupted (unless you suppress the file cue with `tar_target(cue = tar_cue(file = FALSE))`).
 
-### Cleaning up internal data files
+### Data version control and the cloud
+
+The [chapter on cloud computing](#cloud) describes how to continuously upload and track each target as an object in an [Amazon S3 bucket](https://aws.amazon.com/aws/s3). If your S3 bucket has [versioing enabled](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Versioning.html), then `targets` >= 0.8.1.9000 tracks the version of each target in the bucket automatically. That means if you revert your code and metadata file to a prior state, then your pipeline will revert to prior versions of your targets in the cloud, and those targets may be up to date. This is extremely useful if you are managing your project code and `targets` metadata with version control (e.g. Git) and frequently move among multiple branches.
+
+Alternatively, for users without access to Amazon Web Services, [`gittargets`](https://wlandau.github.io/gittargets) is a data version control solution that works entirely locally. Designed for data analysis projects whose code is already under version control with Git, `gittargets` takes snapshots of the data store and linking those snapshots to commits in the code repository. This allows you to transition among multiple code branches without invalidating your pipeline: when you check out an old code branch and its data snapshot together, you restore your old targets while keeping the data up to date.
+
+### Cleaning up local internal data files
 
 There are [multiple functions](https://docs.ropensci.org/targets/reference/index.html#section-clean) to remove target storage or modify the metadata to force one or more targets to rerun in the next call to `tar_make()`.
 
