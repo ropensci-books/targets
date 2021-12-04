@@ -23,7 +23,7 @@ Right now, `targets` does not have built-in cloud-based distributed computing su
 
 ### Data version control
 
-In addition, if your bucket has [versioing enabled](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Versioning.html), then `targets` >= 0.8.1.9000 tracks the version of each target in the bucket automatically. That means if you revert your code and metadata file to a prior state, then your pipeline will revert to prior versions of your targets in the cloud, and those targets may be up to date. This is extremely useful if you are managing your project code and `targets` metadata with version control (e.g. Git) and frequently move among multiple branches.
+In addition, if your bucket has [versioing enabled](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Versioning.html), then `targets` >= 0.8.1.9000 tracks the version of each target in the bucket automatically. That means if you revert your code and metadata file to a prior state, then your pipeline will revert to prior versions of your targets in the cloud, and those targets may be up to date. This is extremely useful if you are managing your project code and `targets` metadata with version control (e.g. Git) and frequently move among multiple branches. To check if data versioning is working properly, you can verify that the AWS S3 version IDs of your targets appear in `tar_meta()$path`.
 
 ### A disclaimer
 
