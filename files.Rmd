@@ -27,7 +27,8 @@ _targets/ # Can be customized with tar_config_set().
 ├────── branching_target_c7bcb4bd
 ├────── branching_target_285fb6a9
 ├────── branching_target_874ca381
-└── scratch/ # tar_make() deletes this folder after it finishes.
+├── scratch/ # tar_make() deletes this folder after it finishes.
+└── user/ # gittargets users can put custom files here for data version control.
 ```
 
 Spreadsheets `_targets/meta/meta` keeps track of target metadata, `_targets/meta/progress` records runtime progress, and `_targets/meta/process` has high-level information (such as process ID) about the external R session orchestrating the targets. The `scratch/` directory contains temporary files which can be safely deleted after `tar_make()` finishes. The `_targets/objects/` folder contains the return values of the targets themselves.
