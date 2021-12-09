@@ -327,3 +327,7 @@ Functions `tar_target()`, `tar_target_raw()`, and `tar_option_set()` support adv
 * `retrieval`: Choose whether the parallel workers or the main process is responsible for reading dependency targets from disk. Should usually be set to whatever you choose for `storage` (default). Always choose `retrieval = "main"` if the workers do not have access to the file system with the `_targets/` data store.
 * `format`: If your pipeline has large computation, it may also have large data. Consider setting the `format` argument to help `targets` store and retrieve your data faster.
 * `error`: Set `error` to `"continue"` to let the rest of the pipeline keep running even if a target encounters an error.
+
+## Cloud computing
+
+Right now, `targets` does not have built-in cloud-based distributed computing support. However, future development plans include seamless integration with [AWS Batch](https://aws.amazon.com/batch/). As a temporary workaround, it is possible to deploy a burstable [SLURM](https://slurm.schedmd.com/documentation.html) cluster using [AWS ParallelCluster](https://aws.amazon.com/hpc/parallelcluster/) and leverage `targets`' [existing support for traditional schedulers](#hpc).

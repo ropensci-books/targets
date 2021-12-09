@@ -158,3 +158,29 @@ list(
   tar_target(hist, create_plot(data))
 )
 ```
+
+## Tracking changes
+
+To help figure out which targets to rerun and which ones to skip, the `targets` package tracks changes to the functions you define. To track changes to a function, `targets` computes a [hash](https://en.wikipedia.org/wiki/Hash_function). This hash fingerprints the [deparsed](https://adv-r.hadley.nz/expressions.html#parsing) function (body and arguments) together with the hashes of all global functions and objects called that function. So if the function's body, arguments, or dependencies change nontrivially, that change will be detected.
+
+This hashing system is not perfect. For example, functions created by `Rcpp::cppFunction()` do not show the state of the underlying C++ code. As a workaround, you can use a wrapper that inserts the C++ code into the R function body so `targets` can track it for meaningful changes.
+
+```{r, eval = FALSE}
+cpp_function <- function(code) {
+  out <- Rcpp::cppFunction(code)
+  body(out) <- rlang::call2("{", code, body(out))
+  out
+}
+
+your_function <- cpp_function(
+  "int your_function(int x, int y, int z) {
+     int sum = x + y + z;
+     return sum;
+   }"
+)
+```
+
+Functions produced by `Vectorize()` and `purrr::safely()` suffer similar issues because the actual function code is in the closure of the function instead of the body. In addition, functions from packages are not automatically tracked, and [extra steps documented in the packages chapter](https://books.ropensci.org/targets/packages.html#package-based-invalidation) are required to enable this.
+
+It is impossible to eliminate every edge case, so before running the pipeline, please [run the dependency graph](https://docs.ropensci.org/targets/reference/tar_visnetwork.html) and [other utilities](https://docs.ropensci.org/targets/reference/index.html#inspect) to check your understanding of the state of project.
+

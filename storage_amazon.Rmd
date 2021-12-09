@@ -1,4 +1,4 @@
-# Cloud integration {#cloud}
+# Integration with Amazon S3 storage {#storage_amazon}
 
 ```{r, message = FALSE, warning = FALSE, echo = FALSE}
 knitr::opts_knit$set(root.dir = fs::dir_create(tempfile()))
@@ -13,23 +13,13 @@ library(targets)
 
 Before getting started, please familiarize yourself with the [pricing model](https://aws.amazon.com/pricing/) and [cost management and monitoring tools](https://docs.aws.amazon.com/account-billing/index.html) of [Amazon Web Services](https://aws.amazon.com/). Everything has a cost, from [virtual instances](https://aws.amazon.com/ec2/) to [web API calls](https://docs.aws.amazon.com/#user_guides). [Free tier accounts](https://aws.amazon.com/free/) give you a modest monthly budget for some services for the first year, but it is easy to exceed the limits. Developers of reusable software should consider applying for [promotional credit](https://aws.amazon.com/blogs/opensource/aws-promotional-credits-open-source-projects/) using [this application form](https://pages.awscloud.com/AWS-Credits-for-Open-Source-Projects).
 
-## Compute
+`targets` supports cloud storage on a target-by-target basis using [Amazon Simple Storage Service (S3)](https://aws.amazon.com/s3/). After a target completes, the return value is uploaded to a user-defined S3 bucket [S3 bucket](https://docs.aws.amazon.com/AmazonS3/latest/user-guide/create-bucket.html). Follow these steps to get started.
 
-Right now, `targets` does not have built-in cloud-based distributed computing support. However, future development plans include seamless integration with [AWS Batch](https://aws.amazon.com/batch/). As a temporary workaround, it is possible to deploy a burstable [SLURM](https://slurm.schedmd.com/documentation.html) cluster using [AWS ParallelCluster](https://aws.amazon.com/hpc/parallelcluster/) and leverage `targets`' [existing support for traditional schedulers](#hpc).
+## A disclaimer
 
-## Storage
+Please be aware of your resource and monetary constraints when using AWS. The AWS-backed storage capabilities in `targets` sends individual data files to S3 buckets on a target-by-target basis and periodically queries the HTML header data. For a large number of S3-backed targets, the pipeline may slow down, and it may incur monetary costs due to a large number of API requests, both for uploading new targets and checking if existing targets are up to date. It may be best to select a small number of important or large targets to send to S3 buckets, while putting the majority of small targets under source code version control, e.g. Git/GitHub. To put the whole `_targets/` data store in a single S3 bucket, including metadata, consider runing the pipeline locally first and then syncing the data (e.g. `aws.s3::s3sync()`) at only the most important strategic milestones.
 
-`targets` supports cloud storage on a target-by-target basis using [Amazon Simple Storage Service, or S3](https://aws.amazon.com/s3/). After a target completes, the return value is uploaded to a user-defined S3 bucket [S3 bucket](https://docs.aws.amazon.com/AmazonS3/latest/user-guide/create-bucket.html). Follow these steps to get started.
-
-### Data version control
-
-In addition, if your bucket has [versioing enabled](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Versioning.html), then `targets` >= 0.8.1.9000 tracks the version of each target in the bucket automatically. That means if you revert your code and metadata file to a prior state, then your pipeline will revert to prior versions of your targets in the cloud, and those targets may be up to date. This is extremely useful if you are managing your project code and `targets` metadata with version control (e.g. Git) and frequently move among multiple branches. To check if data versioning is working properly, you can verify that the AWS S3 version IDs of your targets appear in `tar_meta()$path`.
-
-### A disclaimer
-
-Please be aware of your resource and monetary constraints when using AWS. The AWS-backed storage capabilities in `targets` sends individual data files to S3 buckets on a target-by-target basis and periodically queries the HTML header data. For a large number of S3-backed targets, the pipeline may slow down, and it may incur monetary costs due to a large number of API requests, both for uploading new targets and checking if existing targets are up to date. It may be best to select a small number of important or large targets to send to S3 buckets, while putting the majority of small targets under source code version control, e.g. Git/GitHub. To put the whole `_targets/` data store in a single S3 bucket, including metadata, it is best to run the pipeline locally first and then invoke a function like `aws.s3::s3sync()` at only the most important strategic milestones.
-
-### Communicate with your collaborators
+## Communicate with your collaborators
 
 An S3 bucket can be a shared file space. If you have access to someone else's bucket, running their pipeline could accidentally overwrite their cloud data. It is best if you and your colleagues decide in advance who will write to the bucket at any given time.
 
@@ -37,7 +27,7 @@ An S3 bucket can be a shared file space. If you have access to someone else's bu
 
 If you do not already have an Amazon Web Services account, sign up for the free tier at <https://aws.amazon.com/free>. Then, follow [these step-by-step instructions](https://docs.aws.amazon.com/AmazonS3/latest/gsg/GetStartedWithS3.html) to practice using Amazon S3 through the web console at <https://console.aws.amazon.com/s3/>.
 
-### Configure your local machine
+## Configure your local machine
 
 As of version 0.8.1.9000, `targets` uses the [`paws`](https://github.com/paws-r/paws) package behind the scenes. It is not a strict dependency of `targets`, so you will need to install it yourself.
 
@@ -68,7 +58,7 @@ Sys.getenv("AWS_DEFAULT_REGION")
 #> [1] "us-east-1"
 ```
 
-### Create S3 buckets
+## Create S3 buckets
 
 Now, you are ready to create one or more [S3 buckets](https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingBucket.html) for your `targets` pipeline. Each pipeline should have its own set of buckets. Create one through the web console or with `aws.s3::put_bucket()`.
 
@@ -78,9 +68,26 @@ s3 <- s3()
 s3$create_bucket(Bucket = "my-test-bucket-25edb4956460647d")
 ```
 
-Sign in to <https://s3.console.aws.amazon.com/s3> to verify that the bucket exists.
+Optionally, enable versionining 
 
-### Configure the pipeline
+`targets` >= 0.9.0 tracks the version IDs of objects in versioning-enabled buckets. (A later section discusses data version control.) You can enable versioning in your bucket through `paws` or the AWS web console.
+
+```{r, eval = FALSE}
+s3$put_bucket_versioning(
+  Bucket = "my-test-bucket-25edb4956460647d",
+  VersioningConfiguration = list(
+    MFADelete = "Disabled",
+    Status = "Enabled"
+  )
+)
+#> list()
+s3$get_bucket_versioning("my-test-bucket-25edb4956460647d")$Status
+#> [1] "Enabled"
+```
+
+Sign in to <https://s3.console.aws.amazon.com/s3> to verify that the bucket exists and has the desired versioning configuration.
+
+## Configure the pipeline
 
 To connect your pipeline with S3,
 
@@ -111,7 +118,7 @@ list(
 )
 ```
 
-### Run the pipeline
+## Run the pipeline
 
 When you run the pipeline above with [`tar_make()`](https://docs.ropensci.org/targets/reference/tar_make.html), your local R session computes `rnorm(5)`, saves it to a temporary [`qs`](https://github.com/traversc/qs) file on disk, and then uploads it to a file called `_targets/objects/data` on your S3 bucket. Likewise for `mean_file`, but because the format is `"aws_file"`, you are responsible for supplying the path to the file that gets uploaded to `_targets/objects/mean_file`.
 
@@ -131,7 +138,7 @@ tar_make()
 #> ✓ skip pipeline
 ```
 
-### Manage the data
+## Manage the data
 
 Log into <https://s3.console.aws.amazon.com/s3>. You should see objects `_targets/objects/data` and `_targets/objects/mean_file` in your bucket. To download this data locally, use `tar_read()` and `tar_load()` like before. These functions download the data from the bucket and load it into R.
 
@@ -160,3 +167,7 @@ unlink("_targets/scratch/", recursive = TRUE)
 ```
 
 Lastly, if you want to erase the whole project or start over from scratch, consider removing the S3 bucket to avoid incurring storage fees. The easiest way to do this is through the [S3 console](https://s3.console.aws.amazon.com/s3). Alternatively, you can programmatically delete the bucket using functions in `paws`. Either way, the bucket must be empty before it is deleted, including past versions of objects in a versioning-enabled bucket.
+
+## Data version control
+
+As of version 0.9.0, `targets` supports built-in native version control through AWS S3 storage. If your bucket has [versioning enabled](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Versioning.html), then `targets` records the version ID of each target (in `tar_meta(your_target)$path`), and it uses that version ID to read the data and check the status. So if you revert the metadata file `_targets/meta/meta` to a prior state, then your pipeline will automatically revert to prior versions of your targets. This allows you to quickly switch your entire project to a [previous state](https://git-scm.com/docs/git-checkout) or [alternate branch](https://git-scm.com/docs/git-branch) while keeping your AWS-backed targets in sync and up to date. It works best if you commit  `_targets/meta/meta` to the same [version control repository](https://git-scm.com) you use for your code. (<https://happygitwithr.com> is an excellent resource to get started with version control for code.)
