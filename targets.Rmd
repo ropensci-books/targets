@@ -41,15 +41,15 @@ Regarding the last point above, it is possible to customize the storage format o
 
 ## Working with tools outside R
 
-Each target runs R code, so to invoke a tool outside R, consider `system2()` or [`processx`](https://processx.r-lib.org) to call the appropriate system commands. This technique allows you to run shell scripts, Python scripts, etc. from within R. External scripts should ideally be tracked as input files using `tar_target(format = "file")` as described in [section on external input files](#files). There are also specialized R packages to retrieve data from remote sources and invoke web APIs, including [`rnoaa`](https://github.com/ropensci/rnoaa), [`ots`](https://github.com/ropensci/ots), and [`aws.s3`](https://github.com/cloudyr/aws.s3), and you may wish to use [custom cues](https://docs.ropensci.org/targets/reference/tar_cue.html) to automatically invalidate a target when the upstream remote data changes.
+Each target runs R code, so to invoke a tool outside R, consider `system2()` or [`processx`](https://processx.r-lib.org) to call the appropriate system commands. This technique allows you to run shell scripts, Python scripts, etc. from within R. External scripts should ideally be tracked as input files using `tar_target(format = "file")` as described in [section on external input files](#data). There are also specialized R packages to retrieve data from remote sources and invoke web APIs, including [`rnoaa`](https://github.com/ropensci/rnoaa), [`ots`](https://github.com/ropensci/ots), and [`aws.s3`](https://github.com/cloudyr/aws.s3), and you may wish to use [custom cues](https://docs.ropensci.org/targets/reference/tar_cue.html) to automatically invalidate a target when the upstream remote data changes.
 
 ## Side effects
 
-Like a good pure function, a good target should return a single value and not produce side effects. (The exception is [output file targets](#files) which create files and return their paths.) Avoid modifying the global environment with calls to `data()` or `source()`. If you need to source scripts to define global objects, please do so at the top of your target script file (default: `_targets.R`) just like `source("R/functions.R")` from the [walkthrough vignette](#walkthrough).
+Like a good pure function, a good target should return a single value and not produce side effects. (The exception is [output file targets](#data) which create files and return their paths.) Avoid modifying the global environment with calls to `data()` or `source()`. If you need to source scripts to define global objects, please do so at the top of your target script file (default: `_targets.R`) just like `source("R/functions.R")` from the [walkthrough vignette](#walkthrough).
 
 ## Dependencies
 
-`targets` automatically loads dependencies into memory when they are required, so it is rarely advisable to call `tar_read()` or `tar_load()` from inside a target. Except in rare circumstances, `tar_read()` and `tar_load()` are only for exploratory data analysis and [literate programming](#files).
+`targets` automatically loads dependencies into memory when they are required, so it is rarely advisable to call `tar_read()` or `tar_load()` from inside a target. Except in rare circumstances, `tar_read()` and `tar_load()` are only for exploratory data analysis and [literate programming](#data).
 
 Because dependency detection is implicit, adept target construction requires an understanding of how it works. To identify the targets and global objects that each target depends on, the `targets` package uses static code analysis with [`codetools`](https://CRAN.R-project.org/package=codetools), and you can emulate this process with `tar_deps()`. Let us look at the dependencies of the `raw_data` target.
 

@@ -48,7 +48,7 @@ Some of these files are optional, and they have the following roles.
 * `_targets.R`: the [target script file](https://docs.ropensci.org/targets/reference/tar_script.html). All `targets` pipelines must have a target script file that returns a target list at the end. If you use [Target Markdown](#markdown) (e.g. `index.Rmd` above) then the target script will be written automatically. Otherwise, you may write it by hand. Unless you apply the custom configuration described later in this chapter, the target script file will always be called `_targets.R` and live at the project root folder.
 * `_targets.yaml`: a YAML file to set default arguments to critical functions like `tar_make()`. As described below, you can access and modify this file with functions `tar_config_get()`, `tar_config_set()`, and `tar_config_unset()`. `targets` will attempt to look for `_targets.yaml` unless you set a different path  in the `TAR_CONFIG` environment variable.
 * `R/`: directory of scripts containing custom user-defined R code. Most of the code will likely contain [custom functions](#functions) you write to support your targets. You can load these functions with `source("R/function_script.R")` or `eval(parse(text = "R/function_script.R")`, either in a `tar_globals = TRUE` code chunk in [Target Markdown](#markdown) or directly in `_targets.R` if you are not using [Target Markdown](#markdown).
-* `data/`: directory of local input data files. As described in the [files chapter](#files), it is good practice to track input files using `format = "file"` in `tar_target()` and then reference those file targets in downstream targets that directly depend on those files.
+* `data/`: directory of local input data files. As described in the [files chapter](#data), it is good practice to track input files using `format = "file"` in `tar_target()` and then reference those file targets in downstream targets that directly depend on those files.
 
 ## Multiple projects
 
@@ -75,7 +75,7 @@ To begin, write the shared code base of custom user-defined functions in `R/`, a
 ...
 ```
 
-All projects share the same functions defined in the scripts in `R/`, and each project uses a different [target script](https://docs.ropensci.org/targets/reference/tar_script.html) and [data store](#files). `script_a.R` defines the targets for project A.
+All projects share the same functions defined in the scripts in `R/`, and each project uses a different [target script](https://docs.ropensci.org/targets/reference/tar_script.html) and [data store](#data). `script_a.R` defines the targets for project A.
 
 ```{r, eval = FALSE}
 # script_a.R
@@ -198,7 +198,7 @@ list(
 )
 ```
 
-This approach is the most convenient, but it can be inefficient if `target_from_project_a` is large. A higher-performant solution for large data is to treat the file in project A's data store as an [input file target](#files) in project B. (Unfortunately, this does break the conceptual abstraction of the `targets` data store.)
+This approach is the most convenient, but it can be inefficient if `target_from_project_a` is large. A higher-performant solution for large data is to treat the file in project A's data store as an [input file target](#data) in project B. (Unfortunately, this does break the conceptual abstraction of the `targets` data store.)
 
 
 ```{r, eval = FALSE}
