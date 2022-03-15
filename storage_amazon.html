@@ -334,6 +334,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="14.6" data-path="storage_amazon.html"><a href="storage_amazon.html#run-the-pipeline-1"><i class="fa fa-check"></i><b>14.6</b> Run the pipeline<span></span></a></li>
 <li class="chapter" data-level="14.7" data-path="storage_amazon.html"><a href="storage_amazon.html#manage-the-data"><i class="fa fa-check"></i><b>14.7</b> Manage the data<span></span></a></li>
 <li class="chapter" data-level="14.8" data-path="storage_amazon.html"><a href="storage_amazon.html#data-version-control"><i class="fa fa-check"></i><b>14.8</b> Data version control<span></span></a></li>
+<li class="chapter" data-level="14.9" data-path="storage_amazon.html"><a href="storage_amazon.html#alternative-endpoints"><i class="fa fa-check"></i><b>14.9</b> Alternative endpoints<span></span></a></li>
 </ul></li>
 <li class="chapter" data-level="15" data-path="drake.html"><a href="drake.html"><i class="fa fa-check"></i><b>15</b> What about <code>drake</code>?<span></span></a>
 <ul>
@@ -499,6 +500,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="data-version-control" class="section level2 hasAnchor" number="14.8">
 <h2><span class="header-section-number">14.8</span> Data version control<a href="storage_amazon.html#data-version-control" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>As of version 0.9.0, <code>targets</code> supports built-in native version control through AWS S3 storage. If your bucket has <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/Versioning.html">versioning enabled</a>, then <code>targets</code> records the version ID of each target (in <code>tar_meta(your_target)$path</code>), and it uses that version ID to read the data and check the status. So if you revert the metadata file <code>_targets/meta/meta</code> to a prior state, then your pipeline will automatically revert to prior versions of your targets. This allows you to quickly switch your entire project to a <a href="https://git-scm.com/docs/git-checkout">previous state</a> or <a href="https://git-scm.com/docs/git-branch">alternate branch</a> while keeping your AWS-backed targets in sync and up to date. It works best if you commit <code>_targets/meta/meta</code> to the same <a href="https://git-scm.com">version control repository</a> you use for your code. (<a href="https://happygitwithr.com" class="uri">https://happygitwithr.com</a> is an excellent resource to get started with version control for code.)</p>
+</div>
+<div id="alternative-endpoints" class="section level2 hasAnchor" number="14.9">
+<h2><span class="header-section-number">14.9</span> Alternative endpoints<a href="storage_amazon.html#alternative-endpoints" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>As of version 0.11.0, <code>targets</code> supports an <code>endpoint</code> argument of <code>tar_resources_aws()</code>. For example, <code>tar_resources_aws(endpoint = "https://storage.googleapis.com", region = "auto")</code> connects the AWS functionality to Google Cloud Storage (GCS). However, as in the case of GCS, versioning support may no longer work. To check, run with a versioned bucket and check that the version ID is part of <code>tar_meta(your_target_name, path)$path</code>. For version-capable GCS support, please read the <a href="#storage_google">Google Cloud Storage chapter</a>.</p>
 
 </div>
 </div>
