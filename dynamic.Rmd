@@ -307,7 +307,43 @@ list(
 
 ## Branching over rows
 
-`tarchetypes` >= 0.1.0 has helpers for easy branching over subsets of data frames:
+By default, if you dynamically branch over a data frame, the branches are the rows. As later sections explain, this behavior changes if you set the `iteration` argument of `tar_target()` to anything other than `"vector"` (default).
+
+```{r, echo = FALSE, eval = TRUE}
+tar_script({
+  options(crayon.enabled = FALSE)
+  list(
+    tar_target(x, head(mtcars[, seq_len(3)])),
+    tar_target(y, x, pattern = map(x), iteration = "vector")
+  )
+})
+```
+
+```{r, eval = FALSE}
+# _targets.R
+library(targets)
+list(
+  tar_target(x, head(mtcars[, seq_len(3)])),
+  tar_target(y, x, pattern = map(x), iteration = "vector") # "vector" is already default
+)
+```
+
+
+```{r}
+tar_make()
+```
+
+```{r}
+tar_read(y, branches = 2)
+```
+
+`iteration = "vector"` also tells `tar_read(y)` to aggregate all the loaded branches into a data frame.
+
+```{r}
+tar_read(y, branches = c(1, 2, 5))
+```
+
+In addition, helpers in `tarchetypes` can branch over entire groups of rows. Row grouping happens through `iteration = "group"`, as explained later.
 
 * `tar_group_by()`: define row groups using `dplyr::group_by()` semantics.
 * `tar_group_select()`: define row groups using `tidyselect` semantics.
