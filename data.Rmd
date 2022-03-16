@@ -36,353 +36,180 @@ The two most important components are:
 1. `_targets/meta/meta`, a flat text file with descriptive metadata about each target, and
 2. `_targets/objects/`, a folder with one data file per target.
 
-If your pipeline has a target defined by `tar_target(x, 1 + 1, format = "rds", repository = "local")`, then when you call `tar_make()`, 
+If your pipeline has a target defined by `tar_target(name = x, command = 1 + 1, format = "rds", repository = "local")`, during `tar_make()`:
 
-A typical target returns an R object: for example, a dataset with `tar_target(dataset, data.frame(x = rnorm(1000)), format = "fst")` or a fitted model `tar_target(model, biglm(ozone ~ temp + wind), format = "qs")`. When you run the pipeline, `targets` computes this object and saves it as a file in `_targets/objects/`. The file name in `_targets/objects/` is always the target name, and type of the file is determined by the `format` argument of `tar_target()`, and formats `"fst"` and `"qs"` are two of many choices explained in the help file of `tar_target()`. No matter what format you pick, `targets` watches the file for changes and recomputes the target in `tar_make()` if the the file gets corrupted (unless you suppress the file cue with `tar_target(cue = tar_cue(file = FALSE))`).
+* The target runs and returns a value of `2`.
+* The return value `2` is saved as an [RDS file](https://stat.ethz.ch/R-manual/R-devel/library/base/html/readRDS.html) to `_targets/objects/x`. You could read the return value back into R with `readRDS("_targets/objects/x")`, but `tar_read(x)` is far more convenient.
+* `_targets/meta/meta` gets a new row of metadata describing target `x`. You can read that metadata with `tar_meta(x)`. Notably, `tar_meta(x)$data` contains the [hash](https://eddelbuettel.github.io/digest/) of file `_targets/objects/x`. This has helps the next `tar_make()` decide whether to rerun target `x`.
 
-### Data version control and the cloud
+The `format` argument of `tar_target()` (and `tar_option_set()`) controls how `tar_make()` saves the return value. The default is `"rds"`, which uses `saveRDS()`, and there are more efficient formats such as `"qs"` and `"feather"`. Some of these formats require external packages. See <https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats> for details.
 
-The [chapter on Amazon cloud storage](#storage_amazon) describes how to continuously upload and track each target as an object in an [Amazon S3 bucket](https://aws.amazon.com/aws/s3). As of version 0.9.0, this feature allows you to opt int automatic data version control. If your bucket has [versioning enabled](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Versioning.html), then `targets` records the version ID of each target (in `tar_meta(your_target)$path`), and it uses that version ID to read the data and check the status. So if you revert the metadata file `_targets/meta/meta` to a prior state, then your pipeline will automatically revert to prior versions of your targets. This allows you to quickly switch your entire project to a [previous state](https://git-scm.com/docs/git-checkout) or [alternate branch](https://git-scm.com/docs/git-branch) while keeping your AWS-backed targets in sync and up to date. It works best if you commit  `_targets/meta/meta` to the same [version control repository](https://git-scm.com) you use for your code. (<https://happygitwithr.com> is an excellent resource to get started with version control for code.)
+## External files
 
+If your pipeline loads a preexisting data file or creates files outside the data store, it is good practice to watch them for changes. That way, `tar_make()` will automatically rerun the appropriate targets if these files change. To watch one of more files, create a target that
 
+1. Has `format = "file"` in `tar_target()`, and
+2. Returns a character vector of local files and/or directories.
 
-
-If your S3 bucket has [versioing enabled](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Versioning.html), then `targets` >= 0.8.1.9000 tracks the version of each target in the bucket automatically. That means if you revert your code and metadata file to a prior state, then your pipeline will revert to prior versions of your targets in the cloud, and those targets may be up to date. This is extremely useful if you are managing your project code and `targets` metadata with version control (e.g. Git) and frequently move among multiple branches. To check if data versioning is working properly, you can verify that the AWS S3 version IDs of your targets appear in `tar_meta()$path`.
-
-Alternatively, for users without access to Amazon Web Services, [`gittargets`](https://wlandau.github.io/gittargets) is a data version control solution that works entirely locally. Designed for data analysis projects whose code is already under version control with Git, `gittargets` takes snapshots of the data store and linking those snapshots to commits in the code repository. This allows you to transition among multiple code branches without invalidating your pipeline: when you check out an old code branch and its data snapshot together, you restore your old targets while keeping the data up to date.
-
-### Cleaning up local internal data files
-
-There are [multiple functions](https://docs.ropensci.org/targets/reference/index.html#section-clean) to remove target storage or modify the metadata to force one or more targets to rerun in the next call to `tar_make()`.
-
-* [`tar_destroy()`](https://docs.ropensci.org/targets/reference/tar_destroy.html) is by far the most commonly used cleaning function. It removes the `_targets/` data store completely, deleting all the results from [`tar_make()`](https://docs.ropensci.org/targets/reference/tar_make.html) except for external files. Use it if you intend to start the pipeline from scratch without any trace of a previous run.
-* [`tar_prune()`](https://docs.ropensci.org/targets/reference/tar_prune.html) deletes the data and metadata of all the targets no longer present in your current target script file (default: `_targets.R`). This is useful if you recently worked through multiple changes to your project and are now trying to discard irrelevant data while keeping the results that still matter.
-* [`tar_delete()`](https://docs.ropensci.org/targets/reference/tar_delete.html) is more selective than [`tar_destroy()`](https://docs.ropensci.org/targets/reference/tar_destroy.html) and [`tar_prune()`](https://docs.ropensci.org/targets/reference/tar_prune.html). It removes the individual data files of a given set of targets from `_targets/objects/` while leaving the metadata in `_targets/meta/meta` alone. If you have a small number of data-heavy targets you need to discard to conserve storage, this function can help.
-* [`tar_invalidate()`](https://docs.ropensci.org/targets/reference/tar_invalidate.html) is the opposite of [`tar_delete()`](https://docs.ropensci.org/targets/reference/tar_delete.html): for the selected targets, it deletes the metadata in `_targets/meta/meta` but keeps the return values in `_targets/objects/`. After invalidation, you will still be able to locate the data files with [`tar_path()`](https://docs.ropensci.org/targets/reference/tar_path.html) and manually salvage them in an emergency. However, [`tar_load()`](https://docs.ropensci.org/targets/reference/tar_load.html) and [`tar_read()`](https://docs.ropensci.org/targets/reference/tar_read.html) will not be able to read the data into R, and subsequent calls to [`tar_make()`](https://docs.ropensci.org/targets/reference/tar_make.html) will attempt to rebuild those targets.
-
-## Internal script files
-
-Target Markdown automatically supplies a `_targets.R` file and supporting scripts in a folder called `_targets_r/`. These paths can be customized together the `script` argument of [`tar_config_set()`](https://docs.ropensci.org/targets/reference/tar_config_set.html).
-
-```
-_targets_r/ # Can be customized with tar_config_set(script = "...").
-├── globals/ # Code chunks to define globals and settings (tar_globals = TRUE)
-├────── globals_chunk1.R # Names follow chunk names or the tar_name chunk opt.
-├────── globals_chunk2.R
-├────── ...
-├── targets/ # Code chunks to define groups of one or more targets
-├────── targets_chunk1.R
-├────── targets_chunk2.R
-└────── ...
-```
-
-### Cleaning up internal script files
-
-Over time, the number of script files in `_targets_r/` starts to build up, and `targets` has no way of automatically removing helper scripts files that are no longer necessary. To keep your pipeline up to date with the code chunks in the Target Markdown document(s), it is good practice to call [`tar_unscript()`](https://docs.ropensci.org/targets/reference/tar_unscript.html) at the beginning of your first Target Markdown document. That way, extraneous/discarded targets are automatically removed from the pipeline when the document starts render.
-
-## External input files
-
-To reproducibly track an external input file, you need to define a new target that has
-
-1. A command that returns the file path as a character vector, and 
-2. `format = "file"` in `tar_target()`.
-
-When the target runs in the pipeline, the returned character vector gets recorded in `_targets/meta`, and `targets` watches the data file and invalidates the target when that file changes. To track multiple files this way, simply define a multi-element character vector where each element is a path. Each element can also be a directory, but this directory must not be empty at the time the target runs.
-
-The first two targets of the [minimal example](https://github.com/ropensci/targets-minimal) demonstrate how to track an input file.
+The example sketch of a pipeline below follows this pattern.
 
 ```{r, eval = FALSE, echo = TRUE}
 # _targets.R
 library(targets)
-path_to_data <- function() {
-  "data/raw_data.csv"
+create_output <- function(file) {
+  data <- read.csv(file)
+  output <- head(data)
+  write.csv(output, "output.csv")
 }
 list(
-  tar_target(
-    raw_data_file,
-    path_to_data(),
-    format = "file"
-  ),
-  tar_target(
-    raw_data,
-    read_csv(raw_data_file, col_types = cols())
-  )
+  tar_target(name = input, command = "data.csv", format = "file"),
+  tar_target(name = output, command = create_output(input), format = "file")
 )
 ```
 
-```{r, eval = TRUE, echo = FALSE}
-tar_script({
-  path_to_data <- function() {
-    "data/raw_data.csv"
-  }
-  list(
-    tar_target(
-      raw_data_file,
-      path_to_data(),
-      format = "file"
-    ),
-    tar_target(
-      raw_data,
-      read_csv(raw_data_file, col_types = cols())
-    )
-  )
-})
+We assume a file called `data.csv` exists prior to running the pipeline. When `tar_make()` runs the first time, target `input` runs and returns the value `"data.csv"`. Because `format` is `"file"`, no extra file is saved to `_targets/meta/objects/`. Instead, `"data.csv"` gets hashed, and the hash is stored in the metadata. Then, target `output` runs, creates the file `"output.csv"`, and that file gets processed the same way.
+
+Target `output` depends on target `input` because the command of target `output` mentions the symbol `input`. (Verify with `tar_visnetwork()`.) That way, `output` does not run until `input` is finished, and `output` reruns if the hash of `input` changes. It is good practice to write target symbols instead of literal input paths to ensure the proper dependency relationships. In this case, if `output` were written with the literal input path as `tar_target(name = output, command = create_output("data.csv"), format = "file")`, then the dependency relationship would break, and `output` would not rerun if `input` changed.
+
+The mechanism of `format = "file"` applies equally to input files and output files. In fact, a target can track both input and output files at the same time. This is part of how [`tar_render()`](https://docs.ropensci.org/tarchetypes/reference/tar_render.html) works. As discussed in the [R Markdown chapter](#markdown), [`tar_render()`](https://docs.ropensci.org/tarchetypes/reference/tar_render.html) takes an R Markdown source file as input, write a rendered report file as output, and returns a character vector with the paths to both files.
+
+## Memory
+
+A typical target has dependencies upstream. In order to run properly, it needs the return values of those dependencies to exist in the random access memory (RAM). By default, `tar_make()` reads those dependency targets from the data store, and it keeps in memory those targets and any targets that run. For big data workflows where not all data can fit into RAM, it is wiser to set `memory = "transient"` and `garbage_collection = TRUE` in `tar_target()` (and `tar_option_set()`). That way, the target return value is removed from memory at the earliest opportunity. The next time the target value is needed, it is reread from storage again, and then removed from memory as soon as possible. Reading a big dataset from storage can take time, which may slow down some pipelines, but it may be worth the extra time to make sure memory usage stays within reasonable limits.
+
+## Cloud storage
+
+Cloud data can lighten the burden of local storage, make the pipeline portable, and facilitate data version control. Using arguments `repository` and `resources` of `tar_target()` (and `tar_option_set()`), you can send the return value to the cloud instead of a local file in `_targets/objects/`. The `repository` argument identifies the cloud service of choice: `"aws"` for Amazon Web Service (AWS) Simple Storage Service (S3), and `"gcp"` for Google Cloud Platform (GCP) Google Cloud Storage (GCS). Each platform requires different steps to configure, but there usage in `targets` is almost exactly the same.
+
+### Cost
+
+Cloud services cost money. The more resources you use, the more you owe. Resources not only include the data you store, but also the HTTP requests that `tar_make()` uses to check if a target exists and is up to date. So cost increases with the number of cloud targets and the frequency that you run them. Please proactively monitor usage in the AWS or GCP web console and rethink your strategy if usage is too high. For example, you might consider running the pipeline locally and then sycning the data store to a bucket only at infrequent strategic milestones.
+
+### AWS setup
+
+1. Sign up for a free tier account at <https://aws.amazon.com/free>. 
+2. Follow [these instructions](https://docs.aws.amazon.com/AmazonS3/latest/gsg/GetStartedWithS3.html) to practice using Simple Storage Service (S3) through the web console at <https://console.aws.amazon.com/s3/>. 
+3. Install the `paws` R package with `install.packages("paws")`.
+4. Follow the credentials section of the [`paws` README](https://github.com/paws-r/paws/blob/main/README.md) to connect `paws` to your AWS account. You will set [special environment variables](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.htm) in your user-level [`.Renviron` file](https://usethis.r-lib.org/reference/edit.html). Example:
+```{r, eval = FALSE}
+# Example .Renviron file
+AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE
+AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+AWS_REGION=us-east-1 # The paws package and thus targets >= 0.8.1.9000 use this.
+AWS_DEFAULT_REGION=us-east-1 # For back compatibility with targets <= 0.8.1.
+```
+5. Restart your R session and create an [S3 buckets](https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingBucket.html) to store target data. You can do this either in the AWS S3 web console or the following code.
+```{r, eval = FALSE}
+library(paws)
+s3 <- s3()
+s3$create_bucket(Bucket = "my-test-bucket-25edb4956460647d")
 ```
 
-Above, `raw_data_file` is the dynamic file target. The file `data/raw_data.csv` exists before we ever run the pipeline, and the R expression for the target returns the character vector `"data/raw_data.csv"`. (We use the `path_to_data()` function to demonstrate that you need not literally write `"data/raw_data.csv"` as long as the path is returned somehow.)
+### GCP setup
 
-All subsequent targets that depend on the file must reference the file using the symbol `raw_data_file`. This allows `targets`' automatic static code analysis routines to detect which targets depend on the file. Because the `raw_data` target literally mentions the symbol `raw_data_file`, `targets` knows `raw_data` depends on `raw_data_file`. This ensures that
-
-1. `raw_data_file` gets processed  before `raw_data`, and
-1. `tar_make()` automatically reruns `raw_data` if `raw_data_file` or `"data/raw_data.csv"` change.
-
-```{r, eval = TRUE}
-tar_visnetwork()
+1. Activate a Google Cloud Platform account at <https://cloud.google.com/>.
+2. Follow the instructions at <https://code.markedmondson.me/googleCloudRunner/articles/setup-gcp.html> to set up your GCP account to use locally with R. The video is friendly and helpful.
+3. In your `.Renviron` file, set the `GCS_AUTH_FILE` environment variable to the same value as `GCE_AUTH_FILE` from step (2).
+4. Create a Google Cloud Storage (GCS) bucket to store target data. You can do this either with the GCP GCS web dashboard or the following code.
+```{r, eval = FALSE}
+googleCloudStorageR::gcs_create_bucket(
+  bucket = "my-test-bucket-25edb4956460647d",
+  projectId = Sys.getenv("GCE_DEFAULT_PROJECT_ID")
+)
 ```
 
-If we were to omit the symbol `raw_data_file` from the R expression of `raw_data`, those targets would be disconnected in the graph and `tar_make()` would make incorrect decisions.
 
-```{r, echo = TRUE, eval = FALSE}
-# _targets.R
+### Usage
+
+The following is an example pipeline that sends targets to an AWS S3 bucket. Usage in GCP is almost exactly the same.
+
+```{r, eval = FALSE}
+# Example _targets.R file:
 library(targets)
-path_to_data <- function() {
-  "data/raw_data.csv"
-}
-list(
-  tar_target(
-    raw_data_file,
-    path_to_data(),
-    format = "file"
-  ),
-  tar_target(
-    raw_data,
-    read_csv("data/raw_data.csv", col_types = cols()) # incorrect
+tar_option_set(
+  resources = tar_resources(
+    aws = tar_resources_aws(bucket = "my-test-bucket-25edb4956460647d")
   )
 )
-```
-
-```{r, echo = FALSE, eval = TRUE}
-tar_script({
-  path_to_data <- function() {
-    "data/raw_data.csv"
-  }
-  list(
-    tar_target(
-      raw_data_file,
-      path_to_data(),
-      format = "file"
-    ),
-    tar_target(
-      raw_data,
-      read_csv("data/raw_data.csv", col_types = cols()) # incorrect
-    )
-  )
-})
-```
-
-```{r, eval = TRUE}
-tar_visnetwork()
-```
-
-## External output files
-
-Output files have the same mechanics as input files. The target uses `format = "file"`, and the return value is a character value of paths to existing files and nonempty directories. The only difference here is that the target's R command writes to storage before it returns a value. For example, here is an output file target that saves a visualization.
-
-```{r, eval = FALSE}
-tar_target(
-  plot_file,
-  save_plot_and_return_path(),
-  format = "file"
-)
-```
-
-Here, our custom `save_plot_and_return_path()` function does exactly what the name describes.
-
-```{r, eval = FALSE}
-save_plot_and_return_path <- function() {
-  plot <- ggplot(mtcars) +
-    geom_point(aes(x = wt, y = mpg))
-  ggsave("plot_file.png", plot, width = 7, height = 7)
-  return("plot_file.png")
+write_mean <- function(data) {
+  tmp <- tempfile()
+  writeLines(as.character(mean(data)), tmp)
+  tmp
 }
-```
-
-## Literate programming
-
-`targets` has two ways to handle literate programming. The first is [Target Markdown](#markdown), which is covered in a [different chapter](#markdown). In [Target Markdown](#markdown), `targets` serves as a caching mechanism for projects that use R Markdown as the primary overarching workflow manager. The second way `targets` handles literate programming is to render lightweight dependency-aware R Markdown reports inside the individual targets of a pipeline. This second approach is covered in this section.
-
-If you render an R Markdown report as part of a target, the report should be lightweight: mostly prose, minimal code, fast execution, and no output other than the rendered HTML/PDF document. In other words, R Markdown reports are just targets that document prior results. The bulk of the computation should have already happened upstream, and the most of the code chunks in the report itself should be terse calls to `tar_read()` and `tar_load()`.
-
-The report from the [minimal example](https://github.com/ropensci/targets-minimal) looks like this:
-
-![](./man/figures/knitr-source.png)
-
-Above, the report depends on targets `fit` and `hist`. The use of `tar_read()` and `tar_load()` allows us to run the report outside the pipeline.  As long as `_targets/` folder has data on the required targets from a previous `tar_make()`, you can open the RStudio IDE, edit the report, and click the Knit button like you would for any other R Markdown report.
-
-![](./man/figures/knitr-ide.png)
-
-To connect the target with the pipeline, we define a special kind of target using `tar_render()` from the [`tarchetypes`](https://github.com/ropensci/tarchetypes) package instead of the usual `tar_target()`, which
-
-1. Finds all the `tar_load()`/`tar_read()` dependencies in the report and inserts them into the target's command. This enforces the proper dependency relationships. (`tar_load_raw()` and `tar_read_raw()` are ignored because those dependencies cannot be resolved with static code analysis.) 
-1. Sets `format = "file"` (see `tar_target()`) so `targets` watches the files at the returned paths.
-1. Configures the target's command to return both the output report files and the input source file. All these file paths are relative paths so the project stays portable.
-1. Forces the report to run in the user's current working directory instead of the working directory of the report.
-1. Sets convenient default options such as `deployment = "main"` in `tar_target()` and `quiet = TRUE` in `rmarkdown::render()`.
-
-The target definition looks like this.
-
-```{r, echo = FALSE, eval = TRUE}
-lines <- c(
-  "---",
-  "output: html_document",
-  "---",
-  "",
-  "```{r}",
-  "tar_read(fit)",
-  "tar_load(hist)",
-  "```"
-)
-writeLines(lines, "report.Rmd")
-```
-
-```{r, eval = TRUE}
-library(tarchetypes)
-target <- tar_render(report, "report.Rmd") # Just defines a target object.
-target$command$expr[[1]]
-```
-
-Because symbols `fit` and `hist` appear in the command, `targets` knows that `report` depends on `fit` and `hist`. When we put the `report` target in the pipeline, these dependency relationships show up in the graph.
-
-```{r, eval = FALSE}
-# _targets.R
-library(targets)
-library(tarchetypes)
-source("R/functions.R")
 list(
-  tar_target(
-    raw_data_file,
-    "data/raw_data.csv",
-    format = "file"
-  ),
-  tar_target(
-    raw_data,
-    read_csv(raw_data_file, col_types = cols())
-  ),
   tar_target(
     data,
-    raw_data %>%
-      mutate(Ozone = replace_na(Ozone, mean(Ozone, na.rm = TRUE)))
-  ),
-  tar_target(hist, create_plot(data)),
-  tar_target(fit, biglm(Ozone ~ Wind + Temp, data)),
-  tar_render(report, "report.Rmd") # Here is our call to tar_render().
-)
-```
-
-```{r, eval = FALSE}
-# R console
-tar_visnetwork()
-```
-
-![](./man/figures/knitr-graph.png)
-
-## Parameterized R Markdown
-
-Functions in [`tarchetypes`](https://docs.ropensci.org/tarchetypes) make it straightforward to use [parameterized R Markdown](https://rmarkdown.rstudio.com/developer_parameterized_reports.html) in a `targets` pipeline. The next two subsections walk through the major use cases.
-
-### Single parameter set
-
-In this scenario, the pipeline renders your [parameterized R Markdown](https://rmarkdown.rstudio.com/developer_parameterized_reports.html) report one time using a single set of parameters. These parameters can be upstream targets, global objects, or fixed values. Simply pass a `params` argument to [`tarchetypes::tar_render()`](https://docs.ropensci.org/tarchetypes/reference/tar_render.html):
-
-```{r, eval = FALSE}
-# _targets.R
-library(targets)
-library(tarchetypes)
-list(
-  tar_target(data, data.frame(x = seq_len(26), y = letters))
-  tar_render(report, "report.Rmd", params = list(your_param = data))
-)
-```
-
-the `report` target will run:
-
-```{r, eval = FALSE}
-# R console
-rmarkdown::render("report.Rmd", params = list(your_param = your_target))
-```
-
-where `report.Rmd` has the following YAML front matter:
-
-```
----
-title: report
-output_format: html_document
-params:
-  your_param: "default value"
----
-```
-
-and the following code chunk:
-
-```{r, eval = FALSE}
-print(params$your_param)
-```
-
-See [these examples](https://docs.ropensci.org/tarchetypes/reference/tar_render.html#examples) for a demonstration.
-
-### Multiple parameter sets
-
-In this scenario, you still have a single report, but you render it multiple times over multiple sets of [R Markdown parameters](https://rmarkdown.rstudio.com/developer_parameterized_reports.html). This time, use [`tarchetypes::tar_render_rep()`](https://docs.ropensci.org/tarchetypes/reference/tar_render_rep.html) and write code to reference or generate a grid of parameters with one row per rendered report and one column per parameter. Optionally, you can also include an `output_file` column to control the file paths of the generated reports, and you can set the number of batches to reduce the overhead that would otherwise ensue from creating a large number of targets.
-
-```{r, eval = FALSE}
-# _targets.R
-library(targets)
-library(tarchetypes)
-tar_option_set(packages = "tibble")
-list(
-  tar_target(x, "value_of_x"),
-  tar_render_rep(
-    report,
-    "report.Rmd",
-    params = tibble(
-      par = c("par_val_1", "par_val_2", "par_val_3", "par_val_4"),
-      output_file = c("f1.html", "f2.html", "f3.html", "f4.html")
-    ),
-    batches = 2
+    rnorm(5),
+    format = "qs", # Set format = "aws_qs" in targets <= 0.10.0.
+    repository = "aws" # Set to "gcp" for Google Cloud Platform.
+  ), 
+  tar_target(
+    mean_file,
+    write_mean(data),
+    format = "file", # Set format = "aws_file" in targets <= 0.10.0.
+    repository = "aws" # Set to "gcp" for Google Cloud Platform.
   )
 )
 ```
 
-where `report.Rmd` has the following YAML front matter:
-
-```
-title: report
-output_format: html_document
-params:
-  par: "default value"
-```
-
-and the following R code chunk:
+When you run the pipeline above with [`tar_make()`](https://docs.ropensci.org/targets/reference/tar_make.html), your local R session computes `rnorm(5)`, saves it to a temporary [`qs`](https://github.com/traversc/qs) file on disk, and then uploads it to a file called `_targets/objects/data` on your S3 bucket. Likewise for `mean_file`, but because the format is `"file"` and the repository is `"aws"`, you are responsible for supplying the path to the file that gets uploaded to `_targets/objects/mean_file`.
 
 ```{r, eval = FALSE}
-print(params$par)
-print(tar_read(x))
-```
-
-`tar_render_rep()` creates multiple targets to set up the R Markdown part of the workflow, including a target for the grid of parameters and a [dynamic branching](#dynamic) target to iterate over the parameters in batches. In this case, we have two batches (dynamic branches) and each one renders the report twice.
-
-```{r, eval = FALSE}
-# R console
 tar_make()
-#> ● run target x
-#> ● run target report_params
-#> ● run branch report_9e7470a1
-#> ● run branch report_457829de
+#> ● run target data
+#> ● run target mean_file
 #> ● end pipeline
 ```
 
-The third output file `f3.html` is below, and the rest look similar.
+And of course, your targets stay up to date if you make no changes.
 
-![](./man/figures/dynamic-rmarkdown-params.png)
+```{r, eval = FALSE}
+tar_make()
+#> ✓ skip target data
+#> ✓ skip target mean_file
+#> ✓ skip pipeline
+```
 
-For more information, see [these examples](https://docs.ropensci.org/tarchetypes/reference/tar_render_rep.html#examples).
+If you log into <https://s3.console.aws.amazon.com/s3>, you should see objects `_targets/objects/data` and `_targets/objects/mean_file` in your bucket. To download this data locally, use `tar_read()` and `tar_load()` like before. These functions download the data from the bucket and load it into R.
+
+```{r, eval = FALSE}
+tar_read(data)
+#> [1] -0.74654607 -0.59593497 -1.57229983  0.40915323  0.02579023
+```
+
+The `"file"` format behaves differently on the cloud. `tar_read()` and `tar_load()` download the object to a local path (where the target saved it locally before it was uploaded) and return the path so you can process it yourself.^[Non-"file" AWS formats also download files, but they are temporary and immediately discarded after the data is read into memory.]
+
+```{r, eval = FALSE}
+tar_load(mean_file)
+mean_file
+#> [1] "_targets/scratch/mean_fileff086e70876d"
+```
+
+```{r, eval = FALSE}
+readLines(mean_file)
+#> [1] "-0.495967480886693"
+```
+
+When you are done with these temporary files and the pipeline is no longer running, you can safely remove everything in `_targets/scratch/`.
+
+```{r, eval = FALSE}
+unlink("_targets/scratch/", recursive = TRUE) # tar_destroy(destroy = "scratch")
+```
+
+### Data version control
+
+Amazon and Google support versioned buckets. If your bucket has versioning turned on, then every version of every target will be stored,^[GCP has safety capabilities such as discarding all but the newest `n` versions.], and the target metadata will contain the version ID (verify with `tar_meta(your_target, path)$path`). That way, if you roll back `_targets/meta/meta` to a prior version, then `tar_read(your_target)` will read a prior target. And if you roll back the metadata and the code together, then your pipeline will journey back in time while stay up to date (old code synced with old data). Rolling back is possible if you use Git/GitHub and commit your R code files and `_targets/meta/meta` to the repository. An alternative cloudless versioning solution is [`gittargets`](https://docs.ropensci.org/gittargets/), a package that snapshots the local data store and syncs with an existing code repository.
+
+## Cleaning up local internal data files
+
+There are [multiple functions](https://docs.ropensci.org/targets/reference/index.html#section-clean) to remove or clean up target storage. Most of these functions delete internal files or records from the data store and delete objects from cloud buckets. They do not delete local external files (i.e. `tar_target(..., format = "file", repository = "local")`) because some of those files could be local input data that exists prior to `tar_make()`.
+
+* [`tar_destroy()`](https://docs.ropensci.org/targets/reference/tar_destroy.html) is by far the most commonly used cleaning function. It removes the `_targets/` folder (or optionally a subfolder in `_targets/`) and all the cloud targets mentioned in the metadata. Use it if you intend to start the pipeline from scratch without any trace of a previous run.
+* [`tar_prune()`](https://docs.ropensci.org/targets/reference/tar_prune.html) deletes the data and metadata of all the targets no longer present in your current target script file (default: `_targets.R`). This is useful if you recently worked through multiple changes to your project and are now trying to discard irrelevant data while keeping the results that still matter.
+* [`tar_delete()`](https://docs.ropensci.org/targets/reference/tar_delete.html) is more selective than [`tar_destroy()`](https://docs.ropensci.org/targets/reference/tar_destroy.html) and [`tar_prune()`](https://docs.ropensci.org/targets/reference/tar_prune.html). It removes the individual data files of a given set of targets from `_targets/objects/` and cloud buckets while leaving the metadata in `_targets/meta/meta` alone. If you have a small number of data-heavy targets you need to discard to conserve storage, this function can help.
+* [`tar_invalidate()`](https://docs.ropensci.org/targets/reference/tar_invalidate.html) is the opposite of [`tar_delete()`](https://docs.ropensci.org/targets/reference/tar_delete.html): for the selected targets, it deletes the metadata in `_targets/meta/meta` and does not delete the return values. After invalidation, you will still be able to locate the data files with [`tar_path()`](https://docs.ropensci.org/targets/reference/tar_path.html) and manually salvage them in an emergency. However, [`tar_load()`](https://docs.ropensci.org/targets/reference/tar_load.html) and [`tar_read()`](https://docs.ropensci.org/targets/reference/tar_read.html) will not be able to read the data into R, and subsequent calls to [`tar_make()`](https://docs.ropensci.org/targets/reference/tar_make.html) will attempt to rebuild those targets.
+
+## Literate programming
+
+`targets` is tightly integrated with R Markdown and `knitr`. All the literate programming documentation is now in [its own chapter](#markdown).
+
