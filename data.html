@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 4 Performance | The targets R Package User Manual</title>
+  <title>Chapter 9 Data: storage and memory | The targets R Package User Manual</title>
   <meta name="description" content="In-depth discussion of the major functionality of targets." />
   <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 4 Performance | The targets R Package User Manual" />
+  <meta property="og:title" content="Chapter 9 Data: storage and memory | The targets R Package User Manual" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://books.ropensci.org/targets" />
   <meta property="og:image" content="https://books.ropensci.org/targets/man/figures/logo.png" />
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="ropensci-books/targets" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 4 Performance | The targets R Package User Manual" />
+  <meta name="twitter:title" content="Chapter 9 Data: storage and memory | The targets R Package User Manual" />
   
   <meta name="twitter:description" content="In-depth discussion of the major functionality of targets." />
   <meta name="twitter:image" content="https://books.ropensci.org/targets/man/figures/logo.png" />
@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <link rel="apple-touch-icon-precomposed" sizes="120x120" href="man/figures/apple-touch-icon.png" />
   <link rel="shortcut icon" href="man/figures/favicon.ico" type="image/x-icon" />
-<link rel="prev" href="debugging.html"/>
-<link rel="next" href="functions.html"/>
+<link rel="prev" href="projects.html"/>
+<link rel="next" href="markdown.html"/>
 <script src="libs/header-attrs-2.13/header-attrs.js"></script>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
@@ -362,62 +362,174 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="performance" class="section level1 hasAnchor" number="4">
-<h1><span class="header-section-number">Chapter 4</span> Performance<a href="performance.html#performance" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<p>This chapter explains how to monitor the progress of your pipeline and troubleshoot performance issues.</p>
-<div id="monitoring-the-pipeline" class="section level2 hasAnchor" number="4.1">
-<h2><span class="header-section-number">4.1</span> Monitoring the pipeline<a href="performance.html#monitoring-the-pipeline" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>If you are using <code>targets</code>, then you probably have an intense computation like Bayesian data analysis or machine learning. These tasks take a long time to run, and it is a good idea to monitor them. Here are some options built directly into <code>targets</code>:</p>
+<div id="data" class="section level1 hasAnchor" number="9">
+<h1><span class="header-section-number">Chapter 9</span> Data: storage and memory<a href="data.html#data" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>This chapter describes how the <code>targets</code> package stores data, manages memory, allows you to customize the data processing model.</p>
+<div id="local-data-store" class="section level2 hasAnchor" number="9.1">
+<h2><span class="header-section-number">9.1</span> Local data store<a href="data.html#local-data-store" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>When a target finishes running during <code>tar_make()</code>, it returns an R object. Those return values, along with descriptive metadata, are saved to persistent storage so your pipeline stays up to date even after you exit R. By default, this persistent storage is a special <code>_targets/</code> folder created in your working directory by <code>tar_make()</code>. The files in the local data store are organized as follows.</p>
+<pre><code>_targets/ # Can be customized with tar_config_set().
+├── meta/
+├────── meta
+├────── process
+├────── progress
+├── objects/
+├────── target1 
+├────── target2
+├────── branching_target_c7bcb4bd
+├────── branching_target_285fb6a9
+├────── branching_target_874ca381
+├── scratch/ # tar_make() deletes this folder after it finishes.
+└── user/ # gittargets users can put custom files here for data version control.</code></pre>
+<p>The two most important components are:</p>
 <ol style="list-style-type: decimal">
-<li><code>tar_poll()</code> continuously refreshes a text summary of runtime progress in the R console. Run it in a new R session at the project root directory. (Only supported in <code>targets</code> version 0.3.1.9000 and higher.)</li>
-<li><code>tar_visnetwork()</code>, <code>tar_progress_summary()</code>, <code>tar_progress_branches()</code>, and <code>tar_progress()</code> show runtime information at a single moment in time.</li>
-<li><code>tar_watch()</code> launches an Shiny app that automatically refreshes the graph every few seconds. Try it out in the example below.</li>
+<li><code>_targets/meta/meta</code>, a flat text file with descriptive metadata about each target, and</li>
+<li><code>_targets/objects/</code>, a folder with one data file per target.</li>
 </ol>
-<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="performance.html#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define an example target script file with a slow pipeline.</span></span>
-<span id="cb38-2"><a href="performance.html#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb38-3"><a href="performance.html#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_script</span>({</span>
-<span id="cb38-4"><a href="performance.html#cb38-4" aria-hidden="true" tabindex="-1"></a>  sleep_run <span class="ot">&lt;-</span> <span class="cf">function</span>(...) {</span>
-<span id="cb38-5"><a href="performance.html#cb38-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Sys.sleep</span>(<span class="dv">10</span>)</span>
-<span id="cb38-6"><a href="performance.html#cb38-6" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb38-7"><a href="performance.html#cb38-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
-<span id="cb38-8"><a href="performance.html#cb38-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(settings, <span class="fu">sleep_run</span>()),</span>
-<span id="cb38-9"><a href="performance.html#cb38-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(data1, <span class="fu">sleep_run</span>(settings)),</span>
-<span id="cb38-10"><a href="performance.html#cb38-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(data2, <span class="fu">sleep_run</span>(settings)),</span>
-<span id="cb38-11"><a href="performance.html#cb38-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(data3, <span class="fu">sleep_run</span>(settings)),</span>
-<span id="cb38-12"><a href="performance.html#cb38-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(model1, <span class="fu">sleep_run</span>(data1)),</span>
-<span id="cb38-13"><a href="performance.html#cb38-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(model2, <span class="fu">sleep_run</span>(data2)),</span>
-<span id="cb38-14"><a href="performance.html#cb38-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(model3, <span class="fu">sleep_run</span>(data3)),</span>
-<span id="cb38-15"><a href="performance.html#cb38-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(figure1, <span class="fu">sleep_run</span>(model1)),</span>
-<span id="cb38-16"><a href="performance.html#cb38-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(figure2, <span class="fu">sleep_run</span>(model2)),</span>
-<span id="cb38-17"><a href="performance.html#cb38-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(figure3, <span class="fu">sleep_run</span>(model3)),</span>
-<span id="cb38-18"><a href="performance.html#cb38-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(conclusions, <span class="fu">sleep_run</span>(<span class="fu">c</span>(figure1, figure2, figure3)))</span>
-<span id="cb38-19"><a href="performance.html#cb38-19" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb38-20"><a href="performance.html#cb38-20" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb38-21"><a href="performance.html#cb38-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-22"><a href="performance.html#cb38-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Launch the app in a background process.</span></span>
-<span id="cb38-23"><a href="performance.html#cb38-23" aria-hidden="true" tabindex="-1"></a><span class="co"># You may need to refresh the browser if the app is slow to start.</span></span>
-<span id="cb38-24"><a href="performance.html#cb38-24" aria-hidden="true" tabindex="-1"></a><span class="co"># The graph automatically refreshes every 10 seconds</span></span>
-<span id="cb38-25"><a href="performance.html#cb38-25" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_watch</span>(<span class="at">seconds =</span> <span class="dv">10</span>, <span class="at">outdated =</span> <span class="cn">FALSE</span>, <span class="at">targets_only =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb38-26"><a href="performance.html#cb38-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-27"><a href="performance.html#cb38-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Now run the pipeline and watch the graph change.</span></span>
-<span id="cb38-28"><a href="performance.html#cb38-28" aria-hidden="true" tabindex="-1"></a>px <span class="ot">&lt;-</span> <span class="fu">tar_make</span>()</span></code></pre></div>
-<p><img src="man/figures/tar_watch.png" />
-<code>tar_watch_ui()</code> and <code>tar_watch_server()</code> make this functionality available to other apps through a Shiny module.</p>
-<p>Unfortunately, none of these options can tell you if any <a href="hpc.html#hpc">parallel workers</a> or external processes are still running. You can monitor local processes with a utility like <code>top</code> or <code>htop</code>, and traditional HPC scheduler like SLURM or SGE support their own polling utilities such as <code>squeue</code> and <code>qstat</code>. <code>tar_process()</code> and <code>tar_pid()</code> get the process ID of the main R process that last attempted to run the pipeline.</p>
+<p>If your pipeline has a target defined by <code>tar_target(name = x, command = 1 + 1, format = "rds", repository = "local")</code>, during <code>tar_make()</code>:</p>
+<ul>
+<li>The target runs and returns a value of <code>2</code>.</li>
+<li>The return value <code>2</code> is saved as an <a href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/readRDS.html">RDS file</a> to <code>_targets/objects/x</code>. You could read the return value back into R with <code>readRDS("_targets/objects/x")</code>, but <code>tar_read(x)</code> is far more convenient.</li>
+<li><code>_targets/meta/meta</code> gets a new row of metadata describing target <code>x</code>. You can read that metadata with <code>tar_meta(x)</code>. Notably, <code>tar_meta(x)$data</code> contains the <a href="https://eddelbuettel.github.io/digest/">hash</a> of file <code>_targets/objects/x</code>. This has helps the next <code>tar_make()</code> decide whether to rerun target <code>x</code>.</li>
+</ul>
+<p>The <code>format</code> argument of <code>tar_target()</code> (and <code>tar_option_set()</code>) controls how <code>tar_make()</code> saves the return value. The default is <code>"rds"</code>, which uses <code>saveRDS()</code>, and there are more efficient formats such as <code>"qs"</code> and <code>"feather"</code>. Some of these formats require external packages. See <a href="https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats" class="uri">https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats</a> for details.</p>
 </div>
-<div id="performance-1" class="section level2 hasAnchor" number="4.2">
-<h2><span class="header-section-number">4.2</span> Performance<a href="performance.html#performance-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>If your pipeline has several thousand targets, functions like <code>tar_make()</code>, <code>tar_outdated()</code>, and <code>tar_visnetwork()</code> may take longer to run. There is an inevitable per-target runtime cost because package needs to check the code and data of each target individually. If this overhead becomes too much, consider batching your work into a smaller group of heavier targets. Using your custom functions, you can make each target perform multiple iterations of a task that was previously given to targets one at a time. For details and an example, please see the discussion on batching at the bottom of the <a href="dynamic.html#dynamic">dynamic branching chapter</a>.</p>
-<p>With dynamic branching, it is super easy to create an enormous number of targets. But when the number of targets starts to exceed a couple hundred, <code>tar_make()</code> slows down, and graphs from <code>tar_visnetwork()</code> start to become unmanageable.</p>
-<p>In <code>targets</code> version 0.5.0.9000, the <code>names</code> and <code>shortcut</code> arguments to <code>tar_make()</code> provide an alternative workaround. <code>tar_make(names = all_of("only", "these", "targets"), shortcut = TRUE)</code> can completely omit thousands of upstream targets for the sake of concentrating on one section at a time. However, this technique is only a temporary measure, and it is best to eventually revert back to the default <code>names = NULL</code> and <code>shortcut = FALSE</code> to ensure reproducibility.</p>
-<p>In the case of dynamic branching, another temporary workaround is to temporarily select subsets of branches. For example, instead of <code>pattern = map(large_target)</code> in <code>tar_target()</code>, you could prototype on a target that uses <code>pattern = head(map(large_target), n = 1)</code> or <code>pattern = slice(map(large_target), c(4, 5, 6))</code>. In the case of <code>slice()</code>, the <code>tar_branch_index()</code> function (only in <code>targets</code> version 0.5.0.9000 and above) can help you find the required integer indexes corresponding to individual branch names you may want.</p>
-<p>Alternatively, if you see slowness in your project, you can contribute to the package with a profiling study. These contributions are great because they help improve the package. Here are the recommended steps.</p>
+<div id="external-files" class="section level2 hasAnchor" number="9.2">
+<h2><span class="header-section-number">9.2</span> External files<a href="data.html#external-files" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>If your pipeline loads a preexisting data file or creates files outside the data store, it is good practice to watch them for changes. That way, <code>tar_make()</code> will automatically rerun the appropriate targets if these files change. To watch one of more files, create a target that</p>
 <ol style="list-style-type: decimal">
-<li>Install the <a href="https://github.com/r-prof/proffer"><code>proffer</code></a> R package and its dependencies.</li>
-<li>Run <code>proffer::pprof(tar_make(callr_function = NULL))</code> on your project.</li>
-<li>When a web browser pops up with <code>pprof</code>, select the flame graph and screenshot it.</li>
-<li>Post the flame graph, along with any code and data you can share, to the <a href="https://github.com/ropensci/targets/issues"><code>targets</code> package issue tracker</a>. The maintainer will have a look and try to make the package faster for your use case if speedups are possible.</li>
+<li>Has <code>format = "file"</code> in <code>tar_target()</code>, and</li>
+<li>Returns a character vector of local files and/or directories.</li>
 </ol>
+<p>The example sketch of a pipeline below follows this pattern.</p>
+<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb69-1"><a href="data.html#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb69-2"><a href="data.html#cb69-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb69-3"><a href="data.html#cb69-3" aria-hidden="true" tabindex="-1"></a>create_output <span class="ot">&lt;-</span> <span class="cf">function</span>(file) {</span>
+<span id="cb69-4"><a href="data.html#cb69-4" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(file)</span>
+<span id="cb69-5"><a href="data.html#cb69-5" aria-hidden="true" tabindex="-1"></a>  output <span class="ot">&lt;-</span> <span class="fu">head</span>(data)</span>
+<span id="cb69-6"><a href="data.html#cb69-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write.csv</span>(output, <span class="st">&quot;output.csv&quot;</span>)</span>
+<span id="cb69-7"><a href="data.html#cb69-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb69-8"><a href="data.html#cb69-8" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb69-9"><a href="data.html#cb69-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(<span class="at">name =</span> input, <span class="at">command =</span> <span class="st">&quot;data.csv&quot;</span>, <span class="at">format =</span> <span class="st">&quot;file&quot;</span>),</span>
+<span id="cb69-10"><a href="data.html#cb69-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(<span class="at">name =</span> output, <span class="at">command =</span> <span class="fu">create_output</span>(input), <span class="at">format =</span> <span class="st">&quot;file&quot;</span>)</span>
+<span id="cb69-11"><a href="data.html#cb69-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<p>We assume a file called <code>data.csv</code> exists prior to running the pipeline. When <code>tar_make()</code> runs the first time, target <code>input</code> runs and returns the value <code>"data.csv"</code>. Because <code>format</code> is <code>"file"</code>, no extra file is saved to <code>_targets/meta/objects/</code>. Instead, <code>"data.csv"</code> gets hashed, and the hash is stored in the metadata. Then, target <code>output</code> runs, creates the file <code>"output.csv"</code>, and that file gets processed the same way.</p>
+<p>Target <code>output</code> depends on target <code>input</code> because the command of target <code>output</code> mentions the symbol <code>input</code>. (Verify with <code>tar_visnetwork()</code>.) That way, <code>output</code> does not run until <code>input</code> is finished, and <code>output</code> reruns if the hash of <code>input</code> changes. It is good practice to write target symbols instead of literal input paths to ensure the proper dependency relationships. In this case, if <code>output</code> were written with the literal input path as <code>tar_target(name = output, command = create_output("data.csv"), format = "file")</code>, then the dependency relationship would break, and <code>output</code> would not rerun if <code>input</code> changed.</p>
+<p>The mechanism of <code>format = "file"</code> applies equally to input files and output files. In fact, a target can track both input and output files at the same time. This is part of how <a href="https://docs.ropensci.org/tarchetypes/reference/tar_render.html"><code>tar_render()</code></a> works. As discussed in the <a href="markdown.html#markdown">R Markdown chapter</a>, <a href="https://docs.ropensci.org/tarchetypes/reference/tar_render.html"><code>tar_render()</code></a> takes an R Markdown source file as input, write a rendered report file as output, and returns a character vector with the paths to both files.</p>
+</div>
+<div id="memory" class="section level2 hasAnchor" number="9.3">
+<h2><span class="header-section-number">9.3</span> Memory<a href="data.html#memory" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>A typical target has dependencies upstream. In order to run properly, it needs the return values of those dependencies to exist in the random access memory (RAM). By default, <code>tar_make()</code> reads those dependency targets from the data store, and it keeps in memory those targets and any targets that run. For big data workflows where not all data can fit into RAM, it is wiser to set <code>memory = "transient"</code> and <code>garbage_collection = TRUE</code> in <code>tar_target()</code> (and <code>tar_option_set()</code>). That way, the target return value is removed from memory at the earliest opportunity. The next time the target value is needed, it is reread from storage again, and then removed from memory as soon as possible. Reading a big dataset from storage can take time, which may slow down some pipelines, but it may be worth the extra time to make sure memory usage stays within reasonable limits.</p>
+</div>
+<div id="cloud-storage" class="section level2 hasAnchor" number="9.4">
+<h2><span class="header-section-number">9.4</span> Cloud storage<a href="data.html#cloud-storage" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Cloud data can lighten the burden of local storage, make the pipeline portable, and facilitate data version control. Using arguments <code>repository</code> and <code>resources</code> of <code>tar_target()</code> (and <code>tar_option_set()</code>), you can send the return value to the cloud instead of a local file in <code>_targets/objects/</code>. The <code>repository</code> argument identifies the cloud service of choice: <code>"aws"</code> for Amazon Web Service (AWS) Simple Storage Service (S3), and <code>"gcp"</code> for Google Cloud Platform (GCP) Google Cloud Storage (GCS). Each platform requires different steps to configure, but there usage in <code>targets</code> is almost exactly the same.</p>
+<div id="cost" class="section level3 hasAnchor" number="9.4.1">
+<h3><span class="header-section-number">9.4.1</span> Cost<a href="data.html#cost" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Cloud services cost money. The more resources you use, the more you owe. Resources not only include the data you store, but also the HTTP requests that <code>tar_make()</code> uses to check if a target exists and is up to date. So cost increases with the number of cloud targets and the frequency that you run them. Please proactively monitor usage in the AWS or GCP web console and rethink your strategy if usage is too high. For example, you might consider running the pipeline locally and then sycning the data store to a bucket only at infrequent strategic milestones.</p>
+</div>
+<div id="aws-setup" class="section level3 hasAnchor" number="9.4.2">
+<h3><span class="header-section-number">9.4.2</span> AWS setup<a href="data.html#aws-setup" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ol style="list-style-type: decimal">
+<li>Sign up for a free tier account at <a href="https://aws.amazon.com/free" class="uri">https://aws.amazon.com/free</a>.</li>
+<li>Follow <a href="https://docs.aws.amazon.com/AmazonS3/latest/gsg/GetStartedWithS3.html">these instructions</a> to practice using Simple Storage Service (S3) through the web console at <a href="https://console.aws.amazon.com/s3/" class="uri">https://console.aws.amazon.com/s3/</a>.</li>
+<li>Install the <code>paws</code> R package with <code>install.packages("paws")</code>.</li>
+<li>Follow the credentials section of the <a href="https://github.com/paws-r/paws/blob/main/README.md"><code>paws</code> README</a> to connect <code>paws</code> to your AWS account. You will set <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.htm">special environment variables</a> in your user-level <a href="https://usethis.r-lib.org/reference/edit.html"><code>.Renviron</code> file</a>. Example:</li>
+</ol>
+<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb70-1"><a href="data.html#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example .Renviron file</span></span>
+<span id="cb70-2"><a href="data.html#cb70-2" aria-hidden="true" tabindex="-1"></a>AWS_ACCESS_KEY_ID<span class="ot">=</span>AKIAIOSFODNN7EXAMPLE</span>
+<span id="cb70-3"><a href="data.html#cb70-3" aria-hidden="true" tabindex="-1"></a>AWS_SECRET_ACCESS_KEY<span class="ot">=</span>wJalrXUtnFEMI<span class="sc">/</span>K7MDENG<span class="sc">/</span>bPxRfiCYEXAMPLEKEY</span>
+<span id="cb70-4"><a href="data.html#cb70-4" aria-hidden="true" tabindex="-1"></a>AWS_REGION<span class="ot">=</span>us<span class="sc">-</span>east<span class="dv">-1</span> <span class="co"># The paws package and thus targets &gt;= 0.8.1.9000 use this.</span></span>
+<span id="cb70-5"><a href="data.html#cb70-5" aria-hidden="true" tabindex="-1"></a>AWS_DEFAULT_REGION<span class="ot">=</span>us<span class="sc">-</span>east<span class="dv">-1</span> <span class="co"># For back compatibility with targets &lt;= 0.8.1.</span></span></code></pre></div>
+<ol start="5" style="list-style-type: decimal">
+<li>Restart your R session and create an <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingBucket.html">S3 buckets</a> to store target data. You can do this either in the AWS S3 web console or the following code.</li>
+</ol>
+<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb71-1"><a href="data.html#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(paws)</span>
+<span id="cb71-2"><a href="data.html#cb71-2" aria-hidden="true" tabindex="-1"></a>s3 <span class="ot">&lt;-</span> <span class="fu">s3</span>()</span>
+<span id="cb71-3"><a href="data.html#cb71-3" aria-hidden="true" tabindex="-1"></a>s3<span class="sc">$</span><span class="fu">create_bucket</span>(<span class="at">Bucket =</span> <span class="st">&quot;my-test-bucket-25edb4956460647d&quot;</span>)</span></code></pre></div>
+</div>
+<div id="gcp-setup" class="section level3 hasAnchor" number="9.4.3">
+<h3><span class="header-section-number">9.4.3</span> GCP setup<a href="data.html#gcp-setup" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ol style="list-style-type: decimal">
+<li>Activate a Google Cloud Platform account at <a href="https://cloud.google.com/" class="uri">https://cloud.google.com/</a>.</li>
+<li>Follow the instructions at <a href="https://code.markedmondson.me/googleCloudRunner/articles/setup-gcp.html" class="uri">https://code.markedmondson.me/googleCloudRunner/articles/setup-gcp.html</a> to set up your GCP account to use locally with R. The video is friendly and helpful.</li>
+<li>In your <code>.Renviron</code> file, set the <code>GCS_AUTH_FILE</code> environment variable to the same value as <code>GCE_AUTH_FILE</code> from step (2).</li>
+<li>Create a Google Cloud Storage (GCS) bucket to store target data. You can do this either with the GCP GCS web dashboard or the following code.</li>
+</ol>
+<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb72-1"><a href="data.html#cb72-1" aria-hidden="true" tabindex="-1"></a>googleCloudStorageR<span class="sc">::</span><span class="fu">gcs_create_bucket</span>(</span>
+<span id="cb72-2"><a href="data.html#cb72-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">bucket =</span> <span class="st">&quot;my-test-bucket-25edb4956460647d&quot;</span>,</span>
+<span id="cb72-3"><a href="data.html#cb72-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">projectId =</span> <span class="fu">Sys.getenv</span>(<span class="st">&quot;GCE_DEFAULT_PROJECT_ID&quot;</span>)</span>
+<span id="cb72-4"><a href="data.html#cb72-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="usage" class="section level3 hasAnchor" number="9.4.4">
+<h3><span class="header-section-number">9.4.4</span> Usage<a href="data.html#usage" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The following is an example pipeline that sends targets to an AWS S3 bucket. Usage in GCP is almost exactly the same.</p>
+<div class="sourceCode" id="cb73"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb73-1"><a href="data.html#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example _targets.R file:</span></span>
+<span id="cb73-2"><a href="data.html#cb73-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb73-3"><a href="data.html#cb73-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(</span>
+<span id="cb73-4"><a href="data.html#cb73-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">resources =</span> <span class="fu">tar_resources</span>(</span>
+<span id="cb73-5"><a href="data.html#cb73-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">aws =</span> <span class="fu">tar_resources_aws</span>(<span class="at">bucket =</span> <span class="st">&quot;my-test-bucket-25edb4956460647d&quot;</span>)</span>
+<span id="cb73-6"><a href="data.html#cb73-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb73-7"><a href="data.html#cb73-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb73-8"><a href="data.html#cb73-8" aria-hidden="true" tabindex="-1"></a>write_mean <span class="ot">&lt;-</span> <span class="cf">function</span>(data) {</span>
+<span id="cb73-9"><a href="data.html#cb73-9" aria-hidden="true" tabindex="-1"></a>  tmp <span class="ot">&lt;-</span> <span class="fu">tempfile</span>()</span>
+<span id="cb73-10"><a href="data.html#cb73-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">writeLines</span>(<span class="fu">as.character</span>(<span class="fu">mean</span>(data)), tmp)</span>
+<span id="cb73-11"><a href="data.html#cb73-11" aria-hidden="true" tabindex="-1"></a>  tmp</span>
+<span id="cb73-12"><a href="data.html#cb73-12" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb73-13"><a href="data.html#cb73-13" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb73-14"><a href="data.html#cb73-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb73-15"><a href="data.html#cb73-15" aria-hidden="true" tabindex="-1"></a>    data,</span>
+<span id="cb73-16"><a href="data.html#cb73-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rnorm</span>(<span class="dv">5</span>),</span>
+<span id="cb73-17"><a href="data.html#cb73-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">format =</span> <span class="st">&quot;qs&quot;</span>, <span class="co"># Set format = &quot;aws_qs&quot; in targets &lt;= 0.10.0.</span></span>
+<span id="cb73-18"><a href="data.html#cb73-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">repository =</span> <span class="st">&quot;aws&quot;</span> <span class="co"># Set to &quot;gcp&quot; for Google Cloud Platform.</span></span>
+<span id="cb73-19"><a href="data.html#cb73-19" aria-hidden="true" tabindex="-1"></a>  ), </span>
+<span id="cb73-20"><a href="data.html#cb73-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb73-21"><a href="data.html#cb73-21" aria-hidden="true" tabindex="-1"></a>    mean_file,</span>
+<span id="cb73-22"><a href="data.html#cb73-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">write_mean</span>(data),</span>
+<span id="cb73-23"><a href="data.html#cb73-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">format =</span> <span class="st">&quot;file&quot;</span>, <span class="co"># Set format = &quot;aws_file&quot; in targets &lt;= 0.10.0.</span></span>
+<span id="cb73-24"><a href="data.html#cb73-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">repository =</span> <span class="st">&quot;aws&quot;</span> <span class="co"># Set to &quot;gcp&quot; for Google Cloud Platform.</span></span>
+<span id="cb73-25"><a href="data.html#cb73-25" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb73-26"><a href="data.html#cb73-26" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<p>When you run the pipeline above with <a href="https://docs.ropensci.org/targets/reference/tar_make.html"><code>tar_make()</code></a>, your local R session computes <code>rnorm(5)</code>, saves it to a temporary <a href="https://github.com/traversc/qs"><code>qs</code></a> file on disk, and then uploads it to a file called <code>_targets/objects/data</code> on your S3 bucket. Likewise for <code>mean_file</code>, but because the format is <code>"file"</code> and the repository is <code>"aws"</code>, you are responsible for supplying the path to the file that gets uploaded to <code>_targets/objects/mean_file</code>.</p>
+<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb74-1"><a href="data.html#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
+<span id="cb74-2"><a href="data.html#cb74-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target data</span></span>
+<span id="cb74-3"><a href="data.html#cb74-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target mean_file</span></span>
+<span id="cb74-4"><a href="data.html#cb74-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● end pipeline</span></span></code></pre></div>
+<p>And of course, your targets stay up to date if you make no changes.</p>
+<div class="sourceCode" id="cb75"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb75-1"><a href="data.html#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
+<span id="cb75-2"><a href="data.html#cb75-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✓ skip target data</span></span>
+<span id="cb75-3"><a href="data.html#cb75-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✓ skip target mean_file</span></span>
+<span id="cb75-4"><a href="data.html#cb75-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✓ skip pipeline</span></span></code></pre></div>
+<p>If you log into <a href="https://s3.console.aws.amazon.com/s3" class="uri">https://s3.console.aws.amazon.com/s3</a>, you should see objects <code>_targets/objects/data</code> and <code>_targets/objects/mean_file</code> in your bucket. To download this data locally, use <code>tar_read()</code> and <code>tar_load()</code> like before. These functions download the data from the bucket and load it into R.</p>
+<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb76-1"><a href="data.html#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(data)</span>
+<span id="cb76-2"><a href="data.html#cb76-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] -0.74654607 -0.59593497 -1.57229983  0.40915323  0.02579023</span></span></code></pre></div>
+<p>The <code>"file"</code> format behaves differently on the cloud. <code>tar_read()</code> and <code>tar_load()</code> download the object to a local path (where the target saved it locally before it was uploaded) and return the path so you can process it yourself.<a href="drake.html#fn10" class="footnote-ref" id="fnref10"><sup>10</sup></a></p>
+<div class="sourceCode" id="cb77"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb77-1"><a href="data.html#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_load</span>(mean_file)</span>
+<span id="cb77-2"><a href="data.html#cb77-2" aria-hidden="true" tabindex="-1"></a>mean_file</span>
+<span id="cb77-3"><a href="data.html#cb77-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;_targets/scratch/mean_fileff086e70876d&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb78-1"><a href="data.html#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="fu">readLines</span>(mean_file)</span>
+<span id="cb78-2"><a href="data.html#cb78-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;-0.495967480886693&quot;</span></span></code></pre></div>
+<p>When you are done with these temporary files and the pipeline is no longer running, you can safely remove everything in <code>_targets/scratch/</code>.</p>
+<div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb79-1"><a href="data.html#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unlink</span>(<span class="st">&quot;_targets/scratch/&quot;</span>, <span class="at">recursive =</span> <span class="cn">TRUE</span>) <span class="co"># tar_destroy(destroy = &quot;scratch&quot;)</span></span></code></pre></div>
+</div>
+<div id="data-version-control" class="section level3 hasAnchor" number="9.4.5">
+<h3><span class="header-section-number">9.4.5</span> Data version control<a href="data.html#data-version-control" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Amazon and Google support versioned buckets. If your bucket has versioning turned on, then every version of every target will be stored,<a href="drake.html#fn11" class="footnote-ref" id="fnref11"><sup>11</sup></a>, and the target metadata will contain the version ID (verify with <code>tar_meta(your_target, path)$path</code>). That way, if you roll back <code>_targets/meta/meta</code> to a prior version, then <code>tar_read(your_target)</code> will read a prior target. And if you roll back the metadata and the code together, then your pipeline will journey back in time while stay up to date (old code synced with old data). Rolling back is possible if you use Git/GitHub and commit your R code files and <code>_targets/meta/meta</code> to the repository. An alternative cloudless versioning solution is <a href="https://docs.ropensci.org/gittargets/"><code>gittargets</code></a>, a package that snapshots the local data store and syncs with an existing code repository.</p>
+</div>
+</div>
+<div id="cleaning-up-local-internal-data-files" class="section level2 hasAnchor" number="9.5">
+<h2><span class="header-section-number">9.5</span> Cleaning up local internal data files<a href="data.html#cleaning-up-local-internal-data-files" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>There are <a href="https://docs.ropensci.org/targets/reference/index.html#section-clean">multiple functions</a> to remove or clean up target storage. Most of these functions delete internal files or records from the data store and delete objects from cloud buckets. They do not delete local external files (i.e. <code>tar_target(..., format = "file", repository = "local")</code>) because some of those files could be local input data that exists prior to <code>tar_make()</code>.</p>
+<ul>
+<li><a href="https://docs.ropensci.org/targets/reference/tar_destroy.html"><code>tar_destroy()</code></a> is by far the most commonly used cleaning function. It removes the <code>_targets/</code> folder (or optionally a subfolder in <code>_targets/</code>) and all the cloud targets mentioned in the metadata. Use it if you intend to start the pipeline from scratch without any trace of a previous run.</li>
+<li><a href="https://docs.ropensci.org/targets/reference/tar_prune.html"><code>tar_prune()</code></a> deletes the data and metadata of all the targets no longer present in your current target script file (default: <code>_targets.R</code>). This is useful if you recently worked through multiple changes to your project and are now trying to discard irrelevant data while keeping the results that still matter.</li>
+<li><a href="https://docs.ropensci.org/targets/reference/tar_delete.html"><code>tar_delete()</code></a> is more selective than <a href="https://docs.ropensci.org/targets/reference/tar_destroy.html"><code>tar_destroy()</code></a> and <a href="https://docs.ropensci.org/targets/reference/tar_prune.html"><code>tar_prune()</code></a>. It removes the individual data files of a given set of targets from <code>_targets/objects/</code> and cloud buckets while leaving the metadata in <code>_targets/meta/meta</code> alone. If you have a small number of data-heavy targets you need to discard to conserve storage, this function can help.</li>
+<li><a href="https://docs.ropensci.org/targets/reference/tar_invalidate.html"><code>tar_invalidate()</code></a> is the opposite of <a href="https://docs.ropensci.org/targets/reference/tar_delete.html"><code>tar_delete()</code></a>: for the selected targets, it deletes the metadata in <code>_targets/meta/meta</code> and does not delete the return values. After invalidation, you will still be able to locate the data files with <a href="https://docs.ropensci.org/targets/reference/tar_path.html"><code>tar_path()</code></a> and manually salvage them in an emergency. However, <a href="https://docs.ropensci.org/targets/reference/tar_load.html"><code>tar_load()</code></a> and <a href="https://docs.ropensci.org/targets/reference/tar_read.html"><code>tar_read()</code></a> will not be able to read the data into R, and subsequent calls to <a href="https://docs.ropensci.org/targets/reference/tar_make.html"><code>tar_make()</code></a> will attempt to rebuild those targets.</li>
+</ul>
+</div>
+<div id="literate-programming" class="section level2 hasAnchor" number="9.6">
+<h2><span class="header-section-number">9.6</span> Literate programming<a href="data.html#literate-programming" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><code>targets</code> is tightly integrated with R Markdown and <code>knitr</code>. All the literate programming documentation is now in <a href="markdown.html#markdown">its own chapter</a>.</p>
 
 </div>
 </div>
@@ -429,8 +541,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="debugging.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="functions.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="projects.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="markdown.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -451,11 +563,11 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/ropensci-books/targets/edit/main/performance.Rmd",
+"link": "https://github.com/ropensci-books/targets/edit/main/data.Rmd",
 "text": "Edit this chapter"
 },
 "history": {
-"link": "https://github.com/ropensci-books/targets/commits/main/performance.Rmd",
+"link": "https://github.com/ropensci-books/targets/commits/main/data.Rmd",
 "text": "Chapter edit history"
 },
 "view": {
