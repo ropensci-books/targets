@@ -96,7 +96,7 @@ create_plot <- function(data) {
 
 ## Target script file
 
-Whereas files `raw_data.csv` and `functions.R` are typical user-defined components of a [project-oriented workflow](https://rstats.wtf/project-oriented-workflow.html), the target script file `_targets.R` file is special. Every [`targets`](https://github.com/ropensci/targets) workflow needs a [target script file](https://docs.ropensci.org/targets/reference/tar_script.html) to formally define the targets in the pipeline. By default, the target script is a file called `_targets.R` in the project's [root directory](https://martinctc.github.io/blog/rstudio-projects-and-working-directories-a-beginner%27s-guide/).^[However, in `targets` version 0.5.0.9000 and above, you can set the target script file path to something other than `_targets.R`. You can either set the path persistently for your project using [`tar_config_set()`](https://docs.ropensci.org/targets/reference/tar_config_set.html), or you can set it temporarily for an individual function call using the `script` argument of [`tar_make()`](https://docs.ropensci.org/targets/reference/tar_make.html) and related functions.] Functions [`tar_script()`](https://docs.ropensci.org/targets/reference/tar_script.html) and [`tar_edit()`](https://docs.ropensci.org/targets/reference/tar_edit.html) can help you create a target script file. Ours looks like this:
+Whereas files `raw_data.csv` and `functions.R` are typical user-defined components of a [project-oriented workflow](https://rstats.wtf/project-oriented-workflow.html), the target script file `_targets.R` file is special. Every [`targets`](https://github.com/ropensci/targets) workflow needs a [target script file](https://docs.ropensci.org/targets/reference/tar_script.html) to formally define the targets in the pipeline. By default, the target script is a file called `_targets.R` in the project's [root directory](https://martinctc.github.io/blog/rstudio-projects-and-working-directories-a-beginner%27s-guide/).^[However, in `targets` version 0.5.0.9000 and above, you can set the target script file path to something other than `_targets.R`. You can either set the path persistently for your project using [`tar_config_set()`](https://docs.ropensci.org/targets/reference/tar_config_set.html), or you can set it temporarily for an individual function call using the `script` argument of [`tar_make()`](https://docs.ropensci.org/targets/reference/tar_make.html) and related functions.] The [`use_targets()`](https://docs.ropensci.org/targets/reference/use_targets.html) creates an initial target script for you to fill in. Ours looks like this:
 
 ```{r, eval = FALSE}
 # _targets.R file
@@ -134,25 +134,19 @@ All target script files have these requirements.
 
 ## Inspect the pipeline
 
-Before you run the pipeline for real, you should always inspect the manifest and the graph for errors. `tar_manifest()` shows you a data frame information about the targets, and it has functionality to specify the targets and columns returned.
+Before you run the pipeline for real, it is best to check for errors. [`tar_manifest()`](https://docs.ropensci.org/targets/reference/tar_manifest.html) lists verbose information about each target.
 
 ```{r, eval = TRUE}
 tar_manifest(fields = "command")
 ```
 
-There are also graphical displays with `tar_glimpse()`
-
-```{r, eval = TRUE}
-tar_glimpse()
-```
-
-and `tar_visnetwork()`.
+[`tar_glimpse()`](https://docs.ropensci.org/targets/reference/tar_glimpse.html) and [`tar_visnetwork()`](https://docs.ropensci.org/targets/reference/tar_visnetwork.html) visualize the pipeline as a directed acyclic graph (DAG).^[If [`tar_manifest()`](https://docs.ropensci.org/targets/reference/tar_manifest.html) shows hundreds of targets, then the graph may be slow or cumbersome. If this happens, then you may need to comment out some targets in the `_targets.R` file just for visualization purposes.]
 
 ```{r, eval = TRUE}
 tar_visnetwork()
 ```
 
-Both graphing functions above visualize the underlying directed acyclic graph (DAG) and tell you how targets are connected. This DAG is indifferent to the order of targets in your pipeline. You will still get the same graph even if you rearrange them. This is because `targets` uses static code analysis to detect the dependencies of each target, and this process does not depend on target order. For details, visit the dependency detection section of the [target construction chapter](#targets).
+The directed edges in the graph tell you how the targets and functions depend on one another. For example, if target `x` is supposed to call `get_data()` but there is no directed edge from `x` to `get_data()`, then you may have misspelled `get_data()` in the command of `x`. Most pipelines have a completely connected graph with a clear flow of work from left to right. If your graph looks clean, you may be ready to run the pipeline.^[The DAG is indifferent to the order of targets in your pipeline. You will still get the same graph even if you rearrange them. This is because `targets` uses static code analysis to detect the dependencies of each target, and this process does not depend on target order. For details, visit the dependency detection section of the [target construction chapter](#targets).]
 
 ## Run the pipeline
 
