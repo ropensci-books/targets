@@ -39,7 +39,7 @@ tar_script({
   source("R/functions.R")
   options(crayon.enabled = FALSE)
   options(tidyverse.quiet = TRUE)
-  tar_option_set(packages = c("tibble", "readr", "dplyr", "ggplot2"))
+  tar_option_set(packages = c("readr", "dplyr", "ggplot2"))
   list(
     tar_target(file, "data.csv", format = "file"),
     tar_target(data, get_data(file)),
@@ -108,7 +108,7 @@ Whereas files `data.csv` and `functions.R` are typical user-defined components o
 # _targets.R file
 library(targets)
 source("R/functions.R")
-tar_option_set(packages = c("tibble", "readr", "dplyr", "ggplot2"))
+tar_option_set(packages = c("readr", "dplyr", "ggplot2"))
 list(
   tar_target(file, "data.csv", format = "file"),
   tar_target(data, get_data(file)),
