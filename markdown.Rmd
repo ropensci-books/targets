@@ -18,7 +18,7 @@ There are two kinds of literate programming in `targets`:
 
 If you render an R Markdown report as part of a target, the report should be lightweight: mostly prose, minimal code, fast execution, and no output other than the rendered HTML/PDF document. In other words, R Markdown reports are just targets that document prior results. The bulk of the computation should have already happened upstream, and the most of the code chunks in the report itself should be terse calls to `tar_read()` and `tar_load()`.
 
-The report from the [minimal example](https://github.com/ropensci/targets-minimal) looks like this:
+For this chapter, we will use the so-called ["minimal" example](https://github.com/ropensci/targets-minimal), which is similar to the [walkthrough example](#walkthrough) but with an R Markdown report and a slightly different pipeline. The report from that example looks like this:
 
 ![](./man/figures/knitr-source.png)
 
@@ -56,7 +56,7 @@ target <- tar_render(report, "report.Rmd") # Just defines a target object.
 target$command$expr[[1]]
 ```
 
-Because symbols `fit` and `hist` appear in the command, `targets` knows that `report` depends on `fit` and `hist`. When we put the `report` target in the pipeline, these dependency relationships show up in the graph.
+Because symbols `fit` and `hist` appear in the command, `targets` knows that `report` depends on the `fit` target and the `hist` target. When we put the `report` target in the pipeline, these dependency relationships show up in the graph.
 
 ```{r, eval = FALSE}
 # _targets.R

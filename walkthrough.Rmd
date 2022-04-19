@@ -20,7 +20,6 @@ withr::with_dir("R", {
   tar_script({
     get_data <- function(file) {
       read_csv(file, col_types = cols()) %>%
-        as_tibble() %>%
         filter(!is.na(Ozone))
     }
     fit_model <- function(data) {
@@ -82,7 +81,6 @@ Ozone,Solar.R,Wind,Temp,Month,Day
 # R/functions.R
 get_data <- function(file) {
   read_csv(file, col_types = cols()) %>%
-    as_tibble() %>%
     filter(!is.na(Ozone))
 }
 
@@ -131,7 +129,7 @@ Before you run the pipeline for real, it is best to check for obvious errors. [`
 tar_manifest(fields = all_of("command"))
 ```
 
-[`tar_visnetwork()`](https://docs.ropensci.org/targets/reference/tar_visnetwork.html) displays the dependency graph. It should show a natural progression of work from left to right as the pipeline progresses, and it targets and functions that depend on one another should have directed edges to identify the dependency relationships. Dependency relationships are automatically detected using [static code analysis](https://adv-r.hadley.nz/expressions.html#ast-funs), and the order of `tar_target()` calls in the target list does not matter at all.
+[`tar_visnetwork()`](https://docs.ropensci.org/targets/reference/tar_visnetwork.html) displays the dependency graph. It should show a natural progression of work from left to right as the pipeline progresses, and it targets and functions that depend on one another should have directed edges to identify the dependency relationships.^[If you have hundreds of targets, then [`tar_visnetwork()`](https://docs.ropensci.org/targets/reference/tar_visnetwork.html) may be slow. If that happens, consider temporarily commenting out some targets in `_targets.R` just for visualization purposes.] Dependency relationships are automatically detected using [static code analysis](https://adv-r.hadley.nz/expressions.html#ast-funs), and the order of `tar_target()` calls in the target list does not matter at all.
 
 ```{r, eval = TRUE}
 tar_visnetwork()
@@ -180,7 +178,6 @@ withr::with_dir("R", {
   tar_script({
     get_data <- function(file) {
       read_csv(file, col_types = cols()) %>%
-        as_tibble() %>%
         filter(!is.na(Ozone))
     }
     fit_model <- function(data) {
