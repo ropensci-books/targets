@@ -151,14 +151,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
 <ul>
 <li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#motivation"><i class="fa fa-check"></i><b>1.1</b> Motivation</a></li>
-<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#pipeline-toolkits"><i class="fa fa-check"></i><b>1.2</b> Pipeline toolkits</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#pipeline-tools"><i class="fa fa-check"></i><b>1.2</b> Pipeline tools</a></li>
 <li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#the-targets-package"><i class="fa fa-check"></i><b>1.3</b> The <code>targets</code> package</a></li>
 <li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#about-this-manual"><i class="fa fa-check"></i><b>1.4</b> About this manual</a></li>
 <li class="chapter" data-level="1.5" data-path="index.html"><a href="index.html#what-about-drake"><i class="fa fa-check"></i><b>1.5</b> What about <code>drake</code>?</a></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="walkthrough.html"><a href="walkthrough.html"><i class="fa fa-check"></i><b>2</b> Walkthrough</a>
 <ul>
-<li class="chapter" data-level="2.1" data-path="walkthrough.html"><a href="walkthrough.html#about-this-minimal-example"><i class="fa fa-check"></i><b>2.1</b> About this minimal example</a></li>
+<li class="chapter" data-level="2.1" data-path="walkthrough.html"><a href="walkthrough.html#about-this-example"><i class="fa fa-check"></i><b>2.1</b> About this example</a></li>
 <li class="chapter" data-level="2.2" data-path="walkthrough.html"><a href="walkthrough.html#file-structure"><i class="fa fa-check"></i><b>2.2</b> File structure</a></li>
 <li class="chapter" data-level="2.3" data-path="walkthrough.html"><a href="walkthrough.html#target-script-file"><i class="fa fa-check"></i><b>2.3</b> Target script file</a></li>
 <li class="chapter" data-level="2.4" data-path="walkthrough.html"><a href="walkthrough.html#inspect-the-pipeline"><i class="fa fa-check"></i><b>2.4</b> Inspect the pipeline</a></li>
@@ -168,8 +168,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="2.6.1" data-path="walkthrough.html"><a href="walkthrough.html#change-code"><i class="fa fa-check"></i><b>2.6.1</b> Change code</a></li>
 <li class="chapter" data-level="2.6.2" data-path="walkthrough.html"><a href="walkthrough.html#change-data"><i class="fa fa-check"></i><b>2.6.2</b> Change data</a></li>
 </ul></li>
-<li class="chapter" data-level="2.7" data-path="walkthrough.html"><a href="walkthrough.html#read-your-data"><i class="fa fa-check"></i><b>2.7</b> Read your data</a></li>
-<li class="chapter" data-level="2.8" data-path="walkthrough.html"><a href="walkthrough.html#read-metadata"><i class="fa fa-check"></i><b>2.8</b> Read metadata</a></li>
+<li class="chapter" data-level="2.7" data-path="walkthrough.html"><a href="walkthrough.html#read-metadata"><i class="fa fa-check"></i><b>2.7</b> Read metadata</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="debugging.html"><a href="debugging.html"><i class="fa fa-check"></i><b>3</b> Debugging</a>
 <ul>
@@ -415,14 +414,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Other targets (such as <code>raw_data_file</code>).</li>
 <li>Functions and objects in the main environment. This environment is almost always the global environment of the R process that runs the target script file (default: <code>_targets.R</code>) so these dependencies are usually going to be the custom functions and objects you write yourself.</li>
 </ol>
-<p>This process excludes many objects from dependency detection. For example, both <code>{</code> and <code>cols()</code> are excluded because they are defined in the environments of packages (<code>base</code> and <code>readr</code>, respectively). Functions and objects from packages are ignored unless you supply the package name to the <code>packages</code> and <code>imports</code> fields of <code>tar_option_set()</code> as described later on in this chapter.<a href="#fn9" class="footnote-ref" id="fnref9"><sup>9</sup></a></p>
+<p>This process excludes many objects from dependency detection. For example, both <code>{</code> and <code>cols()</code> are excluded because they are defined in the environments of packages (<code>base</code> and <code>readr</code>, respectively). Functions and objects from packages are ignored unless you supply the package name to the <code>packages</code> and <code>imports</code> fields of <code>tar_option_set()</code> as described later on in this chapter.<a href="#fn11" class="footnote-ref" id="fnref11"><sup>11</sup></a></p>
 </div>
 <div id="return-value" class="section level2 hasAnchor" number="6.7">
 <h2><span class="header-section-number">6.7</span> Return value<a href="targets.html#return-value" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>The return value of a target should be an R object that can be saved to disk and hashed.</p>
 <div id="saving" class="section level3 hasAnchor" number="6.7.1">
 <h3><span class="header-section-number">6.7.1</span> Saving<a href="targets.html#saving" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>The object should be compatible with the storage format you choose using the <code>format</code> argument of <code>tar_target()</code> or <code>tar_option_set()</code>. For example, if the format is <code>"rds"</code> (default), then the target should return an R object that can be saved with <code>saveRDS()</code> and safely loaded properly into another session. Please avoid returning <a href="https://cran.r-project.org/web/packages/future/vignettes/future-4-non-exportable-objects.html">non-exportable objects</a> such as connection objects, <code>Rcpp</code> pointers, <code>xgboost</code> matrices, and <code>greta</code> models<a href="#fn10" class="footnote-ref" id="fnref10"><sup>10</sup></a>.</p>
+<p>The object should be compatible with the storage format you choose using the <code>format</code> argument of <code>tar_target()</code> or <code>tar_option_set()</code>. For example, if the format is <code>"rds"</code> (default), then the target should return an R object that can be saved with <code>saveRDS()</code> and safely loaded properly into another session. Please avoid returning <a href="https://cran.r-project.org/web/packages/future/vignettes/future-4-non-exportable-objects.html">non-exportable objects</a> such as connection objects, <code>Rcpp</code> pointers, <code>xgboost</code> matrices, and <code>greta</code> models<a href="#fn12" class="footnote-ref" id="fnref12"><sup>12</sup></a>.</p>
 </div>
 <div id="hashing" class="section level3 hasAnchor" number="6.7.2">
 <h3><span class="header-section-number">6.7.2</span> Hashing<a href="targets.html#hashing" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -453,9 +452,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div class="footnotes">
 <hr />
-<ol start="9">
-<li id="fn9"><p>It is also possible to supply an alternative environment to the <code>envir</code> argument of <code>tar_option_set()</code>, which changes the environment where <code>targets</code> detects non-package global objects and functions, but there is rarely ever a need to do this.<a href="targets.html#fnref9" class="footnote-back">↩︎</a></p></li>
-<li id="fn10"><p>Special exceptions are granted to Keras and Torch models, which can be safely returned from targets if you specify <code>format = "keras"</code> or <code>format = "torch"</code>.<a href="targets.html#fnref10" class="footnote-back">↩︎</a></p></li>
+<ol start="11">
+<li id="fn11"><p>It is also possible to supply an alternative environment to the <code>envir</code> argument of <code>tar_option_set()</code>, which changes the environment where <code>targets</code> detects non-package global objects and functions, but there is rarely ever a need to do this.<a href="targets.html#fnref11" class="footnote-back">↩︎</a></p></li>
+<li id="fn12"><p>Special exceptions are granted to Keras and Torch models, which can be safely returned from targets if you specify <code>format = "keras"</code> or <code>format = "torch"</code>.<a href="targets.html#fnref12" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 <div style = "background: #1C356D; color: white; padding: 10px 10px 10px 25px; font-size: 1em; width: 100%;">

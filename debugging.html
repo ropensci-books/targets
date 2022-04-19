@@ -151,14 +151,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
 <ul>
 <li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#motivation"><i class="fa fa-check"></i><b>1.1</b> Motivation</a></li>
-<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#pipeline-toolkits"><i class="fa fa-check"></i><b>1.2</b> Pipeline toolkits</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#pipeline-tools"><i class="fa fa-check"></i><b>1.2</b> Pipeline tools</a></li>
 <li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#the-targets-package"><i class="fa fa-check"></i><b>1.3</b> The <code>targets</code> package</a></li>
 <li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#about-this-manual"><i class="fa fa-check"></i><b>1.4</b> About this manual</a></li>
 <li class="chapter" data-level="1.5" data-path="index.html"><a href="index.html#what-about-drake"><i class="fa fa-check"></i><b>1.5</b> What about <code>drake</code>?</a></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="walkthrough.html"><a href="walkthrough.html"><i class="fa fa-check"></i><b>2</b> Walkthrough</a>
 <ul>
-<li class="chapter" data-level="2.1" data-path="walkthrough.html"><a href="walkthrough.html#about-this-minimal-example"><i class="fa fa-check"></i><b>2.1</b> About this minimal example</a></li>
+<li class="chapter" data-level="2.1" data-path="walkthrough.html"><a href="walkthrough.html#about-this-example"><i class="fa fa-check"></i><b>2.1</b> About this example</a></li>
 <li class="chapter" data-level="2.2" data-path="walkthrough.html"><a href="walkthrough.html#file-structure"><i class="fa fa-check"></i><b>2.2</b> File structure</a></li>
 <li class="chapter" data-level="2.3" data-path="walkthrough.html"><a href="walkthrough.html#target-script-file"><i class="fa fa-check"></i><b>2.3</b> Target script file</a></li>
 <li class="chapter" data-level="2.4" data-path="walkthrough.html"><a href="walkthrough.html#inspect-the-pipeline"><i class="fa fa-check"></i><b>2.4</b> Inspect the pipeline</a></li>
@@ -168,8 +168,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="2.6.1" data-path="walkthrough.html"><a href="walkthrough.html#change-code"><i class="fa fa-check"></i><b>2.6.1</b> Change code</a></li>
 <li class="chapter" data-level="2.6.2" data-path="walkthrough.html"><a href="walkthrough.html#change-data"><i class="fa fa-check"></i><b>2.6.2</b> Change data</a></li>
 </ul></li>
-<li class="chapter" data-level="2.7" data-path="walkthrough.html"><a href="walkthrough.html#read-your-data"><i class="fa fa-check"></i><b>2.7</b> Read your data</a></li>
-<li class="chapter" data-level="2.8" data-path="walkthrough.html"><a href="walkthrough.html#read-metadata"><i class="fa fa-check"></i><b>2.8</b> Read metadata</a></li>
+<li class="chapter" data-level="2.7" data-path="walkthrough.html"><a href="walkthrough.html#read-metadata"><i class="fa fa-check"></i><b>2.7</b> Read metadata</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="debugging.html"><a href="debugging.html"><i class="fa fa-check"></i><b>3</b> Debugging</a>
 <ul>
@@ -384,7 +383,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ol style="list-style-type: decimal">
 <li>In the target script file (default: <code>_targets.R</code>) write a call to <code>tar_option_set()</code> with <code>debug</code> equal to the target name.</li>
 <li>Launch a fresh clean new interactive R session with the target script file (default: <code>_targets.R</code>) script in your working directory.</li>
-<li>Run <code>targets::tar_make()</code> (or <code>targets::tar_make_clustermq()</code>, or <code>targets::tar_make_future()</code>) with <code>callr_function = NULL</code>. If you are using <code>targets</code> version 0.5.0.9000 or above, consider also setting <code>shortcut</code> to <code>TRUE</code> and supplying the target name to <code>names</code>.<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a> This allows <code>tar_make()</code> to reach the desired target more quickly.</li>
+<li>Run <code>targets::tar_make()</code> (or <code>targets::tar_make_clustermq()</code>, or <code>targets::tar_make_future()</code>) with <code>callr_function = NULL</code>. If you are using <code>targets</code> version 0.5.0.9000 or above, consider also setting <code>shortcut</code> to <code>TRUE</code> and supplying the target name to <code>names</code>.<a href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a> This allows <code>tar_make()</code> to reach the desired target more quickly.</li>
 <li>When <code>targets</code> reaches the target you selected to debug, your R session will start an interactive debugger, and you should see <code>Browse[1]&gt;</code> in your console. Run <code>targets::tar_name()</code> to verify that you are debugging the correct target.</li>
 <li>Interactively run any R code that helps you troubleshoot the problem. For example, if the target invokes a function <code>f()</code>, enter <code>debug(f)</code> and then <code>c</code> to immediately enter the function’s calling environment where all its arguments are defined.</li>
 </ol>
@@ -464,7 +463,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb32-6"><a href="debugging.html#cb32-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;y_05f206d7&quot;</span></span></code></pre></div>
 <p><code>tar_workspace()</code> reads the special metadata in the workspace file and then loads the target’s dependencies from various locations in <code>_targets/objects</code> and/or the <a href="#storage_amazon">cloud</a>. It also sets the random number generator seed to the seed of the target, loads the required packages, and runs the target script file (default: <code>_targets.R</code>) to load other global object dependencies such as functions.</p>
 <div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="debugging.html#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_workspace</span>(y_05f206d7)</span></code></pre></div>
-<p>We now have the dependencies of <code>y_05f206d7</code> in memory, which allows you to try out any failed function calls in your local R session. <a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a> <a href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a></p>
+<p>We now have the dependencies of <code>y_05f206d7</code> in memory, which allows you to try out any failed function calls in your local R session. <a href="#fn9" class="footnote-ref" id="fnref9"><sup>9</sup></a> <a href="#fn10" class="footnote-ref" id="fnref10"><sup>10</sup></a></p>
 <div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="debugging.html#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(x)</span>
 <span id="cb34-2"><a href="debugging.html#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 4</span></span>
 <span id="cb34-3"><a href="debugging.html#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(<span class="at">arg =</span> <span class="dv">0</span>, <span class="at">value =</span> <span class="st">&quot;my_value&quot;</span>, <span class="at">a =</span> <span class="dv">1</span>, <span class="at">b =</span> <span class="dv">2</span>, <span class="at">key =</span> <span class="st">&quot;my_api_key&quot;</span>)</span>
@@ -491,10 +490,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div class="footnotes">
 <hr />
-<ol start="6">
-<li id="fn6"><p>In the case of dynamic branching, <code>names</code> does not accept individual branch names, but you can still supply the name of the overarching dynamic target.<a href="debugging.html#fnref6" class="footnote-back">↩︎</a></p></li>
-<li id="fn7"><p>In addition, current random number generator seed (<code>.Random.seed</code>) is also the value <code>y_05f206d7</code> started with.<a href="debugging.html#fnref7" class="footnote-back">↩︎</a></p></li>
-<li id="fn8"><p>When you are finished debugging, you can remove all workspace files with <code>tar_destroy(destroy = "workspaces")</code>.<a href="debugging.html#fnref8" class="footnote-back">↩︎</a></p></li>
+<ol start="8">
+<li id="fn8"><p>In the case of dynamic branching, <code>names</code> does not accept individual branch names, but you can still supply the name of the overarching dynamic target.<a href="debugging.html#fnref8" class="footnote-back">↩︎</a></p></li>
+<li id="fn9"><p>In addition, current random number generator seed (<code>.Random.seed</code>) is also the value <code>y_05f206d7</code> started with.<a href="debugging.html#fnref9" class="footnote-back">↩︎</a></p></li>
+<li id="fn10"><p>When you are finished debugging, you can remove all workspace files with <code>tar_destroy(destroy = "workspaces")</code>.<a href="debugging.html#fnref10" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 <div style = "background: #1C356D; color: white; padding: 10px 10px 10px 25px; font-size: 1em; width: 100%;">

@@ -151,14 +151,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
 <ul>
 <li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#motivation"><i class="fa fa-check"></i><b>1.1</b> Motivation</a></li>
-<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#pipeline-toolkits"><i class="fa fa-check"></i><b>1.2</b> Pipeline toolkits</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#pipeline-tools"><i class="fa fa-check"></i><b>1.2</b> Pipeline tools</a></li>
 <li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#the-targets-package"><i class="fa fa-check"></i><b>1.3</b> The <code>targets</code> package</a></li>
 <li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#about-this-manual"><i class="fa fa-check"></i><b>1.4</b> About this manual</a></li>
 <li class="chapter" data-level="1.5" data-path="index.html"><a href="index.html#what-about-drake"><i class="fa fa-check"></i><b>1.5</b> What about <code>drake</code>?</a></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="walkthrough.html"><a href="walkthrough.html"><i class="fa fa-check"></i><b>2</b> Walkthrough</a>
 <ul>
-<li class="chapter" data-level="2.1" data-path="walkthrough.html"><a href="walkthrough.html#about-this-minimal-example"><i class="fa fa-check"></i><b>2.1</b> About this minimal example</a></li>
+<li class="chapter" data-level="2.1" data-path="walkthrough.html"><a href="walkthrough.html#about-this-example"><i class="fa fa-check"></i><b>2.1</b> About this example</a></li>
 <li class="chapter" data-level="2.2" data-path="walkthrough.html"><a href="walkthrough.html#file-structure"><i class="fa fa-check"></i><b>2.2</b> File structure</a></li>
 <li class="chapter" data-level="2.3" data-path="walkthrough.html"><a href="walkthrough.html#target-script-file"><i class="fa fa-check"></i><b>2.3</b> Target script file</a></li>
 <li class="chapter" data-level="2.4" data-path="walkthrough.html"><a href="walkthrough.html#inspect-the-pipeline"><i class="fa fa-check"></i><b>2.4</b> Inspect the pipeline</a></li>
@@ -168,8 +168,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="2.6.1" data-path="walkthrough.html"><a href="walkthrough.html#change-code"><i class="fa fa-check"></i><b>2.6.1</b> Change code</a></li>
 <li class="chapter" data-level="2.6.2" data-path="walkthrough.html"><a href="walkthrough.html#change-data"><i class="fa fa-check"></i><b>2.6.2</b> Change data</a></li>
 </ul></li>
-<li class="chapter" data-level="2.7" data-path="walkthrough.html"><a href="walkthrough.html#read-your-data"><i class="fa fa-check"></i><b>2.7</b> Read your data</a></li>
-<li class="chapter" data-level="2.8" data-path="walkthrough.html"><a href="walkthrough.html#read-metadata"><i class="fa fa-check"></i><b>2.8</b> Read metadata</a></li>
+<li class="chapter" data-level="2.7" data-path="walkthrough.html"><a href="walkthrough.html#read-metadata"><i class="fa fa-check"></i><b>2.7</b> Read metadata</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="debugging.html"><a href="debugging.html"><i class="fa fa-check"></i><b>3</b> Debugging</a>
 <ul>
@@ -367,7 +366,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="intro" class="section level1 hasAnchor" number="1">
 <h1><span class="header-section-number">Chapter 1</span> Introduction<a href="index.html#intro" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<p>The <a href="https://docs.ropensci.org/targets/"><code>targets</code></a> package is a <a href="https://www.gnu.org/software/make/">Make</a>-like pipeline toolkit for Statistics and data science in R. With <a href="https://docs.ropensci.org/targets/"><code>targets</code></a>, you can maintain a reproducible workflow without repeating yourself. <a href="https://docs.ropensci.org/targets/"><code>targets</code></a> learns how your pipeline fits together, skips costly runtime for tasks that are already up to date, runs only the necessary computation, supports implicit parallel computing, abstracts files as R objects, and shows tangible evidence that the results match the underlying code and data.</p>
+<p>The <a href="https://docs.ropensci.org/targets/"><code>targets</code></a> package is a <a href="https://www.gnu.org/software/make/">Make</a>-like pipeline tool for Statistics and data science in R. With <a href="https://docs.ropensci.org/targets/"><code>targets</code></a>, you can maintain a reproducible workflow without repeating yourself. <a href="https://docs.ropensci.org/targets/"><code>targets</code></a> learns how your pipeline fits together, skips costly runtime for tasks that are already up to date, runs only the necessary computation, supports implicit parallel computing, abstracts files as R objects, and shows tangible evidence that the results match the underlying code and data.</p>
 <div id="motivation" class="section level2 hasAnchor" number="1.1">
 <h2><span class="header-section-number">1.1</span> Motivation<a href="index.html#motivation" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Data analysis can be slow. A round of scientific computation can take several minutes, hours, or even days to complete. After it finishes, if you update your code or data, your hard-earned results may no longer be valid. Unchecked, this invalidation creates chronic <a href="https://en.wikipedia.org/wiki/Sisyphus">Sisyphean</a> loop:</p>
@@ -378,13 +377,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Restart from scratch.</li>
 </ol>
 </div>
-<div id="pipeline-toolkits" class="section level2 hasAnchor" number="1.2">
-<h2><span class="header-section-number">1.2</span> Pipeline toolkits<a href="index.html#pipeline-toolkits" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p><a href="https://github.com/pditommaso/awesome-pipeline">Pipeline toolkits</a> like <a href="https://www.gnu.org/software/make/">GNU Make</a> break the cycle. They watch the dependency graph of the whole workflow and skip steps, or “targets”, whose code, data, and upstream dependencies have not changed since the last run of the pipeline. When all targets are up to date, this is evidence that the results match the underlying code and data, which helps us trust the results and confirm the computation is reproducible.</p>
+<div id="pipeline-tools" class="section level2 hasAnchor" number="1.2">
+<h2><span class="header-section-number">1.2</span> Pipeline tools<a href="index.html#pipeline-tools" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><a href="https://github.com/pditommaso/awesome-pipeline">Pipeline tools</a> like <a href="https://www.gnu.org/software/make/">GNU Make</a> break the cycle. They watch the dependency graph of the whole workflow and skip steps, or “targets”, whose code, data, and upstream dependencies have not changed since the last run of the pipeline. When all targets are up to date, this is evidence that the results match the underlying code and data, which helps us trust the results and confirm the computation is reproducible.</p>
 </div>
 <div id="the-targets-package" class="section level2 hasAnchor" number="1.3">
 <h2><span class="header-section-number">1.3</span> The <code>targets</code> package<a href="index.html#the-targets-package" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Unlike most <a href="https://github.com/pditommaso/awesome-pipeline">pipeline toolkits</a>, which are language agnostic or Python-focused, the <a href="https://docs.ropensci.org/targets/"><code>targets</code></a> package allows data scientists and researchers to work entirely within R. <a href="https://docs.ropensci.org/targets/"><code>targets</code></a> implicitly nudges users toward a clean, function-oriented programming style that fits the intent of the R language and helps practitioners maintain their data analysis projects.</p>
+<p>Unlike most <a href="https://github.com/pditommaso/awesome-pipeline">pipeline tools</a>, which are language agnostic or Python-focused, the <a href="https://docs.ropensci.org/targets/"><code>targets</code></a> package allows data scientists and researchers to work entirely within R. <a href="https://docs.ropensci.org/targets/"><code>targets</code></a> implicitly nudges users toward a clean, function-oriented programming style that fits the intent of the R language and helps practitioners maintain their data analysis projects.</p>
 </div>
 <div id="about-this-manual" class="section level2 hasAnchor" number="1.4">
 <h2><span class="header-section-number">1.4</span> About this manual<a href="index.html#about-this-manual" class="anchor-section" aria-label="Anchor link to header"></a></h2>
@@ -392,7 +391,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="what-about-drake" class="section level2 hasAnchor" number="1.5">
 <h2><span class="header-section-number">1.5</span> What about <code>drake</code>?<a href="index.html#what-about-drake" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>The <a href="https://github.com/ropensci/drake"><code>drake</code></a> is an older R-focused pipeline toolkit, and <a href="https://docs.ropensci.org/targets/"><code>targets</code></a> is <a href="https://github.com/ropensci/drake"><code>drake</code></a>’s long-term successor. There is a <a href="drake.html#drake">special chapter</a> to explain why <a href="https://docs.ropensci.org/targets/"><code>targets</code></a> was created, what this means for <a href="https://github.com/ropensci/drake"><code>drake</code></a>’s future, advice for <a href="https://github.com/ropensci/drake"><code>drake</code></a> users transitioning to the <a href="https://docs.ropensci.org/targets/"><code>targets</code></a>, and the main technical advantages of <a href="https://docs.ropensci.org/targets/"><code>targets</code></a> over <a href="https://github.com/ropensci/drake"><code>drake</code></a>.</p>
+<p>The <a href="https://github.com/ropensci/drake"><code>drake</code></a> is an older R-focused pipeline tool, and <a href="https://docs.ropensci.org/targets/"><code>targets</code></a> is <a href="https://github.com/ropensci/drake"><code>drake</code></a>’s long-term successor. There is a <a href="drake.html#drake">special chapter</a> to explain why <a href="https://docs.ropensci.org/targets/"><code>targets</code></a> was created, what this means for <a href="https://github.com/ropensci/drake"><code>drake</code></a>’s future, advice for <a href="https://github.com/ropensci/drake"><code>drake</code></a> users transitioning to the <a href="https://docs.ropensci.org/targets/"><code>targets</code></a>, and the main technical advantages of <a href="https://docs.ropensci.org/targets/"><code>targets</code></a> over <a href="https://github.com/ropensci/drake"><code>drake</code></a>.</p>
 
 </div>
 </div>

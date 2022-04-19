@@ -151,14 +151,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
 <ul>
 <li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#motivation"><i class="fa fa-check"></i><b>1.1</b> Motivation</a></li>
-<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#pipeline-toolkits"><i class="fa fa-check"></i><b>1.2</b> Pipeline toolkits</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#pipeline-tools"><i class="fa fa-check"></i><b>1.2</b> Pipeline tools</a></li>
 <li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#the-targets-package"><i class="fa fa-check"></i><b>1.3</b> The <code>targets</code> package</a></li>
 <li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#about-this-manual"><i class="fa fa-check"></i><b>1.4</b> About this manual</a></li>
 <li class="chapter" data-level="1.5" data-path="index.html"><a href="index.html#what-about-drake"><i class="fa fa-check"></i><b>1.5</b> What about <code>drake</code>?</a></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="walkthrough.html"><a href="walkthrough.html"><i class="fa fa-check"></i><b>2</b> Walkthrough</a>
 <ul>
-<li class="chapter" data-level="2.1" data-path="walkthrough.html"><a href="walkthrough.html#about-this-minimal-example"><i class="fa fa-check"></i><b>2.1</b> About this minimal example</a></li>
+<li class="chapter" data-level="2.1" data-path="walkthrough.html"><a href="walkthrough.html#about-this-example"><i class="fa fa-check"></i><b>2.1</b> About this example</a></li>
 <li class="chapter" data-level="2.2" data-path="walkthrough.html"><a href="walkthrough.html#file-structure"><i class="fa fa-check"></i><b>2.2</b> File structure</a></li>
 <li class="chapter" data-level="2.3" data-path="walkthrough.html"><a href="walkthrough.html#target-script-file"><i class="fa fa-check"></i><b>2.3</b> Target script file</a></li>
 <li class="chapter" data-level="2.4" data-path="walkthrough.html"><a href="walkthrough.html#inspect-the-pipeline"><i class="fa fa-check"></i><b>2.4</b> Inspect the pipeline</a></li>
@@ -168,8 +168,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="2.6.1" data-path="walkthrough.html"><a href="walkthrough.html#change-code"><i class="fa fa-check"></i><b>2.6.1</b> Change code</a></li>
 <li class="chapter" data-level="2.6.2" data-path="walkthrough.html"><a href="walkthrough.html#change-data"><i class="fa fa-check"></i><b>2.6.2</b> Change data</a></li>
 </ul></li>
-<li class="chapter" data-level="2.7" data-path="walkthrough.html"><a href="walkthrough.html#read-your-data"><i class="fa fa-check"></i><b>2.7</b> Read your data</a></li>
-<li class="chapter" data-level="2.8" data-path="walkthrough.html"><a href="walkthrough.html#read-metadata"><i class="fa fa-check"></i><b>2.8</b> Read metadata</a></li>
+<li class="chapter" data-level="2.7" data-path="walkthrough.html"><a href="walkthrough.html#read-metadata"><i class="fa fa-check"></i><b>2.7</b> Read metadata</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="debugging.html"><a href="debugging.html"><i class="fa fa-check"></i><b>3</b> Debugging</a>
 <ul>
@@ -371,7 +370,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="rendering-within-a-target" class="section level2 hasAnchor" number="10.1">
 <h2><span class="header-section-number">10.1</span> Rendering within a target<a href="markdown.html#rendering-within-a-target" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>If you render an R Markdown report as part of a target, the report should be lightweight: mostly prose, minimal code, fast execution, and no output other than the rendered HTML/PDF document. In other words, R Markdown reports are just targets that document prior results. The bulk of the computation should have already happened upstream, and the most of the code chunks in the report itself should be terse calls to <code>tar_read()</code> and <code>tar_load()</code>.</p>
-<p>The report from the <a href="https://github.com/ropensci/targets-minimal">minimal example</a> looks like this:</p>
+<p>For this chapter, we will use the so-called <a href="https://github.com/ropensci/targets-minimal">“minimal” example</a>, which is similar to the <a href="walkthrough.html#walkthrough">walkthrough example</a> but with an R Markdown report and a slightly different pipeline. The report from that example looks like this:</p>
 <p><img src="man/figures/knitr-source.png" /></p>
 <p>Above, the report depends on targets <code>fit</code> and <code>hist</code>. The use of <code>tar_read()</code> and <code>tar_load()</code> allows us to run the report outside the pipeline. As long as <code>_targets/</code> folder has data on the required targets from a previous <code>tar_make()</code>, you can open the RStudio IDE, edit the report, and click the Knit button like you would for any other R Markdown report.</p>
 <p><img src="man/figures/knitr-ide.png" /></p>
@@ -390,7 +389,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb79-4"><a href="markdown.html#cb79-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; tarchetypes::tar_render_run(path = &quot;report.Rmd&quot;, args = list(input = &quot;report.Rmd&quot;, </span></span>
 <span id="cb79-5"><a href="markdown.html#cb79-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     knit_root_dir = getwd(), quiet = TRUE), deps = list(fit, </span></span>
 <span id="cb79-6"><a href="markdown.html#cb79-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     hist))</span></span></code></pre></div>
-<p>Because symbols <code>fit</code> and <code>hist</code> appear in the command, <code>targets</code> knows that <code>report</code> depends on <code>fit</code> and <code>hist</code>. When we put the <code>report</code> target in the pipeline, these dependency relationships show up in the graph.</p>
+<p>Because symbols <code>fit</code> and <code>hist</code> appear in the command, <code>targets</code> knows that <code>report</code> depends on the <code>fit</code> target and the <code>hist</code> target. When we put the <code>report</code> target in the pipeline, these dependency relationships show up in the graph.</p>
 <div class="sourceCode" id="cb80"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb80-1"><a href="markdown.html#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
 <span id="cb80-2"><a href="markdown.html#cb80-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
 <span id="cb80-3"><a href="markdown.html#cb80-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
@@ -507,7 +506,7 @@ params:
 <li>Interactively explore, prototype, and test the components of a <code>targets</code> pipeline using the R Markdown <a href="https://bookdown.org/yihui/rmarkdown/notebook.html">notebook interface</a>.</li>
 <li>Set up a <code>targets</code> pipeline using convenient R Markdown code chunks.</li>
 </ol>
-<p>Target Markdown supports a special <code>{targets}</code> <a href="https://bookdown.org/yihui/rmarkdown-cookbook/other-languages.html">language engine</a> with an interactive mode for (1) and a non-interactive mode for (2). By default, the mode is interactive in the <a href="https://bookdown.org/yihui/rmarkdown/notebook.html">notebook interface</a> and non-interactive when you knit/render the whole document.<a href="#fn14" class="footnote-ref" id="fnref14"><sup>14</sup></a>. You can set the mode using the <code>tar_interactive</code> chunk option.</p>
+<p>Target Markdown supports a special <code>{targets}</code> <a href="https://bookdown.org/yihui/rmarkdown-cookbook/other-languages.html">language engine</a> with an interactive mode for (1) and a non-interactive mode for (2). By default, the mode is interactive in the <a href="https://bookdown.org/yihui/rmarkdown/notebook.html">notebook interface</a> and non-interactive when you knit/render the whole document.<a href="#fn16" class="footnote-ref" id="fnref16"><sup>16</sup></a>. You can set the mode using the <code>tar_interactive</code> chunk option.</p>
 </div>
 <div id="example" class="section level3 hasAnchor" number="10.2.3">
 <h3><span class="header-section-number">10.2.3</span> Example<a href="markdown.html#example" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -554,9 +553,9 @@ create_plot &lt;- function(data) {
     theme_gray(24)
 }
 ```</code></pre>
-<p>In non-interactive mode, the chunk establishes a common <code>_targets.R</code> file and writes the R code to a script in <code>_targets_r/globals/</code>, and displays an informative message:<a href="#fn15" class="footnote-ref" id="fnref15"><sup>15</sup></a></p>
+<p>In non-interactive mode, the chunk establishes a common <code>_targets.R</code> file and writes the R code to a script in <code>_targets_r/globals/</code>, and displays an informative message:<a href="#fn17" class="footnote-ref" id="fnref17"><sup>17</sup></a></p>
 <pre><code>#&gt; Establish _targets.R and _targets_r/globals/chunk-name.R.</code></pre>
-<p>It is good practice to assign explicit chunk labels or set the <code>tar_name</code> chunk option on a chunk-by-chunk basis. Each chunk writes code to a script path that depends on the name, and all script paths need to be unique.<a href="#fn16" class="footnote-ref" id="fnref16"><sup>16</sup></a></p>
+<p>It is good practice to assign explicit chunk labels or set the <code>tar_name</code> chunk option on a chunk-by-chunk basis. Each chunk writes code to a script path that depends on the name, and all script paths need to be unique.<a href="#fn18" class="footnote-ref" id="fnref18"><sup>18</sup></a></p>
 </div>
 <div id="target-definitions" class="section level3 hasAnchor" number="10.2.7">
 <h3><span class="header-section-number">10.2.7</span> Target definitions<a href="markdown.html#target-definitions" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -622,7 +621,7 @@ tar_make()
 #&gt; • built target fit
 #&gt; • start target hist
 #&gt; • built target hist
-#&gt; • end pipeline: 0.651 seconds</code></pre>
+#&gt; • end pipeline: 2.026 seconds</code></pre>
 </div>
 <div id="output" class="section level3 hasAnchor" number="10.2.9">
 <h3><span class="header-section-number">10.2.9</span> Output<a href="markdown.html#output" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -641,8 +640,8 @@ tar_read(hist)
 <pre><code>```{r}
 tar_visnetwork()
 ```</code></pre>
-<div id="htmlwidget-ce28e4b112a366baaa7c" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
-<script type="application/json" data-for="htmlwidget-ce28e4b112a366baaa7c">{"x":{"nodes":{"name":["data","fit","hist","raw_data","create_plot"],"type":["stem","stem","stem","stem","function"],"status":["uptodate","uptodate","uptodate","uptodate","uptodate"],"seconds":[0.008,0.003,0.013,0.491,null],"bytes":[1081,1575,44522,1262,null],"branches":[null,null,null,null,null],"label":["data","fit","hist","raw_data","create_plot"],"color":["#354823","#354823","#354823","#354823","#354823"],"id":["data","fit","hist","raw_data","create_plot"],"level":[2,3,3,1,1],"shape":["dot","dot","dot","dot","triangle"]},"edges":{"from":["data","create_plot","data","raw_data"],"to":["fit","hist","hist","data"],"arrows":["to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"interaction":{"zoomSpeed":1},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Up to date","Stem","Function"],"color":["#354823","#899DA4","#899DA4"],"shape":["dot","dot","triangle"]},"nodesToDataframe":true},"tooltipStay":300,"tooltipStyle":"position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;border: 1px solid #808074;box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-d3ca6db4e21ce3113528" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-d3ca6db4e21ce3113528">{"x":{"nodes":{"name":["data","fit","hist","raw_data","create_plot"],"type":["stem","stem","stem","stem","function"],"status":["uptodate","uptodate","uptodate","uptodate","uptodate"],"seconds":[0.012,0.005,0.014,0.582,null],"bytes":[1081,1575,44522,1262,null],"branches":[null,null,null,null,null],"label":["data","fit","hist","raw_data","create_plot"],"color":["#354823","#354823","#354823","#354823","#354823"],"id":["data","fit","hist","raw_data","create_plot"],"level":[2,3,3,1,1],"shape":["dot","dot","dot","dot","triangle"]},"edges":{"from":["data","create_plot","data","raw_data"],"to":["fit","hist","hist","data"],"arrows":["to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"interaction":{"zoomSpeed":1},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Up to date","Stem","Function"],"color":["#354823","#899DA4","#899DA4"],"shape":["dot","dot","triangle"]},"nodesToDataframe":true},"tooltipStay":300,"tooltipStyle":"position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;border: 1px solid #808074;box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);"},"evals":[],"jsHooks":[]}</script>
 <p>At this point, you can go back and run <code>{targets}</code> chunks in interactive mode without interfering with the code or data of the non-interactive pipeline.</p>
 </div>
 <div id="conditioning-on-interactive-mode" class="section level3 hasAnchor" number="10.2.10">
@@ -704,10 +703,10 @@ tar_stan_mcmc_rep_summary(
 </div>
 <div class="footnotes">
 <hr />
-<ol start="14">
-<li id="fn14"><p>In <code>targets</code> version 0.6.0, the mode is interactive if <code>interactive()</code> is <code>TRUE</code>. In subsequent versions, the mode is interactive if <code>!isTRUE(getOption("knitr.in.progress"))</code> is <code>TRUE</code>.<a href="markdown.html#fnref14" class="footnote-back">↩︎</a></p></li>
-<li id="fn15"><p>The <code>_targets.R</code> file from Target Markdown never changes from chunk to chunk or report to report, so you can spread your work over multiple reports without worrying about aligning <code>_targets.R</code> scripts. Just be sure all your chunk names are unique across all the reports of a project, or you set the <code>tar_name</code> chunk option to specify base names of script file paths.<a href="markdown.html#fnref15" class="footnote-back">↩︎</a></p></li>
-<li id="fn16"><p>In addition, for <code>bookdown</code> projects, chunk labels should only use alphanumeric characters and dashes.<a href="markdown.html#fnref16" class="footnote-back">↩︎</a></p></li>
+<ol start="16">
+<li id="fn16"><p>In <code>targets</code> version 0.6.0, the mode is interactive if <code>interactive()</code> is <code>TRUE</code>. In subsequent versions, the mode is interactive if <code>!isTRUE(getOption("knitr.in.progress"))</code> is <code>TRUE</code>.<a href="markdown.html#fnref16" class="footnote-back">↩︎</a></p></li>
+<li id="fn17"><p>The <code>_targets.R</code> file from Target Markdown never changes from chunk to chunk or report to report, so you can spread your work over multiple reports without worrying about aligning <code>_targets.R</code> scripts. Just be sure all your chunk names are unique across all the reports of a project, or you set the <code>tar_name</code> chunk option to specify base names of script file paths.<a href="markdown.html#fnref17" class="footnote-back">↩︎</a></p></li>
+<li id="fn18"><p>In addition, for <code>bookdown</code> projects, chunk labels should only use alphanumeric characters and dashes.<a href="markdown.html#fnref18" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 <div style = "background: #1C356D; color: white; padding: 10px 10px 10px 25px; font-size: 1em; width: 100%;">

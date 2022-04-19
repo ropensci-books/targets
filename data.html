@@ -151,14 +151,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
 <ul>
 <li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#motivation"><i class="fa fa-check"></i><b>1.1</b> Motivation</a></li>
-<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#pipeline-toolkits"><i class="fa fa-check"></i><b>1.2</b> Pipeline toolkits</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#pipeline-tools"><i class="fa fa-check"></i><b>1.2</b> Pipeline tools</a></li>
 <li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#the-targets-package"><i class="fa fa-check"></i><b>1.3</b> The <code>targets</code> package</a></li>
 <li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#about-this-manual"><i class="fa fa-check"></i><b>1.4</b> About this manual</a></li>
 <li class="chapter" data-level="1.5" data-path="index.html"><a href="index.html#what-about-drake"><i class="fa fa-check"></i><b>1.5</b> What about <code>drake</code>?</a></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="walkthrough.html"><a href="walkthrough.html"><i class="fa fa-check"></i><b>2</b> Walkthrough</a>
 <ul>
-<li class="chapter" data-level="2.1" data-path="walkthrough.html"><a href="walkthrough.html#about-this-minimal-example"><i class="fa fa-check"></i><b>2.1</b> About this minimal example</a></li>
+<li class="chapter" data-level="2.1" data-path="walkthrough.html"><a href="walkthrough.html#about-this-example"><i class="fa fa-check"></i><b>2.1</b> About this example</a></li>
 <li class="chapter" data-level="2.2" data-path="walkthrough.html"><a href="walkthrough.html#file-structure"><i class="fa fa-check"></i><b>2.2</b> File structure</a></li>
 <li class="chapter" data-level="2.3" data-path="walkthrough.html"><a href="walkthrough.html#target-script-file"><i class="fa fa-check"></i><b>2.3</b> Target script file</a></li>
 <li class="chapter" data-level="2.4" data-path="walkthrough.html"><a href="walkthrough.html#inspect-the-pipeline"><i class="fa fa-check"></i><b>2.4</b> Inspect the pipeline</a></li>
@@ -168,8 +168,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="2.6.1" data-path="walkthrough.html"><a href="walkthrough.html#change-code"><i class="fa fa-check"></i><b>2.6.1</b> Change code</a></li>
 <li class="chapter" data-level="2.6.2" data-path="walkthrough.html"><a href="walkthrough.html#change-data"><i class="fa fa-check"></i><b>2.6.2</b> Change data</a></li>
 </ul></li>
-<li class="chapter" data-level="2.7" data-path="walkthrough.html"><a href="walkthrough.html#read-your-data"><i class="fa fa-check"></i><b>2.7</b> Read your data</a></li>
-<li class="chapter" data-level="2.8" data-path="walkthrough.html"><a href="walkthrough.html#read-metadata"><i class="fa fa-check"></i><b>2.8</b> Read metadata</a></li>
+<li class="chapter" data-level="2.7" data-path="walkthrough.html"><a href="walkthrough.html#read-metadata"><i class="fa fa-check"></i><b>2.7</b> Read metadata</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="debugging.html"><a href="debugging.html"><i class="fa fa-check"></i><b>3</b> Debugging</a>
 <ul>
@@ -501,7 +500,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>If you log into <a href="https://s3.console.aws.amazon.com/s3" class="uri">https://s3.console.aws.amazon.com/s3</a>, you should see objects <code>_targets/objects/data</code> and <code>_targets/objects/mean_file</code> in your bucket. To download this data locally, use <code>tar_read()</code> and <code>tar_load()</code> like before. These functions download the data from the bucket and load it into R.</p>
 <div class="sourceCode" id="cb75"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb75-1"><a href="data.html#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(data)</span>
 <span id="cb75-2"><a href="data.html#cb75-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] -0.74654607 -0.59593497 -1.57229983  0.40915323  0.02579023</span></span></code></pre></div>
-<p>The <code>"file"</code> format behaves differently on the cloud. <code>tar_read()</code> and <code>tar_load()</code> download the object to a local path (where the target saved it locally before it was uploaded) and return the path so you can process it yourself.<a href="#fn12" class="footnote-ref" id="fnref12"><sup>12</sup></a></p>
+<p>The <code>"file"</code> format behaves differently on the cloud. <code>tar_read()</code> and <code>tar_load()</code> download the object to a local path (where the target saved it locally before it was uploaded) and return the path so you can process it yourself.<a href="#fn14" class="footnote-ref" id="fnref14"><sup>14</sup></a></p>
 <div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb76-1"><a href="data.html#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_load</span>(mean_file)</span>
 <span id="cb76-2"><a href="data.html#cb76-2" aria-hidden="true" tabindex="-1"></a>mean_file</span>
 <span id="cb76-3"><a href="data.html#cb76-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;_targets/scratch/mean_fileff086e70876d&quot;</span></span></code></pre></div>
@@ -512,7 +511,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="data-version-control" class="section level3 hasAnchor" number="9.4.5">
 <h3><span class="header-section-number">9.4.5</span> Data version control<a href="data.html#data-version-control" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>Amazon and Google support versioned buckets. If your bucket has versioning turned on, then every version of every target will be stored,<a href="#fn13" class="footnote-ref" id="fnref13"><sup>13</sup></a>, and the target metadata will contain the version ID (verify with <code>tar_meta(your_target, path)$path</code>). That way, if you roll back <code>_targets/meta/meta</code> to a prior version, then <code>tar_read(your_target)</code> will read a prior target. And if you roll back the metadata and the code together, then your pipeline will journey back in time while stay up to date (old code synced with old data). Rolling back is possible if you use Git/GitHub and commit your R code files and <code>_targets/meta/meta</code> to the repository. An alternative cloudless versioning solution is <a href="https://docs.ropensci.org/gittargets/"><code>gittargets</code></a>, a package that snapshots the local data store and syncs with an existing code repository.</p>
+<p>Amazon and Google support versioned buckets. If your bucket has versioning turned on, then every version of every target will be stored,<a href="#fn15" class="footnote-ref" id="fnref15"><sup>15</sup></a>, and the target metadata will contain the version ID (verify with <code>tar_meta(your_target, path)$path</code>). That way, if you roll back <code>_targets/meta/meta</code> to a prior version, then <code>tar_read(your_target)</code> will read a prior target. And if you roll back the metadata and the code together, then your pipeline will journey back in time while stay up to date (old code synced with old data). Rolling back is possible if you use Git/GitHub and commit your R code files and <code>_targets/meta/meta</code> to the repository. An alternative cloudless versioning solution is <a href="https://docs.ropensci.org/gittargets/"><code>gittargets</code></a>, a package that snapshots the local data store and syncs with an existing code repository.</p>
 </div>
 </div>
 <div id="cleaning-up-local-internal-data-files" class="section level2 hasAnchor" number="9.5">
@@ -533,9 +532,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div class="footnotes">
 <hr />
-<ol start="12">
-<li id="fn12"><p>Non-“file” AWS formats also download files, but they are temporary and immediately discarded after the data is read into memory.<a href="data.html#fnref12" class="footnote-back">↩︎</a></p></li>
-<li id="fn13"><p>GCP has safety capabilities such as discarding all but the newest <code>n</code> versions.<a href="data.html#fnref13" class="footnote-back">↩︎</a></p></li>
+<ol start="14">
+<li id="fn14"><p>Non-“file” AWS formats also download files, but they are temporary and immediately discarded after the data is read into memory.<a href="data.html#fnref14" class="footnote-back">↩︎</a></p></li>
+<li id="fn15"><p>GCP has safety capabilities such as discarding all but the newest <code>n</code> versions.<a href="data.html#fnref15" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 <div style = "background: #1C356D; color: white; padding: 10px 10px 10px 25px; font-size: 1em; width: 100%;">
