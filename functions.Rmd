@@ -9,7 +9,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = TRUE)
 library(targets)
 ```
 
-[`targets`](https://github.com/ropensci/targets) expects users to adopt a function-oriented style of programming. User-defined R functions are essential to express the complexities of data generation, analysis, and reporting. This chapter explains what makes functions useful and how to leverage them in your pipelines.
+[`targets`](https://github.com/ropensci/targets) expects users to adopt a function-oriented style of programming. User-defined R functions are essential to express the complexities of data generation, analysis, and reporting. This chapter explains what makes functions useful and how to leverage them in your pipelines. It is based on the example from the [walkthrough chapter](#walkthrough).
 
 ## Problems with script-based workflows
 
@@ -34,29 +34,32 @@ Each script executes a different part of the workflow.
 ```{r, eval = FALSE}
 # 01-data.R
 library(tidyverse)
-raw_data <- "data/raw_data.csv" %>%
+data <- "data.csv" %>%
   read_csv(col_types = cols()) %>%
   filter(!is.na(Ozone))
-write_csv(data, "data/data.csv")
+write_csv(data, "data.rds")
 ```
 
 ```{r, eval = FALSE}
 # 02-model.R
 library(biglm)
 library(tidyverse)
-data <- read_csv("data/data.csv", col_types = cols())
-fit <- biglm(Ozone ~ Wind + Temp, data)
-saveRDS(fit, "fit.rds")
+data <- read_rds("data.rds", col_types = cols())
+model <- lm(Ozone ~ Temp, data) %>%
+  coefficients()
+saveRDS(model, "model.rds")
 ```
 
 ```{r, eval = FALSE}
 # 03-plot.R
 library(tidyverse)
-data <- read_csv("data/data.csv", col_types = cols())
-hist <- ggplot(data) +
-  geom_histogram(aes(x = Ozone)) +
+model <- readRDS("model.rds")
+data <- readRDS("data.rds")
+plot <- ggplot(data) +
+  geom_point(aes(x = Temp, y = Ozone)) +
+  geom_abline(intercept = model[1], slope = model[2]) +
   theme_gray(24)
-ggsave("hist.png", hist)
+ggsave("plot.png", plot)
 ```
 
 Although this approach may feel convenient at first, it scales poorly for medium-sized workflows. These [imperative](https://en.wikipedia.org/wiki/Imperative_programming) scripts are monolithic, and they grow too large and complicated to understand or maintain.
@@ -71,12 +74,14 @@ In addition, functions are a nice mental model to express data science. A data a
 2. Analyze a dataset.
 3. Summarize an analysis.
 
+The example from the [walkthrough chapter](#walkthrough) is a simple instance of this structure.
+
 ## Writing functions
 
 Let us begin with our [imperative](https://en.wikipedia.org/wiki/Imperative_programming) code for data processing. Every time you look at it, you need to read it carefully and relearn what it does. And test it, you need to copy the entire block into the R console.
 
 ```{r, eval = FALSE}
-raw_data <- "data/raw_data.csv" %>%
+data <- "data.csv" %>%
   read_csv(col_types = cols()) %>%
   filter(!is.na(Ozone))
 ```
@@ -84,9 +89,9 @@ raw_data <- "data/raw_data.csv" %>%
 It is better to encapsulate this code in a function.
 
 ```{r, eval = FALSE}
-read_and_clean <- function(path) {
-  path %>%
-    read_csv(col_types = cols()) %>%
+get_data <- function(file) {
+  read_csv(file, col_types = cols()) %>%
+    as_tibble() %>%
     filter(!is.na(Ozone))
 }
 ```
@@ -94,23 +99,25 @@ read_and_clean <- function(path) {
 Now, instead of invoking a whole block of text, all you need to do is type a small reusable command. The function name speaks for itself, so you can recall what it does without having to mentally process all the details again.
 
 ```{r, eval = FALSE}
-read_and_clean("data/raw_data.csv")
+get_data("data.csv")
 ```
 
 As with the data, we can write a function to fit a model,
 
 ```{r, eval = FALSE}
 fit_model <- function(data) {
-  biglm(Ozone ~ Wind + Temp, data)
+  lm(Ozone ~ Temp, data) %>%
+    coefficients()
 }
 ```
 
-and another function to plot the data.
+and another function to plot the model against the data.
 
 ```{r, eval = FALSE}
-create_plot <- function(data) {
+plot_model <- function(model, data) {
   ggplot(data) +
-    geom_histogram(aes(x = Ozone)) +
+    geom_point(aes(x = Temp, y = Ozone)) +
+    geom_abline(intercept = model[1], slope = model[2]) +
     theme_gray(24)
 }
 ```
@@ -123,21 +130,24 @@ Without those functions, our pipeline in the [walkthrough chapter](#walkthrough)
 # _targets.R
 library(targets)
 source("R/functions.R")
-options(tidyverse.quiet = TRUE)
-tar_option_set(packages = c("biglm", "rmarkdown", "tidyverse"))
+tar_option_set(packages = c("tibble", "readr", "dplyr", "ggplot2"))
 list(
-  tar_target(raw_data_file, "data/raw_data.csv", format = "file"),
-  tar_target(raw_data, read_csv(raw_data_file, col_types = cols())),
+  tar_target(file, "data.csv", format = "file"),
   tar_target(
     data,
-    raw_data %>%
+    read_csv(file, col_types = cols()) %>%
       filter(!is.na(Ozone))
   ),
-  tar_target(fit, biglm(Ozone ~ Wind + Temp, data)),
   tar_target(
-    hist,
+    model,
+    lm(Ozone ~ Temp, data) %>%
+      coefficients()
+  ),
+  tar_target(
+    plot,
     ggplot(data) +
-      geom_histogram(aes(x = Ozone)) +
+      geom_point(aes(x = Temp, y = Ozone)) +
+      geom_abline(intercept = model[1], slope = model[2]) +
       theme_gray(24)
   )
 )
@@ -149,13 +159,12 @@ But if we write our functions in `R/functions.R` and `source()` them into the ta
 # _targets.R
 library(targets)
 source("R/functions.R")
-options(tidyverse.quiet = TRUE)
-tar_option_set(packages = c("biglm", "tidyverse"))
+tar_option_set(packages = c("tibble", "readr", "dplyr", "ggplot2"))
 list(
-  tar_target(raw_data_file, "data/raw_data.csv",format = "file"),
-  tar_target(data, read_and_clean(raw_data_file)),
-  tar_target(fit, fit_model(data)),
-  tar_target(hist, create_plot(data))
+  tar_target(file, "data.csv", format = "file"),
+  tar_target(data, get_data(file)),
+  tar_target(model, fit_model(data)),
+  tar_target(plot, plot_model(model, data))
 )
 ```
 
