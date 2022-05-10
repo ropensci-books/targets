@@ -60,6 +60,7 @@ create_output <- function(file) {
   data <- read.csv(file)
   output <- head(data)
   write.csv(output, "output.csv")
+  "output.csv"
 }
 list(
   tar_target(name = input, command = "data.csv", format = "file"),
