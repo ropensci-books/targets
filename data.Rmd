@@ -155,6 +155,9 @@ list(
 
 When you run the pipeline above with [`tar_make()`](https://docs.ropensci.org/targets/reference/tar_make.html), your local R session computes `rnorm(5)`, saves it to a temporary [`qs`](https://github.com/traversc/qs) file on disk, and then uploads it to a file called `_targets/objects/data` on your S3 bucket. Likewise for `mean_file`, but because the format is `"file"` and the repository is `"aws"`, you are responsible for supplying the path to the file that gets uploaded to `_targets/objects/mean_file`.
 
+`format = "file"` works differently for cloud storage than local storage. Here, it is assumed that the command of the target writes a single file, and then `targets` uploads this file to the cloud and deletes the local copy. At that point, the copy in the cloud is tracked for changes, and the local copy does not exist.
+
+
 ```{r, eval = FALSE}
 tar_make()
 #> ● run target data
