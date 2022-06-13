@@ -198,7 +198,7 @@ list(
 )
 ```
 
-This approach is the most convenient, but it can be inefficient if `target_from_project_a` is large. A higher-performant solution for large data is to treat the file in project A's data store as an [input file target](#data) in project B. (Unfortunately, this does break the conceptual abstraction of the `targets` data store.)
+This approach is the most convenient and versatile, but it can be inefficient if `target_from_project_a` is large. A higher-performant solution for large data is to treat the file in project A's data store as an [input file target](#data) in project B. This second approach requires an understanding of the [data store](https://books.ropensci.org/targets/data.html#local-data-store) and an awareness of which targets are stored locally and which are stored on the cloud. For a target with `repository = "local"`, you can begin from the file `store_a/objects/target_from_project_a`. Otherwise, the target's file exists on the cloud (AWS or GCP) and you may need to [access the target as a URL](https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-bucket-intro.html) in a target with `format = "url"`.
 
 
 ```{r, eval = FALSE}
