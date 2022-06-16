@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 7 Packages | The targets R Package User Manual</title>
   <meta name="description" content="In-depth discussion of the major functionality of targets." />
-  <meta name="generator" content="bookdown 0.26 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.27 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 7 Packages | The targets R Package User Manual" />
   <meta property="og:type" content="book" />
@@ -389,14 +389,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Fully install these packages with <code>install.packages()</code> or equivalent. <code>devtools::load_all()</code> is insufficient because it does not make the packages available to <a href="hpc.html#hpc">parallel workers</a>.</li>
 <li>Write the following in your target script file (default: <code>_targets.R</code>):</li>
 </ol>
-<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="packages.html#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
-<span id="cb53-2"><a href="packages.html#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb53-3"><a href="packages.html#cb53-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(</span>
-<span id="cb53-4"><a href="packages.html#cb53-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">packages =</span> <span class="fu">c</span>(<span class="st">&quot;package1&quot;</span>, <span class="st">&quot;package2&quot;</span>, ...), <span class="co"># `...` is for other packages.</span></span>
-<span id="cb53-5"><a href="packages.html#cb53-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">imports =</span> <span class="fu">c</span>(<span class="st">&quot;package1&quot;</span>, <span class="st">&quot;package2&quot;</span>)</span>
-<span id="cb53-6"><a href="packages.html#cb53-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb53-7"><a href="packages.html#cb53-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Write the rest of _targets.R below.</span></span>
-<span id="cb53-8"><a href="packages.html#cb53-8" aria-hidden="true" tabindex="-1"></a><span class="co"># ...</span></span></code></pre></div>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="packages.html#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb57-2"><a href="packages.html#cb57-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb57-3"><a href="packages.html#cb57-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(</span>
+<span id="cb57-4"><a href="packages.html#cb57-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">packages =</span> <span class="fu">c</span>(<span class="st">&quot;package1&quot;</span>, <span class="st">&quot;package2&quot;</span>, ...), <span class="co"># `...` is for other packages.</span></span>
+<span id="cb57-5"><a href="packages.html#cb57-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">imports =</span> <span class="fu">c</span>(<span class="st">&quot;package1&quot;</span>, <span class="st">&quot;package2&quot;</span>)</span>
+<span id="cb57-6"><a href="packages.html#cb57-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb57-7"><a href="packages.html#cb57-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Write the rest of _targets.R below.</span></span>
+<span id="cb57-8"><a href="packages.html#cb57-8" aria-hidden="true" tabindex="-1"></a><span class="co"># ...</span></span></code></pre></div>
 <p><code>packages = c("package1", "package2", ...)</code> tells <code>targets</code> to call <code>library(package1)</code>, <code>library(package2)</code>, etc. before running each target. <code>imports = c("package1", "package2")</code> tells <code>targets</code> to dive into the environments of <code>package1</code> and <code>package2</code> and reproducibly track all the objects it finds. For example, if you define a function <code>f()</code> in <code>package1</code>, then you should see a function node for <code>f()</code> in the graph produced by <code>tar_visnetwork(targets_only = FALSE)</code>, and targets downstream of <code>f()</code> will invalidate if you install an update to <code>package1</code> with a new version of <code>f()</code>. The next time you call <code>tar_make()</code>, those invalidated targets will automatically rerun.</p>
 
 </div>

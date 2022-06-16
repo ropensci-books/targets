@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 6 Target construction | The targets R Package User Manual</title>
   <meta name="description" content="In-depth discussion of the major functionality of targets." />
-  <meta name="generator" content="bookdown 0.26 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.27 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 6 Target construction | The targets R Package User Manual" />
   <meta property="og:type" content="book" />
@@ -402,26 +402,55 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="dependencies" class="section level2 hasAnchor" number="6.6">
 <h2><span class="header-section-number">6.6</span> Dependencies<a href="targets.html#dependencies" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p><code>targets</code> automatically loads dependencies into memory when they are required, so it is rarely advisable to call <code>tar_read()</code> or <code>tar_load()</code> from inside a target. Except in rare circumstances, <code>tar_read()</code> and <code>tar_load()</code> are only for exploratory data analysis and <a href="data.html#data">literate programming</a>.</p>
-<p>Because dependency detection is implicit, adept target construction requires an understanding of how it works. To identify the targets and global objects that each target depends on, the <code>targets</code> package uses static code analysis with <a href="https://CRAN.R-project.org/package=codetools"><code>codetools</code></a>, and you can emulate this process with <code>tar_deps()</code>. Let us look at the dependencies of the <code>raw_data</code> target.</p>
-<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="targets.html#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_deps</span>(<span class="cf">function</span>() {</span>
-<span id="cb51-2"><a href="targets.html#cb51-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">read_csv</span>(raw_data_file, <span class="at">col_types =</span> <span class="fu">cols</span>())</span>
-<span id="cb51-3"><a href="targets.html#cb51-3" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb51-4"><a href="targets.html#cb51-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;{&quot;             &quot;cols&quot;          &quot;raw_data_file&quot; &quot;read_csv&quot;</span></span></code></pre></div>
-<p>The <code>raw_data</code> target depends on target <code>raw_data_file</code> because the command for <code>raw_data</code> mentions the symbol <code>raw_data_file</code>. Similarly, if we were to create a user-defined <code>read_csv()</code> function, the <code>raw_data</code> target would also depend on <code>read_csv()</code> and any other user-defined global functions and objects nested inside <code>read_csv()</code>. Changes to any of these objects would cause the <code>raw_data</code> target to rerun on the next <code>tar_make()</code>.</p>
-<p>Not all of the objects from <code>tar_deps()</code> actually register as dependencies. When it comes to detecting dependencies, <code>targets</code> only recognizes</p>
-<ol style="list-style-type: decimal">
-<li>Other targets (such as <code>raw_data_file</code>).</li>
-<li>Functions and objects in the main environment. This environment is almost always the global environment of the R process that runs the target script file (default: <code>_targets.R</code>) so these dependencies are usually going to be the custom functions and objects you write yourself.</li>
-</ol>
-<p>This process excludes many objects from dependency detection. For example, both <code>{</code> and <code>cols()</code> are excluded because they are defined in the environments of packages (<code>base</code> and <code>readr</code>, respectively). Functions and objects from packages are ignored unless you supply the package name to the <code>packages</code> and <code>imports</code> fields of <code>tar_option_set()</code> as described later on in this chapter.<a href="#fn11" class="footnote-ref" id="fnref11"><sup>11</sup></a></p>
+<p>A dependency <code>x</code> of target <code>y</code> is a target, global object, or global function that <code>y</code> requires in order to run its R command. When target <code>y</code> is about to run, <code>x</code> is up to date and loaded into memory in the R session.<a href="#fn11" class="footnote-ref" id="fnref11"><sup>11</sup></a> Consequently, when targets <code>x</code> and <code>y</code> are not up to date, target <code>x</code> always finishes running before target <code>y</code> starts running. The <code>targets</code> package automatically discovers dependencies using static code analysis. In the example below, <code>x</code> is automatically detected as a dependency of <code>y</code> because the R command of <code>y</code> is the expression <code>x + 1</code>, which contains the symbol <code>x</code>. Consequently, the <code>tar_visnetwork()</code> dependency graph contains a left-to-right arrow from <code>x</code> to <code>y</code>.</p>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="targets.html#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R file</span></span>
+<span id="cb51-2"><a href="targets.html#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb51-3"><a href="targets.html#cb51-3" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions.R&quot;</span>)</span>
+<span id="cb51-4"><a href="targets.html#cb51-4" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb51-5"><a href="targets.html#cb51-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(x, <span class="dv">2</span>),</span>
+<span id="cb51-6"><a href="targets.html#cb51-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(y, x <span class="sc">+</span> <span class="dv">1</span>)</span>
+<span id="cb51-7"><a href="targets.html#cb51-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="targets.html#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
+<span id="cb52-2"><a href="targets.html#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_visnetwork</span>()</span></code></pre></div>
+<div id="htmlwidget-aad50c4ec99b71d1028f" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-aad50c4ec99b71d1028f">{"x":{"nodes":{"name":["x","y"],"type":["stem","stem"],"status":["outdated","outdated"],"seconds":[null,null],"bytes":[null,null],"branches":[null,null],"label":["x","y"],"color":["#78B7C5","#78B7C5"],"id":["x","y"],"level":[1,2],"shape":["dot","dot"]},"edges":{"from":["x"],"to":["y"],"arrows":["to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"interaction":{"zoomSpeed":1},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Outdated","Stem"],"color":["#78B7C5","#899DA4"],"shape":["dot","dot"]},"nodesToDataframe":true},"tooltipStay":300,"tooltipStyle":"position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;border: 1px solid #808074;box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);"},"evals":[],"jsHooks":[]}</script>
+<p>To force a dependency relationship, simply mention the dependency in the target’s command. In the following example, target <code>y</code> depends on target <code>z</code> even though <code>z</code> does not actually contribute to the return value of <code>y</code>. Target <code>z</code> will still finish before target <code>y</code> begins, and target <code>y</code> will still load target <code>z</code> into its memory space before running the R command.</p>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="targets.html#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R file</span></span>
+<span id="cb53-2"><a href="targets.html#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb53-3"><a href="targets.html#cb53-3" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions.R&quot;</span>)</span>
+<span id="cb53-4"><a href="targets.html#cb53-4" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb53-5"><a href="targets.html#cb53-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(x, <span class="dv">2</span>),</span>
+<span id="cb53-6"><a href="targets.html#cb53-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb53-7"><a href="targets.html#cb53-7" aria-hidden="true" tabindex="-1"></a>    y, {</span>
+<span id="cb53-8"><a href="targets.html#cb53-8" aria-hidden="true" tabindex="-1"></a>      z <span class="co"># Merely mentioned to force y to depend on z.</span></span>
+<span id="cb53-9"><a href="targets.html#cb53-9" aria-hidden="true" tabindex="-1"></a>      x <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb53-10"><a href="targets.html#cb53-10" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb53-11"><a href="targets.html#cb53-11" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb53-12"><a href="targets.html#cb53-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(z, <span class="dv">1</span>)</span>
+<span id="cb53-13"><a href="targets.html#cb53-13" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="targets.html#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
+<span id="cb54-2"><a href="targets.html#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_visnetwork</span>()</span></code></pre></div>
+<div id="htmlwidget-08de6568f42936cc478e" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-08de6568f42936cc478e">{"x":{"nodes":{"name":["x","y","z"],"type":["stem","stem","stem"],"status":["outdated","outdated","outdated"],"seconds":[null,null,null],"bytes":[null,null,null],"branches":[null,null,null],"label":["x","y","z"],"color":["#78B7C5","#78B7C5","#78B7C5"],"id":["x","y","z"],"level":[1,2,1],"shape":["dot","dot","dot"]},"edges":{"from":["x","z"],"to":["y","y"],"arrows":["to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"interaction":{"zoomSpeed":1},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Outdated","Stem"],"color":["#78B7C5","#899DA4"],"shape":["dot","dot"]},"nodesToDataframe":true},"tooltipStay":300,"tooltipStyle":"position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;border: 1px solid #808074;box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);"},"evals":[],"jsHooks":[]}</script>
+<p>The <code>tar_deps()</code> function shows you which dependencies will be detected in a given function or R command.<a href="#fn12" class="footnote-ref" id="fnref12"><sup>12</sup></a></p>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="targets.html#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_deps</span>(x <span class="sc">+</span> <span class="dv">2</span>)</span>
+<span id="cb55-2"><a href="targets.html#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;+&quot; &quot;x&quot;</span></span>
+<span id="cb55-3"><a href="targets.html#cb55-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-4"><a href="targets.html#cb55-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_deps</span>(<span class="fu">command_of_y</span>(<span class="at">dependency =</span> x))</span>
+<span id="cb55-5"><a href="targets.html#cb55-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;command_of_y&quot; &quot;x&quot;</span></span>
+<span id="cb55-6"><a href="targets.html#cb55-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-7"><a href="targets.html#cb55-7" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_deps</span>(<span class="cf">function</span>() {</span>
+<span id="cb55-8"><a href="targets.html#cb55-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">read_csv</span>(raw_data_file, <span class="at">col_types =</span> <span class="fu">cols</span>())</span>
+<span id="cb55-9"><a href="targets.html#cb55-9" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb55-10"><a href="targets.html#cb55-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;{&quot;             &quot;cols&quot;          &quot;raw_data_file&quot; &quot;read_csv&quot;</span></span></code></pre></div>
+<p>However, the findings from <code>tar_deps()</code> are only <em>candidate</em> dependencies. Unless they are either targets in the pipeline or global objects<a href="#fn13" class="footnote-ref" id="fnref13"><sup>13</sup></a>, they will be ignored. For example, functions and objects defined in R packages are ignored. To force a pipeline to notice dependencies from an R package, include the name of the package in the <code>imports</code> and <code>packages</code> fields of <code>tar_option_set()</code>.</p>
 </div>
 <div id="return-value" class="section level2 hasAnchor" number="6.7">
 <h2><span class="header-section-number">6.7</span> Return value<a href="targets.html#return-value" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>The return value of a target should be an R object that can be saved to disk and hashed.</p>
 <div id="saving" class="section level3 hasAnchor" number="6.7.1">
 <h3><span class="header-section-number">6.7.1</span> Saving<a href="targets.html#saving" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>The object should be compatible with the storage format you choose using the <code>format</code> argument of <code>tar_target()</code> or <code>tar_option_set()</code>. For example, if the format is <code>"rds"</code> (default), then the target should return an R object that can be saved with <code>saveRDS()</code> and safely loaded properly into another session. Please avoid returning <a href="https://cran.r-project.org/web/packages/future/vignettes/future-4-non-exportable-objects.html">non-exportable objects</a> such as connection objects, <code>Rcpp</code> pointers, <code>xgboost</code> matrices, and <code>greta</code> models<a href="#fn12" class="footnote-ref" id="fnref12"><sup>12</sup></a>.</p>
+<p>The object should be compatible with the storage format you choose using the <code>format</code> argument of <code>tar_target()</code> or <code>tar_option_set()</code>. For example, if the format is <code>"rds"</code> (default), then the target should return an R object that can be saved with <code>saveRDS()</code> and safely loaded properly into another session. Please avoid returning <a href="https://cran.r-project.org/web/packages/future/vignettes/future-4-non-exportable-objects.html">non-exportable objects</a> such as connection objects, <code>Rcpp</code> pointers, <code>xgboost</code> matrices, and <code>greta</code> models<a href="#fn14" class="footnote-ref" id="fnref14"><sup>14</sup></a>.</p>
 </div>
 <div id="hashing" class="section level3 hasAnchor" number="6.7.2">
 <h3><span class="header-section-number">6.7.2</span> Hashing<a href="targets.html#hashing" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -430,22 +459,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="workaround" class="section level3 hasAnchor" number="6.7.3">
 <h3><span class="header-section-number">6.7.3</span> Workaround<a href="targets.html#workaround" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>As a workaround, you can write custom functions to create temporary instances of these non-exportable/non-hashable objects and clean them up after the task is done. The following sketch creates a target that returns a database table while managing a transient connection object.</p>
-<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="targets.html#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
-<span id="cb52-2"><a href="targets.html#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb52-3"><a href="targets.html#cb52-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-4"><a href="targets.html#cb52-4" aria-hidden="true" tabindex="-1"></a>get_from_database <span class="ot">&lt;-</span> <span class="cf">function</span>(table, ...) {</span>
-<span id="cb52-5"><a href="targets.html#cb52-5" aria-hidden="true" tabindex="-1"></a>  con <span class="ot">&lt;-</span> DBI<span class="sc">::</span><span class="fu">dbConnect</span>(...)</span>
-<span id="cb52-6"><a href="targets.html#cb52-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">on.exit</span>(<span class="fu">close</span>(con))</span>
-<span id="cb52-7"><a href="targets.html#cb52-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dbReadTable</span>(con, table)</span>
-<span id="cb52-8"><a href="targets.html#cb52-8" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb52-9"><a href="targets.html#cb52-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-10"><a href="targets.html#cb52-10" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb52-11"><a href="targets.html#cb52-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
-<span id="cb52-12"><a href="targets.html#cb52-12" aria-hidden="true" tabindex="-1"></a>    table_from_database,</span>
-<span id="cb52-13"><a href="targets.html#cb52-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">get_from_database</span>(<span class="st">&quot;my_table&quot;</span>, ...), <span class="co"># ... has use-case-specific arguments.</span></span>
-<span id="cb52-14"><a href="targets.html#cb52-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">format =</span> <span class="st">&quot;feather&quot;</span> <span class="co"># Requires that the return value is a data frame.</span></span>
-<span id="cb52-15"><a href="targets.html#cb52-15" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb52-16"><a href="targets.html#cb52-16" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="targets.html#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb56-2"><a href="targets.html#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb56-3"><a href="targets.html#cb56-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-4"><a href="targets.html#cb56-4" aria-hidden="true" tabindex="-1"></a>get_from_database <span class="ot">&lt;-</span> <span class="cf">function</span>(table, ...) {</span>
+<span id="cb56-5"><a href="targets.html#cb56-5" aria-hidden="true" tabindex="-1"></a>  con <span class="ot">&lt;-</span> DBI<span class="sc">::</span><span class="fu">dbConnect</span>(...)</span>
+<span id="cb56-6"><a href="targets.html#cb56-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">on.exit</span>(<span class="fu">close</span>(con))</span>
+<span id="cb56-7"><a href="targets.html#cb56-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dbReadTable</span>(con, table)</span>
+<span id="cb56-8"><a href="targets.html#cb56-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb56-9"><a href="targets.html#cb56-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-10"><a href="targets.html#cb56-10" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb56-11"><a href="targets.html#cb56-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb56-12"><a href="targets.html#cb56-12" aria-hidden="true" tabindex="-1"></a>    table_from_database,</span>
+<span id="cb56-13"><a href="targets.html#cb56-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">get_from_database</span>(<span class="st">&quot;my_table&quot;</span>, ...), <span class="co"># ... has use-case-specific arguments.</span></span>
+<span id="cb56-14"><a href="targets.html#cb56-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">format =</span> <span class="st">&quot;feather&quot;</span> <span class="co"># Requires that the return value is a data frame.</span></span>
+<span id="cb56-15"><a href="targets.html#cb56-15" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb56-16"><a href="targets.html#cb56-16" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 
 </div>
 </div>
@@ -453,8 +482,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="footnotes">
 <hr />
 <ol start="11">
-<li id="fn11"><p>It is also possible to supply an alternative environment to the <code>envir</code> argument of <code>tar_option_set()</code>, which changes the environment where <code>targets</code> detects non-package global objects and functions, but there is rarely ever a need to do this.<a href="targets.html#fnref11" class="footnote-back">↩︎</a></p></li>
-<li id="fn12"><p>Special exceptions are granted to Keras and Torch models, which can be safely returned from targets if you specify <code>format = "keras"</code> or <code>format = "torch"</code>.<a href="targets.html#fnref12" class="footnote-back">↩︎</a></p></li>
+<li id="fn11"><p><code>targets</code> automatically loads dependencies into memory when they are required, so it is rarely advisable to call <code>tar_read()</code> or <code>tar_load()</code> from inside a target. Except in rare circumstances, <code>tar_read()</code> and <code>tar_load()</code> are only for exploratory data analysis and <a href="data.html#data">literate programming</a>.<a href="targets.html#fnref11" class="footnote-back">↩︎</a></p></li>
+<li id="fn12"><p><code>tar_deps()</code> works mostly like the <code>findGlobals()</code> function from the <a href="https://CRAN.R-project.org/package=codetools"><code>codetools</code></a> package, except the former makes special adjustments for odd cases like formulas.<a href="targets.html#fnref12" class="footnote-back">↩︎</a></p></li>
+<li id="fn13"><p>i.e. loaded into <code>tar_option_get("envir)</code> from within <code>_targets.R</code><a href="targets.html#fnref13" class="footnote-back">↩︎</a></p></li>
+<li id="fn14"><p>Special exceptions are granted to Keras and Torch models, which can be safely returned from targets if you specify <code>format = "keras"</code> or <code>format = "torch"</code>.<a href="targets.html#fnref14" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 <div style = "background: #1C356D; color: white; padding: 10px 10px 10px 25px; font-size: 1em; width: 100%;">

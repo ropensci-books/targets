@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 10 Literate programming | The targets R Package User Manual</title>
   <meta name="description" content="In-depth discussion of the major functionality of targets." />
-  <meta name="generator" content="bookdown 0.26 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.27 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 10 Literate programming | The targets R Package User Manual" />
   <meta property="og:type" content="book" />
@@ -383,38 +383,38 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Sets convenient default options such as <code>deployment = "main"</code> in <code>tar_target()</code> and <code>quiet = TRUE</code> in <code>rmarkdown::render()</code>.</li>
 </ol>
 <p>The target definition looks like this.</p>
-<div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb79-1"><a href="markdown.html#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
-<span id="cb79-2"><a href="markdown.html#cb79-2" aria-hidden="true" tabindex="-1"></a>target <span class="ot">&lt;-</span> <span class="fu">tar_render</span>(report, <span class="st">&quot;report.Rmd&quot;</span>) <span class="co"># Just defines a target object.</span></span>
-<span id="cb79-3"><a href="markdown.html#cb79-3" aria-hidden="true" tabindex="-1"></a>target<span class="sc">$</span>command<span class="sc">$</span>expr[[<span class="dv">1</span>]]</span>
-<span id="cb79-4"><a href="markdown.html#cb79-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; tarchetypes::tar_render_run(path = &quot;report.Rmd&quot;, args = list(input = &quot;report.Rmd&quot;, </span></span>
-<span id="cb79-5"><a href="markdown.html#cb79-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     knit_root_dir = getwd(), quiet = TRUE), deps = list(fit, </span></span>
-<span id="cb79-6"><a href="markdown.html#cb79-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     hist))</span></span></code></pre></div>
+<div class="sourceCode" id="cb83"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb83-1"><a href="markdown.html#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
+<span id="cb83-2"><a href="markdown.html#cb83-2" aria-hidden="true" tabindex="-1"></a>target <span class="ot">&lt;-</span> <span class="fu">tar_render</span>(report, <span class="st">&quot;report.Rmd&quot;</span>) <span class="co"># Just defines a target object.</span></span>
+<span id="cb83-3"><a href="markdown.html#cb83-3" aria-hidden="true" tabindex="-1"></a>target<span class="sc">$</span>command<span class="sc">$</span>expr[[<span class="dv">1</span>]]</span>
+<span id="cb83-4"><a href="markdown.html#cb83-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; tarchetypes::tar_render_run(path = &quot;report.Rmd&quot;, args = list(input = &quot;report.Rmd&quot;, </span></span>
+<span id="cb83-5"><a href="markdown.html#cb83-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     knit_root_dir = getwd(), quiet = TRUE), deps = list(fit, </span></span>
+<span id="cb83-6"><a href="markdown.html#cb83-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     hist))</span></span></code></pre></div>
 <p>Because symbols <code>fit</code> and <code>hist</code> appear in the command, <code>targets</code> knows that <code>report</code> depends on the <code>fit</code> target and the <code>hist</code> target. When we put the <code>report</code> target in the pipeline, these dependency relationships show up in the graph.</p>
-<div class="sourceCode" id="cb80"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb80-1"><a href="markdown.html#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
-<span id="cb80-2"><a href="markdown.html#cb80-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb80-3"><a href="markdown.html#cb80-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
-<span id="cb80-4"><a href="markdown.html#cb80-4" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions.R&quot;</span>)</span>
-<span id="cb80-5"><a href="markdown.html#cb80-5" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb80-6"><a href="markdown.html#cb80-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
-<span id="cb80-7"><a href="markdown.html#cb80-7" aria-hidden="true" tabindex="-1"></a>    raw_data_file,</span>
-<span id="cb80-8"><a href="markdown.html#cb80-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;data/raw_data.csv&quot;</span>,</span>
-<span id="cb80-9"><a href="markdown.html#cb80-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">format =</span> <span class="st">&quot;file&quot;</span></span>
-<span id="cb80-10"><a href="markdown.html#cb80-10" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb80-11"><a href="markdown.html#cb80-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
-<span id="cb80-12"><a href="markdown.html#cb80-12" aria-hidden="true" tabindex="-1"></a>    raw_data,</span>
-<span id="cb80-13"><a href="markdown.html#cb80-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">read_csv</span>(raw_data_file, <span class="at">col_types =</span> <span class="fu">cols</span>())</span>
-<span id="cb80-14"><a href="markdown.html#cb80-14" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb80-15"><a href="markdown.html#cb80-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
-<span id="cb80-16"><a href="markdown.html#cb80-16" aria-hidden="true" tabindex="-1"></a>    data,</span>
-<span id="cb80-17"><a href="markdown.html#cb80-17" aria-hidden="true" tabindex="-1"></a>    raw_data <span class="sc">%&gt;%</span></span>
-<span id="cb80-18"><a href="markdown.html#cb80-18" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">Ozone =</span> <span class="fu">replace_na</span>(Ozone, <span class="fu">mean</span>(Ozone, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)))</span>
-<span id="cb80-19"><a href="markdown.html#cb80-19" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb80-20"><a href="markdown.html#cb80-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(hist, <span class="fu">create_plot</span>(data)),</span>
-<span id="cb80-21"><a href="markdown.html#cb80-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(fit, <span class="fu">biglm</span>(Ozone <span class="sc">~</span> Wind <span class="sc">+</span> Temp, data)),</span>
-<span id="cb80-22"><a href="markdown.html#cb80-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_render</span>(report, <span class="st">&quot;report.Rmd&quot;</span>) <span class="co"># Here is our call to tar_render().</span></span>
-<span id="cb80-23"><a href="markdown.html#cb80-23" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<div class="sourceCode" id="cb81"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb81-1"><a href="markdown.html#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
-<span id="cb81-2"><a href="markdown.html#cb81-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_visnetwork</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb84-1"><a href="markdown.html#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb84-2"><a href="markdown.html#cb84-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb84-3"><a href="markdown.html#cb84-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
+<span id="cb84-4"><a href="markdown.html#cb84-4" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions.R&quot;</span>)</span>
+<span id="cb84-5"><a href="markdown.html#cb84-5" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb84-6"><a href="markdown.html#cb84-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb84-7"><a href="markdown.html#cb84-7" aria-hidden="true" tabindex="-1"></a>    raw_data_file,</span>
+<span id="cb84-8"><a href="markdown.html#cb84-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;data/raw_data.csv&quot;</span>,</span>
+<span id="cb84-9"><a href="markdown.html#cb84-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">format =</span> <span class="st">&quot;file&quot;</span></span>
+<span id="cb84-10"><a href="markdown.html#cb84-10" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb84-11"><a href="markdown.html#cb84-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb84-12"><a href="markdown.html#cb84-12" aria-hidden="true" tabindex="-1"></a>    raw_data,</span>
+<span id="cb84-13"><a href="markdown.html#cb84-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">read_csv</span>(raw_data_file, <span class="at">col_types =</span> <span class="fu">cols</span>())</span>
+<span id="cb84-14"><a href="markdown.html#cb84-14" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb84-15"><a href="markdown.html#cb84-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb84-16"><a href="markdown.html#cb84-16" aria-hidden="true" tabindex="-1"></a>    data,</span>
+<span id="cb84-17"><a href="markdown.html#cb84-17" aria-hidden="true" tabindex="-1"></a>    raw_data <span class="sc">%&gt;%</span></span>
+<span id="cb84-18"><a href="markdown.html#cb84-18" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">Ozone =</span> <span class="fu">replace_na</span>(Ozone, <span class="fu">mean</span>(Ozone, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)))</span>
+<span id="cb84-19"><a href="markdown.html#cb84-19" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb84-20"><a href="markdown.html#cb84-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(hist, <span class="fu">create_plot</span>(data)),</span>
+<span id="cb84-21"><a href="markdown.html#cb84-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(fit, <span class="fu">biglm</span>(Ozone <span class="sc">~</span> Wind <span class="sc">+</span> Temp, data)),</span>
+<span id="cb84-22"><a href="markdown.html#cb84-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_render</span>(report, <span class="st">&quot;report.Rmd&quot;</span>) <span class="co"># Here is our call to tar_render().</span></span>
+<span id="cb84-23"><a href="markdown.html#cb84-23" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb85"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb85-1"><a href="markdown.html#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
+<span id="cb85-2"><a href="markdown.html#cb85-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_visnetwork</span>()</span></code></pre></div>
 <p><img src="man/figures/knitr-graph.png" /></p>
 <div id="parameterized-r-markdown" class="section level3 hasAnchor" number="10.1.1">
 <h3><span class="header-section-number">10.1.1</span> Parameterized R Markdown<a href="markdown.html#parameterized-r-markdown" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -423,16 +423,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="single-parameter-set" class="section level3 hasAnchor" number="10.1.2">
 <h3><span class="header-section-number">10.1.2</span> Single parameter set<a href="markdown.html#single-parameter-set" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>In this scenario, the pipeline renders your <a href="https://rmarkdown.rstudio.com/developer_parameterized_reports.html">parameterized R Markdown</a> report one time using a single set of parameters. These parameters can be upstream targets, global objects, or fixed values. Simply pass a <code>params</code> argument to <a href="https://docs.ropensci.org/tarchetypes/reference/tar_render.html"><code>tarchetypes::tar_render()</code></a>:</p>
-<div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb82-1"><a href="markdown.html#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
-<span id="cb82-2"><a href="markdown.html#cb82-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb82-3"><a href="markdown.html#cb82-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
-<span id="cb82-4"><a href="markdown.html#cb82-4" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb82-5"><a href="markdown.html#cb82-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data, <span class="fu">data.frame</span>(<span class="at">x =</span> <span class="fu">seq_len</span>(<span class="dv">26</span>), <span class="at">y =</span> letters))</span>
-<span id="cb82-6"><a href="markdown.html#cb82-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_render</span>(report, <span class="st">&quot;report.Rmd&quot;</span>, <span class="at">params =</span> <span class="fu">list</span>(<span class="at">your_param =</span> data))</span>
-<span id="cb82-7"><a href="markdown.html#cb82-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb86-1"><a href="markdown.html#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb86-2"><a href="markdown.html#cb86-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb86-3"><a href="markdown.html#cb86-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
+<span id="cb86-4"><a href="markdown.html#cb86-4" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb86-5"><a href="markdown.html#cb86-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data, <span class="fu">data.frame</span>(<span class="at">x =</span> <span class="fu">seq_len</span>(<span class="dv">26</span>), <span class="at">y =</span> letters))</span>
+<span id="cb86-6"><a href="markdown.html#cb86-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_render</span>(report, <span class="st">&quot;report.Rmd&quot;</span>, <span class="at">params =</span> <span class="fu">list</span>(<span class="at">your_param =</span> data))</span>
+<span id="cb86-7"><a href="markdown.html#cb86-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <p>the <code>report</code> target will run:</p>
-<div class="sourceCode" id="cb83"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb83-1"><a href="markdown.html#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
-<span id="cb83-2"><a href="markdown.html#cb83-2" aria-hidden="true" tabindex="-1"></a>rmarkdown<span class="sc">::</span><span class="fu">render</span>(<span class="st">&quot;report.Rmd&quot;</span>, <span class="at">params =</span> <span class="fu">list</span>(<span class="at">your_param =</span> your_target))</span></code></pre></div>
+<div class="sourceCode" id="cb87"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb87-1"><a href="markdown.html#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
+<span id="cb87-2"><a href="markdown.html#cb87-2" aria-hidden="true" tabindex="-1"></a>rmarkdown<span class="sc">::</span><span class="fu">render</span>(<span class="st">&quot;report.Rmd&quot;</span>, <span class="at">params =</span> <span class="fu">list</span>(<span class="at">your_param =</span> your_target))</span></code></pre></div>
 <p>where <code>report.Rmd</code> has the following YAML front matter:</p>
 <pre><code>---
 title: report
@@ -441,44 +441,44 @@ params:
   your_param: &quot;default value&quot;
 ---</code></pre>
 <p>and the following code chunk:</p>
-<div class="sourceCode" id="cb85"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb85-1"><a href="markdown.html#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(params<span class="sc">$</span>your_param)</span></code></pre></div>
+<div class="sourceCode" id="cb89"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb89-1"><a href="markdown.html#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(params<span class="sc">$</span>your_param)</span></code></pre></div>
 <p>See <a href="https://docs.ropensci.org/tarchetypes/reference/tar_render.html#examples">these examples</a> for a demonstration.</p>
 </div>
 <div id="multiple-parameter-sets" class="section level3 hasAnchor" number="10.1.3">
 <h3><span class="header-section-number">10.1.3</span> Multiple parameter sets<a href="markdown.html#multiple-parameter-sets" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>In this scenario, you still have a single report, but you render it multiple times over multiple sets of <a href="https://rmarkdown.rstudio.com/developer_parameterized_reports.html">R Markdown parameters</a>. This time, use <a href="https://docs.ropensci.org/tarchetypes/reference/tar_render_rep.html"><code>tarchetypes::tar_render_rep()</code></a> and write code to reference or generate a grid of parameters with one row per rendered report and one column per parameter. Optionally, you can also include an <code>output_file</code> column to control the file paths of the generated reports, and you can set the number of batches to reduce the overhead that would otherwise ensue from creating a large number of targets.</p>
-<div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb86-1"><a href="markdown.html#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
-<span id="cb86-2"><a href="markdown.html#cb86-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb86-3"><a href="markdown.html#cb86-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
-<span id="cb86-4"><a href="markdown.html#cb86-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">packages =</span> <span class="st">&quot;tibble&quot;</span>)</span>
-<span id="cb86-5"><a href="markdown.html#cb86-5" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb86-6"><a href="markdown.html#cb86-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(x, <span class="st">&quot;value_of_x&quot;</span>),</span>
-<span id="cb86-7"><a href="markdown.html#cb86-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_render_rep</span>(</span>
-<span id="cb86-8"><a href="markdown.html#cb86-8" aria-hidden="true" tabindex="-1"></a>    report,</span>
-<span id="cb86-9"><a href="markdown.html#cb86-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;report.Rmd&quot;</span>,</span>
-<span id="cb86-10"><a href="markdown.html#cb86-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">params =</span> <span class="fu">tibble</span>(</span>
-<span id="cb86-11"><a href="markdown.html#cb86-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">par =</span> <span class="fu">c</span>(<span class="st">&quot;par_val_1&quot;</span>, <span class="st">&quot;par_val_2&quot;</span>, <span class="st">&quot;par_val_3&quot;</span>, <span class="st">&quot;par_val_4&quot;</span>),</span>
-<span id="cb86-12"><a href="markdown.html#cb86-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">output_file =</span> <span class="fu">c</span>(<span class="st">&quot;f1.html&quot;</span>, <span class="st">&quot;f2.html&quot;</span>, <span class="st">&quot;f3.html&quot;</span>, <span class="st">&quot;f4.html&quot;</span>)</span>
-<span id="cb86-13"><a href="markdown.html#cb86-13" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb86-14"><a href="markdown.html#cb86-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">batches =</span> <span class="dv">2</span></span>
-<span id="cb86-15"><a href="markdown.html#cb86-15" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb86-16"><a href="markdown.html#cb86-16" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb90-1"><a href="markdown.html#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb90-2"><a href="markdown.html#cb90-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb90-3"><a href="markdown.html#cb90-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
+<span id="cb90-4"><a href="markdown.html#cb90-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">packages =</span> <span class="st">&quot;tibble&quot;</span>)</span>
+<span id="cb90-5"><a href="markdown.html#cb90-5" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb90-6"><a href="markdown.html#cb90-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(x, <span class="st">&quot;value_of_x&quot;</span>),</span>
+<span id="cb90-7"><a href="markdown.html#cb90-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_render_rep</span>(</span>
+<span id="cb90-8"><a href="markdown.html#cb90-8" aria-hidden="true" tabindex="-1"></a>    report,</span>
+<span id="cb90-9"><a href="markdown.html#cb90-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;report.Rmd&quot;</span>,</span>
+<span id="cb90-10"><a href="markdown.html#cb90-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">params =</span> <span class="fu">tibble</span>(</span>
+<span id="cb90-11"><a href="markdown.html#cb90-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">par =</span> <span class="fu">c</span>(<span class="st">&quot;par_val_1&quot;</span>, <span class="st">&quot;par_val_2&quot;</span>, <span class="st">&quot;par_val_3&quot;</span>, <span class="st">&quot;par_val_4&quot;</span>),</span>
+<span id="cb90-12"><a href="markdown.html#cb90-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">output_file =</span> <span class="fu">c</span>(<span class="st">&quot;f1.html&quot;</span>, <span class="st">&quot;f2.html&quot;</span>, <span class="st">&quot;f3.html&quot;</span>, <span class="st">&quot;f4.html&quot;</span>)</span>
+<span id="cb90-13"><a href="markdown.html#cb90-13" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb90-14"><a href="markdown.html#cb90-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">batches =</span> <span class="dv">2</span></span>
+<span id="cb90-15"><a href="markdown.html#cb90-15" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb90-16"><a href="markdown.html#cb90-16" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <p>where <code>report.Rmd</code> has the following YAML front matter:</p>
 <pre><code>title: report
 output_format: html_document
 params:
   par: &quot;default value&quot;</code></pre>
 <p>and the following R code chunk:</p>
-<div class="sourceCode" id="cb88"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb88-1"><a href="markdown.html#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(params<span class="sc">$</span>par)</span>
-<span id="cb88-2"><a href="markdown.html#cb88-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">tar_read</span>(x))</span></code></pre></div>
+<div class="sourceCode" id="cb92"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb92-1"><a href="markdown.html#cb92-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(params<span class="sc">$</span>par)</span>
+<span id="cb92-2"><a href="markdown.html#cb92-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">tar_read</span>(x))</span></code></pre></div>
 <p><code>tar_render_rep()</code> creates multiple targets to set up the R Markdown part of the workflow, including a target for the grid of parameters and a <a href="dynamic.html#dynamic">dynamic branching</a> target to iterate over the parameters in batches. In this case, we have two batches (dynamic branches) and each one renders the report twice.</p>
-<div class="sourceCode" id="cb89"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb89-1"><a href="markdown.html#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
-<span id="cb89-2"><a href="markdown.html#cb89-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
-<span id="cb89-3"><a href="markdown.html#cb89-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target x</span></span>
-<span id="cb89-4"><a href="markdown.html#cb89-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target report_params</span></span>
-<span id="cb89-5"><a href="markdown.html#cb89-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run branch report_9e7470a1</span></span>
-<span id="cb89-6"><a href="markdown.html#cb89-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run branch report_457829de</span></span>
-<span id="cb89-7"><a href="markdown.html#cb89-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● end pipeline</span></span></code></pre></div>
+<div class="sourceCode" id="cb93"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb93-1"><a href="markdown.html#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
+<span id="cb93-2"><a href="markdown.html#cb93-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
+<span id="cb93-3"><a href="markdown.html#cb93-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target x</span></span>
+<span id="cb93-4"><a href="markdown.html#cb93-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target report_params</span></span>
+<span id="cb93-5"><a href="markdown.html#cb93-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run branch report_9e7470a1</span></span>
+<span id="cb93-6"><a href="markdown.html#cb93-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run branch report_457829de</span></span>
+<span id="cb93-7"><a href="markdown.html#cb93-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● end pipeline</span></span></code></pre></div>
 <p>The third output file <code>f3.html</code> is below, and the rest look similar.</p>
 <p><img src="man/figures/dynamic-rmarkdown-params.png" /></p>
 <p>For more information, see <a href="https://docs.ropensci.org/tarchetypes/reference/tar_render_rep.html#examples">these examples</a>.</p>
@@ -506,7 +506,7 @@ params:
 <li>Interactively explore, prototype, and test the components of a <code>targets</code> pipeline using the R Markdown <a href="https://bookdown.org/yihui/rmarkdown/notebook.html">notebook interface</a>.</li>
 <li>Set up a <code>targets</code> pipeline using convenient R Markdown code chunks.</li>
 </ol>
-<p>Target Markdown supports a special <code>{targets}</code> <a href="https://bookdown.org/yihui/rmarkdown-cookbook/other-languages.html">language engine</a> with an interactive mode for (1) and a non-interactive mode for (2). By default, the mode is interactive in the <a href="https://bookdown.org/yihui/rmarkdown/notebook.html">notebook interface</a> and non-interactive when you knit/render the whole document.<a href="#fn16" class="footnote-ref" id="fnref16"><sup>16</sup></a>. You can set the mode using the <code>tar_interactive</code> chunk option.</p>
+<p>Target Markdown supports a special <code>{targets}</code> <a href="https://bookdown.org/yihui/rmarkdown-cookbook/other-languages.html">language engine</a> with an interactive mode for (1) and a non-interactive mode for (2). By default, the mode is interactive in the <a href="https://bookdown.org/yihui/rmarkdown/notebook.html">notebook interface</a> and non-interactive when you knit/render the whole document.<a href="#fn18" class="footnote-ref" id="fnref18"><sup>18</sup></a>. You can set the mode using the <code>tar_interactive</code> chunk option.</p>
 </div>
 <div id="example" class="section level3 hasAnchor" number="10.2.3">
 <h3><span class="header-section-number">10.2.3</span> Example<a href="markdown.html#example" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -515,8 +515,8 @@ params:
 <div id="required-packages" class="section level3 hasAnchor" number="10.2.4">
 <h3><span class="header-section-number">10.2.4</span> Required packages<a href="markdown.html#required-packages" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>This example requires several R packages, and <code>targets</code> must be version 0.6.0 or above.</p>
-<div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb90-1"><a href="markdown.html#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
-<span id="cb90-2"><a href="markdown.html#cb90-2" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="fu">c</span>(<span class="st">&quot;biglm&quot;</span>, <span class="st">&quot;dplyr&quot;</span>, <span class="st">&quot;ggplot2&quot;</span>, <span class="st">&quot;readr&quot;</span>, <span class="st">&quot;targets&quot;</span>, <span class="st">&quot;tidyr&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb94"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb94-1"><a href="markdown.html#cb94-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
+<span id="cb94-2"><a href="markdown.html#cb94-2" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="fu">c</span>(<span class="st">&quot;biglm&quot;</span>, <span class="st">&quot;dplyr&quot;</span>, <span class="st">&quot;ggplot2&quot;</span>, <span class="st">&quot;readr&quot;</span>, <span class="st">&quot;targets&quot;</span>, <span class="st">&quot;tidyr&quot;</span>))</span></code></pre></div>
 </div>
 <div id="setup" class="section level3 hasAnchor" number="10.2.5">
 <h3><span class="header-section-number">10.2.5</span> Setup<a href="markdown.html#setup" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -553,9 +553,9 @@ create_plot &lt;- function(data) {
     theme_gray(24)
 }
 ```</code></pre>
-<p>In non-interactive mode, the chunk establishes a common <code>_targets.R</code> file and writes the R code to a script in <code>_targets_r/globals/</code>, and displays an informative message:<a href="#fn17" class="footnote-ref" id="fnref17"><sup>17</sup></a></p>
+<p>In non-interactive mode, the chunk establishes a common <code>_targets.R</code> file and writes the R code to a script in <code>_targets_r/globals/</code>, and displays an informative message:<a href="#fn19" class="footnote-ref" id="fnref19"><sup>19</sup></a></p>
 <pre><code>#&gt; Establish _targets.R and _targets_r/globals/chunk-name.R.</code></pre>
-<p>It is good practice to assign explicit chunk labels or set the <code>tar_name</code> chunk option on a chunk-by-chunk basis. Each chunk writes code to a script path that depends on the name, and all script paths need to be unique.<a href="#fn18" class="footnote-ref" id="fnref18"><sup>18</sup></a></p>
+<p>It is good practice to assign explicit chunk labels or set the <code>tar_name</code> chunk option on a chunk-by-chunk basis. Each chunk writes code to a script path that depends on the name, and all script paths need to be unique.<a href="#fn20" class="footnote-ref" id="fnref20"><sup>20</sup></a></p>
 </div>
 <div id="target-definitions" class="section level3 hasAnchor" number="10.2.7">
 <h3><span class="header-section-number">10.2.7</span> Target definitions<a href="markdown.html#target-definitions" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -572,14 +572,14 @@ tar_target(raw_data, airquality)
 head(raw_data)
 ```</code></pre>
 <p>The output is the same as what <code>tar_read(raw_data)</code> would show after a serious pipeline run.</p>
-<div class="sourceCode" id="cb100"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb100-1"><a href="markdown.html#cb100-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(raw_data)</span>
-<span id="cb100-2"><a href="markdown.html#cb100-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Ozone Solar.R Wind Temp Month Day</span></span>
-<span id="cb100-3"><a href="markdown.html#cb100-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1    41     190  7.4   67     5   1</span></span>
-<span id="cb100-4"><a href="markdown.html#cb100-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2    36     118  8.0   72     5   2</span></span>
-<span id="cb100-5"><a href="markdown.html#cb100-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3    12     149 12.6   74     5   3</span></span>
-<span id="cb100-6"><a href="markdown.html#cb100-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4    18     313 11.5   62     5   4</span></span>
-<span id="cb100-7"><a href="markdown.html#cb100-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5    NA      NA 14.3   56     5   5</span></span>
-<span id="cb100-8"><a href="markdown.html#cb100-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6    28      NA 14.9   66     5   6</span></span></code></pre></div>
+<div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb104-1"><a href="markdown.html#cb104-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(raw_data)</span>
+<span id="cb104-2"><a href="markdown.html#cb104-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Ozone Solar.R Wind Temp Month Day</span></span>
+<span id="cb104-3"><a href="markdown.html#cb104-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1    41     190  7.4   67     5   1</span></span>
+<span id="cb104-4"><a href="markdown.html#cb104-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2    36     118  8.0   72     5   2</span></span>
+<span id="cb104-5"><a href="markdown.html#cb104-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3    12     149 12.6   74     5   3</span></span>
+<span id="cb104-6"><a href="markdown.html#cb104-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4    18     313 11.5   62     5   4</span></span>
+<span id="cb104-7"><a href="markdown.html#cb104-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5    NA      NA 14.3   56     5   5</span></span>
+<span id="cb104-8"><a href="markdown.html#cb104-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6    28      NA 14.9   66     5   6</span></span></code></pre></div>
 <p>For demonstration purposes, here is the <code>raw_data</code> target code chunk in non-interactive mode.</p>
 <pre><code>```{targets chunk-name-with-target, tar_interactive = FALSE}
 tar_target(raw_data, airquality)
@@ -601,11 +601,11 @@ analysis_data &lt;- data
 biglm(Ozone ~ Wind + Temp, analysis_data)
 ```</code></pre>
 <p>When the chunk is preprocessed, chunk label (or the <code>tar_name</code> chunk option if you set it) becomes the target name, and the chunk code becomes the target command. All other arguments of <code>tar_target()</code> remain at their default values (configurable with <code>tar_option_set()</code> in a <code>tar_globals = TRUE</code> chunk). The output in the rendered R Markdown document reflects this preprocessing.</p>
-<div class="sourceCode" id="cb106"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb106-1"><a href="markdown.html#cb106-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_target</span>(fit, {</span>
-<span id="cb106-2"><a href="markdown.html#cb106-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">biglm</span>(Ozone <span class="sc">~</span> Wind <span class="sc">+</span> Temp, data)</span>
-<span id="cb106-3"><a href="markdown.html#cb106-3" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb106-4"><a href="markdown.html#cb106-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Define target fit from chunk code.</span></span>
-<span id="cb106-5"><a href="markdown.html#cb106-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Establish _targets.R and _targets_r/targets/fit.R.</span></span></code></pre></div>
+<div class="sourceCode" id="cb110"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb110-1"><a href="markdown.html#cb110-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_target</span>(fit, {</span>
+<span id="cb110-2"><a href="markdown.html#cb110-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">biglm</span>(Ozone <span class="sc">~</span> Wind <span class="sc">+</span> Temp, data)</span>
+<span id="cb110-3"><a href="markdown.html#cb110-3" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb110-4"><a href="markdown.html#cb110-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Define target fit from chunk code.</span></span>
+<span id="cb110-5"><a href="markdown.html#cb110-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Establish _targets.R and _targets_r/targets/fit.R.</span></span></code></pre></div>
 </div>
 <div id="pipeline" class="section level3 hasAnchor" number="10.2.8">
 <h3><span class="header-section-number">10.2.8</span> Pipeline<a href="markdown.html#pipeline" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -621,7 +621,7 @@ tar_make()
 #&gt; • built target fit
 #&gt; • start target hist
 #&gt; • built target hist
-#&gt; • end pipeline: 0.635 seconds</code></pre>
+#&gt; • end pipeline: 0.664 seconds</code></pre>
 </div>
 <div id="output" class="section level3 hasAnchor" number="10.2.9">
 <h3><span class="header-section-number">10.2.9</span> Output<a href="markdown.html#output" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -635,13 +635,13 @@ tar_read(fit)
 <pre><code>```{r}
 tar_read(hist)
 ```</code></pre>
-<p><img src="targets-manual_files/figure-html/unnamed-chunk-109-1.png" width="672" /></p>
+<p><img src="targets-manual_files/figure-html/unnamed-chunk-115-1.png" width="672" /></p>
 <p>The <code>targets</code> dependency graph helps your readers understand the steps of your pipeline at a high level.</p>
 <pre><code>```{r}
 tar_visnetwork()
 ```</code></pre>
-<div id="htmlwidget-a5007d70ee5614aa21ae" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
-<script type="application/json" data-for="htmlwidget-a5007d70ee5614aa21ae">{"x":{"nodes":{"name":["data","fit","hist","raw_data","create_plot"],"type":["stem","stem","stem","stem","function"],"status":["uptodate","uptodate","uptodate","uptodate","uptodate"],"seconds":[0.008,0.003,0.011,0.497,null],"bytes":[1081,1574,44521,1263,null],"branches":[null,null,null,null,null],"label":["data","fit","hist","raw_data","create_plot"],"color":["#354823","#354823","#354823","#354823","#354823"],"id":["data","fit","hist","raw_data","create_plot"],"level":[2,3,3,1,1],"shape":["dot","dot","dot","dot","triangle"]},"edges":{"from":["data","create_plot","data","raw_data"],"to":["fit","hist","hist","data"],"arrows":["to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"interaction":{"zoomSpeed":1},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Up to date","Stem","Function"],"color":["#354823","#899DA4","#899DA4"],"shape":["dot","dot","triangle"]},"nodesToDataframe":true},"tooltipStay":300,"tooltipStyle":"position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;border: 1px solid #808074;box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-3822cee8b16331f8b686" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-3822cee8b16331f8b686">{"x":{"nodes":{"name":["data","fit","hist","raw_data","create_plot"],"type":["stem","stem","stem","stem","function"],"status":["uptodate","uptodate","uptodate","uptodate","uptodate"],"seconds":[0.008,0.004,0.013,0.485,null],"bytes":[1081,1574,44521,1263,null],"branches":[null,null,null,null,null],"label":["data","fit","hist","raw_data","create_plot"],"color":["#354823","#354823","#354823","#354823","#354823"],"id":["data","fit","hist","raw_data","create_plot"],"level":[2,3,3,1,1],"shape":["dot","dot","dot","dot","triangle"]},"edges":{"from":["data","create_plot","data","raw_data"],"to":["fit","hist","hist","data"],"arrows":["to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"interaction":{"zoomSpeed":1},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Up to date","Stem","Function"],"color":["#354823","#899DA4","#899DA4"],"shape":["dot","dot","triangle"]},"nodesToDataframe":true},"tooltipStay":300,"tooltipStyle":"position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;border: 1px solid #808074;box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);"},"evals":[],"jsHooks":[]}</script>
 <p>At this point, you can go back and run <code>{targets}</code> chunks in interactive mode without interfering with the code or data of the non-interactive pipeline.</p>
 </div>
 <div id="conditioning-on-interactive-mode" class="section level3 hasAnchor" number="10.2.10">
@@ -703,10 +703,10 @@ tar_stan_mcmc_rep_summary(
 </div>
 <div class="footnotes">
 <hr />
-<ol start="16">
-<li id="fn16"><p>In <code>targets</code> version 0.6.0, the mode is interactive if <code>interactive()</code> is <code>TRUE</code>. In subsequent versions, the mode is interactive if <code>!isTRUE(getOption("knitr.in.progress"))</code> is <code>TRUE</code>.<a href="markdown.html#fnref16" class="footnote-back">↩︎</a></p></li>
-<li id="fn17"><p>The <code>_targets.R</code> file from Target Markdown never changes from chunk to chunk or report to report, so you can spread your work over multiple reports without worrying about aligning <code>_targets.R</code> scripts. Just be sure all your chunk names are unique across all the reports of a project, or you set the <code>tar_name</code> chunk option to specify base names of script file paths.<a href="markdown.html#fnref17" class="footnote-back">↩︎</a></p></li>
-<li id="fn18"><p>In addition, for <code>bookdown</code> projects, chunk labels should only use alphanumeric characters and dashes.<a href="markdown.html#fnref18" class="footnote-back">↩︎</a></p></li>
+<ol start="18">
+<li id="fn18"><p>In <code>targets</code> version 0.6.0, the mode is interactive if <code>interactive()</code> is <code>TRUE</code>. In subsequent versions, the mode is interactive if <code>!isTRUE(getOption("knitr.in.progress"))</code> is <code>TRUE</code>.<a href="markdown.html#fnref18" class="footnote-back">↩︎</a></p></li>
+<li id="fn19"><p>The <code>_targets.R</code> file from Target Markdown never changes from chunk to chunk or report to report, so you can spread your work over multiple reports without worrying about aligning <code>_targets.R</code> scripts. Just be sure all your chunk names are unique across all the reports of a project, or you set the <code>tar_name</code> chunk option to specify base names of script file paths.<a href="markdown.html#fnref19" class="footnote-back">↩︎</a></p></li>
+<li id="fn20"><p>In addition, for <code>bookdown</code> projects, chunk labels should only use alphanumeric characters and dashes.<a href="markdown.html#fnref20" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 <div style = "background: #1C356D; color: white; padding: 10px 10px 10px 25px; font-size: 1em; width: 100%;">

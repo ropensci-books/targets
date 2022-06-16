@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 8 Projects | The targets R Package User Manual</title>
   <meta name="description" content="In-depth discussion of the major functionality of targets." />
-  <meta name="generator" content="bookdown 0.26 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.27 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 8 Projects | The targets R Package User Manual" />
   <meta property="og:type" content="book" />
@@ -364,26 +364,26 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>A project is a <code>targets</code> pipeline together with its supporting source code, data, and configuration settings. This chapter explains best practices when it comes to organizing and configuring <code>targets</code> projects.</p>
 <div id="extra-reproducibility" class="section level2 hasAnchor" number="8.1">
 <h2><span class="header-section-number">8.1</span> Extra reproducibility<a href="projects.html#extra-reproducibility" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>For extra reproducibility, it is good practice to use the <code>renv</code> R package for package management and Git/GitHub for code version control. The entire <code>_targets/</code> data store should generally not be committed to Git because of its large size.<a href="#fn13" class="footnote-ref" id="fnref13"><sup>13</sup></a> The broader R community has excellent resources and tutorials on getting started with these third-party tools.</p>
+<p>For extra reproducibility, it is good practice to use the <code>renv</code> R package for package management and Git/GitHub for code version control. The entire <code>_targets/</code> data store should generally not be committed to Git because of its large size.<a href="#fn15" class="footnote-ref" id="fnref15"><sup>15</sup></a> The broader R community has excellent resources and tutorials on getting started with these third-party tools.</p>
 </div>
 <div id="project-files" class="section level2 hasAnchor" number="8.2">
 <h2><span class="header-section-number">8.2</span> Project files<a href="projects.html#project-files" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p><code>targets</code> is mostly indifferent to how you organize the files in your project. However, it is good practice to follow the overall structure of a research compendium or R package (not necessarily with a <code>DESCRIPTION</code> file). It also is good practice to give each project its own unique folder with one <code>targets</code> pipeline, one <code>renv</code> library for package management, and one Git/GitHub repository for code version control. As described later, it is possible to create multiple overlapping projects within a single folder, but this is not recommended for most situations.</p>
 <p>The <a href="walkthrough.html#walkthrough">walkthrough chapter</a> shows the file structure for a minimal <code>targets</code> project. For more serious projects, the file system may expand to look something like this:</p>
-<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="projects.html#cb54-1" aria-hidden="true" tabindex="-1"></a>├── .git<span class="sc">/</span></span>
-<span id="cb54-2"><a href="projects.html#cb54-2" aria-hidden="true" tabindex="-1"></a>├── .Rprofile</span>
-<span id="cb54-3"><a href="projects.html#cb54-3" aria-hidden="true" tabindex="-1"></a>├── .Renviron</span>
-<span id="cb54-4"><a href="projects.html#cb54-4" aria-hidden="true" tabindex="-1"></a>├── renv<span class="sc">/</span></span>
-<span id="cb54-5"><a href="projects.html#cb54-5" aria-hidden="true" tabindex="-1"></a>├── index.Rmd</span>
-<span id="cb54-6"><a href="projects.html#cb54-6" aria-hidden="true" tabindex="-1"></a>├── _targets<span class="sc">/</span></span>
-<span id="cb54-7"><a href="projects.html#cb54-7" aria-hidden="true" tabindex="-1"></a>├── _targets.R</span>
-<span id="cb54-8"><a href="projects.html#cb54-8" aria-hidden="true" tabindex="-1"></a>├── _targets.yaml</span>
-<span id="cb54-9"><a href="projects.html#cb54-9" aria-hidden="true" tabindex="-1"></a>├── R<span class="sc">/</span></span>
-<span id="cb54-10"><a href="projects.html#cb54-10" aria-hidden="true" tabindex="-1"></a>├──── functions_data.R</span>
-<span id="cb54-11"><a href="projects.html#cb54-11" aria-hidden="true" tabindex="-1"></a>├──── functions_analysis.R</span>
-<span id="cb54-12"><a href="projects.html#cb54-12" aria-hidden="true" tabindex="-1"></a>├──── functions_visualization.R</span>
-<span id="cb54-13"><a href="projects.html#cb54-13" aria-hidden="true" tabindex="-1"></a>├── data<span class="sc">/</span></span>
-<span id="cb54-14"><a href="projects.html#cb54-14" aria-hidden="true" tabindex="-1"></a>└──── input_data.csv</span></code></pre></div>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="projects.html#cb58-1" aria-hidden="true" tabindex="-1"></a>├── .git<span class="sc">/</span></span>
+<span id="cb58-2"><a href="projects.html#cb58-2" aria-hidden="true" tabindex="-1"></a>├── .Rprofile</span>
+<span id="cb58-3"><a href="projects.html#cb58-3" aria-hidden="true" tabindex="-1"></a>├── .Renviron</span>
+<span id="cb58-4"><a href="projects.html#cb58-4" aria-hidden="true" tabindex="-1"></a>├── renv<span class="sc">/</span></span>
+<span id="cb58-5"><a href="projects.html#cb58-5" aria-hidden="true" tabindex="-1"></a>├── index.Rmd</span>
+<span id="cb58-6"><a href="projects.html#cb58-6" aria-hidden="true" tabindex="-1"></a>├── _targets<span class="sc">/</span></span>
+<span id="cb58-7"><a href="projects.html#cb58-7" aria-hidden="true" tabindex="-1"></a>├── _targets.R</span>
+<span id="cb58-8"><a href="projects.html#cb58-8" aria-hidden="true" tabindex="-1"></a>├── _targets.yaml</span>
+<span id="cb58-9"><a href="projects.html#cb58-9" aria-hidden="true" tabindex="-1"></a>├── R<span class="sc">/</span></span>
+<span id="cb58-10"><a href="projects.html#cb58-10" aria-hidden="true" tabindex="-1"></a>├──── functions_data.R</span>
+<span id="cb58-11"><a href="projects.html#cb58-11" aria-hidden="true" tabindex="-1"></a>├──── functions_analysis.R</span>
+<span id="cb58-12"><a href="projects.html#cb58-12" aria-hidden="true" tabindex="-1"></a>├──── functions_visualization.R</span>
+<span id="cb58-13"><a href="projects.html#cb58-13" aria-hidden="true" tabindex="-1"></a>├── data<span class="sc">/</span></span>
+<span id="cb58-14"><a href="projects.html#cb58-14" aria-hidden="true" tabindex="-1"></a>└──── input_data.csv</span></code></pre></div>
 <p>Some of these files are optional, and they have the following roles.</p>
 <ul>
 <li><code>.git/</code>: a folder automatically created by Git for version control purposes.</li>
@@ -402,46 +402,46 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">8.3</span> Multiple projects<a href="projects.html#multiple-projects" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>It is generally good practice to give each project its own unique folder with one <code>targets</code> pipeline, one <code>renv</code> library for package management, and one Git/GitHub repository for code version control. However, sometimes it is reasonable to maintain multiple pipelines within a project: for example, if different pipelines have similar research goals and share the same code base of custom user-defined functions. This section explains how to maintain and navigate such a collection of overlapping projects.</p>
 <p>The functionality below assumes you have <code>targets</code> version 0.7.0.9001 or higher, which you may need to install from GitHub.</p>
-<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="projects.html#cb55-1" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;ropensci/targets&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="projects.html#cb59-1" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;ropensci/targets&quot;</span>)</span></code></pre></div>
 <div id="create-each-project." class="section level3 hasAnchor" number="8.3.1">
 <h3><span class="header-section-number">8.3.1</span> Create each project.<a href="projects.html#create-each-project." class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>To begin, write the shared code base of custom user-defined functions in <code>R/</code>, and write one <code>targets</code> pipeline per project. For convenience, we will directly write to the targets script files, but the principles generalize to <a href="markdown.html#markdown">Target Markdown</a>. The file structure looks something like this:</p>
-<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="projects.html#cb56-1" aria-hidden="true" tabindex="-1"></a>├── _targets.yaml</span>
-<span id="cb56-2"><a href="projects.html#cb56-2" aria-hidden="true" tabindex="-1"></a>├── script_a.R</span>
-<span id="cb56-3"><a href="projects.html#cb56-3" aria-hidden="true" tabindex="-1"></a>├── script_b.R</span>
-<span id="cb56-4"><a href="projects.html#cb56-4" aria-hidden="true" tabindex="-1"></a>├── R<span class="sc">/</span></span>
-<span id="cb56-5"><a href="projects.html#cb56-5" aria-hidden="true" tabindex="-1"></a>├──── functions_data.R</span>
-<span id="cb56-6"><a href="projects.html#cb56-6" aria-hidden="true" tabindex="-1"></a>├──── functions_analysis.R</span>
-<span id="cb56-7"><a href="projects.html#cb56-7" aria-hidden="true" tabindex="-1"></a>├──── functions_visualization.R</span>
-<span id="cb56-8"><a href="projects.html#cb56-8" aria-hidden="true" tabindex="-1"></a>...</span></code></pre></div>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="projects.html#cb60-1" aria-hidden="true" tabindex="-1"></a>├── _targets.yaml</span>
+<span id="cb60-2"><a href="projects.html#cb60-2" aria-hidden="true" tabindex="-1"></a>├── script_a.R</span>
+<span id="cb60-3"><a href="projects.html#cb60-3" aria-hidden="true" tabindex="-1"></a>├── script_b.R</span>
+<span id="cb60-4"><a href="projects.html#cb60-4" aria-hidden="true" tabindex="-1"></a>├── R<span class="sc">/</span></span>
+<span id="cb60-5"><a href="projects.html#cb60-5" aria-hidden="true" tabindex="-1"></a>├──── functions_data.R</span>
+<span id="cb60-6"><a href="projects.html#cb60-6" aria-hidden="true" tabindex="-1"></a>├──── functions_analysis.R</span>
+<span id="cb60-7"><a href="projects.html#cb60-7" aria-hidden="true" tabindex="-1"></a>├──── functions_visualization.R</span>
+<span id="cb60-8"><a href="projects.html#cb60-8" aria-hidden="true" tabindex="-1"></a>...</span></code></pre></div>
 <p>All projects share the same functions defined in the scripts in <code>R/</code>, and each project uses a different <a href="https://docs.ropensci.org/targets/reference/tar_script.html">target script</a> and <a href="data.html#data">data store</a>. <code>script_a.R</code> defines the targets for project A.</p>
-<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="projects.html#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="co"># script_a.R</span></span>
-<span id="cb57-2"><a href="projects.html#cb57-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb57-3"><a href="projects.html#cb57-3" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions_data.R&quot;</span>)</span>
-<span id="cb57-4"><a href="projects.html#cb57-4" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions_analysis.R&quot;</span>)</span>
-<span id="cb57-5"><a href="projects.html#cb57-5" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions_visualization.R&quot;</span>)</span>
-<span id="cb57-6"><a href="projects.html#cb57-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">packages =</span> <span class="st">&quot;tidyverse&quot;</span>)</span>
-<span id="cb57-7"><a href="projects.html#cb57-7" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb57-8"><a href="projects.html#cb57-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(target_abc, <span class="fu">f</span>(..)),</span>
-<span id="cb57-9"><a href="projects.html#cb57-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(tarbet_xyz, <span class="fu">g</span>(...))</span>
-<span id="cb57-10"><a href="projects.html#cb57-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="projects.html#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="co"># script_a.R</span></span>
+<span id="cb61-2"><a href="projects.html#cb61-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb61-3"><a href="projects.html#cb61-3" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions_data.R&quot;</span>)</span>
+<span id="cb61-4"><a href="projects.html#cb61-4" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions_analysis.R&quot;</span>)</span>
+<span id="cb61-5"><a href="projects.html#cb61-5" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions_visualization.R&quot;</span>)</span>
+<span id="cb61-6"><a href="projects.html#cb61-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">packages =</span> <span class="st">&quot;tidyverse&quot;</span>)</span>
+<span id="cb61-7"><a href="projects.html#cb61-7" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb61-8"><a href="projects.html#cb61-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(target_abc, <span class="fu">f</span>(..)),</span>
+<span id="cb61-9"><a href="projects.html#cb61-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(tarbet_xyz, <span class="fu">g</span>(...))</span>
+<span id="cb61-10"><a href="projects.html#cb61-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <p>Likewise, <code>script_b.R</code> defines the targets for project B.</p>
-<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="projects.html#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="co"># script_b.R</span></span>
-<span id="cb58-2"><a href="projects.html#cb58-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb58-3"><a href="projects.html#cb58-3" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions_data.R&quot;</span>)</span>
-<span id="cb58-4"><a href="projects.html#cb58-4" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions_analysis.R&quot;</span>)</span>
-<span id="cb58-5"><a href="projects.html#cb58-5" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions_visualization.R&quot;</span>)</span>
-<span id="cb58-6"><a href="projects.html#cb58-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">packages =</span> <span class="st">&quot;tidyverse&quot;</span>)</span>
-<span id="cb58-7"><a href="projects.html#cb58-7" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb58-8"><a href="projects.html#cb58-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(target_123, <span class="fu">f</span>(...)),</span>
-<span id="cb58-9"><a href="projects.html#cb58-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(target_456, <span class="fu">h</span>(...))</span>
-<span id="cb58-10"><a href="projects.html#cb58-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="projects.html#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="co"># script_b.R</span></span>
+<span id="cb62-2"><a href="projects.html#cb62-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb62-3"><a href="projects.html#cb62-3" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions_data.R&quot;</span>)</span>
+<span id="cb62-4"><a href="projects.html#cb62-4" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions_analysis.R&quot;</span>)</span>
+<span id="cb62-5"><a href="projects.html#cb62-5" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions_visualization.R&quot;</span>)</span>
+<span id="cb62-6"><a href="projects.html#cb62-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">packages =</span> <span class="st">&quot;tidyverse&quot;</span>)</span>
+<span id="cb62-7"><a href="projects.html#cb62-7" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb62-8"><a href="projects.html#cb62-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(target_123, <span class="fu">f</span>(...)),</span>
+<span id="cb62-9"><a href="projects.html#cb62-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(target_456, <span class="fu">h</span>(...))</span>
+<span id="cb62-10"><a href="projects.html#cb62-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 </div>
 <div id="configure-each-project." class="section level3 hasAnchor" number="8.3.2">
 <h3><span class="header-section-number">8.3.2</span> Configure each project.<a href="projects.html#configure-each-project." class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>To establish a different store and script per project, write a top-level <code>_targets.yaml</code> configuration to specify these paths explicitly. You can do this from R with <code>tar_config_set()</code>.</p>
-<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="projects.html#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_config_set</span>(<span class="at">script =</span> <span class="st">&quot;script_a.R&quot;</span>, <span class="at">store =</span> <span class="st">&quot;store_a&quot;</span>, <span class="at">project =</span> <span class="st">&quot;project_a&quot;</span>)</span>
-<span id="cb59-2"><a href="projects.html#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_config_set</span>(<span class="at">script =</span> <span class="st">&quot;script_b.R&quot;</span>, <span class="at">store =</span> <span class="st">&quot;store_b&quot;</span>, <span class="at">project =</span> <span class="st">&quot;project_b&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="projects.html#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_config_set</span>(<span class="at">script =</span> <span class="st">&quot;script_a.R&quot;</span>, <span class="at">store =</span> <span class="st">&quot;store_a&quot;</span>, <span class="at">project =</span> <span class="st">&quot;project_a&quot;</span>)</span>
+<span id="cb63-2"><a href="projects.html#cb63-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_config_set</span>(<span class="at">script =</span> <span class="st">&quot;script_b.R&quot;</span>, <span class="at">store =</span> <span class="st">&quot;store_b&quot;</span>, <span class="at">project =</span> <span class="st">&quot;project_b&quot;</span>)</span></code></pre></div>
 <p>The R code above writes the following <code>_targets.yaml</code> configuration file.</p>
 <pre><code>project_a:
   store: store_a
@@ -453,17 +453,17 @@ project_b:
 <div id="run-each-project" class="section level3 hasAnchor" number="8.3.3">
 <h3><span class="header-section-number">8.3.3</span> Run each project<a href="projects.html#run-each-project" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>To run each project, run <code>tar_make()</code> with the correct target script and data store. To select the correct script and store, set the <code>TAR_PROJECT</code> environment variable to the correct project name. that way, <code>tar_config_get()</code> automatically supplies the correct <code>script</code> and <code>store</code> arguments to <code>tar_make()</code>.</p>
-<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="projects.html#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.setenv</span>(<span class="at">TAR_PROJECT =</span> <span class="st">&quot;project_a&quot;</span>)</span>
-<span id="cb61-2"><a href="projects.html#cb61-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
-<span id="cb61-3"><a href="projects.html#cb61-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(target_abc)</span>
-<span id="cb61-4"><a href="projects.html#cb61-4" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.setenv</span>(<span class="at">TAR_PROJECT =</span> <span class="st">&quot;project_b&quot;</span>)</span>
-<span id="cb61-5"><a href="projects.html#cb61-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
-<span id="cb61-6"><a href="projects.html#cb61-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(target_123)</span></code></pre></div>
+<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="projects.html#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.setenv</span>(<span class="at">TAR_PROJECT =</span> <span class="st">&quot;project_a&quot;</span>)</span>
+<span id="cb65-2"><a href="projects.html#cb65-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
+<span id="cb65-3"><a href="projects.html#cb65-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(target_abc)</span>
+<span id="cb65-4"><a href="projects.html#cb65-4" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.setenv</span>(<span class="at">TAR_PROJECT =</span> <span class="st">&quot;project_b&quot;</span>)</span>
+<span id="cb65-5"><a href="projects.html#cb65-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
+<span id="cb65-6"><a href="projects.html#cb65-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(target_123)</span></code></pre></div>
 <p>Alternatively, you can manually select the appropriate script and store for each project. This is a less convenient approach, but if you do it, you do not need to set the <code>TAR_PROJECT</code> environment variable or rely on <code>_targets.yaml</code>.</p>
-<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="projects.html#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>(<span class="at">script =</span> <span class="st">&quot;script_a.R&quot;</span>, <span class="at">store =</span> <span class="st">&quot;store_a&quot;</span>)</span>
-<span id="cb62-2"><a href="projects.html#cb62-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(target_abc, <span class="at">sctore =</span> <span class="st">&quot;store_a&quot;</span>)</span>
-<span id="cb62-3"><a href="projects.html#cb62-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>(<span class="at">script =</span> <span class="st">&quot;script_b.R&quot;</span>, <span class="at">store =</span> <span class="st">&quot;store_b&quot;</span>)</span>
-<span id="cb62-4"><a href="projects.html#cb62-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(target_abc, <span class="at">sctore =</span> <span class="st">&quot;store_b&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb66-1"><a href="projects.html#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>(<span class="at">script =</span> <span class="st">&quot;script_a.R&quot;</span>, <span class="at">store =</span> <span class="st">&quot;store_a&quot;</span>)</span>
+<span id="cb66-2"><a href="projects.html#cb66-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(target_abc, <span class="at">sctore =</span> <span class="st">&quot;store_a&quot;</span>)</span>
+<span id="cb66-3"><a href="projects.html#cb66-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>(<span class="at">script =</span> <span class="st">&quot;script_b.R&quot;</span>, <span class="at">store =</span> <span class="st">&quot;store_b&quot;</span>)</span>
+<span id="cb66-4"><a href="projects.html#cb66-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(target_abc, <span class="at">sctore =</span> <span class="st">&quot;store_b&quot;</span>)</span></code></pre></div>
 </div>
 </div>
 <div id="interdependent-projects" class="section level2 hasAnchor" number="8.4">
@@ -471,66 +471,66 @@ project_b:
 <div id="config-inheritance" class="section level3 hasAnchor" number="8.4.1">
 <h3><span class="header-section-number">8.4.1</span> Config inheritance<a href="projects.html#config-inheritance" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p><code>_targets.yaml</code> can control more than just the script and store, and different projects can inherit settings from one another. In the following example, project B inherits from project A, so projects A and B both set <code>reporter = "summary"</code> and <code>shorcut = TRUE</code> by default in <code>tar_make()</code>.</p>
-<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="projects.html#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_config_set</span>(</span>
-<span id="cb63-2"><a href="projects.html#cb63-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">script =</span> <span class="st">&quot;script_a.R&quot;</span>,</span>
-<span id="cb63-3"><a href="projects.html#cb63-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">store =</span> <span class="st">&quot;store_a&quot;</span>,</span>
-<span id="cb63-4"><a href="projects.html#cb63-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">reporter_make =</span> <span class="st">&quot;summary&quot;</span>,</span>
-<span id="cb63-5"><a href="projects.html#cb63-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">shortcut =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb63-6"><a href="projects.html#cb63-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">project =</span> <span class="st">&quot;project_a&quot;</span></span>
-<span id="cb63-7"><a href="projects.html#cb63-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb63-8"><a href="projects.html#cb63-8" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_config_set</span>(</span>
-<span id="cb63-9"><a href="projects.html#cb63-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">script =</span> <span class="st">&quot;script_b.R&quot;</span>,</span>
-<span id="cb63-10"><a href="projects.html#cb63-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">store =</span> <span class="st">&quot;store_b&quot;</span>,</span>
-<span id="cb63-11"><a href="projects.html#cb63-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">inherits =</span> <span class="st">&quot;project_a&quot;</span>,</span>
-<span id="cb63-12"><a href="projects.html#cb63-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">project =</span> <span class="st">&quot;project_b&quot;</span>,</span>
-<span id="cb63-13"><a href="projects.html#cb63-13" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb64-1"><a href="projects.html#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">writeLines</span>(<span class="fu">readLines</span>(<span class="st">&quot;_targets.yaml&quot;</span>))</span>
-<span id="cb64-2"><a href="projects.html#cb64-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; project_a:</span></span>
-<span id="cb64-3"><a href="projects.html#cb64-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   reporter_make: summary</span></span>
-<span id="cb64-4"><a href="projects.html#cb64-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   script: script_a.R</span></span>
-<span id="cb64-5"><a href="projects.html#cb64-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   shortcut: yes</span></span>
-<span id="cb64-6"><a href="projects.html#cb64-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   store: store_a</span></span>
-<span id="cb64-7"><a href="projects.html#cb64-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; project_b:</span></span>
-<span id="cb64-8"><a href="projects.html#cb64-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   inherits: project_a</span></span>
-<span id="cb64-9"><a href="projects.html#cb64-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   script: script_b.R</span></span>
-<span id="cb64-10"><a href="projects.html#cb64-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   store: store_b</span></span>
-<span id="cb64-11"><a href="projects.html#cb64-11" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.setenv</span>(<span class="at">TAR_PROJECT =</span> <span class="st">&quot;project_b&quot;</span>)</span>
-<span id="cb64-12"><a href="projects.html#cb64-12" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_config_get</span>(<span class="st">&quot;script&quot;</span>)</span>
-<span id="cb64-13"><a href="projects.html#cb64-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;script_b.R&quot;</span></span>
-<span id="cb64-14"><a href="projects.html#cb64-14" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_config_get</span>(<span class="st">&quot;reporter_make&quot;</span>)</span>
-<span id="cb64-15"><a href="projects.html#cb64-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;summary&quot;</span></span>
-<span id="cb64-16"><a href="projects.html#cb64-16" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_config_get</span>(<span class="st">&quot;shortcut&quot;</span>)</span>
-<span id="cb64-17"><a href="projects.html#cb64-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
+<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb67-1"><a href="projects.html#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_config_set</span>(</span>
+<span id="cb67-2"><a href="projects.html#cb67-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">script =</span> <span class="st">&quot;script_a.R&quot;</span>,</span>
+<span id="cb67-3"><a href="projects.html#cb67-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">store =</span> <span class="st">&quot;store_a&quot;</span>,</span>
+<span id="cb67-4"><a href="projects.html#cb67-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">reporter_make =</span> <span class="st">&quot;summary&quot;</span>,</span>
+<span id="cb67-5"><a href="projects.html#cb67-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">shortcut =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb67-6"><a href="projects.html#cb67-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">project =</span> <span class="st">&quot;project_a&quot;</span></span>
+<span id="cb67-7"><a href="projects.html#cb67-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb67-8"><a href="projects.html#cb67-8" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_config_set</span>(</span>
+<span id="cb67-9"><a href="projects.html#cb67-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">script =</span> <span class="st">&quot;script_b.R&quot;</span>,</span>
+<span id="cb67-10"><a href="projects.html#cb67-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">store =</span> <span class="st">&quot;store_b&quot;</span>,</span>
+<span id="cb67-11"><a href="projects.html#cb67-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">inherits =</span> <span class="st">&quot;project_a&quot;</span>,</span>
+<span id="cb67-12"><a href="projects.html#cb67-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">project =</span> <span class="st">&quot;project_b&quot;</span>,</span>
+<span id="cb67-13"><a href="projects.html#cb67-13" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb68-1"><a href="projects.html#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="fu">writeLines</span>(<span class="fu">readLines</span>(<span class="st">&quot;_targets.yaml&quot;</span>))</span>
+<span id="cb68-2"><a href="projects.html#cb68-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; project_a:</span></span>
+<span id="cb68-3"><a href="projects.html#cb68-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   reporter_make: summary</span></span>
+<span id="cb68-4"><a href="projects.html#cb68-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   script: script_a.R</span></span>
+<span id="cb68-5"><a href="projects.html#cb68-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   shortcut: yes</span></span>
+<span id="cb68-6"><a href="projects.html#cb68-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   store: store_a</span></span>
+<span id="cb68-7"><a href="projects.html#cb68-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; project_b:</span></span>
+<span id="cb68-8"><a href="projects.html#cb68-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   inherits: project_a</span></span>
+<span id="cb68-9"><a href="projects.html#cb68-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   script: script_b.R</span></span>
+<span id="cb68-10"><a href="projects.html#cb68-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   store: store_b</span></span>
+<span id="cb68-11"><a href="projects.html#cb68-11" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.setenv</span>(<span class="at">TAR_PROJECT =</span> <span class="st">&quot;project_b&quot;</span>)</span>
+<span id="cb68-12"><a href="projects.html#cb68-12" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_config_get</span>(<span class="st">&quot;script&quot;</span>)</span>
+<span id="cb68-13"><a href="projects.html#cb68-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;script_b.R&quot;</span></span>
+<span id="cb68-14"><a href="projects.html#cb68-14" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_config_get</span>(<span class="st">&quot;reporter_make&quot;</span>)</span>
+<span id="cb68-15"><a href="projects.html#cb68-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;summary&quot;</span></span>
+<span id="cb68-16"><a href="projects.html#cb68-16" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_config_get</span>(<span class="st">&quot;shortcut&quot;</span>)</span>
+<span id="cb68-17"><a href="projects.html#cb68-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
 </div>
 <div id="sharing-targets" class="section level3 hasAnchor" number="8.4.2">
 <h3><span class="header-section-number">8.4.2</span> Sharing targets<a href="projects.html#sharing-targets" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>For some workflows, the output of one project serves as the input to another project. The easiest way to set this up is through global objects. The first project remains unchanged, and the second project reads from the first before the pipeline begins.</p>
-<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="projects.html#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="co"># script_b.R</span></span>
-<span id="cb65-2"><a href="projects.html#cb65-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb65-3"><a href="projects.html#cb65-3" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions_data.R&quot;</span>)</span>
-<span id="cb65-4"><a href="projects.html#cb65-4" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions_analysis.R&quot;</span>)</span>
-<span id="cb65-5"><a href="projects.html#cb65-5" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions_visualization.R&quot;</span>)</span>
-<span id="cb65-6"><a href="projects.html#cb65-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">packages =</span> <span class="st">&quot;tidyverse&quot;</span>)</span>
-<span id="cb65-7"><a href="projects.html#cb65-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb65-8"><a href="projects.html#cb65-8" aria-hidden="true" tabindex="-1"></a>object_from_project_a <span class="ot">&lt;-</span> <span class="fu">tar_read</span>(target_from_project_a, <span class="at">store =</span> <span class="st">&quot;store_a&quot;</span>)</span>
-<span id="cb65-9"><a href="projects.html#cb65-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb65-10"><a href="projects.html#cb65-10" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb65-11"><a href="projects.html#cb65-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(new_target, <span class="fu">some_function</span>(object_from_project_a)),</span>
-<span id="cb65-12"><a href="projects.html#cb65-12" aria-hidden="true" tabindex="-1"></a>  ...</span>
-<span id="cb65-13"><a href="projects.html#cb65-13" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb69-1"><a href="projects.html#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="co"># script_b.R</span></span>
+<span id="cb69-2"><a href="projects.html#cb69-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb69-3"><a href="projects.html#cb69-3" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions_data.R&quot;</span>)</span>
+<span id="cb69-4"><a href="projects.html#cb69-4" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions_analysis.R&quot;</span>)</span>
+<span id="cb69-5"><a href="projects.html#cb69-5" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions_visualization.R&quot;</span>)</span>
+<span id="cb69-6"><a href="projects.html#cb69-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">packages =</span> <span class="st">&quot;tidyverse&quot;</span>)</span>
+<span id="cb69-7"><a href="projects.html#cb69-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb69-8"><a href="projects.html#cb69-8" aria-hidden="true" tabindex="-1"></a>object_from_project_a <span class="ot">&lt;-</span> <span class="fu">tar_read</span>(target_from_project_a, <span class="at">store =</span> <span class="st">&quot;store_a&quot;</span>)</span>
+<span id="cb69-9"><a href="projects.html#cb69-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb69-10"><a href="projects.html#cb69-10" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb69-11"><a href="projects.html#cb69-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(new_target, <span class="fu">some_function</span>(object_from_project_a)),</span>
+<span id="cb69-12"><a href="projects.html#cb69-12" aria-hidden="true" tabindex="-1"></a>  ...</span>
+<span id="cb69-13"><a href="projects.html#cb69-13" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <p>This approach is the most convenient and versatile, but it can be inefficient if <code>target_from_project_a</code> is large. A higher-performant solution for large data is to treat the file in project A’s data store as an <a href="data.html#data">input file target</a> in project B. This second approach requires an understanding of the <a href="https://books.ropensci.org/targets/data.html#local-data-store">data store</a> and an awareness of which targets are stored locally and which are stored on the cloud. For a target with <code>repository = "local"</code>, you can begin from the file <code>store_a/objects/target_from_project_a</code>. Otherwise, the target’s file exists on the cloud (AWS or GCP) and you may need to <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-bucket-intro.html">access the target as a URL</a> in a target with <code>format = "url"</code>.</p>
-<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb66-1"><a href="projects.html#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="co"># script_b.R</span></span>
-<span id="cb66-2"><a href="projects.html#cb66-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb66-3"><a href="projects.html#cb66-3" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions_data.R&quot;</span>)</span>
-<span id="cb66-4"><a href="projects.html#cb66-4" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions_analysis.R&quot;</span>)</span>
-<span id="cb66-5"><a href="projects.html#cb66-5" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions_visualization.R&quot;</span>)</span>
-<span id="cb66-6"><a href="projects.html#cb66-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">packages =</span> <span class="st">&quot;tidyverse&quot;</span>)</span>
-<span id="cb66-7"><a href="projects.html#cb66-7" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb66-8"><a href="projects.html#cb66-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(file_from_project_a, <span class="st">&quot;store_a/objects/target_name&quot;</span>, <span class="at">format =</span> <span class="st">&quot;file&quot;</span>),</span>
-<span id="cb66-9"><a href="projects.html#cb66-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data_from_project_a, <span class="fu">readRDS</span>(file_from_project_a)), <span class="co"># Assumes format = &quot;rds&quot; in project A.</span></span>
-<span id="cb66-10"><a href="projects.html#cb66-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(new_target, <span class="fu">analyze_data</span>(data_from_project_a)),</span>
-<span id="cb66-11"><a href="projects.html#cb66-11" aria-hidden="true" tabindex="-1"></a>  ...</span>
-<span id="cb66-12"><a href="projects.html#cb66-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb70-1"><a href="projects.html#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="co"># script_b.R</span></span>
+<span id="cb70-2"><a href="projects.html#cb70-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb70-3"><a href="projects.html#cb70-3" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions_data.R&quot;</span>)</span>
+<span id="cb70-4"><a href="projects.html#cb70-4" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions_analysis.R&quot;</span>)</span>
+<span id="cb70-5"><a href="projects.html#cb70-5" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;R/functions_visualization.R&quot;</span>)</span>
+<span id="cb70-6"><a href="projects.html#cb70-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">packages =</span> <span class="st">&quot;tidyverse&quot;</span>)</span>
+<span id="cb70-7"><a href="projects.html#cb70-7" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb70-8"><a href="projects.html#cb70-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(file_from_project_a, <span class="st">&quot;store_a/objects/target_name&quot;</span>, <span class="at">format =</span> <span class="st">&quot;file&quot;</span>),</span>
+<span id="cb70-9"><a href="projects.html#cb70-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data_from_project_a, <span class="fu">readRDS</span>(file_from_project_a)), <span class="co"># Assumes format = &quot;rds&quot; in project A.</span></span>
+<span id="cb70-10"><a href="projects.html#cb70-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(new_target, <span class="fu">analyze_data</span>(data_from_project_a)),</span>
+<span id="cb70-11"><a href="projects.html#cb70-11" aria-hidden="true" tabindex="-1"></a>  ...</span>
+<span id="cb70-12"><a href="projects.html#cb70-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 </div>
 </div>
 <div id="the-config-package" class="section level2 hasAnchor" number="8.5">
@@ -546,8 +546,8 @@ project_b:
 </div>
 <div class="footnotes">
 <hr />
-<ol start="13">
-<li id="fn13"><p>However, you may wish to commit <code>_targets/meta/meta</code>, which is critical to checking the status of each target and reading targets into memory.<a href="projects.html#fnref13" class="footnote-back">↩︎</a></p></li>
+<ol start="15">
+<li id="fn15"><p>However, you may wish to commit <code>_targets/meta/meta</code>, which is critical to checking the status of each target and reading targets into memory.<a href="projects.html#fnref15" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 <div style = "background: #1C356D; color: white; padding: 10px 10px 10px 25px; font-size: 1em; width: 100%;">
