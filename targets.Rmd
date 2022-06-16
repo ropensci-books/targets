@@ -49,24 +49,81 @@ Like a good pure function, a good target should return a single value and not pr
 
 ## Dependencies
 
-`targets` automatically loads dependencies into memory when they are required, so it is rarely advisable to call `tar_read()` or `tar_load()` from inside a target. Except in rare circumstances, `tar_read()` and `tar_load()` are only for exploratory data analysis and [literate programming](#data).
+A dependency `x` of target `y` is a target, global object, or global function that `y` requires in order to run its R command. When target `y` is about to run, `x` is up to date and loaded into memory in the R session.^[`targets` automatically loads dependencies into memory when they are required, so it is rarely advisable to call `tar_read()` or `tar_load()` from inside a target. Except in rare circumstances, `tar_read()` and `tar_load()` are only for exploratory data analysis and [literate programming](#data).] Consequently, when targets `x` and `y` are not up to date, target `x` always finishes running before target `y` starts running. The `targets` package automatically discovers dependencies using static code analysis. In the example below, `x` is automatically detected as a dependency of `y` because the R command of `y` is the expression `x + 1`, which contains the symbol `x`. Consequently, the `tar_visnetwork()` dependency graph contains a left-to-right arrow from `x` to `y`.
 
-Because dependency detection is implicit, adept target construction requires an understanding of how it works. To identify the targets and global objects that each target depends on, the `targets` package uses static code analysis with [`codetools`](https://CRAN.R-project.org/package=codetools), and you can emulate this process with `tar_deps()`. Let us look at the dependencies of the `raw_data` target.
+```{r, eval = FALSE}
+# _targets.R file
+library(targets)
+source("R/functions.R")
+list(
+  tar_target(x, 2),
+  tar_target(y, x + 1)
+)
+```
+
+```{r, eval = FALSE}
+# R console
+tar_visnetwork()
+```
+
+```{r, echo = FALSE, eval = TRUE, message = FALSE, output = FALSE}
+tar_script(list(tar_target(x, 1), tar_target(y, x)))
+tar_visnetwork()
+```
+
+To force a dependency relationship, simply mention the dependency in the target's command. In the following example, target `y` depends on target `z` even though `z` does not actually contribute to the return value of `y`. Target `z` will still finish before target `y` begins, and target `y` will still load target `z` into its memory space before running the R command.
+
+```{r, eval = FALSE}
+# _targets.R file
+library(targets)
+source("R/functions.R")
+list(
+  tar_target(x, 2),
+  tar_target(
+    y, {
+      z # Merely mentioned to force y to depend on z.
+      x + 1
+    }
+  ),
+  tar_target(z, 1)
+)
+```
+
+```{r, eval = FALSE}
+# R console
+tar_visnetwork()
+```
+
+```{r, echo = FALSE, eval = TRUE, message = FALSE, output = FALSE}
+tar_script(
+  list(
+    tar_target(x, 2),
+    tar_target(
+      y, {
+        z # Merely mentioned to force y to depend on z.
+        x + 1
+      }
+    ),
+    tar_target(z, 1)
+  )
+)
+tar_visnetwork()
+```
+
+
+The `tar_deps()` function shows you which dependencies will be detected in a given function or R command.^[`tar_deps()` works mostly like the `findGlobals()` function from the [`codetools`](https://CRAN.R-project.org/package=codetools) package, except the former makes special adjustments for odd cases like formulas.]
 
 ```{r, eval = TRUE}
+tar_deps(x + 2)
+
+tar_deps(command_of_y(dependency = x))
+
 tar_deps(function() {
   read_csv(raw_data_file, col_types = cols())
 })
 ```
 
-The `raw_data` target depends on target `raw_data_file` because the command for `raw_data` mentions the symbol `raw_data_file`. Similarly, if we were to create a user-defined `read_csv()` function, the `raw_data` target would also depend on `read_csv()` and any other user-defined global functions and objects nested inside `read_csv()`. Changes to any of these objects would cause the `raw_data` target to rerun on the next `tar_make()`.
-
-Not all of the objects from `tar_deps()` actually register as dependencies. When it comes to detecting dependencies, `targets` only recognizes
-
-1. Other targets (such as `raw_data_file`).
-1. Functions and objects in the main environment. This environment is almost always the global environment of the R process that runs the target script file (default: `_targets.R`) so these dependencies are usually going to be the custom functions and objects you write yourself.
-
-This process excludes many objects from dependency detection. For example, both `{` and `cols()` are excluded because they are defined in the environments of packages (`base` and `readr`, respectively). Functions and objects from packages are ignored unless you supply the package name to the `packages` and `imports` fields of `tar_option_set()` as described later on in this chapter.^[It is also possible to supply an alternative environment to the `envir` argument of `tar_option_set()`, which changes the environment where `targets` detects non-package global objects and functions, but there is rarely ever a need to do this.]
+However, the findings from `tar_deps()` are only *candidate* dependencies. Unless they are either  targets in the pipeline or global objects^[i.e. loaded into `tar_option_get("envir)` from within `_targets.R`], they will be ignored. For example, functions and objects defined in R packages are ignored. To force a pipeline to notice dependencies from an R package, include the name of the package in the `imports` and `packages` fields of `tar_option_set()`.
 
 ## Return value
 
