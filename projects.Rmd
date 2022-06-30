@@ -43,11 +43,11 @@ Some of these files are optional, and they have the following roles.
 * `.git/`: a folder automatically created by Git for version control purposes.
 * `.Rprofile`: a text file automatically created by `renv` to automatically load the project library when you start R at the project root folder. You may wish to add other global configuration here, e.g. declare package precedence using the `conflicted` package.
 * `.Renviron`: a text file of key-value pairs defining project-level environment variables, e.g. API keys and package settings. See `Sys.getenv()` for more information on environment variables and how to work with them in R.  
-* `index.Rmd`: [Target Markdown](#markdown) report source file to define the pipeline. 
+* `index.Rmd`: [Target Markdown](#literate-programming) report source file to define the pipeline. 
 * `_targets/`: the data store where `tar_make()` and similar functions write target storage and metadata when they run the pipeline.
-* `_targets.R`: the [target script file](https://docs.ropensci.org/targets/reference/tar_script.html). All `targets` pipelines must have a target script file that returns a target list at the end. If you use [Target Markdown](#markdown) (e.g. `index.Rmd` above) then the target script will be written automatically. Otherwise, you may write it by hand. Unless you apply the custom configuration described later in this chapter, the target script file will always be called `_targets.R` and live at the project root folder.
+* `_targets.R`: the [target script file](https://docs.ropensci.org/targets/reference/tar_script.html). All `targets` pipelines must have a target script file that returns a target list at the end. If you use [Target Markdown](#literate-programming) (e.g. `index.Rmd` above) then the target script will be written automatically. Otherwise, you may write it by hand. Unless you apply the custom configuration described later in this chapter, the target script file will always be called `_targets.R` and live at the project root folder.
 * `_targets.yaml`: a YAML file to set default arguments to critical functions like `tar_make()`. As described below, you can access and modify this file with functions `tar_config_get()`, `tar_config_set()`, and `tar_config_unset()`. `targets` will attempt to look for `_targets.yaml` unless you set a different path  in the `TAR_CONFIG` environment variable.
-* `R/`: directory of scripts containing custom user-defined R code. Most of the code will likely contain [custom functions](#functions) you write to support your targets. You can load these functions with `source("R/function_script.R")` or `eval(parse(text = "R/function_script.R")`, either in a `tar_globals = TRUE` code chunk in [Target Markdown](#markdown) or directly in `_targets.R` if you are not using [Target Markdown](#markdown).
+* `R/`: directory of scripts containing custom user-defined R code. Most of the code will likely contain [custom functions](#functions) you write to support your targets. You can load these functions with `source("R/function_script.R")` or `eval(parse(text = "R/function_script.R")`, either in a `tar_globals = TRUE` code chunk in [Target Markdown](#literate-programming) or directly in `_targets.R` if you are not using [Target Markdown](#literate-programming).
 * `data/`: directory of local input data files. As described in the [files chapter](#data), it is good practice to track input files using `format = "file"` in `tar_target()` and then reference those file targets in downstream targets that directly depend on those files.
 
 ## Multiple projects
@@ -62,7 +62,7 @@ remotes::install_github("ropensci/targets")
 
 ### Create each project.
 
-To begin, write the shared code base of custom user-defined functions in `R/`, and write one `targets` pipeline per project. For convenience, we will directly write to the targets script files, but the principles generalize to [Target Markdown](#markdown). The file structure looks something like this:
+To begin, write the shared code base of custom user-defined functions in `R/`, and write one `targets` pipeline per project. For convenience, we will directly write to the targets script files, but the principles generalize to [Target Markdown](#literate-programming). The file structure looks something like this:
 
 ```{r, eval = FALSE}
 ├── _targets.yaml
