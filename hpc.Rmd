@@ -59,13 +59,15 @@ The following sections cover the mechanics and configuration details of high-per
 
 <script src="https://fast.wistia.com/embed/medias/ycczhxwkjw.jsonp" async></script><script src="https://fast.wistia.com/assets/external/E-v1.js" async></script><div class="wistia_responsive_padding" style="padding:56.21% 0 0 0;position:relative;"><div class="wistia_responsive_wrapper" style="height:100%;left:0;position:absolute;top:0;width:100%;"><div class="wistia_embed wistia_async_ycczhxwkjw videoFoam=true" style="height:100%;position:relative;width:100%"><div class="wistia_swatch" style="height:100%;left:0;opacity:0;overflow:hidden;position:absolute;top:0;transition:opacity 200ms;width:100%;"><img src="https://fast.wistia.com/embed/medias/ycczhxwkjw/swatch" style="filter:blur(5px);height:100%;object-fit:contain;width:100%;" alt="" onload="this.parentNode.style.opacity=1;" /></div></div></div></div>
 
+If `use_targets()` function configures `clustermq` automatically (if `clustermq` is installed). `use_targets()` tries to detect the cluster you are using and write the appropriate `_targets.R` settings `clustermq` configuration files commensurate with your system resources. On most systems, you should be able to run e.g. `tar_make_clustermq(workers = 2)` right away. In case you have specific configuration needs, however, read on to learn how to set it up yourself.
+
 ### Clustermq installation
 
 Persistent workers require the [`clustermq`](https://github.com/mschubert/clustermq) R package, which in turn requires [ZeroMQ](http://zeromq.org/). Please refer to the [`clustermq` installation guide](https://github.com/mschubert/clustermq/blob/master/README.md#installation) for specific instructions.
 
-### Clustermq locally
+### Clustermq local configuration
 
-When you write your target script file (default: `_targets.R`) be sure to set the `clustermq.scheduler` global option to a a local scheduler like `"multiprocess"`. Many of the supported schedulers and their configuration details are [listed here](https://mschubert.github.io/clustermq/articles/userguide.html#configuration).
+If you manually write `clustermq` settings in `_targets.R`, be sure to set the `clustermq.scheduler` global option to a a local scheduler like `"multiprocess"`. Many of the supported schedulers and their configuration details are [listed here](https://mschubert.github.io/clustermq/articles/userguide.html#configuration).
 
 ```{r, eval = FALSE}
 # _targets.R
@@ -86,7 +88,7 @@ Then, run `tar_make_clustermq()` with the appropriate number of workers.
 tar_make_clustermq(workers = 2)
 ```
 
-### Clustermq remotely
+### Clustermq remote configuration
 
 For parallel computing on a cluster,
 
@@ -130,7 +132,7 @@ tar_make_clustermq(workers = 2)
 
 See the examples [linked from here](https://docs.ropensci.org/targets/index.html#examples) to see how this setup works in real-world projects.
 
-### Clustermq configuration
+### Clustermq template file configuration
 
 In addition to configuration options hard-coded in the template file, you can supply custom computing resources with the `resources` argument of `tar_option_set()`. As an example, let's use a wildcard for the number of cores per worker on an SGE cluster. In the template file, supply `{{ num_cores }}` wildcard to the `-pe smp` flag.
 
@@ -176,6 +178,8 @@ This particular use case comes up when you have custom parallel computing within
 ## Future
 
 [`tar_make_future()`](https://docs.ropensci.org/targets/reference/tar_make_future.html) uses the [`future`](https://future.futureverse.org/) package, and prior familiarity with [`future`](https://future.futureverse.org/) is extremely helpful for configuring `targets` and diagnosing errors. So before you use [`tar_make_future()`](https://docs.ropensci.org/targets/reference/tar_make_future.html), please read the documentation at <https://future.futureverse.org/> and try out [`future`](https://future.futureverse.org/) directly, ideally with backends like [`future.callr`](https://future.callr.futureverse.org/) and possibly [`future.batchtools`](https://future.batchtools.futureverse.org/). If you plan to use a scheduler like SLURM or SGE, please configure and experiment with [`future`](https://future.futureverse.org/) on your scheduler without `targets`. And if you later experience issues with [`tar_make_future()`](https://docs.ropensci.org/targets/reference/tar_make_future.html), try to isolate the problem by creating a [reproducible example](https://www.tidyverse.org/help/) that uses [`future`](https://future.futureverse.org/) and not `targets`. Same goes for [`future.batchtools`](https://future.batchtools.futureverse.org/) if applicable. Peeling back layers can help isolate problems and point toward specific solutions, and `targets` is usually one of the outer layers.
+
+The `use_targets()` function configures `future` and/or `future.batchtools` automatically (if those packages are installed). It tries to detect the cluster you are using, if any, and write the appropriate `_targets.R` settings `clustermq` configuration files commensurate with your system resources. On most systems, you should be able to run e.g. `tar_make_future(workers = 2)` right away. In case you have specific configuration needs, however, read on to learn how to set it up yourself.
 
 ### Transient workers
 
