@@ -12,690 +12,199 @@ library(dplyr)
 
 ## Branching
 
-Sometimes, a pipeline contains more targets than a user can comfortably type by hand. For projects with hundreds of targets, branching can make the `_targets.R` file more concise and easier to read and maintain. 
+Sometimes, a pipeline contains more targets than a user can comfortably type by hand. For projects with hundreds of targets, branching can make the code in `_targets.R` shorter and more concise. 
 
-`targets` supports two types of branching: dynamic branching and [static branching](#static). Some projects are better suited to dynamic branching, while others benefit more from [static branching](#static) or a combination of both. Some users understand dynamic branching more easily because it avoids metaprogramming, while others prefer [static branching](#static) because `tar_manifest()` and `tar_visnetwork()` provide immediate feedback. Except for the [section on dynamic-within-static branching](static.html#dynamic-within-static-branching), you can read the two chapters on branching in any order (or skip them) depending on your needs.
+`targets` supports two types of branching: dynamic branching and [static branching](#static). Some projects are better suited to dynamic branching, while others benefit more from [static branching](#static) or a combination of both. Here is a short list of tradeoffs.
+
+Dynamic | Static
+---|---
+Pipeline creates new targets at runtime. | All targets defined in advance.
+Cryptic target names. | Friendly target names.
+Scales to hundreds of branches. | Does not scale as easily for `tar_visnetwork()` etc.
+No metaprogramming required. | Familiarity with metaprogramming is helpful.
 
 ## About dynamic branching
 
-Dynamic branching is the act of defining new targets (i.e. branches) while the pipeline is running. Prior to launching the pipeline, the user does not necessarily know which branches will spawn or how many branches there will be, and each branch's inputs are determined at the last minute. Relative to [static branching](#static), dynamic branching is better suited to iterating over a larger number of very similar tasks (but can act as an inner layer inside [static branching](#static), as the next chapter demonstrates).
+Dynamic branching is the act of defining new targets (called branches) while the pipeline is running (e.g. during `tar_make()`). Prior to launching the pipeline, the user does not need to know the number of branches or the input data of each branch.
 
-## Patterns
+To use dynamic branching, set the `pattern` argument of `tar_target()`. The pattern determines how dynamic branches are created and how the input data is partitioned among the branches. A branch is single iteration of the target's command on a single piece of the input data. Branches are automatically created based on how the input data breaks into pieces, and `targets` automatically combines the output from all the branches when you reference the dynamic target as a whole.
 
-To use dynamic branching, set the `pattern` argument of `tar_target()`. A pattern is a dynamic branching specification expressed in terms of functional programming. The following minimal example explores the mechanics of patterns (and examples of branching in real-world projects are [linked from here](https://docs.ropensci.org/targets/index.html#examples)).
+## Example
+
+To illustrate, consider the example pipeline below. It uses dynamic branching to generate random [spirographs](https://wjschne.github.io/spiro/index.html).^[The pipeline uses code borrowed from the [`spiro`](https://wjschne.github.io/spiro/index.html) package. The code in the `spirograph_points()` function is adapted from <https://github.com/wjschne/spiro/blob/87f73ec37ceb0a7a9d09856ada8ae28d587a2ebd/R/spirograph.R>
+under the CC0 1.0 Universal license: <https://github.com/wjschne/spiro/blob/87f73ec37ceb0a7a9d09856ada8ae28d587a2ebd/LICENSE.md>]. A spirograph is a type of two-dimensional algebraic curve determined (in part) by parameters `fixed_radius` and `cycling_radius`. Targets `fixed_radius` and `cycling_radius` draw random parameter values, and the dynamic target `points` generates a spirograph dataset for each set of parameters (one spirograph per dynamic branch). Target `single_plot` plots each spirograph separately, and `combine_plot` plots all the spirographs together.
 
 ```{r, echo = FALSE, eval = TRUE}
 library(targets)
 tar_script({
-  list(
-    tar_target(w, c(1, 2)),
-    tar_target(x, c(10, 20)),
-    tar_target(y, w + x, pattern = map(w, x)),
-    tar_target(z, sum(y)),
-    tar_target(z2, length(y), pattern = map(y))
-  )
-})
-```
-
-```{r, eval = FALSE}
-# _targets.R
-library(targets)
-list(
-  tar_target(w, c(1, 2)),
-  tar_target(x, c(10, 20)),
-  tar_target(y, w + x, pattern = map(w, x)),
-  tar_target(z, sum(y)),
-  tar_target(z2, length(y), pattern = map(y))
-)
-```
-
-```{r, eval = TRUE}
-tar_visnetwork()
-```
-
-```{r, eval = TRUE}
-tar_make()
-```
-
-Above, targets `w`, `x`, and `z` are called **stems** because they do not create branches themselves. Target `y` is a **pattern** because it creates its own **branches** like `y_4096b6a8`. A branch is a special kind of target whose dependencies are slices of the targets mentioned in `pattern = map(...)` etc. If we read target `y` into memory, all the branches will load and automatically aggregate as a vector.^[To use list aggregation, write `tar_target(y, w + x, pattern = map(w, x), iteration = "list")` in the pipeline.]
-
-```{r, eval = TRUE}
-tar_read(y)
-```
-
-Target `z` accepts this entire aggregate of `y` and sums it.
-
-```{r, eval = TRUE}
-tar_read(z)
-```
-
-Target `z2` maps over `y`, so each each branch of `z2` accepts a branch of `y`.
-
-```{r, eval = TRUE}
-tar_read(z2)
-```
-
-## Pattern construction
-
-`targets` supports the following pattern types.
-
-* `map()`: iterate over one or more targets in sequence.
-* `cross()`: iterate over combinations of slices of targets.
-* `slice()`: select individual branches slices by numeric index. For example, `pattern = slice(x, index = c(3, 4))` applies the target's command to the third and fourth slices (or branches) of upstream target `x`.
-* `head()`: restrict branching to the first few elements.
-* `tail()`: restrict branching to the last few elements.
-* `sample()`: restrict branching to a random subset of elements.
-
-These patterns are composable. Below, target `z` creates six branches, one for each combination of `w` and (`x`, `y`) pair. The pattern `cross(w, map(x, y))` is equivalent to `tidyr::crossing(w, tidyr::nesting(x, y))`.
-
-```{r, echo = FALSE, eval = TRUE}
-tar_script({
-  options(crayon.enabled = FALSE)
-  list(
-    tar_target(w_comp, seq_len(2)),
-    tar_target(x_comp, head(letters, 3)),
-    tar_target(y_comp, head(LETTERS, 3)),
-    tar_target(
-      z_comp,
-      data.frame(w = w_comp, x = x_comp, y = y_comp),
-      pattern = cross(w_comp, map(x_comp, y_comp))
-    )
-  )
-})
-```
-
-```{r, eval = FALSE}
-# _targets.R
-library(targets)
-list(
-  tar_target(w_comp, seq_len(2)),
-  tar_target(x_comp, head(letters, 3)),
-  tar_target(y_comp, head(LETTERS, 3)),
-  tar_target(
-    z_comp,
-    data.frame(w = w_comp, x = x_comp, y = y_comp),
-    pattern = cross(w_comp, map(x_comp, y_comp))
-  )
-)
-```
-
-```{r, eval = TRUE}
-# R console
-tar_make()
-```
-
-```{r, eval = TRUE}
-# R console
-tar_read(z_comp)
-```
-
-With `slice()`, you can select pieces of a pattern or upstream target as follows.
-
-```{r, echo = FALSE, eval = TRUE}
-tar_script({
-  options(crayon.enabled = FALSE)
-  list(
-    tar_target(a_data, letters),
-    tar_target(b_data, LETTERS),
-    tar_target(
-      c_data,
-      paste(a_data, b_data),
-      pattern = slice(cross(a_data, b_data), index = seq(2, 3))
-    )
-  )
-})
-```
-
-```{r, eval = FALSE}
-# _targets.R
-library(targets)
-list(
-  tar_target(a_data, letters),
-  tar_target(b_data, LETTERS),
-  tar_target(
-    c_data,
-    paste(a_data, b_data),
-    pattern = slice(cross(a_data, b_data), index = seq(2, 3))
-  )
-)
-```
-
-```{r, eval = TRUE}
-# R console
-tar_make()
-```
-
-```{r, eval = TRUE}
-# R console
-tar_read(c_data)
-```
-
-## Branch provenance
-
-The `tar_branches()` function identifies dependency relationships among individual branches. In the example pipeline below, we can find out the branch of `y` that each branch of `z` depends on. 
-
-```{r, echo = FALSE, eval = TRUE}
-tar_script({
-  options(crayon.enabled = FALSE)
-  list(
-    tar_target(x, seq_len(3)),
-    tar_target(y, x + 1, pattern = map(x)),
-    tar_target(z, y + 1, pattern = map(y))
-  )
-})
-```
-
-```{r, eval = FALSE}
-# _targets.R
-library(targets)
-list(
-  tar_target(x, seq_len(3)),
-  tar_target(y, x + 1, pattern = map(x)),
-  tar_target(z, y + 1, pattern = map(y))
-)
-```
-
-```{r, eval = TRUE}
-tar_make()
-```
-
-```{r, eval = TRUE}
-branches <- tar_branches(z, map(y))
-branches
-```
-
-```{r, eval = TRUE}
-tar_read_raw(branches$y[2])
-```
-
-However, `tar_branches()` is not always helpful: for example, if we look at how `y` branches over `x`. `x` does not use dynamic branching, so `tar_branches()` does not return meaningful branch names.
-
-```{r, eval = TRUE}
-branches <- tar_branches(y, map(x))
-branches
-```
-
-```{r, error = TRUE, eval = TRUE}
-tar_read_raw(branches$x[2])
-```
-
-In situations like this, it is best to proactively write targets that keep track of information about their upstream branches. Data frames and `tibble`s are useful for this.
-
-```{r, echo = FALSE, eval = TRUE}
-tar_script({
-  options(crayon.enabled = FALSE)
-  list(
-    tar_target(x, seq_len(3)),
-    tar_target(y, data.frame(x = x, y = x + 1), pattern = map(x))
-  )
-})
-```
-
-```{r, eval = FALSE}
-# _targets.R
-library(targets)
-list(
-  tar_target(x, seq_len(3)),
-  tar_target(y, data.frame(x = x, y = x + 1), pattern = map(x))
-)
-```
-
-```{r, eval = TRUE}
-tar_make()
-```
-
-```{r, eval = TRUE}
-tar_read(y)
-```
-
-## Testing patterns
-
-To check the correctness of a pattern without running the pipeline, use [`tar_pattern()`](https://docs.ropensci.org/targets/reference/tar_pattern.html). Simply supply the pattern itself and the length of each dependency target. The branch names in the data frames below are made up, but they convey a high-level picture of the branching structure.
-
-```{r, eval = TRUE}
-tar_pattern(
-  cross(w_comp, map(x_comp, y_comp)),
-  w_comp = 2,
-  x_comp = 3,
-  y_comp = 3
-)
-```
-
-```{r, eval = TRUE}
-tar_pattern(
-  head(cross(w_comp, map(x_comp, y_comp)), n = 2),
-  w_comp = 2,
-  x_comp = 3,
-  y_comp = 3
-)
-```
-
-```{r, eval = TRUE}
-tar_pattern(
-  cross(w_comp, sample(map(x_comp, y_comp), n = 2)),
-  w_comp = 2,
-  x_comp = 3,
-  y_comp = 3
-)
-```
-
-## Branching over files
-
-Dynamic branching over files is tricky. A target with `format = "file"` treats the entire set of files as an irreducible bundle. That means in order to branch over files downstream, each file must already have its own branch.
-
-```{r, eval = FALSE}
-# _targets.R
-library(targets)
-list(
-  tar_target(paths, c("a.csv", "b.csv")),
-  tar_target(files, paths, format = "file", pattern = map(paths)),
-  tar_target(data, read_csv(files), pattern = map(files))
-)
-```
-
-The [`tar_files()`](https://docs.ropensci.org/tarchetypes/reference/tar_files.html) function from the [`tarchetypes`](https://github.com/ropensci/tarchetypes) package is shorthand for the first two targets above.
-
-```{r, eval = FALSE}
-# _targets.R
-library(targets)
-library(tarchetypes)
-list(
-  tar_files(files, c("a.csv", "b.csv")),
-  tar_target(data, read_csv(files), pattern = map(files))
-)
-```
-
-## Branching over rows
-
-By default, if you dynamically branch over a data frame, the branches are the rows. As later sections explain, this behavior changes if you set the `iteration` argument of `tar_target()` to anything other than `"vector"` (default).
-
-```{r, echo = FALSE, eval = TRUE}
-tar_script({
-  options(crayon.enabled = FALSE)
-  list(
-    tar_target(x, head(mtcars[, seq_len(3)])),
-    tar_target(y, x, pattern = map(x), iteration = "vector")
-  )
-})
-```
-
-```{r, eval = FALSE}
-# _targets.R
-library(targets)
-list(
-  tar_target(x, head(mtcars[, seq_len(3)])),
-  tar_target(y, x, pattern = map(x), iteration = "vector") # "vector" is already default
-)
-```
-
-
-```{r}
-tar_make()
-```
-
-```{r}
-tar_read(y, branches = 2)
-```
-
-`iteration = "vector"` also tells `tar_read(y)` to aggregate all the loaded branches into a data frame.
-
-```{r}
-tar_read(y, branches = c(1, 2, 5))
-```
-
-In addition, helpers in `tarchetypes` can branch over entire groups of rows. Row grouping happens through `iteration = "group"`, as explained later.
-
-* `tar_group_by()`: define row groups using `dplyr::group_by()` semantics.
-* `tar_group_select()`: define row groups using `tidyselect` semantics.
-* `tar_group_count()`: define a given number row groups.
-* `tar_group_size()`: define row groups of a given size.
-
-If you define a target with one of these functions, all downstream dynamic targets will automatically branch over the row groups.
-
-```{r, echo = FALSE, eval = TRUE}
-targets::tar_script({
-  produce_data <- function() {
-    expand.grid(var1 = c("a", "b"), var2 = c("c", "d"), rep = c(1, 2, 3))
+  library(ggplot2)
+  library(targets)
+  library(tibble)
+  
+  # From https://github.com/wjschne/spiro/blob/87f73ec37ceb0a7a9d09856ada8ae28d587a2ebd/R/spirograph.R
+  # Adapted under the CC0 1.0 Universal license: https://github.com/wjschne/spiro/blob/87f73ec37ceb0a7a9d09856ada8ae28d587a2ebd/LICENSE.md
+  spirograph_points <- function(fixed_radius, cycling_radius) {
+    t <- seq(1, 30 * pi, length.out = 1e4)
+    diff <- (fixed_radius - cycling_radius)
+    ratio <- diff / cycling_radius
+    x <- diff * cos(t) + cos(t * ratio)
+    y <- diff * sin(t) - sin(t * ratio)
+    label <- "fixed_radius = %s, cycling_radius = %s"
+    parameters <- sprintf(label, fixed_radius, cycling_radius)
+    tibble(x = x, y = y, parameters = parameters)
   }
+  
+  plot_spirographs <- function(points) {
+    ggplot(points) +
+      geom_point(aes(x = x, y = y, color = parameters), size = 0.1) +
+      facet_wrap(~parameters) +
+      theme_gray(16) +
+      guides(color = "none")
+  }
+  
   list(
-    tarchetypes::tar_group_by(data, produce_data(), var1, var2),
-    tar_target(group, data, pattern = map(data))
+    tar_target(fixed_radius, sample.int(n = 10, size = 2)),
+    tar_target(cycling_radius, sample.int(n = 10, size = 2)),
+    tar_target(
+      points,
+      spirograph_points(fixed_radius, cycling_radius),
+      pattern = map(fixed_radius, cycling_radius)
+    ),
+    tar_target(
+      single_plot,
+      plot_spirographs(points),
+      pattern = map(points),
+      iteration = "list"
+    ),
+    tar_target(combined_plot, plot_spirographs(points))
   )
 })
 ```
 
 ```{r, eval = FALSE}
-# _targets.R file:
+# _targets.R
+library(ggplot2)
 library(targets)
-library(tarchetypes)
-produce_data <- function() {
-  expand.grid(var1 = c("a", "b"), var2 = c("c", "d"), rep = c(1, 2, 3))
+library(tibble)
+
+# From https://github.com/wjschne/spiro/blob/87f73ec37ceb0a7a9d09856ada8ae28d587a2ebd/R/spirograph.R
+# Adapted under the CC0 1.0 Universal license: https://github.com/wjschne/spiro/blob/87f73ec37ceb0a7a9d09856ada8ae28d587a2ebd/LICENSE.md
+spirograph_points <- function(fixed_radius, cycling_radius) {
+  t <- seq(1, 30 * pi, length.out = 1e4)
+  diff <- (fixed_radius - cycling_radius)
+  ratio <- diff / cycling_radius
+  x <- diff * cos(t) + cos(t * ratio)
+  y <- diff * sin(t) - sin(t * ratio)
+  label <- "fixed_radius = %s, cycling_radius = %s"
+  parameters <- sprintf(label, fixed_radius, cycling_radius)
+  tibble(x = x, y = y, parameters = parameters)
 }
+
+plot_spirographs <- function(points) {
+  ggplot(points) +
+    geom_point(aes(x = x, y = y, color = parameters), size = 0.1) +
+    facet_wrap(~parameters) +
+    theme_gray(16) +
+    guides(color = "none")
+}
+
 list(
-  tar_group_by(data, produce_data(), var1, var2),
-  tar_target(group, data, pattern = map(data))
+  tar_target(fixed_radius, sample.int(n = 10, size = 2)),
+  tar_target(cycling_radius, sample.int(n = 10, size = 2)),
+  tar_target(
+    points,
+    spirograph_points(fixed_radius, cycling_radius),
+    pattern = map(fixed_radius, cycling_radius)
+  ),
+  tar_target(
+    single_plot,
+    plot_spirographs(points),
+    pattern = map(points),
+    iteration = "list"
+  ),
+  tar_target(combined_plot, plot_spirographs(points))
 )
 ```
 
 ```{r, eval = TRUE}
-# R console:
-library(targets)
 tar_make()
-
-# First row group:
-tar_read(group, branches = 1)
-
-# Second row group:
-tar_read(group, branches = 2)
 ```
 
-For more information on how the row grouping mechanism works, see the section on "group" iteration below.
+The final plot shows all the spirographs together.
+
+```{r, eval = TRUE}
+tar_read(combined_plot)
+```
+
+This plot comes from all the branches of `points` aggregated together. Because target `points` has `iteration = "vector"` in `tar_target()`, any reference to the whole target automatically aggregates the branches using `vctrs::vec_c()`. For data frames, this just binds all the rows.
+
+```{r, eval = TRUE}
+tar_read(points)
+```
+
+By contrast, target `single_plot` list of branches because of `iteration = "list"`.
+
+```{r}
+tar_load(single_plot)
+class(single_plot)
+length(single_plot)
+```
+
+Use the `branches` argument of `tar_read()` to read an individual branch or subset of branches.
+
+```{r}
+tar_read(single_plot, branches = 1)
+```
+
+
+## Pattern types
+
+`targets` supports many more types of dynamic branching patterns.
+
+* `map()`: one branch per tuple of elements.
+* `cross()`: one branch per *combination* of elements.
+* `slice()`: select individual pieces to branch over. For example, `pattern = slice(x, index = c(3, 4))` branches over the third and fourth slices (or branches) of target `x`.
+* `head()`: branch over the first few elements.
+* `tail()`: branch over the last few elements.
+* `sample()`: branch over a random subset of elements.
+
+Patterns are composable. For example, `pattern = cross(other_parameter, map(fixed_radius, cycling_radius))` is conceptually equivalent to `tidyr::crossing(other_parameter, tidyr::nesting(fixed_radius, cycling_radius))`. You can test and experiment with branching structures using [`tar_pattern()`](https://docs.ropensci.org/targets/reference/tar_pattern.html). In the output below, suffixes `_1`, `_2`, and `_3`, denote both dynamic branches and the slices of upstream data they branch over.
+
+```{r, eval = TRUE}
+tar_pattern(
+  cross(other_parameter, map(fixed_radius, cycling_radius)),
+  other_parameter = 3,
+  fixed_radius = 2,
+  cycling_radius = 2
+)
+```
 
 ## Iteration
 
-The `iteration` arguments of `tar_target()` and `tar_option_set()` control the slicing of stems and the aggregation of patterns. For example, if you write a stem target with `tar_target(x, fun(), iteration = "list")`, then all downstream targets that branch over `x` will give list-like slices `x[[1]]`, `x[[2]]`, etc. to the individual branches instead of the default vector-like slices `x[1]`, `x[2]`, etc. Likewise, for a pattern defined with `tar_target(y, fun(x), pattern = map(x), iteration = "list")`, `tar_read(y)` will return a list instead of a vector, and a downstream target like `tar_target(y, fun(z))` will treat `z` as a list instead of a vector.^[`iteration` does not control the aggregation of stems because stems are already aggregated, so there is nothing to be done. Likewise, it does not control the splitting of patterns because the `pattern` argument of `tar_target()` already does that.]
-
-### Vector iteration
-
-`targets` uses vector iteration by default, and you can opt into this behavior by setting `iteration = "vector"` in `tar_target()`. In vector iteration, `targets` uses the [`vctrs`](https://vctrs.r-lib.org/) package to split stems and aggregate branches. That means `vctrs::vec_slice()` slices up stems like `x` for mapping, and `vctrs::vec_c()` aggregates patterns like `y` for operations like `tar_read()`.
-
-For atomic vectors like in the example above, this behavior is already intuitive. But if we map over a data frame, each branch will get a row of the data frame due to vector iteration.
-
-```{r, echo = FALSE, eval = TRUE}
-tar_script({
-  options(crayon.enabled = FALSE)
-  print_and_return <- function(x) {
-    print(x)
-    x
-  }
-  list(
-    tar_target(
-      x,
-      data.frame(a = c(1, 2), b = c("a", "b")),
-      # Already the default unless tar_option_get(iteration") is not "vector":
-      iteration = "vector"
-    ),
-    tar_target(
-      y,
-      print_and_return(x),
-      pattern = map(x),
-      # Already the default unless tar_option_get(iteration") is not "vector":
-      iteration = "vector"
-    )
-  )
-})
-```
+The `iteration` argument of `tar_target()` determines how to split non-dynamic targets and how to aggregate dynamic ones. Consider the following subset of the spirograph pipeline. Below, `iteration` is equal to `"vector"` by default.
 
 ```{r, eval = FALSE}
-library(targets)
-print_and_return <- function(x) {
-  print(x)
-  x
-}
 list(
+  tar_target(fixed_radius, sample.int(n = 10, size = 2)),
+  tar_target(cycling_radius, sample.int(n = 10, size = 2)),
   tar_target(
-    x,
-    data.frame(a = c(1, 2), b = c("a", "b")),
-    # Already the default unless tar_option_get(iteration") is not "vector":
-    iteration = "vector"
+    points,
+    spirograph_points(fixed_radius, cycling_radius),
+    pattern = map(fixed_radius, cycling_radius)
   ),
-  tar_target(
-    y,
-    print_and_return(x),
-    pattern = map(x),
-    # Already the default unless tar_option_get(iteration") is not "vector":
-    iteration = "vector"
-  )
+  tar_target(combined_plot, plot_spirographs(points))
 )
 ```
 
-```{r, eval = TRUE}
-tar_make()
-```
+For non-dynamic targets `fixed_radius` and `cycling_radius`, `iteration = "vector"` means that downstream dynamic targets branch over slices from `vctrs::vec_slice()`. In other words, the first branch of `points` is `spirograph_points(vec_slice(fixed_radius, 1), vec_slice(cycling_radius, 1))`, and second branch of `points` is `spirograph_points(vec_slice(fixed_radius, 2), vec_slice(cycling_radius, 2))`. Since `fixed_radius` is a numeric vector, `vec_slice(fixed_radius, 1)` is a vector of length 1. (But if `fixed_radius` were a data frame, then `vec_slice(fixed_radius, 1)` would be a one-row data frame). If `iteration` were equal to `"list"` for `fixed_radius` and `cycling_radius`, then the first and second branches would instead be `spirograph_points(fixed_radius[[1]], cycling_radius[[1]])` and `spirograph_points(fixed_radius[[2]])`, respectively.
 
-And since `y` also has iteration = `"vector"`, the aggregate of `y` is a single data frame of all the rows.
+For dynamic target `points`, `iteration = "vector"` means all the branches are aggregated with `vctrs::vec_c()`. Since each branch of `points` is a data frame, aggregation is equivalent to `dplyr::bind_rows()` in this case. That is why, as previously shown, `tar_read(points)` returns a monolithic data frame. `points` becomes a monolithic data frame also when non-dynamic target `combined_plot` runs its command `plot_spirographs(points)`. In other words, `plot_spirographs(points)` is equivalent to `plot_spirographs(vec_c(points_940d58fc, points_bf28fe5a))`, where `points_940d58fc` and `points_bf28fe5a` are the individual branches of `points`.^[`points_940d58fc` and `points_bf28fe5a` are targets in their own right and can be inspected with `tar_read(points_940d58fc)` and `tar_read(points_bf28fe5a)`]. If `iteration` were equal to `"list"` for `points`, then `plot_spirographs(points)` in `combined_plot` would be equivalent to `plot_spirographs(list(points_940d58fc, points_bf28fe5a))`.
 
-```{r, eval = TRUE}
-tar_read(y)
-```
+`iteration = "group"` is for dynamic branching across `dplyr::group_by()` row groups of a data frame, and it is covered in the next section.
 
-### List iteration
+## Branching over row groups
 
-List iteration splits and aggregates targets as simple lists. If a non-dynamic target `x` has list iteration, then all branches of downstream patterns will get `x[[1]]`, `x[[2]]`, and so on. If a dynamic target `y` has list iteration, then all targets downstream of `y` will see `y` as a list, and `tar_read(y)` will be a list. 
 
-The following example demonstrates the slicing and aggregation behavior of list iteration. Because stem target `x` uses list iteration, the downstream target `y` maps over the columns of the data frame instead of the rows. Likewise, `tar_read(z)` is a list because `z` is a dynamic target with list iteration.
-
-```{r, echo = FALSE, eval = TRUE}
-tar_script({
-  options(crayon.enabled = FALSE)
-  print_and_return <- function(x) {
-    print(x)
-    x
-  }
-  list(
-    tar_target(
-      x,
-      data.frame(a = c(1, 2), b = c("a", "b")),
-      iteration = "list"
-    ),
-    tar_target(y, print_and_return(x), pattern = map(x)),
-    tar_target(z, x, pattern = map(x), iteration = "list")
-  )
-})
-```
-
-```{r, eval = FALSE}
-# _targets.R
-library(targets)
-print_and_return <- function(x) {
-  print(x)
-  x
-}
-list(
-  tar_target(
-    x,
-    data.frame(a = c(1, 2), b = c("a", "b")),
-    iteration = "list"
-  ),
-  tar_target(y, print_and_return(x), pattern = map(x)),
-  tar_target(z, x, pattern = map(x), iteration = "list")
-)
-```
-
-```{r, eval = TRUE}
-tar_make()
-```
-
-```{r, error = TRUE, eval = TRUE}
-tar_read(y)
-```
-
-```{r, eval = TRUE}
-tar_read(z)
-```
-
-### Group iteration
-
-Group iteration brings `dplyr::group_by()` functionality to patterns. This way, we can map or cross over custom subsets of rows. Consider the following data frame.
-
-```{r}
-object <- data.frame(
-  x = seq_len(6),
-  id = rep(letters[seq_len(3)], each = 2)
-)
-
-object
-```
-
-To map over the groups of rows defined by the `id` column, we
-
-1. Use `group_by()` and `tar_group()` to define the groups of rows, and
-1. Use `iteration = "group"` in `tar_target()` to tell downstream patterns to use the row groups.
-
-Put together, the pipeline looks like this.
-
-```{r, echo = FALSE, eval = TRUE}
-tar_script({
-options(crayon.enabled = FALSE)
-tar_option_set(packages = "dplyr")
-list(
-  tar_target(
-    data,
-    data.frame(
-      x = seq_len(6),
-      id = rep(letters[seq_len(3)], each = 2)
-    ) %>%
-      group_by(id) %>%
-      tar_group(),
-    iteration = "group"
-  ),
-  tar_target(
-    subsets,
-    data,
-    pattern = map(data),
-    iteration = "list"
-  )
-)
-})
-```
-
-```{r, eval = FALSE}
-# _targets.R
-library(targets)
-tar_option_set(packages = "dplyr")
-list(
-  tar_target(
-    data,
-    data.frame(
-      x = seq_len(6),
-      id = rep(letters[seq_len(3)], each = 2)
-    ) %>%
-      group_by(id) %>%
-      tar_group(),
-    iteration = "group"
-  ),
-  tar_target(
-    subsets,
-    data,
-    pattern = map(data),
-    iteration = "list"
-  )
-)
-```
-
-```{r, eval = TRUE}
-tar_make()
-```
-
-```{r, eval = TRUE}
-lapply(tar_read(subsets), as.data.frame)
-```
-
-Row groups are defined in the special `tar_group` column created by `tar_group()`. 
-
-```{r, eval = TRUE}
-data.frame(
-  x = seq_len(6),
-  id = rep(letters[seq_len(3)], each = 2)
-) %>%
-  dplyr::group_by(id) %>%
-  tar_group()
-```
-
-`tar_group()` creates this column based on the orderings of the grouping variables supplied to `dplyr::group_by()`, not the order of the rows in the data.
-
-```{r, eval = TRUE}
-flip_order <- function(x) {
-  ordered(x, levels = sort(unique(x), decreasing = TRUE))
-}
-
-data.frame(
-  x = seq_len(6),
-  id = flip_order(rep(letters[seq_len(3)], each = 2))
-) %>%
-  dplyr::group_by(id) %>%
-  tar_group()
-```
-
-The ordering in `tar_group` agrees with the ordering shown by `dplyr::group_keys()`.
-
-```{r, eval = TRUE}
-data.frame(
-  x = seq_len(6),
-  id = flip_order(rep(letters[seq_len(3)], each = 2))
-) %>%
-  dplyr::group_by(id) %>%
-  dplyr::group_keys()
-```
-
-Branches are arranged in increasing order with respect to the integers in `tar_group`.
-
-```{r, echo = FALSE, eval = TRUE}
-tar_script({
-options(crayon.enabled = FALSE)
-tar_option_set(packages = "dplyr")
-
-flip_order <- function(x) {
-  ordered(x, levels = sort(unique(x), decreasing = TRUE))
-}
-
-list(
-  tar_target(
-    data,
-    data.frame(
-      x = seq_len(6),
-      id = flip_order(rep(letters[seq_len(3)], each = 2))
-    ) %>%
-      group_by(id) %>%
-      tar_group(),
-    iteration = "group"
-  ),
-  tar_target(
-    subsets,
-    data,
-    pattern = map(data),
-    iteration = "list"
-  )
-)
-})
-```
-
-```{r, eval = FALSE}
-# _targets.R
-library(targets)
-tar_option_set(packages = "dplyr")
-
-flip_order <- function(x) {
-  ordered(x, levels = sort(unique(x), decreasing = TRUE))
-}
-
-list(
-  tar_target(
-    data,
-    data.frame(
-      x = seq_len(6),
-      id = flip_order(rep(letters[seq_len(3)], each = 2))
-    ) %>%
-      group_by(id) %>%
-      tar_group(),
-    iteration = "group"
-  ),
-  tar_target(
-    subsets,
-    data,
-    pattern = map(data),
-    iteration = "list"
-  )
-)
-```
-
-```{r, eval = TRUE}
-tar_make()
-```
-
-```{r, eval = TRUE}
-lapply(tar_read(subsets), as.data.frame)
-```
 
 ## Dynamic branching performance
 

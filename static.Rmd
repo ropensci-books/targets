@@ -15,7 +15,14 @@ library(tidyverse)
 
 Sometimes, a pipeline contains more targets than a user can comfortably type by hand. For projects with hundreds of targets, branching can make the `_targets.R` file more concise and easier to read and maintain. 
 
-`targets` supports two types of branching: dynamic branching and [static branching](#static). Some projects are better suited to dynamic branching, while others benefit more from [static branching](#static) or a combination of both. Some users understand dynamic branching more easily because it avoids metaprogramming, while others prefer [static branching](#static) because `tar_manifest()` and `tar_visnetwork()` provide immediate feedback. Except for the [section on dynamic-within-static branching](static.html#dynamic-within-static-branching), you can read the two chapters on branching in any order (or skip them) depending on your needs.
+`targets` supports two types of branching: dynamic branching and [static branching](#static). Some projects are better suited to dynamic branching, while others benefit more from [static branching](#static) or a combination of both. Here is a short list of tradeoffs.
+
+Dynamic | Static
+---|---
+Pipeline creates new targets at runtime. | All targets defined in advance.
+Cryptic target names. | Friendly target names.
+Scales to hundreds of branches. | Does not scale as easily for `tar_visnetwork()` etc.
+No metaprogramming required. | Familiarity with metaprogramming is helpful.
 
 ## When to use static branching
 
