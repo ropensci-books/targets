@@ -1,78 +1,26 @@
 <!DOCTYPE html>
-<html lang="" xml:lang="">
-<head>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 13 High-performance computing | The targets R Package User Manual</title>
-  <meta name="description" content="In-depth discussion of the major functionality of targets." />
-  <meta name="generator" content="bookdown 0.27 and GitBook 2.6.7" />
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.38">
 
-  <meta property="og:title" content="Chapter 13 High-performance computing | The targets R Package User Manual" />
-  <meta property="og:type" content="book" />
-  <meta property="og:image" content="https://books.ropensci.org/targets/man/figures/logo.png" />
-  <meta property="og:description" content="In-depth discussion of the major functionality of targets." />
-  <meta name="github-repo" content="ropensci-books/targets" />
-
-  <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 13 High-performance computing | The targets R Package User Manual" />
-  
-  <meta name="twitter:description" content="In-depth discussion of the major functionality of targets." />
-  <meta name="twitter:image" content="https://books.ropensci.org/targets/man/figures/logo.png" />
-
-<meta name="author" content="Will Landau" />
-<meta name="author" content="Copyright Eli Lilly and Company" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-  <link rel="apple-touch-icon-precomposed" sizes="120x120" href="man/figures/apple-touch-icon.png" />
-  <link rel="shortcut icon" href="man/figures/favicon.ico" type="image/x-icon" />
-<link rel="prev" href="static.html"/>
-<link rel="next" href="drake.html"/>
-<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
-<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
-
-
-
-
-
-
-
-
-<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
-<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
-<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
-<script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
-<link href="libs/vis-9.1.0/vis-network.min.css" rel="stylesheet" />
-<script src="libs/vis-9.1.0/vis-network.min.js"></script>
-<script src="libs/visNetwork-binding-2.1.0/visNetwork.js"></script>
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-150843595-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-150843595-1');
-</script>
-
-
-<style type="text/css">
+<title>The targets R package user manual - 13&nbsp; High-performance computing</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
@@ -133,306 +81,307 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </style>
 
 
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./drake.html" rel="next">
+<link href="./static.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script src="site_libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<link href="site_libs/vis-9.1.0/vis-network.min.css" rel="stylesheet">
+<script src="site_libs/vis-9.1.0/vis-network.min.js"></script>
+<script src="site_libs/visNetwork-binding-2.1.0/visNetwork.js"></script>
+
+
 </head>
 
-<body>
+<body class="nav-sidebar floating">
 
-
-
-  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
-
-    <div class="book-summary">
-      <nav role="navigation">
-
-<ul class="summary">
-<li><a href="./">The targets R Package User Manual</a></li>
-
-<li class="divider"></li>
-<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
-<ul>
-<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#motivation"><i class="fa fa-check"></i><b>1.1</b> Motivation</a></li>
-<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#pipeline-tools"><i class="fa fa-check"></i><b>1.2</b> Pipeline tools</a></li>
-<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#the-targets-package"><i class="fa fa-check"></i><b>1.3</b> The <code>targets</code> package</a></li>
-<li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#about-this-manual"><i class="fa fa-check"></i><b>1.4</b> About this manual</a></li>
-<li class="chapter" data-level="1.5" data-path="index.html"><a href="index.html#what-about-drake"><i class="fa fa-check"></i><b>1.5</b> What about <code>drake</code>?</a></li>
-</ul></li>
-<li class="chapter" data-level="2" data-path="walkthrough.html"><a href="walkthrough.html"><i class="fa fa-check"></i><b>2</b> Walkthrough</a>
-<ul>
-<li class="chapter" data-level="2.1" data-path="walkthrough.html"><a href="walkthrough.html#about-this-example"><i class="fa fa-check"></i><b>2.1</b> About this example</a></li>
-<li class="chapter" data-level="2.2" data-path="walkthrough.html"><a href="walkthrough.html#file-structure"><i class="fa fa-check"></i><b>2.2</b> File structure</a></li>
-<li class="chapter" data-level="2.3" data-path="walkthrough.html"><a href="walkthrough.html#target-script-file"><i class="fa fa-check"></i><b>2.3</b> Target script file</a></li>
-<li class="chapter" data-level="2.4" data-path="walkthrough.html"><a href="walkthrough.html#inspect-the-pipeline"><i class="fa fa-check"></i><b>2.4</b> Inspect the pipeline</a></li>
-<li class="chapter" data-level="2.5" data-path="walkthrough.html"><a href="walkthrough.html#run-the-pipeline"><i class="fa fa-check"></i><b>2.5</b> Run the pipeline</a></li>
-<li class="chapter" data-level="2.6" data-path="walkthrough.html"><a href="walkthrough.html#changes"><i class="fa fa-check"></i><b>2.6</b> Changes</a>
-<ul>
-<li class="chapter" data-level="2.6.1" data-path="walkthrough.html"><a href="walkthrough.html#change-code"><i class="fa fa-check"></i><b>2.6.1</b> Change code</a></li>
-<li class="chapter" data-level="2.6.2" data-path="walkthrough.html"><a href="walkthrough.html#change-data"><i class="fa fa-check"></i><b>2.6.2</b> Change data</a></li>
-</ul></li>
-<li class="chapter" data-level="2.7" data-path="walkthrough.html"><a href="walkthrough.html#read-metadata"><i class="fa fa-check"></i><b>2.7</b> Read metadata</a></li>
-</ul></li>
-<li class="chapter" data-level="3" data-path="debugging.html"><a href="debugging.html"><i class="fa fa-check"></i><b>3</b> Debugging</a>
-<ul>
-<li class="chapter" data-level="3.1" data-path="debugging.html"><a href="debugging.html#error-messages"><i class="fa fa-check"></i><b>3.1</b> Error messages</a></li>
-<li class="chapter" data-level="3.2" data-path="debugging.html"><a href="debugging.html#environment-browser"><i class="fa fa-check"></i><b>3.2</b> Environment browser</a></li>
-<li class="chapter" data-level="3.3" data-path="debugging.html"><a href="debugging.html#the-debug-option"><i class="fa fa-check"></i><b>3.3</b> The debug option</a></li>
-<li class="chapter" data-level="3.4" data-path="debugging.html"><a href="debugging.html#workspaces"><i class="fa fa-check"></i><b>3.4</b> Workspaces</a></li>
-<li class="chapter" data-level="3.5" data-path="debugging.html"><a href="debugging.html#tradeoffs"><i class="fa fa-check"></i><b>3.5</b> Tradeoffs</a></li>
-</ul></li>
-<li class="chapter" data-level="4" data-path="performance.html"><a href="performance.html"><i class="fa fa-check"></i><b>4</b> Performance</a>
-<ul>
-<li class="chapter" data-level="4.1" data-path="performance.html"><a href="performance.html#monitoring-the-pipeline"><i class="fa fa-check"></i><b>4.1</b> Monitoring the pipeline</a></li>
-<li class="chapter" data-level="4.2" data-path="performance.html"><a href="performance.html#performance-1"><i class="fa fa-check"></i><b>4.2</b> Performance</a></li>
-</ul></li>
-<li class="chapter" data-level="5" data-path="functions.html"><a href="functions.html"><i class="fa fa-check"></i><b>5</b> Functions</a>
-<ul>
-<li class="chapter" data-level="5.1" data-path="functions.html"><a href="functions.html#problems-with-script-based-workflows"><i class="fa fa-check"></i><b>5.1</b> Problems with script-based workflows</a></li>
-<li class="chapter" data-level="5.2" data-path="functions.html"><a href="functions.html#functions-1"><i class="fa fa-check"></i><b>5.2</b> Functions</a></li>
-<li class="chapter" data-level="5.3" data-path="functions.html"><a href="functions.html#writing-functions"><i class="fa fa-check"></i><b>5.3</b> Writing functions</a></li>
-<li class="chapter" data-level="5.4" data-path="functions.html"><a href="functions.html#functions-in-pipelines"><i class="fa fa-check"></i><b>5.4</b> Functions in pipelines</a></li>
-<li class="chapter" data-level="5.5" data-path="functions.html"><a href="functions.html#tracking-changes"><i class="fa fa-check"></i><b>5.5</b> Tracking changes</a></li>
-</ul></li>
-<li class="chapter" data-level="6" data-path="targets.html"><a href="targets.html"><i class="fa fa-check"></i><b>6</b> Target construction</a>
-<ul>
-<li class="chapter" data-level="6.1" data-path="targets.html"><a href="targets.html#target-names"><i class="fa fa-check"></i><b>6.1</b> Target names</a></li>
-<li class="chapter" data-level="6.2" data-path="targets.html"><a href="targets.html#what-a-target-should-do"><i class="fa fa-check"></i><b>6.2</b> What a target should do</a></li>
-<li class="chapter" data-level="6.3" data-path="targets.html"><a href="targets.html#how-much-a-target-should-do"><i class="fa fa-check"></i><b>6.3</b> How much a target should do</a></li>
-<li class="chapter" data-level="6.4" data-path="targets.html"><a href="targets.html#working-with-tools-outside-r"><i class="fa fa-check"></i><b>6.4</b> Working with tools outside R</a></li>
-<li class="chapter" data-level="6.5" data-path="targets.html"><a href="targets.html#side-effects"><i class="fa fa-check"></i><b>6.5</b> Side effects</a></li>
-<li class="chapter" data-level="6.6" data-path="targets.html"><a href="targets.html#dependencies"><i class="fa fa-check"></i><b>6.6</b> Dependencies</a></li>
-<li class="chapter" data-level="6.7" data-path="targets.html"><a href="targets.html#return-value"><i class="fa fa-check"></i><b>6.7</b> Return value</a>
-<ul>
-<li class="chapter" data-level="6.7.1" data-path="targets.html"><a href="targets.html#saving"><i class="fa fa-check"></i><b>6.7.1</b> Saving</a></li>
-<li class="chapter" data-level="6.7.2" data-path="targets.html"><a href="targets.html#hashing"><i class="fa fa-check"></i><b>6.7.2</b> Hashing</a></li>
-<li class="chapter" data-level="6.7.3" data-path="targets.html"><a href="targets.html#workaround"><i class="fa fa-check"></i><b>6.7.3</b> Workaround</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="7" data-path="packages.html"><a href="packages.html"><i class="fa fa-check"></i><b>7</b> Packages</a>
-<ul>
-<li class="chapter" data-level="7.1" data-path="packages.html"><a href="packages.html#loading-and-configuring-r-packages"><i class="fa fa-check"></i><b>7.1</b> Loading and configuring R packages</a></li>
-<li class="chapter" data-level="7.2" data-path="packages.html"><a href="packages.html#r-packages-as-projects"><i class="fa fa-check"></i><b>7.2</b> R packages as projects</a></li>
-<li class="chapter" data-level="7.3" data-path="packages.html"><a href="packages.html#target-factories"><i class="fa fa-check"></i><b>7.3</b> Target Factories</a></li>
-<li class="chapter" data-level="7.4" data-path="packages.html"><a href="packages.html#package-based-invalidation"><i class="fa fa-check"></i><b>7.4</b> Package-based invalidation</a></li>
-</ul></li>
-<li class="chapter" data-level="8" data-path="projects.html"><a href="projects.html"><i class="fa fa-check"></i><b>8</b> Projects</a>
-<ul>
-<li class="chapter" data-level="8.1" data-path="projects.html"><a href="projects.html#extra-reproducibility"><i class="fa fa-check"></i><b>8.1</b> Extra reproducibility</a></li>
-<li class="chapter" data-level="8.2" data-path="projects.html"><a href="projects.html#project-files"><i class="fa fa-check"></i><b>8.2</b> Project files</a></li>
-<li class="chapter" data-level="8.3" data-path="projects.html"><a href="projects.html#multiple-projects"><i class="fa fa-check"></i><b>8.3</b> Multiple projects</a>
-<ul>
-<li class="chapter" data-level="8.3.1" data-path="projects.html"><a href="projects.html#create-each-project."><i class="fa fa-check"></i><b>8.3.1</b> Create each project.</a></li>
-<li class="chapter" data-level="8.3.2" data-path="projects.html"><a href="projects.html#configure-each-project."><i class="fa fa-check"></i><b>8.3.2</b> Configure each project.</a></li>
-<li class="chapter" data-level="8.3.3" data-path="projects.html"><a href="projects.html#run-each-project"><i class="fa fa-check"></i><b>8.3.3</b> Run each project</a></li>
-</ul></li>
-<li class="chapter" data-level="8.4" data-path="projects.html"><a href="projects.html#interdependent-projects"><i class="fa fa-check"></i><b>8.4</b> Interdependent projects</a>
-<ul>
-<li class="chapter" data-level="8.4.1" data-path="projects.html"><a href="projects.html#config-inheritance"><i class="fa fa-check"></i><b>8.4.1</b> Config inheritance</a></li>
-<li class="chapter" data-level="8.4.2" data-path="projects.html"><a href="projects.html#sharing-targets"><i class="fa fa-check"></i><b>8.4.2</b> Sharing targets</a></li>
-</ul></li>
-<li class="chapter" data-level="8.5" data-path="projects.html"><a href="projects.html#the-config-package"><i class="fa fa-check"></i><b>8.5</b> The config package</a></li>
-</ul></li>
-<li class="chapter" data-level="9" data-path="data.html"><a href="data.html"><i class="fa fa-check"></i><b>9</b> Data: storage and memory</a>
-<ul>
-<li class="chapter" data-level="9.1" data-path="data.html"><a href="data.html#local-data-store"><i class="fa fa-check"></i><b>9.1</b> Local data store</a></li>
-<li class="chapter" data-level="9.2" data-path="data.html"><a href="data.html#external-files"><i class="fa fa-check"></i><b>9.2</b> External files</a></li>
-<li class="chapter" data-level="9.3" data-path="data.html"><a href="data.html#memory"><i class="fa fa-check"></i><b>9.3</b> Memory</a></li>
-<li class="chapter" data-level="9.4" data-path="data.html"><a href="data.html#cloud-storage"><i class="fa fa-check"></i><b>9.4</b> Cloud storage</a>
-<ul>
-<li class="chapter" data-level="9.4.1" data-path="data.html"><a href="data.html#cost"><i class="fa fa-check"></i><b>9.4.1</b> Cost</a></li>
-<li class="chapter" data-level="9.4.2" data-path="data.html"><a href="data.html#aws-setup"><i class="fa fa-check"></i><b>9.4.2</b> AWS setup</a></li>
-<li class="chapter" data-level="9.4.3" data-path="data.html"><a href="data.html#gcp-setup"><i class="fa fa-check"></i><b>9.4.3</b> GCP setup</a></li>
-<li class="chapter" data-level="9.4.4" data-path="data.html"><a href="data.html#usage"><i class="fa fa-check"></i><b>9.4.4</b> Usage</a></li>
-<li class="chapter" data-level="9.4.5" data-path="data.html"><a href="data.html#data-version-control"><i class="fa fa-check"></i><b>9.4.5</b> Data version control</a></li>
-</ul></li>
-<li class="chapter" data-level="9.5" data-path="data.html"><a href="data.html#cleaning-up-local-internal-data-files"><i class="fa fa-check"></i><b>9.5</b> Cleaning up local internal data files</a></li>
-</ul></li>
-<li class="chapter" data-level="10" data-path="literate-programming.html"><a href="literate-programming.html"><i class="fa fa-check"></i><b>10</b> Literate programming</a>
-<ul>
-<li class="chapter" data-level="10.1" data-path="literate-programming.html"><a href="literate-programming.html#literate-programming-within-a-target"><i class="fa fa-check"></i><b>10.1</b> Literate programming within a target</a>
-<ul>
-<li class="chapter" data-level="10.1.1" data-path="literate-programming.html"><a href="literate-programming.html#r-markdown-targets"><i class="fa fa-check"></i><b>10.1.1</b> R Markdown targets</a></li>
-<li class="chapter" data-level="10.1.2" data-path="literate-programming.html"><a href="literate-programming.html#quarto-targets"><i class="fa fa-check"></i><b>10.1.2</b> Quarto targets</a></li>
-<li class="chapter" data-level="10.1.3" data-path="literate-programming.html"><a href="literate-programming.html#parameterized-documents"><i class="fa fa-check"></i><b>10.1.3</b> Parameterized documents</a></li>
-<li class="chapter" data-level="10.1.4" data-path="literate-programming.html"><a href="literate-programming.html#single-parameter-set"><i class="fa fa-check"></i><b>10.1.4</b> Single parameter set</a></li>
-<li class="chapter" data-level="10.1.5" data-path="literate-programming.html"><a href="literate-programming.html#multiple-parameter-sets"><i class="fa fa-check"></i><b>10.1.5</b> Multiple parameter sets</a></li>
-</ul></li>
-<li class="chapter" data-level="10.2" data-path="literate-programming.html"><a href="literate-programming.html#target-markdown"><i class="fa fa-check"></i><b>10.2</b> Target Markdown</a>
-<ul>
-<li class="chapter" data-level="10.2.1" data-path="literate-programming.html"><a href="literate-programming.html#access"><i class="fa fa-check"></i><b>10.2.1</b> Access</a></li>
-<li class="chapter" data-level="10.2.2" data-path="literate-programming.html"><a href="literate-programming.html#purpose"><i class="fa fa-check"></i><b>10.2.2</b> Purpose</a></li>
-<li class="chapter" data-level="10.2.3" data-path="literate-programming.html"><a href="literate-programming.html#example"><i class="fa fa-check"></i><b>10.2.3</b> Example</a></li>
-<li class="chapter" data-level="10.2.4" data-path="literate-programming.html"><a href="literate-programming.html#required-packages"><i class="fa fa-check"></i><b>10.2.4</b> Required packages</a></li>
-<li class="chapter" data-level="10.2.5" data-path="literate-programming.html"><a href="literate-programming.html#setup"><i class="fa fa-check"></i><b>10.2.5</b> Setup</a></li>
-<li class="chapter" data-level="10.2.6" data-path="literate-programming.html"><a href="literate-programming.html#globals"><i class="fa fa-check"></i><b>10.2.6</b> Globals</a></li>
-<li class="chapter" data-level="10.2.7" data-path="literate-programming.html"><a href="literate-programming.html#target-definitions"><i class="fa fa-check"></i><b>10.2.7</b> Target definitions</a></li>
-<li class="chapter" data-level="10.2.8" data-path="literate-programming.html"><a href="literate-programming.html#pipeline"><i class="fa fa-check"></i><b>10.2.8</b> Pipeline</a></li>
-<li class="chapter" data-level="10.2.9" data-path="literate-programming.html"><a href="literate-programming.html#output"><i class="fa fa-check"></i><b>10.2.9</b> Output</a></li>
-<li class="chapter" data-level="10.2.10" data-path="literate-programming.html"><a href="literate-programming.html#conditioning-on-interactive-mode"><i class="fa fa-check"></i><b>10.2.10</b> Conditioning on interactive mode</a></li>
-<li class="chapter" data-level="10.2.11" data-path="literate-programming.html"><a href="literate-programming.html#tar_interactive"><i class="fa fa-check"></i><b>10.2.11</b> <code>tar_interactive()</code></a></li>
-<li class="chapter" data-level="10.2.12" data-path="literate-programming.html"><a href="literate-programming.html#tar_toggle"><i class="fa fa-check"></i><b>10.2.12</b> <code>tar_toggle()</code></a></li>
-<li class="chapter" data-level="10.2.13" data-path="literate-programming.html"><a href="literate-programming.html#chunk-options"><i class="fa fa-check"></i><b>10.2.13</b> Chunk options</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="11" data-path="dynamic.html"><a href="dynamic.html"><i class="fa fa-check"></i><b>11</b> Dynamic branching</a>
-<ul>
-<li class="chapter" data-level="11.1" data-path="dynamic.html"><a href="dynamic.html#branching"><i class="fa fa-check"></i><b>11.1</b> Branching</a></li>
-<li class="chapter" data-level="11.2" data-path="dynamic.html"><a href="dynamic.html#about-dynamic-branching"><i class="fa fa-check"></i><b>11.2</b> About dynamic branching</a></li>
-<li class="chapter" data-level="11.3" data-path="dynamic.html"><a href="dynamic.html#example-1"><i class="fa fa-check"></i><b>11.3</b> Example</a></li>
-<li class="chapter" data-level="11.4" data-path="dynamic.html"><a href="dynamic.html#provenance"><i class="fa fa-check"></i><b>11.4</b> Provenance</a></li>
-<li class="chapter" data-level="11.5" data-path="dynamic.html"><a href="dynamic.html#patterns"><i class="fa fa-check"></i><b>11.5</b> Patterns</a></li>
-<li class="chapter" data-level="11.6" data-path="dynamic.html"><a href="dynamic.html#iteration"><i class="fa fa-check"></i><b>11.6</b> Iteration</a></li>
-<li class="chapter" data-level="11.7" data-path="dynamic.html"><a href="dynamic.html#branching-over-row-groups"><i class="fa fa-check"></i><b>11.7</b> Branching over row groups</a></li>
-<li class="chapter" data-level="11.8" data-path="dynamic.html"><a href="dynamic.html#branching-over-files"><i class="fa fa-check"></i><b>11.8</b> Branching over files</a></li>
-<li class="chapter" data-level="11.9" data-path="dynamic.html"><a href="dynamic.html#performance-and-batching"><i class="fa fa-check"></i><b>11.9</b> Performance and batching</a></li>
-</ul></li>
-<li class="chapter" data-level="12" data-path="static.html"><a href="static.html"><i class="fa fa-check"></i><b>12</b> Static branching</a>
-<ul>
-<li class="chapter" data-level="12.1" data-path="static.html"><a href="static.html#branching-1"><i class="fa fa-check"></i><b>12.1</b> Branching</a></li>
-<li class="chapter" data-level="12.2" data-path="static.html"><a href="static.html#when-to-use-static-branching"><i class="fa fa-check"></i><b>12.2</b> When to use static branching</a></li>
-<li class="chapter" data-level="12.3" data-path="static.html"><a href="static.html#map"><i class="fa fa-check"></i><b>12.3</b> Map</a></li>
-<li class="chapter" data-level="12.4" data-path="static.html"><a href="static.html#dynamic-within-static-branching"><i class="fa fa-check"></i><b>12.4</b> Dynamic-within-static branching</a></li>
-<li class="chapter" data-level="12.5" data-path="static.html"><a href="static.html#combine"><i class="fa fa-check"></i><b>12.5</b> Combine</a></li>
-<li class="chapter" data-level="12.6" data-path="static.html"><a href="static.html#metaprogramming"><i class="fa fa-check"></i><b>12.6</b> Metaprogramming</a></li>
-<li class="chapter" data-level="12.7" data-path="static.html"><a href="static.html#hooks"><i class="fa fa-check"></i><b>12.7</b> Hooks</a></li>
-</ul></li>
-<li class="chapter" data-level="13" data-path="hpc.html"><a href="hpc.html"><i class="fa fa-check"></i><b>13</b> High-performance computing</a>
-<ul>
-<li class="chapter" data-level="13.1" data-path="hpc.html"><a href="hpc.html#clustermq"><i class="fa fa-check"></i><b>13.1</b> Clustermq</a>
-<ul>
-<li class="chapter" data-level="13.1.1" data-path="hpc.html"><a href="hpc.html#persistent-workers"><i class="fa fa-check"></i><b>13.1.1</b> Persistent workers</a></li>
-<li class="chapter" data-level="13.1.2" data-path="hpc.html"><a href="hpc.html#clustermq-installation"><i class="fa fa-check"></i><b>13.1.2</b> Clustermq installation</a></li>
-<li class="chapter" data-level="13.1.3" data-path="hpc.html"><a href="hpc.html#clustermq-local-configuration"><i class="fa fa-check"></i><b>13.1.3</b> Clustermq local configuration</a></li>
-<li class="chapter" data-level="13.1.4" data-path="hpc.html"><a href="hpc.html#clustermq-remote-configuration"><i class="fa fa-check"></i><b>13.1.4</b> Clustermq remote configuration</a></li>
-<li class="chapter" data-level="13.1.5" data-path="hpc.html"><a href="hpc.html#clustermq-template-file-configuration"><i class="fa fa-check"></i><b>13.1.5</b> Clustermq template file configuration</a></li>
-</ul></li>
-<li class="chapter" data-level="13.2" data-path="hpc.html"><a href="hpc.html#future"><i class="fa fa-check"></i><b>13.2</b> Future</a>
-<ul>
-<li class="chapter" data-level="13.2.1" data-path="hpc.html"><a href="hpc.html#transient-workers"><i class="fa fa-check"></i><b>13.2.1</b> Transient workers</a></li>
-<li class="chapter" data-level="13.2.2" data-path="hpc.html"><a href="hpc.html#future-installation"><i class="fa fa-check"></i><b>13.2.2</b> Future installation</a></li>
-<li class="chapter" data-level="13.2.3" data-path="hpc.html"><a href="hpc.html#future-locally"><i class="fa fa-check"></i><b>13.2.3</b> Future locally</a></li>
-<li class="chapter" data-level="13.2.4" data-path="hpc.html"><a href="hpc.html#future-remotely"><i class="fa fa-check"></i><b>13.2.4</b> Future remotely</a></li>
-<li class="chapter" data-level="13.2.5" data-path="hpc.html"><a href="hpc.html#future-configuration"><i class="fa fa-check"></i><b>13.2.5</b> Future configuration</a></li>
-</ul></li>
-<li class="chapter" data-level="13.3" data-path="hpc.html"><a href="hpc.html#advanced"><i class="fa fa-check"></i><b>13.3</b> Advanced</a></li>
-<li class="chapter" data-level="13.4" data-path="hpc.html"><a href="hpc.html#cloud-computing"><i class="fa fa-check"></i><b>13.4</b> Cloud computing</a></li>
-</ul></li>
-<li class="chapter" data-level="14" data-path="drake.html"><a href="drake.html"><i class="fa fa-check"></i><b>14</b> What about <code>drake</code>?</a>
-<ul>
-<li class="chapter" data-level="14.1" data-path="drake.html"><a href="drake.html#why-is-drake-superseded"><i class="fa fa-check"></i><b>14.1</b> Why is <code>drake</code> superseded?</a></li>
-<li class="chapter" data-level="14.2" data-path="drake.html"><a href="drake.html#transitioning-to-targets"><i class="fa fa-check"></i><b>14.2</b> Transitioning to <code>targets</code></a></li>
-<li class="chapter" data-level="14.3" data-path="drake.html"><a href="drake.html#advantages-of-targets-over-drake"><i class="fa fa-check"></i><b>14.3</b> Advantages of <code>targets</code> over <code>drake</code></a>
-<ul>
-<li class="chapter" data-level="14.3.1" data-path="drake.html"><a href="drake.html#better-guardrails-by-design"><i class="fa fa-check"></i><b>14.3.1</b> Better guardrails by design</a></li>
-<li class="chapter" data-level="14.3.2" data-path="drake.html"><a href="drake.html#enhanced-debugging-support"><i class="fa fa-check"></i><b>14.3.2</b> Enhanced debugging support</a></li>
-<li class="chapter" data-level="14.3.3" data-path="drake.html"><a href="drake.html#improved-tracking-of-package-functions"><i class="fa fa-check"></i><b>14.3.3</b> Improved tracking of package functions</a></li>
-<li class="chapter" data-level="14.3.4" data-path="drake.html"><a href="drake.html#lighter-friendlier-data-management"><i class="fa fa-check"></i><b>14.3.4</b> Lighter, friendlier data management</a></li>
-<li class="chapter" data-level="14.3.5" data-path="drake.html"><a href="drake.html#cloud-storage-1"><i class="fa fa-check"></i><b>14.3.5</b> Cloud storage</a></li>
-<li class="chapter" data-level="14.3.6" data-path="drake.html"><a href="drake.html#show-status-of-functions-and-global-objects"><i class="fa fa-check"></i><b>14.3.6</b> Show status of functions and global objects</a></li>
-<li class="chapter" data-level="14.3.7" data-path="drake.html"><a href="drake.html#dynamic-branching-with-dplyrgroup_by"><i class="fa fa-check"></i><b>14.3.7</b> Dynamic branching with <code>dplyr::group_by()</code></a></li>
-<li class="chapter" data-level="14.3.8" data-path="drake.html"><a href="drake.html#composable-dynamic-branching"><i class="fa fa-check"></i><b>14.3.8</b> Composable dynamic branching</a></li>
-<li class="chapter" data-level="14.3.9" data-path="drake.html"><a href="drake.html#improved-parallel-efficiency"><i class="fa fa-check"></i><b>14.3.9</b> Improved parallel efficiency</a></li>
-<li class="chapter" data-level="14.3.10" data-path="drake.html"><a href="drake.html#metaprogramming-1"><i class="fa fa-check"></i><b>14.3.10</b> Metaprogramming</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="15" data-path="markdown.html"><a href="markdown.html"><i class="fa fa-check"></i><b>15</b> R Markdown</a></li>
-<li class="divider"></li>
-<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
-
-</ul>
-
-      </nav>
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">High-performance computing</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
     </div>
-
-    <div class="book-body">
-      <div class="body-inner">
-        <div class="book-header" role="navigation">
-          <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">The targets R Package User Manual</a>
-          </h1>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">The targets R package user manual</a> 
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
         </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./walkthrough.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Walkthrough</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./debugging.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Debugging</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./performance.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Performance</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./targets.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Target construction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./packages.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Packages</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./projects.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Projects</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Data: storage and memory</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./literate-programming.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Literate programming</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dynamic.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Dynamic branching</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./static.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Static branching</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./hpc.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">High-performance computing</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./drake.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">What about <code>drake</code>?</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">R Markdown</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#clustermq" id="toc-clustermq" class="nav-link active" data-scroll-target="#clustermq"> <span class="header-section-number">13.1</span> Clustermq</a>
+  <ul class="collapse">
+  <li><a href="#persistent-workers" id="toc-persistent-workers" class="nav-link" data-scroll-target="#persistent-workers"> <span class="header-section-number">13.1.1</span> Persistent workers</a></li>
+  <li><a href="#clustermq-installation" id="toc-clustermq-installation" class="nav-link" data-scroll-target="#clustermq-installation"> <span class="header-section-number">13.1.2</span> Clustermq installation</a></li>
+  <li><a href="#automatic-configuration-with-use_targets" id="toc-automatic-configuration-with-use_targets" class="nav-link" data-scroll-target="#automatic-configuration-with-use_targets"> <span class="header-section-number">13.1.3</span> Automatic configuration with <code>use_targets()</code></a></li>
+  <li><a href="#clustermq-local-configuration" id="toc-clustermq-local-configuration" class="nav-link" data-scroll-target="#clustermq-local-configuration"> <span class="header-section-number">13.1.4</span> Clustermq local configuration</a></li>
+  <li><a href="#clustermq-remote-configuration" id="toc-clustermq-remote-configuration" class="nav-link" data-scroll-target="#clustermq-remote-configuration"> <span class="header-section-number">13.1.5</span> Clustermq remote configuration</a></li>
+  <li><a href="#clustermq-template-file-configuration" id="toc-clustermq-template-file-configuration" class="nav-link" data-scroll-target="#clustermq-template-file-configuration"> <span class="header-section-number">13.1.6</span> Clustermq template file configuration</a></li>
+  </ul></li>
+  <li><a href="#future" id="toc-future" class="nav-link" data-scroll-target="#future"> <span class="header-section-number">13.2</span> Future</a>
+  <ul class="collapse">
+  <li><a href="#transient-workers" id="toc-transient-workers" class="nav-link" data-scroll-target="#transient-workers"> <span class="header-section-number">13.2.1</span> Transient workers</a></li>
+  <li><a href="#automatic-configuration-with-use_targets-1" id="toc-automatic-configuration-with-use_targets-1" class="nav-link" data-scroll-target="#automatic-configuration-with-use_targets-1"> <span class="header-section-number">13.2.2</span> Automatic configuration with <code>use_targets()</code></a></li>
+  <li><a href="#future-installation" id="toc-future-installation" class="nav-link" data-scroll-target="#future-installation"> <span class="header-section-number">13.2.3</span> Future installation</a></li>
+  <li><a href="#future-locally" id="toc-future-locally" class="nav-link" data-scroll-target="#future-locally"> <span class="header-section-number">13.2.4</span> Future locally</a></li>
+  <li><a href="#future-remotely" id="toc-future-remotely" class="nav-link" data-scroll-target="#future-remotely"> <span class="header-section-number">13.2.5</span> Future remotely</a></li>
+  <li><a href="#future-configuration" id="toc-future-configuration" class="nav-link" data-scroll-target="#future-configuration"> <span class="header-section-number">13.2.6</span> Future configuration</a></li>
+  </ul></li>
+  <li><a href="#advanced" id="toc-advanced" class="nav-link" data-scroll-target="#advanced"> <span class="header-section-number">13.3</span> Advanced</a></li>
+  <li><a href="#cloud-computing" id="toc-cloud-computing" class="nav-link" data-scroll-target="#cloud-computing"> <span class="header-section-number">13.4</span> Cloud computing</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
 
-        <div class="page-wrapper" tabindex="-1" role="main">
-          <div class="page-inner">
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="hpc" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">High-performance computing</span></span></h1>
+</div>
 
-            <section class="normal" id="section-">
-<div id="hpc" class="section level1 hasAnchor" number="13">
-<h1><span class="header-section-number">Chapter 13</span> High-performance computing<a href="hpc.html#hpc" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<div class="cell">
+
+</div>
+<div class="cell">
+
+</div>
 <p><code>targets</code> supports high-performance computing with the <code>tar_make_clustermq()</code> and <code>tar_make_future()</code> functions. These functions are like <code>tar_make()</code>, but they allow multiple targets to run simultaneously over parallel workers. These workers can be processes on your local machine, or they can be jobs on a computing cluster. The main process automatically sends a target to a worker as soon as</p>
-<ol style="list-style-type: decimal">
+<ol type="1">
 <li>The worker is available, and</li>
 <li>All the target’s upstream dependency targets have been checked or built.</li>
 </ol>
 <p>Practical real-world examples of high-performance computing in <code>targets</code> can be found at the examples <a href="https://docs.ropensci.org/targets/index.html#examples">linked from here</a>. But for the purposes of explaining the mechanics of the package, consider the following sketch of a pipeline.</p>
-<div class="sourceCode" id="cb160"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb160-1"><a href="hpc.html#cb160-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
-<span id="cb160-2"><a href="hpc.html#cb160-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb160-3"><a href="hpc.html#cb160-3" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb160-4"><a href="hpc.html#cb160-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data, <span class="fu">get_data</span>()),</span>
-<span id="cb160-5"><a href="hpc.html#cb160-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(fast_fit, <span class="fu">fit_small_model</span>(data)),</span>
-<span id="cb160-6"><a href="hpc.html#cb160-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(slow_fit, <span class="fu">fit_slow_model</span>(data)),</span>
-<span id="cb160-7"><a href="hpc.html#cb160-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(plot_1, <span class="fu">make_plot</span>(fast_fit)),</span>
-<span id="cb160-8"><a href="hpc.html#cb160-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(plot_2, <span class="fu">make_plot</span>(slow_fit))</span>
-<span id="cb160-9"><a href="hpc.html#cb160-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<div class="sourceCode" id="cb161"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb161-1"><a href="hpc.html#cb161-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
-<span id="cb161-2"><a href="hpc.html#cb161-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_visnetwork</span>()</span></code></pre></div>
-<div id="htmlwidget-86367d9763af2897b465" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
-<script type="application/json" data-for="htmlwidget-86367d9763af2897b465">{"x":{"nodes":{"name":["data","fast_fit","plot_1","plot_2","slow_fit"],"type":["stem","stem","stem","stem","stem"],"status":["outdated","outdated","outdated","outdated","outdated"],"seconds":[null,null,null,null,null],"bytes":[null,null,null,null,null],"branches":[null,null,null,null,null],"label":["data","fast_fit","plot_1","plot_2","slow_fit"],"color":["#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5"],"id":["data","fast_fit","plot_1","plot_2","slow_fit"],"level":[1,2,3,3,2],"shape":["dot","dot","dot","dot","dot"]},"edges":{"from":["data","fast_fit","data","slow_fit"],"to":["fast_fit","plot_1","slow_fit","plot_2"],"arrows":["to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"interaction":{"zoomSpeed":1},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Outdated","Stem"],"color":["#78B7C5","#899DA4"],"shape":["dot","dot"]},"nodesToDataframe":true},"tooltipStay":300,"tooltipStyle":"position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;border: 1px solid #808074;box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);"},"evals":[],"jsHooks":[]}</script>
+<div class="cell">
+
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data, <span class="fu">get_data</span>()),</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(fast_fit, <span class="fu">fit_small_model</span>(data)),</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(slow_fit, <span class="fu">fit_slow_model</span>(data)),</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(plot_1, <span class="fu">make_plot</span>(fast_fit)),</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(plot_2, <span class="fu">make_plot</span>(slow_fit))</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_visnetwork</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="htmlwidget-f51588398ff79cc6d1df" style="width:100%;height:464px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-f51588398ff79cc6d1df">{"x":{"nodes":{"name":["data","fast_fit","plot_1","plot_2","slow_fit"],"type":["stem","stem","stem","stem","stem"],"status":["outdated","outdated","outdated","outdated","outdated"],"seconds":[null,null,null,null,null],"bytes":[null,null,null,null,null],"branches":[null,null,null,null,null],"label":["data","fast_fit","plot_1","plot_2","slow_fit"],"color":["#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5"],"id":["data","fast_fit","plot_1","plot_2","slow_fit"],"level":[1,2,3,3,2],"shape":["dot","dot","dot","dot","dot"]},"edges":{"from":["data","fast_fit","data","slow_fit"],"to":["fast_fit","plot_1","slow_fit","plot_2"],"arrows":["to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"interaction":{"zoomSpeed":1},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Outdated","Stem"],"color":["#78B7C5","#899DA4"],"shape":["dot","dot"]},"nodesToDataframe":true},"tooltipStay":300,"tooltipStyle":"position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;border: 1px solid #808074;box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
 <p>When we run this pipeline with high-performance computing, <code>targets</code> automatically knows to wait for <code>data</code> to finish running before moving on to the other targets. Once <code>data</code> is finished, it moves on to targets <code>fast_fit</code> and <code>slow_fit</code>. If <code>fast_fit</code> finishes before <code>slow_fit</code>, target <code>plot_1</code> begins even as <code>slow_fit</code> is still running. Unlike <a href="https://github.com/ropensci/drake"><code>drake</code></a>, <code>targets</code> applies this behavior not only to stem targets, but also to branches of patterns.</p>
 <p>The following sections cover the mechanics and configuration details of high-performance computing in <code>targets</code>.</p>
-<div id="clustermq" class="section level2 hasAnchor" number="13.1">
-<h2><span class="header-section-number">13.1</span> Clustermq<a href="hpc.html#clustermq" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<section id="clustermq" class="level2" data-number="13.1">
+<h2 data-number="13.1" class="anchored" data-anchor-id="clustermq"><span class="header-section-number">13.1</span> Clustermq</h2>
 <p><a href="https://docs.ropensci.org/targets/reference/tar_make_clustermq.html"><code>tar_make_clustermq()</code></a> uses the <a href="https://mschubert.github.io/clustermq/"><code>clustermq</code></a> package, and prior familiarity with <a href="https://mschubert.github.io/clustermq/"><code>clustermq</code></a> is extremely helpful for configuring <code>targets</code> and diagnosing errors. So before you use <a href="https://docs.ropensci.org/targets/reference/tar_make_clustermq.html"><code>tar_make_clustermq()</code></a>, please read the documentation at <a href="https://mschubert.github.io/clustermq/" class="uri">https://mschubert.github.io/clustermq/</a> and try out <a href="https://mschubert.github.io/clustermq/"><code>clustermq</code></a> directly. If you plan to use a scheduler like SLURM or SGE, please configure and experiment with <a href="https://mschubert.github.io/clustermq/"><code>clustermq</code></a> on your scheduler without <code>targets</code>. And if you later experience issues with <a href="https://docs.ropensci.org/targets/reference/tar_make_clustermq.html"><code>tar_make_clustermq()</code></a>, try to isolate the problem by creating a <a href="https://www.tidyverse.org/help/">reproducible example</a> that uses <a href="https://mschubert.github.io/clustermq/"><code>clustermq</code></a> and not <code>targets</code>. Peeling back layers can help isolate problems and point toward specific solutions, and <code>targets</code> is usually one of the outer layers.</p>
-<div id="persistent-workers" class="section level3 hasAnchor" number="13.1.1">
-<h3><span class="header-section-number">13.1.1</span> Persistent workers<a href="hpc.html#persistent-workers" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<section id="persistent-workers" class="level3" data-number="13.1.1">
+<h3 data-number="13.1.1" class="anchored" data-anchor-id="persistent-workers"><span class="header-section-number">13.1.1</span> Persistent workers</h3>
 <p><code>tar_make_clustermq()</code> uses persistent workers. That means all the parallel processes launch together as soon as there is a target to build, and all the processes keep running until the pipeline winds down. The video clip below visualizes the concept.</p>
-<script src="https://fast.wistia.com/embed/medias/ycczhxwkjw.jsonp" async></script>
-<script src="https://fast.wistia.com/assets/external/E-v1.js" async></script>
+<script src="https://fast.wistia.com/embed/medias/ycczhxwkjw.jsonp" async=""></script>
+<script src="https://fast.wistia.com/assets/external/E-v1.js" async=""></script>
 <div class="wistia_responsive_padding" style="padding:56.21% 0 0 0;position:relative;">
 <div class="wistia_responsive_wrapper" style="height:100%;left:0;position:absolute;top:0;width:100%;">
 <div class="wistia_embed wistia_async_ycczhxwkjw videoFoam=true" style="height:100%;position:relative;width:100%">
 <div class="wistia_swatch" style="height:100%;left:0;opacity:0;overflow:hidden;position:absolute;top:0;transition:opacity 200ms;width:100%;">
-<img src="https://fast.wistia.com/embed/medias/ycczhxwkjw/swatch" style="filter:blur(5px);height:100%;object-fit:contain;width:100%;" alt="" onload="this.parentNode.style.opacity=1;" />
+<img src="https://fast.wistia.com/embed/medias/ycczhxwkjw/swatch" style="filter:blur(5px);height:100%;object-fit:contain;width:100%;" alt="" onload="this.parentNode.style.opacity=1;">
 </div>
 </div>
 </div>
 </div>
-<p>If <code>use_targets()</code> function configures <code>clustermq</code> automatically (if <code>clustermq</code> is installed). <code>use_targets()</code> tries to detect the cluster you are using and write the appropriate <code>_targets.R</code> settings <code>clustermq</code> configuration files commensurate with your system resources. On most systems, you should be able to run e.g. <code>tar_make_clustermq(workers = 2)</code> right away. In case you have specific configuration needs, however, read on to learn how to set it up yourself.</p>
-</div>
-<div id="clustermq-installation" class="section level3 hasAnchor" number="13.1.2">
-<h3><span class="header-section-number">13.1.2</span> Clustermq installation<a href="hpc.html#clustermq-installation" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+</section>
+<section id="clustermq-installation" class="level3" data-number="13.1.2">
+<h3 data-number="13.1.2" class="anchored" data-anchor-id="clustermq-installation"><span class="header-section-number">13.1.2</span> Clustermq installation</h3>
 <p>Persistent workers require the <a href="https://github.com/mschubert/clustermq"><code>clustermq</code></a> R package, which in turn requires <a href="http://zeromq.org/">ZeroMQ</a>. Please refer to the <a href="https://github.com/mschubert/clustermq/blob/master/README.md#installation"><code>clustermq</code> installation guide</a> for specific instructions.</p>
-</div>
-<div id="clustermq-local-configuration" class="section level3 hasAnchor" number="13.1.3">
-<h3><span class="header-section-number">13.1.3</span> Clustermq local configuration<a href="hpc.html#clustermq-local-configuration" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+</section>
+<section id="automatic-configuration-with-use_targets" class="level3" data-number="13.1.3">
+<h3 data-number="13.1.3" class="anchored" data-anchor-id="automatic-configuration-with-use_targets"><span class="header-section-number">13.1.3</span> Automatic configuration with <code>use_targets()</code></h3>
+<p>If <code>clustermq</code> is installed, then <code>use_targets()</code> function configures <code>clustermq</code> automatically. <code>use_targets()</code> tries to detect the cluster you are using and write the appropriate <code>_targets.R</code> settings <code>clustermq</code> configuration files commensurate with your system resources. On most systems, this should allow you you to run <code>tar_make_clustermq()</code> with no extra configuration. If so, you can skip the rest of the <code>clustermq</code> section. If not, read on to learn how to configure <code>clustermq</code> for <code>targets</code>.</p>
+</section>
+<section id="clustermq-local-configuration" class="level3" data-number="13.1.4">
+<h3 data-number="13.1.4" class="anchored" data-anchor-id="clustermq-local-configuration"><span class="header-section-number">13.1.4</span> Clustermq local configuration</h3>
 <p>If you are manually configuring <code>clustermq</code> for your pipeline, be sure to set the <code>clustermq.scheduler</code> global option to a a local scheduler like <code>"multiprocess"</code>. Many of the supported schedulers and their configuration details are <a href="https://mschubert.github.io/clustermq/articles/userguide.html#configuration">listed here</a>.</p>
-<div class="sourceCode" id="cb162"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb162-1"><a href="hpc.html#cb162-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
-<span id="cb162-2"><a href="hpc.html#cb162-2" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">clustermq.scheduler =</span> <span class="st">&quot;multiprocess&quot;</span>)</span>
-<span id="cb162-3"><a href="hpc.html#cb162-3" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb162-4"><a href="hpc.html#cb162-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data, <span class="fu">get_data</span>()),</span>
-<span id="cb162-5"><a href="hpc.html#cb162-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(fast_fit, <span class="fu">fit_small_model</span>(data)),</span>
-<span id="cb162-6"><a href="hpc.html#cb162-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(slow_fit, <span class="fu">fit_slow_model</span>(data)),</span>
-<span id="cb162-7"><a href="hpc.html#cb162-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(plot_1, <span class="fu">make_plot</span>(fast_fit)),</span>
-<span id="cb162-8"><a href="hpc.html#cb162-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(plot_2, <span class="fu">make_plot</span>(slow_fit))</span>
-<span id="cb162-9"><a href="hpc.html#cb162-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<p>Then, run <code>tar_make_clustermq()</code> with the appropriate number of workers.</p>
-<div class="sourceCode" id="cb163"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb163-1"><a href="hpc.html#cb163-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
-<span id="cb163-2"><a href="hpc.html#cb163-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make_clustermq</span>(<span class="at">workers =</span> <span class="dv">2</span>)</span></code></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">clustermq.scheduler =</span> <span class="st">"multiprocess"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data, <span class="fu">get_data</span>()),</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(fast_fit, <span class="fu">fit_small_model</span>(data)),</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(slow_fit, <span class="fu">fit_slow_model</span>(data)),</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(plot_1, <span class="fu">make_plot</span>(fast_fit)),</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(plot_2, <span class="fu">make_plot</span>(slow_fit))</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="clustermq-remote-configuration" class="section level3 hasAnchor" number="13.1.4">
-<h3><span class="header-section-number">13.1.4</span> Clustermq remote configuration<a href="hpc.html#clustermq-remote-configuration" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Then, run <code>tar_make_clustermq()</code> with the appropriate number of workers.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make_clustermq</span>(<span class="at">workers =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="clustermq-remote-configuration" class="level3" data-number="13.1.5">
+<h3 data-number="13.1.5" class="anchored" data-anchor-id="clustermq-remote-configuration"><span class="header-section-number">13.1.5</span> Clustermq remote configuration</h3>
 <p>For parallel computing on a cluster,</p>
-<ol style="list-style-type: decimal">
+<ol type="1">
 <li>Choose a <a href="https://mschubert.github.io/clustermq/articles/userguide.html#configuration">scheduler listed here</a> that corresponds to your cluster’s resource manager.</li>
 <li>Create a <a href="https://github.com/mschubert/clustermq/tree/master/inst">template file</a> that configures the computing requirements and other settings for the cluster.</li>
 </ol>
 <p>Supply the scheduler option and template file to the <code>clustermq.scheduler</code> and <code>clustermq.template</code> global options in your target script file (default: <code>_targets.R</code>).</p>
-<div class="sourceCode" id="cb164"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb164-1"><a href="hpc.html#cb164-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
-<span id="cb164-2"><a href="hpc.html#cb164-2" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">clustermq.scheduler =</span> <span class="st">&quot;sge&quot;</span>, <span class="at">clustermq.template =</span> <span class="st">&quot;sge.tmpl&quot;</span>)</span>
-<span id="cb164-3"><a href="hpc.html#cb164-3" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb164-4"><a href="hpc.html#cb164-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data, <span class="fu">get_data</span>()),</span>
-<span id="cb164-5"><a href="hpc.html#cb164-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(fast_fit, <span class="fu">fit_small_model</span>(data)),</span>
-<span id="cb164-6"><a href="hpc.html#cb164-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(slow_fit, <span class="fu">fit_slow_model</span>(data)),</span>
-<span id="cb164-7"><a href="hpc.html#cb164-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(plot_1, <span class="fu">make_plot</span>(fast_fit)),</span>
-<span id="cb164-8"><a href="hpc.html#cb164-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(plot_2, <span class="fu">make_plot</span>(slow_fit))</span>
-<span id="cb164-9"><a href="hpc.html#cb164-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">clustermq.scheduler =</span> <span class="st">"sge"</span>, <span class="at">clustermq.template =</span> <span class="st">"sge.tmpl"</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data, <span class="fu">get_data</span>()),</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(fast_fit, <span class="fu">fit_small_model</span>(data)),</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(slow_fit, <span class="fu">fit_slow_model</span>(data)),</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(plot_1, <span class="fu">make_plot</span>(fast_fit)),</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(plot_2, <span class="fu">make_plot</span>(slow_fit))</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>Above, <code>sge_tmpl</code> refers to a template file like the one below.</p>
 <pre><code>## From https://github.com/mschubert/clustermq/wiki/SGE
 #$ -N {{ job_name }}  # Worker name.
@@ -442,14 +391,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 #$ -cwd               # Use project root as working directory.
 #$ -V                 # Use environment variables.
 module load R/3.6.3   # Needed if R is an environment module on the cluster.
-CMQ_AUTH={{ auth }} R --no-save --no-restore -e &#39;clustermq:::worker(&quot;{{ main }}&quot;)&#39; # Leave alone.</code></pre>
+CMQ_AUTH={{ auth }} R --no-save --no-restore -e 'clustermq:::worker("{{ main }}")' # Leave alone.</code></pre>
 <p>Then, run <code>tar_make_clustermq()</code> as before.</p>
-<div class="sourceCode" id="cb166"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb166-1"><a href="hpc.html#cb166-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
-<span id="cb166-2"><a href="hpc.html#cb166-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make_clustermq</span>(<span class="at">workers =</span> <span class="dv">2</span>)</span></code></pre></div>
-<p>See the examples <a href="https://docs.ropensci.org/targets/index.html#examples">linked from here</a> to see how this setup works in real-world projects.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make_clustermq</span>(<span class="at">workers =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="clustermq-template-file-configuration" class="section level3 hasAnchor" number="13.1.5">
-<h3><span class="header-section-number">13.1.5</span> Clustermq template file configuration<a href="hpc.html#clustermq-template-file-configuration" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>See the examples <a href="https://docs.ropensci.org/targets/index.html#examples">linked from here</a> to see how this setup works in real-world projects.</p>
+</section>
+<section id="clustermq-template-file-configuration" class="level3" data-number="13.1.6">
+<h3 data-number="13.1.6" class="anchored" data-anchor-id="clustermq-template-file-configuration"><span class="header-section-number">13.1.6</span> Clustermq template file configuration</h3>
 <p>In addition to configuration options hard-coded in the template file, you can supply custom computing resources with the <code>resources</code> argument of <code>tar_option_set()</code>. As an example, let’s use a wildcard for the number of cores per worker on an SGE cluster. In the template file, supply <code>{{ num_cores }}</code> wildcard to the <code>-pe smp</code> flag.</p>
 <pre><code>#$ -pe smp {{ num_cores }} # Number of cores per worker
 #$ -N {{ job_name | 1 }}
@@ -459,89 +410,107 @@ CMQ_AUTH={{ auth }} R --no-save --no-restore -e &#39;clustermq:::worker(&quot;{{
 #$ -cwd
 #$ -V
 module load R/3.6.3
-CMQ_AUTH={{ auth }} R --no-save --no-restore -e &#39;clustermq:::worker(&quot;{{ main }}&quot;)&#39;</code></pre>
+CMQ_AUTH={{ auth }} R --no-save --no-restore -e 'clustermq:::worker("{{ main }}")'</code></pre>
 <p>Then, supply the value of <code>num_cores</code> to the <code>resources</code> option from within the target script file (default: <code>_targets.R</code>). In older version of <code>targets</code>, <code>resources</code> was a named list. In <code>targets</code> 0.5.0.9000 and above, please create the <code>resources</code> argument with helpers <code>tar_resources()</code> and <code>tar_resources_clustermq()</code>.</p>
-<div class="sourceCode" id="cb168"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb168-1"><a href="hpc.html#cb168-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
-<span id="cb168-2"><a href="hpc.html#cb168-2" aria-hidden="true" tabindex="-1"></a><span class="co"># With older versions of targets:</span></span>
-<span id="cb168-3"><a href="hpc.html#cb168-3" aria-hidden="true" tabindex="-1"></a><span class="co"># tar_option_set(resources = list(num_cores = 2))</span></span>
-<span id="cb168-4"><a href="hpc.html#cb168-4" aria-hidden="true" tabindex="-1"></a><span class="co"># With targets &gt;= 0.5.0.9000:</span></span>
-<span id="cb168-5"><a href="hpc.html#cb168-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(</span>
-<span id="cb168-6"><a href="hpc.html#cb168-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">resources =</span> <span class="fu">tar_resources</span>(</span>
-<span id="cb168-7"><a href="hpc.html#cb168-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">clustermq =</span> <span class="fu">tar_resources_clustermq</span>(<span class="at">template =</span> <span class="fu">list</span>(<span class="at">num_cores =</span> <span class="dv">2</span>))</span>
-<span id="cb168-8"><a href="hpc.html#cb168-8" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb168-9"><a href="hpc.html#cb168-9" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb168-10"><a href="hpc.html#cb168-10" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb168-11"><a href="hpc.html#cb168-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(...),</span>
-<span id="cb168-12"><a href="hpc.html#cb168-12" aria-hidden="true" tabindex="-1"></a>  ... <span class="co"># more targets</span></span>
-<span id="cb168-13"><a href="hpc.html#cb168-13" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># With older versions of targets:</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># tar_option_set(resources = list(num_cores = 2))</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># With targets &gt;= 0.5.0.9000:</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">resources =</span> <span class="fu">tar_resources</span>(</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">clustermq =</span> <span class="fu">tar_resources_clustermq</span>(<span class="at">template =</span> <span class="fu">list</span>(<span class="at">num_cores =</span> <span class="dv">2</span>))</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(...),</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>  ... <span class="co"># more targets</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>Finally, call <code>tar_make_clustermq()</code> normally.</p>
-<div class="sourceCode" id="cb169"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb169-1"><a href="hpc.html#cb169-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
-<span id="cb169-2"><a href="hpc.html#cb169-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make_clustermq</span>(<span class="at">workers =</span> <span class="dv">2</span>)</span></code></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make_clustermq</span>(<span class="at">workers =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>This particular use case comes up when you have custom parallel computing within targets and need to take advantage of multiple cores.</p>
-</div>
-</div>
-<div id="future" class="section level2 hasAnchor" number="13.2">
-<h2><span class="header-section-number">13.2</span> Future<a href="hpc.html#future" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+</section>
+</section>
+<section id="future" class="level2" data-number="13.2">
+<h2 data-number="13.2" class="anchored" data-anchor-id="future"><span class="header-section-number">13.2</span> Future</h2>
 <p><a href="https://docs.ropensci.org/targets/reference/tar_make_future.html"><code>tar_make_future()</code></a> uses the <a href="https://future.futureverse.org/"><code>future</code></a> package, and prior familiarity with <a href="https://future.futureverse.org/"><code>future</code></a> is extremely helpful for configuring <code>targets</code> and diagnosing errors. So before you use <a href="https://docs.ropensci.org/targets/reference/tar_make_future.html"><code>tar_make_future()</code></a>, please read the documentation at <a href="https://future.futureverse.org/" class="uri">https://future.futureverse.org/</a> and try out <a href="https://future.futureverse.org/"><code>future</code></a> directly, ideally with backends like <a href="https://future.callr.futureverse.org/"><code>future.callr</code></a> and possibly <a href="https://future.batchtools.futureverse.org/"><code>future.batchtools</code></a>. If you plan to use a scheduler like SLURM or SGE, please configure and experiment with <a href="https://future.futureverse.org/"><code>future</code></a> on your scheduler without <code>targets</code>. And if you later experience issues with <a href="https://docs.ropensci.org/targets/reference/tar_make_future.html"><code>tar_make_future()</code></a>, try to isolate the problem by creating a <a href="https://www.tidyverse.org/help/">reproducible example</a> that uses <a href="https://future.futureverse.org/"><code>future</code></a> and not <code>targets</code>. Same goes for <a href="https://future.batchtools.futureverse.org/"><code>future.batchtools</code></a> if applicable. Peeling back layers can help isolate problems and point toward specific solutions, and <code>targets</code> is usually one of the outer layers.</p>
-<p>The <code>use_targets()</code> function configures <code>future</code> and/or <code>future.batchtools</code> automatically (if those packages are installed). It tries to detect the cluster you are using, if any, and write the appropriate <code>_targets.R</code> settings <code>clustermq</code> configuration files commensurate with your system resources. On most systems, you should be able to run e.g. <code>tar_make_future(workers = 2)</code> right away. In case you have specific configuration needs, however, read on to learn how to set it up yourself.</p>
-<div id="transient-workers" class="section level3 hasAnchor" number="13.2.1">
-<h3><span class="header-section-number">13.2.1</span> Transient workers<a href="hpc.html#transient-workers" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<section id="transient-workers" class="level3" data-number="13.2.1">
+<h3 data-number="13.2.1" class="anchored" data-anchor-id="transient-workers"><span class="header-section-number">13.2.1</span> Transient workers</h3>
 <p><code>tar_make_future()</code> runs transient workers. That means each target gets its own worker which initializes when the target begins and terminates when the target ends. The following video clip demonstrates the concept.</p>
-<script src="https://fast.wistia.com/embed/medias/340yvlp515.jsonp" async></script>
-<script src="https://fast.wistia.com/assets/external/E-v1.js" async></script>
+<script src="https://fast.wistia.com/embed/medias/340yvlp515.jsonp" async=""></script>
+<script src="https://fast.wistia.com/assets/external/E-v1.js" async=""></script>
 <div class="wistia_responsive_padding" style="padding:56.21% 0 0 0;position:relative;">
 <div class="wistia_responsive_wrapper" style="height:100%;left:0;position:absolute;top:0;width:100%;">
 <div class="wistia_embed wistia_async_340yvlp515 videoFoam=true" style="height:100%;position:relative;width:100%">
 <div class="wistia_swatch" style="height:100%;left:0;opacity:0;overflow:hidden;position:absolute;top:0;transition:opacity 200ms;width:100%;">
-<img src="https://fast.wistia.com/embed/medias/340yvlp515/swatch" style="filter:blur(5px);height:100%;object-fit:contain;width:100%;" alt="" onload="this.parentNode.style.opacity=1;" />
+<img src="https://fast.wistia.com/embed/medias/340yvlp515/swatch" style="filter:blur(5px);height:100%;object-fit:contain;width:100%;" alt="" onload="this.parentNode.style.opacity=1;">
 </div>
 </div>
 </div>
 </div>
 <p><br></p>
-</div>
-<div id="future-installation" class="section level3 hasAnchor" number="13.2.2">
-<h3><span class="header-section-number">13.2.2</span> Future installation<a href="hpc.html#future-installation" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+</section>
+<section id="automatic-configuration-with-use_targets-1" class="level3" data-number="13.2.2">
+<h3 data-number="13.2.2" class="anchored" data-anchor-id="automatic-configuration-with-use_targets-1"><span class="header-section-number">13.2.2</span> Automatic configuration with <code>use_targets()</code></h3>
+<p>If <code>future</code> and <code>future.batchtools</code> are installed, then <code>use_targets()</code> function configures <code>future</code> automatically. <code>use_targets()</code> tries to detect the cluster you are using and write the appropriate <code>_targets.R</code> settings, and if appropriate, the <code>batchtools</code> configuration file commensurate with your system resources. On most systems, this should allow you you to run <code>tar_make_future()</code> with no extra configuration. If so, you can skip the rest of the <code>future</code> section. If not, read on to learn how to configure <code>future</code> for <code>targets</code>.</p>
+</section>
+<section id="future-installation" class="level3" data-number="13.2.3">
+<h3 data-number="13.2.3" class="anchored" data-anchor-id="future-installation"><span class="header-section-number">13.2.3</span> Future installation</h3>
 <p>Install the <a href="https://github.com/HenrikBengtsson/future"><code>future</code></a> package.</p>
-<div class="sourceCode" id="cb170"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb170-1"><a href="hpc.html#cb170-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;future&quot;</span>)</span></code></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"future"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>If you intend to use a cluster, be sure to install the <a href="https://github.com/HenrikBengtsson/future.batchtools"><code>future.batchtools</code></a> package too.</p>
-<div class="sourceCode" id="cb171"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb171-1"><a href="hpc.html#cb171-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;future.batchtools&quot;</span>)</span></code></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"future.batchtools"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>The <a href="https://github.com/HenrikBengtsson/future"><code>future</code></a> ecosystem contains even more packages that extend <a href="https://github.com/HenrikBengtsson/future"><code>future</code></a>’s parallel computing functionality, such as <a href="https://github.com/HenrikBengtsson/future.callr"><code>future.callr</code></a>.</p>
-<div class="sourceCode" id="cb172"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb172-1"><a href="hpc.html#cb172-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;future.callr&quot;</span>)</span></code></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"future.callr"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="future-locally" class="section level3 hasAnchor" number="13.2.3">
-<h3><span class="header-section-number">13.2.3</span> Future locally<a href="hpc.html#future-locally" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>If you ar manually configuring <code>future</code>/<code>future.batchtools</code> for your pipeline, declare a <code>future</code> plan in your target script file (default: <code>_targets.R</code>). The <code>callr</code> plan from the <a href="https://future.callr.futureverse.org"><code>future.callr</code></a> package is recommended.<a href="#fn26" class="footnote-ref" id="fnref26"><sup>26</sup></a>
-It is crucial that <code>future::plan()</code> is called in the target script file itself - defining a plan interactively before invoking <code>tar_make_future()</code> does not leverage the future package.</p>
-<div class="sourceCode" id="cb173"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb173-1"><a href="hpc.html#cb173-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
-<span id="cb173-2"><a href="hpc.html#cb173-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(future)</span>
-<span id="cb173-3"><a href="hpc.html#cb173-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(future.callr)</span>
-<span id="cb173-4"><a href="hpc.html#cb173-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plan</span>(callr)</span>
-<span id="cb173-5"><a href="hpc.html#cb173-5" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb173-6"><a href="hpc.html#cb173-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data, <span class="fu">get_data</span>()),</span>
-<span id="cb173-7"><a href="hpc.html#cb173-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(fast_fit, <span class="fu">fit_small_model</span>(data)),</span>
-<span id="cb173-8"><a href="hpc.html#cb173-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(slow_fit, <span class="fu">fit_slow_model</span>(data)),</span>
-<span id="cb173-9"><a href="hpc.html#cb173-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(plot_1, <span class="fu">make_plot</span>(fast_fit)),</span>
-<span id="cb173-10"><a href="hpc.html#cb173-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(plot_2, <span class="fu">make_plot</span>(slow_fit))</span>
-<span id="cb173-11"><a href="hpc.html#cb173-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+</section>
+<section id="future-locally" class="level3" data-number="13.2.4">
+<h3 data-number="13.2.4" class="anchored" data-anchor-id="future-locally"><span class="header-section-number">13.2.4</span> Future locally</h3>
+<p>If you ar manually configuring <code>future</code>/<code>future.batchtools</code> for your pipeline, declare a <code>future</code> plan in your target script file (default: <code>_targets.R</code>). The <code>callr</code> plan from the <a href="https://future.callr.futureverse.org"><code>future.callr</code></a> package is recommended.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> It is crucial that <code>future::plan()</code> is called in the target script file itself - defining a plan interactively before invoking <code>tar_make_future()</code> does not leverage the future package.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(future)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(future.callr)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plan</span>(callr)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data, <span class="fu">get_data</span>()),</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(fast_fit, <span class="fu">fit_small_model</span>(data)),</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(slow_fit, <span class="fu">fit_slow_model</span>(data)),</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(plot_1, <span class="fu">make_plot</span>(fast_fit)),</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(plot_2, <span class="fu">make_plot</span>(slow_fit))</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>Then, run <code>tar_make_future()</code> with the desired number of workers. Here, the <code>workers</code> argument specifies the maximum number of transient workers to allow at a given time. Some <code>future</code> plans also have optional <code>workers</code> arguments that set their own caps.</p>
-<div class="sourceCode" id="cb174"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb174-1"><a href="hpc.html#cb174-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
-<span id="cb174-2"><a href="hpc.html#cb174-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make_future</span>(<span class="at">workers =</span> <span class="dv">2</span>)</span></code></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make_future</span>(<span class="at">workers =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="future-remotely" class="section level3 hasAnchor" number="13.2.4">
-<h3><span class="header-section-number">13.2.4</span> Future remotely<a href="hpc.html#future-remotely" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+</section>
+<section id="future-remotely" class="level3" data-number="13.2.5">
+<h3 data-number="13.2.5" class="anchored" data-anchor-id="future-remotely"><span class="header-section-number">13.2.5</span> Future remotely</h3>
 <p>To run transient workers on a cluster, first install the <a href="https://github.com/HenrikBengtsson/future.batchtools"><code>future.batchtools</code></a> package. Then, set one of <a href="https://github.com/HenrikBengtsson/future.batchtools#choosing-batchtools-backend">these plans</a> in your target script file (default: <code>_targets.R</code>).</p>
-<div class="sourceCode" id="cb175"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb175-1"><a href="hpc.html#cb175-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
-<span id="cb175-2"><a href="hpc.html#cb175-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(future)</span>
-<span id="cb175-3"><a href="hpc.html#cb175-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(future.batchtools)</span>
-<span id="cb175-4"><a href="hpc.html#cb175-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plan</span>(batchtools_sge, <span class="at">template =</span> <span class="st">&quot;sge.tmpl&quot;</span>)</span>
-<span id="cb175-5"><a href="hpc.html#cb175-5" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb175-6"><a href="hpc.html#cb175-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data, <span class="fu">get_data</span>()),</span>
-<span id="cb175-7"><a href="hpc.html#cb175-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(fast_fit, <span class="fu">fit_small_model</span>(data)),</span>
-<span id="cb175-8"><a href="hpc.html#cb175-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(slow_fit, <span class="fu">fit_slow_model</span>(data)),</span>
-<span id="cb175-9"><a href="hpc.html#cb175-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(plot_1, <span class="fu">make_plot</span>(fast_fit)),</span>
-<span id="cb175-10"><a href="hpc.html#cb175-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(plot_2, <span class="fu">make_plot</span>(slow_fit))</span>
-<span id="cb175-11"><a href="hpc.html#cb175-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(future)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(future.batchtools)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plan</span>(batchtools_sge, <span class="at">template =</span> <span class="st">"sge.tmpl"</span>)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data, <span class="fu">get_data</span>()),</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(fast_fit, <span class="fu">fit_small_model</span>(data)),</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(slow_fit, <span class="fu">fit_slow_model</span>(data)),</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(plot_1, <span class="fu">make_plot</span>(fast_fit)),</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(plot_2, <span class="fu">make_plot</span>(slow_fit))</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>Here, our template file <code>sge.tmpl</code> is configured for <code>batchtools</code>.</p>
 <pre><code>#!/bin/bash
 #$ -cwd               # Run in the current working directory.
@@ -550,56 +519,60 @@ It is crucial that <code>future::plan()</code> is called in the target script fi
 #$ -V                 # Use environment variables.
 #$ -N &lt;%= job.name %&gt; # job name
 module load R/3.6.3   # Uncomment and adjust if R is an environment module.
-Rscript -e &#39;batchtools::doJobCollection(&quot;&lt;%= uri %&gt;&quot;)&#39; # Leave alone.
+Rscript -e 'batchtools::doJobCollection("&lt;%= uri %&gt;")' # Leave alone.
 exit 0 # Leave alone.</code></pre>
-</div>
-<div id="future-configuration" class="section level3 hasAnchor" number="13.2.5">
-<h3><span class="header-section-number">13.2.5</span> Future configuration<a href="hpc.html#future-configuration" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>The <code>tar_target()</code>, <code>tar_target_raw()</code>, and <code>tar_option_set()</code> functions accept a <code>resources</code> argument.<a href="#fn27" class="footnote-ref" id="fnref27"><sup>27</sup></a> For example, if our <code>batchtools</code> template file has a wildcard for the number of cores for a job,</p>
+</section>
+<section id="future-configuration" class="level3" data-number="13.2.6">
+<h3 data-number="13.2.6" class="anchored" data-anchor-id="future-configuration"><span class="header-section-number">13.2.6</span> Future configuration</h3>
+<p>The <code>tar_target()</code>, <code>tar_target_raw()</code>, and <code>tar_option_set()</code> functions accept a <code>resources</code> argument.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> For example, if our <code>batchtools</code> template file has a wildcard for the number of cores for a job,</p>
 <pre><code>#!/bin/bash
-#$ -pe smp &lt;%= resources[[&quot;num_cores&quot;]] | 1 %&gt; # Wildcard for cores per job.
+#$ -pe smp &lt;%= resources[["num_cores"]] | 1 %&gt; # Wildcard for cores per job.
 #$ -cwd
 #$ -j y
 #$ -o &lt;%= log.file %&gt;
 #$ -V
 #$ -N &lt;%= job.name %&gt;
 module load R/3.6.3
-Rscript -e &#39;batchtools::doJobCollection(&quot;&lt;%= uri %&gt;&quot;)&#39;
+Rscript -e 'batchtools::doJobCollection("&lt;%= uri %&gt;")'
 exit 0</code></pre>
-<p>then you can set the number of cores for an individual target using a target-specific <code>future</code> plan. In the case below, maybe the slow model needs 2 cores to run fast enough. Because of the <code>resources[["num_cores"]]</code> placeholder in the above template file, we can control the number of cores in each target through its local plan.<a href="#fn28" class="footnote-ref" id="fnref28"><sup>28</sup></a></p>
-<div class="sourceCode" id="cb178"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb178-1"><a href="hpc.html#cb178-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
-<span id="cb178-2"><a href="hpc.html#cb178-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(future)</span>
-<span id="cb178-3"><a href="hpc.html#cb178-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(future.batchtools)</span>
-<span id="cb178-4"><a href="hpc.html#cb178-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plan</span>(batchtools_sge, <span class="at">template =</span> <span class="st">&quot;sge.tmpl&quot;</span>)</span>
-<span id="cb178-5"><a href="hpc.html#cb178-5" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb178-6"><a href="hpc.html#cb178-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data, <span class="fu">get_data</span>()),</span>
-<span id="cb178-7"><a href="hpc.html#cb178-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(fast_fit, <span class="fu">fit_small_model</span>(data)),</span>
-<span id="cb178-8"><a href="hpc.html#cb178-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># With older version of targets:</span></span>
-<span id="cb178-9"><a href="hpc.html#cb178-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># tar_target(slow_fit, fit_slow_model(data), resources = list(num_cores = 2)),</span></span>
-<span id="cb178-10"><a href="hpc.html#cb178-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># With targets &gt;= 0.5.0.9000:</span></span>
-<span id="cb178-11"><a href="hpc.html#cb178-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
-<span id="cb178-12"><a href="hpc.html#cb178-12" aria-hidden="true" tabindex="-1"></a>    slow_fit,</span>
-<span id="cb178-13"><a href="hpc.html#cb178-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fit_slow_model</span>(data),</span>
-<span id="cb178-14"><a href="hpc.html#cb178-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">resources =</span> <span class="fu">tar_resources</span>(</span>
-<span id="cb178-15"><a href="hpc.html#cb178-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">future =</span> <span class="fu">tar_resources_future</span>(</span>
-<span id="cb178-16"><a href="hpc.html#cb178-16" aria-hidden="true" tabindex="-1"></a>        <span class="at">plan =</span> <span class="fu">tweak</span>(</span>
-<span id="cb178-17"><a href="hpc.html#cb178-17" aria-hidden="true" tabindex="-1"></a>          batchtools_sge,</span>
-<span id="cb178-18"><a href="hpc.html#cb178-18" aria-hidden="true" tabindex="-1"></a>          <span class="at">template =</span> <span class="st">&quot;sge.tmpl&quot;</span>,</span>
-<span id="cb178-19"><a href="hpc.html#cb178-19" aria-hidden="true" tabindex="-1"></a>          <span class="at">resources =</span> <span class="fu">list</span>(<span class="at">num_cores =</span> <span class="dv">2</span>)</span>
-<span id="cb178-20"><a href="hpc.html#cb178-20" aria-hidden="true" tabindex="-1"></a>        )</span>
-<span id="cb178-21"><a href="hpc.html#cb178-21" aria-hidden="true" tabindex="-1"></a>      )</span>
-<span id="cb178-22"><a href="hpc.html#cb178-22" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb178-23"><a href="hpc.html#cb178-23" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb178-24"><a href="hpc.html#cb178-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(plot_1, <span class="fu">make_plot</span>(fast_fit)),</span>
-<span id="cb178-25"><a href="hpc.html#cb178-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(plot_2, <span class="fu">make_plot</span>(slow_fit))</span>
-<span id="cb178-26"><a href="hpc.html#cb178-26" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<p>then you can set the number of cores for an individual target using a target-specific <code>future</code> plan. In the case below, maybe the slow model needs 2 cores to run fast enough. Because of the <code>resources[["num_cores"]]</code> placeholder in the above template file, we can control the number of cores in each target through its local plan.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(future)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(future.batchtools)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plan</span>(batchtools_sge, <span class="at">template =</span> <span class="st">"sge.tmpl"</span>)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data, <span class="fu">get_data</span>()),</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(fast_fit, <span class="fu">fit_small_model</span>(data)),</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># With older version of targets:</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># tar_target(slow_fit, fit_slow_model(data), resources = list(num_cores = 2)),</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># With targets &gt;= 0.5.0.9000:</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>    slow_fit,</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fit_slow_model</span>(data),</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">resources =</span> <span class="fu">tar_resources</span>(</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">future =</span> <span class="fu">tar_resources_future</span>(</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>        <span class="at">plan =</span> <span class="fu">tweak</span>(</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>          batchtools_sge,</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>          <span class="at">template =</span> <span class="st">"sge.tmpl"</span>,</span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>          <span class="at">resources =</span> <span class="fu">list</span>(<span class="at">num_cores =</span> <span class="dv">2</span>)</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(plot_1, <span class="fu">make_plot</span>(fast_fit)),</span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(plot_2, <span class="fu">make_plot</span>(slow_fit))</span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>Then, run <code>tar_make_future()</code> as usual.</p>
-<div class="sourceCode" id="cb179"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb179-1"><a href="hpc.html#cb179-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
-<span id="cb179-2"><a href="hpc.html#cb179-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make_future</span>(<span class="at">workers =</span> <span class="dv">2</span>)</span></code></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make_future</span>(<span class="at">workers =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</div>
-<div id="advanced" class="section level2 hasAnchor" number="13.3">
-<h2><span class="header-section-number">13.3</span> Advanced<a href="hpc.html#advanced" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+</section>
+</section>
+<section id="advanced" class="level2" data-number="13.3">
+<h2 data-number="13.3" class="anchored" data-anchor-id="advanced"><span class="header-section-number">13.3</span> Advanced</h2>
 <p>Functions <code>tar_target()</code>, <code>tar_target_raw()</code>, and <code>tar_option_set()</code> support advanced configuration options for heavy-duty pipelines that require high-performance computing.</p>
 <ul>
 <li><code>deployment</code>: With the <code>deployment</code> argument, you can choose to run some targets locally on the main process instead of on a high-performance computing worker. This options is suitable for lightweight targets such as R Markdown reports where runtime is quick and a cluster would be excessive.</li>
@@ -610,74 +583,139 @@ exit 0</code></pre>
 <li><code>format</code>: If your pipeline has large computation, it may also have large data. Consider setting the <code>format</code> argument to help <code>targets</code> store and retrieve your data faster.</li>
 <li><code>error</code>: Set <code>error</code> to <code>"continue"</code> to let the rest of the pipeline keep running even if a target encounters an error.</li>
 </ul>
-</div>
-<div id="cloud-computing" class="section level2 hasAnchor" number="13.4">
-<h2><span class="header-section-number">13.4</span> Cloud computing<a href="hpc.html#cloud-computing" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Right now, <code>targets</code> does not have built-in cloud-based distributed computing support. However, future development plans include seamless integration with <a href="https://aws.amazon.com/batch/">AWS Batch</a>. As a temporary workaround, it is possible to deploy a burstable <a href="https://slurm.schedmd.com/documentation.html">SLURM</a> cluster using <a href="https://aws.amazon.com/hpc/parallelcluster/">AWS ParallelCluster</a> and leverage <code>targets</code>’ <a href="hpc.html#hpc">existing support for traditional schedulers</a>.</p>
+</section>
+<section id="cloud-computing" class="level2" data-number="13.4">
+<h2 data-number="13.4" class="anchored" data-anchor-id="cloud-computing"><span class="header-section-number">13.4</span> Cloud computing</h2>
+<p>Right now, <code>targets</code> does not have built-in cloud-based distributed computing support. However, future development plans include seamless integration with <a href="https://aws.amazon.com/batch/">AWS Batch</a>. As a temporary workaround, it is possible to deploy a burstable <a href="https://slurm.schedmd.com/documentation.html">SLURM</a> cluster using <a href="https://aws.amazon.com/hpc/parallelcluster/">AWS ParallelCluster</a> and leverage <code>targets</code>’ <a href="#hpc">existing support for traditional schedulers</a>.</p>
 
-</div>
-</div>
-<div class="footnotes">
-<hr />
-<ol start="26">
-<li id="fn26"><p>Some alternative local future plans are <a href="https://github.com/HenrikBengtsson/future/#controlling-how-futures-are-resolved">listed here</a>.<a href="hpc.html#fnref26" class="footnote-back">↩︎</a></p></li>
-<li id="fn27"><p>The <code>resources</code> of <code>tar_target()</code> defaults to <code>tar_option_get("resources")</code>. You can set the default value for all targets using <code>tar_option_set()</code>.<a href="hpc.html#fnref27" class="footnote-back">↩︎</a></p></li>
-<li id="fn28"><p>In older version of <code>targets</code>, <code>resources</code> was a named list. In <code>targets</code> version 0.5.0.9000 and above, please create the <code>resources</code> argument with helpers <code>tar_resources()</code> and <code>tar_resources_future()</code>.<a href="hpc.html#fnref28" class="footnote-back">↩︎</a></p></li>
+
+</section>
+<section class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1" role="doc-endnote"><p>Some alternative local future plans are <a href="https://github.com/HenrikBengtsson/future/#controlling-how-futures-are-resolved">listed here</a>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2" role="doc-endnote"><p>The <code>resources</code> of <code>tar_target()</code> defaults to <code>tar_option_get("resources")</code>. You can set the default value for all targets using <code>tar_option_set()</code>.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3" role="doc-endnote"><p>In older version of <code>targets</code>, <code>resources</code> was a named list. In <code>targets</code> version 0.5.0.9000 and above, please create the <code>resources</code> argument with helpers <code>tar_resources()</code> and <code>tar_resources_future()</code>.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
-</div>
-<div style = "background: #1C356D; color: white; padding: 10px 10px 10px 25px; font-size: 1em; width: 100%;">
-  Copyright Eli Lilly and Company
-</div>
-            </section>
+</section>
 
-          </div>
-        </div>
-      </div>
-<a href="static.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="drake.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
-    </div>
-  </div>
-<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
-<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
-<script>
-gitbook.require(["gitbook"], function(gitbook) {
-gitbook.start({
-"sharing": null,
-"fontsettings": {
-"theme": "white",
-"family": "sans",
-"size": 2
-},
-"edit": {
-"link": "https://github.com/ropensci-books/targets/edit/main/hpc.Rmd",
-"text": "Edit this chapter"
-},
-"history": {
-"link": "https://github.com/ropensci-books/targets/commits/main/hpc.Rmd",
-"text": "Chapter edit history"
-},
-"view": {
-"link": null,
-"text": null
-},
-"download": null,
-"search": {
-"engine": "fuse",
-"options": null
-},
-"toc": {
-"collapse": "subsection"
-}
-});
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
 });
 </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./static.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Static branching</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./drake.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">What about <code>drake</code>?</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+      <div class="nav-footer-center">Copyright 2022, Eli Lilly and Company</div>
+  </div>
+</footer>
 
-</body>
 
-</html>
+
+</body></html>

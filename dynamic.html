@@ -1,78 +1,26 @@
 <!DOCTYPE html>
-<html lang="" xml:lang="">
-<head>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 11 Dynamic branching | The targets R Package User Manual</title>
-  <meta name="description" content="In-depth discussion of the major functionality of targets." />
-  <meta name="generator" content="bookdown 0.27 and GitBook 2.6.7" />
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.38">
 
-  <meta property="og:title" content="Chapter 11 Dynamic branching | The targets R Package User Manual" />
-  <meta property="og:type" content="book" />
-  <meta property="og:image" content="https://books.ropensci.org/targets/man/figures/logo.png" />
-  <meta property="og:description" content="In-depth discussion of the major functionality of targets." />
-  <meta name="github-repo" content="ropensci-books/targets" />
-
-  <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 11 Dynamic branching | The targets R Package User Manual" />
-  
-  <meta name="twitter:description" content="In-depth discussion of the major functionality of targets." />
-  <meta name="twitter:image" content="https://books.ropensci.org/targets/man/figures/logo.png" />
-
-<meta name="author" content="Will Landau" />
-<meta name="author" content="Copyright Eli Lilly and Company" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-  <link rel="apple-touch-icon-precomposed" sizes="120x120" href="man/figures/apple-touch-icon.png" />
-  <link rel="shortcut icon" href="man/figures/favicon.ico" type="image/x-icon" />
-<link rel="prev" href="literate-programming.html"/>
-<link rel="next" href="static.html"/>
-<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
-<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
-
-
-
-
-
-
-
-
-<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
-<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
-<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
-<script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
-<link href="libs/vis-9.1.0/vis-network.min.css" rel="stylesheet" />
-<script src="libs/vis-9.1.0/vis-network.min.js"></script>
-<script src="libs/visNetwork-binding-2.1.0/visNetwork.js"></script>
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-150843595-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-150843595-1');
-</script>
-
-
-<style type="text/css">
+<title>The targets R package user manual - 11&nbsp; Dynamic branching</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
@@ -133,237 +81,205 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </style>
 
 
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./static.html" rel="next">
+<link href="./literate-programming.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
 </head>
 
-<body>
+<body class="nav-sidebar floating">
 
-
-
-  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
-
-    <div class="book-summary">
-      <nav role="navigation">
-
-<ul class="summary">
-<li><a href="./">The targets R Package User Manual</a></li>
-
-<li class="divider"></li>
-<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
-<ul>
-<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#motivation"><i class="fa fa-check"></i><b>1.1</b> Motivation</a></li>
-<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#pipeline-tools"><i class="fa fa-check"></i><b>1.2</b> Pipeline tools</a></li>
-<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#the-targets-package"><i class="fa fa-check"></i><b>1.3</b> The <code>targets</code> package</a></li>
-<li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#about-this-manual"><i class="fa fa-check"></i><b>1.4</b> About this manual</a></li>
-<li class="chapter" data-level="1.5" data-path="index.html"><a href="index.html#what-about-drake"><i class="fa fa-check"></i><b>1.5</b> What about <code>drake</code>?</a></li>
-</ul></li>
-<li class="chapter" data-level="2" data-path="walkthrough.html"><a href="walkthrough.html"><i class="fa fa-check"></i><b>2</b> Walkthrough</a>
-<ul>
-<li class="chapter" data-level="2.1" data-path="walkthrough.html"><a href="walkthrough.html#about-this-example"><i class="fa fa-check"></i><b>2.1</b> About this example</a></li>
-<li class="chapter" data-level="2.2" data-path="walkthrough.html"><a href="walkthrough.html#file-structure"><i class="fa fa-check"></i><b>2.2</b> File structure</a></li>
-<li class="chapter" data-level="2.3" data-path="walkthrough.html"><a href="walkthrough.html#target-script-file"><i class="fa fa-check"></i><b>2.3</b> Target script file</a></li>
-<li class="chapter" data-level="2.4" data-path="walkthrough.html"><a href="walkthrough.html#inspect-the-pipeline"><i class="fa fa-check"></i><b>2.4</b> Inspect the pipeline</a></li>
-<li class="chapter" data-level="2.5" data-path="walkthrough.html"><a href="walkthrough.html#run-the-pipeline"><i class="fa fa-check"></i><b>2.5</b> Run the pipeline</a></li>
-<li class="chapter" data-level="2.6" data-path="walkthrough.html"><a href="walkthrough.html#changes"><i class="fa fa-check"></i><b>2.6</b> Changes</a>
-<ul>
-<li class="chapter" data-level="2.6.1" data-path="walkthrough.html"><a href="walkthrough.html#change-code"><i class="fa fa-check"></i><b>2.6.1</b> Change code</a></li>
-<li class="chapter" data-level="2.6.2" data-path="walkthrough.html"><a href="walkthrough.html#change-data"><i class="fa fa-check"></i><b>2.6.2</b> Change data</a></li>
-</ul></li>
-<li class="chapter" data-level="2.7" data-path="walkthrough.html"><a href="walkthrough.html#read-metadata"><i class="fa fa-check"></i><b>2.7</b> Read metadata</a></li>
-</ul></li>
-<li class="chapter" data-level="3" data-path="debugging.html"><a href="debugging.html"><i class="fa fa-check"></i><b>3</b> Debugging</a>
-<ul>
-<li class="chapter" data-level="3.1" data-path="debugging.html"><a href="debugging.html#error-messages"><i class="fa fa-check"></i><b>3.1</b> Error messages</a></li>
-<li class="chapter" data-level="3.2" data-path="debugging.html"><a href="debugging.html#environment-browser"><i class="fa fa-check"></i><b>3.2</b> Environment browser</a></li>
-<li class="chapter" data-level="3.3" data-path="debugging.html"><a href="debugging.html#the-debug-option"><i class="fa fa-check"></i><b>3.3</b> The debug option</a></li>
-<li class="chapter" data-level="3.4" data-path="debugging.html"><a href="debugging.html#workspaces"><i class="fa fa-check"></i><b>3.4</b> Workspaces</a></li>
-<li class="chapter" data-level="3.5" data-path="debugging.html"><a href="debugging.html#tradeoffs"><i class="fa fa-check"></i><b>3.5</b> Tradeoffs</a></li>
-</ul></li>
-<li class="chapter" data-level="4" data-path="performance.html"><a href="performance.html"><i class="fa fa-check"></i><b>4</b> Performance</a>
-<ul>
-<li class="chapter" data-level="4.1" data-path="performance.html"><a href="performance.html#monitoring-the-pipeline"><i class="fa fa-check"></i><b>4.1</b> Monitoring the pipeline</a></li>
-<li class="chapter" data-level="4.2" data-path="performance.html"><a href="performance.html#performance-1"><i class="fa fa-check"></i><b>4.2</b> Performance</a></li>
-</ul></li>
-<li class="chapter" data-level="5" data-path="functions.html"><a href="functions.html"><i class="fa fa-check"></i><b>5</b> Functions</a>
-<ul>
-<li class="chapter" data-level="5.1" data-path="functions.html"><a href="functions.html#problems-with-script-based-workflows"><i class="fa fa-check"></i><b>5.1</b> Problems with script-based workflows</a></li>
-<li class="chapter" data-level="5.2" data-path="functions.html"><a href="functions.html#functions-1"><i class="fa fa-check"></i><b>5.2</b> Functions</a></li>
-<li class="chapter" data-level="5.3" data-path="functions.html"><a href="functions.html#writing-functions"><i class="fa fa-check"></i><b>5.3</b> Writing functions</a></li>
-<li class="chapter" data-level="5.4" data-path="functions.html"><a href="functions.html#functions-in-pipelines"><i class="fa fa-check"></i><b>5.4</b> Functions in pipelines</a></li>
-<li class="chapter" data-level="5.5" data-path="functions.html"><a href="functions.html#tracking-changes"><i class="fa fa-check"></i><b>5.5</b> Tracking changes</a></li>
-</ul></li>
-<li class="chapter" data-level="6" data-path="targets.html"><a href="targets.html"><i class="fa fa-check"></i><b>6</b> Target construction</a>
-<ul>
-<li class="chapter" data-level="6.1" data-path="targets.html"><a href="targets.html#target-names"><i class="fa fa-check"></i><b>6.1</b> Target names</a></li>
-<li class="chapter" data-level="6.2" data-path="targets.html"><a href="targets.html#what-a-target-should-do"><i class="fa fa-check"></i><b>6.2</b> What a target should do</a></li>
-<li class="chapter" data-level="6.3" data-path="targets.html"><a href="targets.html#how-much-a-target-should-do"><i class="fa fa-check"></i><b>6.3</b> How much a target should do</a></li>
-<li class="chapter" data-level="6.4" data-path="targets.html"><a href="targets.html#working-with-tools-outside-r"><i class="fa fa-check"></i><b>6.4</b> Working with tools outside R</a></li>
-<li class="chapter" data-level="6.5" data-path="targets.html"><a href="targets.html#side-effects"><i class="fa fa-check"></i><b>6.5</b> Side effects</a></li>
-<li class="chapter" data-level="6.6" data-path="targets.html"><a href="targets.html#dependencies"><i class="fa fa-check"></i><b>6.6</b> Dependencies</a></li>
-<li class="chapter" data-level="6.7" data-path="targets.html"><a href="targets.html#return-value"><i class="fa fa-check"></i><b>6.7</b> Return value</a>
-<ul>
-<li class="chapter" data-level="6.7.1" data-path="targets.html"><a href="targets.html#saving"><i class="fa fa-check"></i><b>6.7.1</b> Saving</a></li>
-<li class="chapter" data-level="6.7.2" data-path="targets.html"><a href="targets.html#hashing"><i class="fa fa-check"></i><b>6.7.2</b> Hashing</a></li>
-<li class="chapter" data-level="6.7.3" data-path="targets.html"><a href="targets.html#workaround"><i class="fa fa-check"></i><b>6.7.3</b> Workaround</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="7" data-path="packages.html"><a href="packages.html"><i class="fa fa-check"></i><b>7</b> Packages</a>
-<ul>
-<li class="chapter" data-level="7.1" data-path="packages.html"><a href="packages.html#loading-and-configuring-r-packages"><i class="fa fa-check"></i><b>7.1</b> Loading and configuring R packages</a></li>
-<li class="chapter" data-level="7.2" data-path="packages.html"><a href="packages.html#r-packages-as-projects"><i class="fa fa-check"></i><b>7.2</b> R packages as projects</a></li>
-<li class="chapter" data-level="7.3" data-path="packages.html"><a href="packages.html#target-factories"><i class="fa fa-check"></i><b>7.3</b> Target Factories</a></li>
-<li class="chapter" data-level="7.4" data-path="packages.html"><a href="packages.html#package-based-invalidation"><i class="fa fa-check"></i><b>7.4</b> Package-based invalidation</a></li>
-</ul></li>
-<li class="chapter" data-level="8" data-path="projects.html"><a href="projects.html"><i class="fa fa-check"></i><b>8</b> Projects</a>
-<ul>
-<li class="chapter" data-level="8.1" data-path="projects.html"><a href="projects.html#extra-reproducibility"><i class="fa fa-check"></i><b>8.1</b> Extra reproducibility</a></li>
-<li class="chapter" data-level="8.2" data-path="projects.html"><a href="projects.html#project-files"><i class="fa fa-check"></i><b>8.2</b> Project files</a></li>
-<li class="chapter" data-level="8.3" data-path="projects.html"><a href="projects.html#multiple-projects"><i class="fa fa-check"></i><b>8.3</b> Multiple projects</a>
-<ul>
-<li class="chapter" data-level="8.3.1" data-path="projects.html"><a href="projects.html#create-each-project."><i class="fa fa-check"></i><b>8.3.1</b> Create each project.</a></li>
-<li class="chapter" data-level="8.3.2" data-path="projects.html"><a href="projects.html#configure-each-project."><i class="fa fa-check"></i><b>8.3.2</b> Configure each project.</a></li>
-<li class="chapter" data-level="8.3.3" data-path="projects.html"><a href="projects.html#run-each-project"><i class="fa fa-check"></i><b>8.3.3</b> Run each project</a></li>
-</ul></li>
-<li class="chapter" data-level="8.4" data-path="projects.html"><a href="projects.html#interdependent-projects"><i class="fa fa-check"></i><b>8.4</b> Interdependent projects</a>
-<ul>
-<li class="chapter" data-level="8.4.1" data-path="projects.html"><a href="projects.html#config-inheritance"><i class="fa fa-check"></i><b>8.4.1</b> Config inheritance</a></li>
-<li class="chapter" data-level="8.4.2" data-path="projects.html"><a href="projects.html#sharing-targets"><i class="fa fa-check"></i><b>8.4.2</b> Sharing targets</a></li>
-</ul></li>
-<li class="chapter" data-level="8.5" data-path="projects.html"><a href="projects.html#the-config-package"><i class="fa fa-check"></i><b>8.5</b> The config package</a></li>
-</ul></li>
-<li class="chapter" data-level="9" data-path="data.html"><a href="data.html"><i class="fa fa-check"></i><b>9</b> Data: storage and memory</a>
-<ul>
-<li class="chapter" data-level="9.1" data-path="data.html"><a href="data.html#local-data-store"><i class="fa fa-check"></i><b>9.1</b> Local data store</a></li>
-<li class="chapter" data-level="9.2" data-path="data.html"><a href="data.html#external-files"><i class="fa fa-check"></i><b>9.2</b> External files</a></li>
-<li class="chapter" data-level="9.3" data-path="data.html"><a href="data.html#memory"><i class="fa fa-check"></i><b>9.3</b> Memory</a></li>
-<li class="chapter" data-level="9.4" data-path="data.html"><a href="data.html#cloud-storage"><i class="fa fa-check"></i><b>9.4</b> Cloud storage</a>
-<ul>
-<li class="chapter" data-level="9.4.1" data-path="data.html"><a href="data.html#cost"><i class="fa fa-check"></i><b>9.4.1</b> Cost</a></li>
-<li class="chapter" data-level="9.4.2" data-path="data.html"><a href="data.html#aws-setup"><i class="fa fa-check"></i><b>9.4.2</b> AWS setup</a></li>
-<li class="chapter" data-level="9.4.3" data-path="data.html"><a href="data.html#gcp-setup"><i class="fa fa-check"></i><b>9.4.3</b> GCP setup</a></li>
-<li class="chapter" data-level="9.4.4" data-path="data.html"><a href="data.html#usage"><i class="fa fa-check"></i><b>9.4.4</b> Usage</a></li>
-<li class="chapter" data-level="9.4.5" data-path="data.html"><a href="data.html#data-version-control"><i class="fa fa-check"></i><b>9.4.5</b> Data version control</a></li>
-</ul></li>
-<li class="chapter" data-level="9.5" data-path="data.html"><a href="data.html#cleaning-up-local-internal-data-files"><i class="fa fa-check"></i><b>9.5</b> Cleaning up local internal data files</a></li>
-</ul></li>
-<li class="chapter" data-level="10" data-path="literate-programming.html"><a href="literate-programming.html"><i class="fa fa-check"></i><b>10</b> Literate programming</a>
-<ul>
-<li class="chapter" data-level="10.1" data-path="literate-programming.html"><a href="literate-programming.html#literate-programming-within-a-target"><i class="fa fa-check"></i><b>10.1</b> Literate programming within a target</a>
-<ul>
-<li class="chapter" data-level="10.1.1" data-path="literate-programming.html"><a href="literate-programming.html#r-markdown-targets"><i class="fa fa-check"></i><b>10.1.1</b> R Markdown targets</a></li>
-<li class="chapter" data-level="10.1.2" data-path="literate-programming.html"><a href="literate-programming.html#quarto-targets"><i class="fa fa-check"></i><b>10.1.2</b> Quarto targets</a></li>
-<li class="chapter" data-level="10.1.3" data-path="literate-programming.html"><a href="literate-programming.html#parameterized-documents"><i class="fa fa-check"></i><b>10.1.3</b> Parameterized documents</a></li>
-<li class="chapter" data-level="10.1.4" data-path="literate-programming.html"><a href="literate-programming.html#single-parameter-set"><i class="fa fa-check"></i><b>10.1.4</b> Single parameter set</a></li>
-<li class="chapter" data-level="10.1.5" data-path="literate-programming.html"><a href="literate-programming.html#multiple-parameter-sets"><i class="fa fa-check"></i><b>10.1.5</b> Multiple parameter sets</a></li>
-</ul></li>
-<li class="chapter" data-level="10.2" data-path="literate-programming.html"><a href="literate-programming.html#target-markdown"><i class="fa fa-check"></i><b>10.2</b> Target Markdown</a>
-<ul>
-<li class="chapter" data-level="10.2.1" data-path="literate-programming.html"><a href="literate-programming.html#access"><i class="fa fa-check"></i><b>10.2.1</b> Access</a></li>
-<li class="chapter" data-level="10.2.2" data-path="literate-programming.html"><a href="literate-programming.html#purpose"><i class="fa fa-check"></i><b>10.2.2</b> Purpose</a></li>
-<li class="chapter" data-level="10.2.3" data-path="literate-programming.html"><a href="literate-programming.html#example"><i class="fa fa-check"></i><b>10.2.3</b> Example</a></li>
-<li class="chapter" data-level="10.2.4" data-path="literate-programming.html"><a href="literate-programming.html#required-packages"><i class="fa fa-check"></i><b>10.2.4</b> Required packages</a></li>
-<li class="chapter" data-level="10.2.5" data-path="literate-programming.html"><a href="literate-programming.html#setup"><i class="fa fa-check"></i><b>10.2.5</b> Setup</a></li>
-<li class="chapter" data-level="10.2.6" data-path="literate-programming.html"><a href="literate-programming.html#globals"><i class="fa fa-check"></i><b>10.2.6</b> Globals</a></li>
-<li class="chapter" data-level="10.2.7" data-path="literate-programming.html"><a href="literate-programming.html#target-definitions"><i class="fa fa-check"></i><b>10.2.7</b> Target definitions</a></li>
-<li class="chapter" data-level="10.2.8" data-path="literate-programming.html"><a href="literate-programming.html#pipeline"><i class="fa fa-check"></i><b>10.2.8</b> Pipeline</a></li>
-<li class="chapter" data-level="10.2.9" data-path="literate-programming.html"><a href="literate-programming.html#output"><i class="fa fa-check"></i><b>10.2.9</b> Output</a></li>
-<li class="chapter" data-level="10.2.10" data-path="literate-programming.html"><a href="literate-programming.html#conditioning-on-interactive-mode"><i class="fa fa-check"></i><b>10.2.10</b> Conditioning on interactive mode</a></li>
-<li class="chapter" data-level="10.2.11" data-path="literate-programming.html"><a href="literate-programming.html#tar_interactive"><i class="fa fa-check"></i><b>10.2.11</b> <code>tar_interactive()</code></a></li>
-<li class="chapter" data-level="10.2.12" data-path="literate-programming.html"><a href="literate-programming.html#tar_toggle"><i class="fa fa-check"></i><b>10.2.12</b> <code>tar_toggle()</code></a></li>
-<li class="chapter" data-level="10.2.13" data-path="literate-programming.html"><a href="literate-programming.html#chunk-options"><i class="fa fa-check"></i><b>10.2.13</b> Chunk options</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="11" data-path="dynamic.html"><a href="dynamic.html"><i class="fa fa-check"></i><b>11</b> Dynamic branching</a>
-<ul>
-<li class="chapter" data-level="11.1" data-path="dynamic.html"><a href="dynamic.html#branching"><i class="fa fa-check"></i><b>11.1</b> Branching</a></li>
-<li class="chapter" data-level="11.2" data-path="dynamic.html"><a href="dynamic.html#about-dynamic-branching"><i class="fa fa-check"></i><b>11.2</b> About dynamic branching</a></li>
-<li class="chapter" data-level="11.3" data-path="dynamic.html"><a href="dynamic.html#example-1"><i class="fa fa-check"></i><b>11.3</b> Example</a></li>
-<li class="chapter" data-level="11.4" data-path="dynamic.html"><a href="dynamic.html#provenance"><i class="fa fa-check"></i><b>11.4</b> Provenance</a></li>
-<li class="chapter" data-level="11.5" data-path="dynamic.html"><a href="dynamic.html#patterns"><i class="fa fa-check"></i><b>11.5</b> Patterns</a></li>
-<li class="chapter" data-level="11.6" data-path="dynamic.html"><a href="dynamic.html#iteration"><i class="fa fa-check"></i><b>11.6</b> Iteration</a></li>
-<li class="chapter" data-level="11.7" data-path="dynamic.html"><a href="dynamic.html#branching-over-row-groups"><i class="fa fa-check"></i><b>11.7</b> Branching over row groups</a></li>
-<li class="chapter" data-level="11.8" data-path="dynamic.html"><a href="dynamic.html#branching-over-files"><i class="fa fa-check"></i><b>11.8</b> Branching over files</a></li>
-<li class="chapter" data-level="11.9" data-path="dynamic.html"><a href="dynamic.html#performance-and-batching"><i class="fa fa-check"></i><b>11.9</b> Performance and batching</a></li>
-</ul></li>
-<li class="chapter" data-level="12" data-path="static.html"><a href="static.html"><i class="fa fa-check"></i><b>12</b> Static branching</a>
-<ul>
-<li class="chapter" data-level="12.1" data-path="static.html"><a href="static.html#branching-1"><i class="fa fa-check"></i><b>12.1</b> Branching</a></li>
-<li class="chapter" data-level="12.2" data-path="static.html"><a href="static.html#when-to-use-static-branching"><i class="fa fa-check"></i><b>12.2</b> When to use static branching</a></li>
-<li class="chapter" data-level="12.3" data-path="static.html"><a href="static.html#map"><i class="fa fa-check"></i><b>12.3</b> Map</a></li>
-<li class="chapter" data-level="12.4" data-path="static.html"><a href="static.html#dynamic-within-static-branching"><i class="fa fa-check"></i><b>12.4</b> Dynamic-within-static branching</a></li>
-<li class="chapter" data-level="12.5" data-path="static.html"><a href="static.html#combine"><i class="fa fa-check"></i><b>12.5</b> Combine</a></li>
-<li class="chapter" data-level="12.6" data-path="static.html"><a href="static.html#metaprogramming"><i class="fa fa-check"></i><b>12.6</b> Metaprogramming</a></li>
-<li class="chapter" data-level="12.7" data-path="static.html"><a href="static.html#hooks"><i class="fa fa-check"></i><b>12.7</b> Hooks</a></li>
-</ul></li>
-<li class="chapter" data-level="13" data-path="hpc.html"><a href="hpc.html"><i class="fa fa-check"></i><b>13</b> High-performance computing</a>
-<ul>
-<li class="chapter" data-level="13.1" data-path="hpc.html"><a href="hpc.html#clustermq"><i class="fa fa-check"></i><b>13.1</b> Clustermq</a>
-<ul>
-<li class="chapter" data-level="13.1.1" data-path="hpc.html"><a href="hpc.html#persistent-workers"><i class="fa fa-check"></i><b>13.1.1</b> Persistent workers</a></li>
-<li class="chapter" data-level="13.1.2" data-path="hpc.html"><a href="hpc.html#clustermq-installation"><i class="fa fa-check"></i><b>13.1.2</b> Clustermq installation</a></li>
-<li class="chapter" data-level="13.1.3" data-path="hpc.html"><a href="hpc.html#clustermq-local-configuration"><i class="fa fa-check"></i><b>13.1.3</b> Clustermq local configuration</a></li>
-<li class="chapter" data-level="13.1.4" data-path="hpc.html"><a href="hpc.html#clustermq-remote-configuration"><i class="fa fa-check"></i><b>13.1.4</b> Clustermq remote configuration</a></li>
-<li class="chapter" data-level="13.1.5" data-path="hpc.html"><a href="hpc.html#clustermq-template-file-configuration"><i class="fa fa-check"></i><b>13.1.5</b> Clustermq template file configuration</a></li>
-</ul></li>
-<li class="chapter" data-level="13.2" data-path="hpc.html"><a href="hpc.html#future"><i class="fa fa-check"></i><b>13.2</b> Future</a>
-<ul>
-<li class="chapter" data-level="13.2.1" data-path="hpc.html"><a href="hpc.html#transient-workers"><i class="fa fa-check"></i><b>13.2.1</b> Transient workers</a></li>
-<li class="chapter" data-level="13.2.2" data-path="hpc.html"><a href="hpc.html#future-installation"><i class="fa fa-check"></i><b>13.2.2</b> Future installation</a></li>
-<li class="chapter" data-level="13.2.3" data-path="hpc.html"><a href="hpc.html#future-locally"><i class="fa fa-check"></i><b>13.2.3</b> Future locally</a></li>
-<li class="chapter" data-level="13.2.4" data-path="hpc.html"><a href="hpc.html#future-remotely"><i class="fa fa-check"></i><b>13.2.4</b> Future remotely</a></li>
-<li class="chapter" data-level="13.2.5" data-path="hpc.html"><a href="hpc.html#future-configuration"><i class="fa fa-check"></i><b>13.2.5</b> Future configuration</a></li>
-</ul></li>
-<li class="chapter" data-level="13.3" data-path="hpc.html"><a href="hpc.html#advanced"><i class="fa fa-check"></i><b>13.3</b> Advanced</a></li>
-<li class="chapter" data-level="13.4" data-path="hpc.html"><a href="hpc.html#cloud-computing"><i class="fa fa-check"></i><b>13.4</b> Cloud computing</a></li>
-</ul></li>
-<li class="chapter" data-level="14" data-path="drake.html"><a href="drake.html"><i class="fa fa-check"></i><b>14</b> What about <code>drake</code>?</a>
-<ul>
-<li class="chapter" data-level="14.1" data-path="drake.html"><a href="drake.html#why-is-drake-superseded"><i class="fa fa-check"></i><b>14.1</b> Why is <code>drake</code> superseded?</a></li>
-<li class="chapter" data-level="14.2" data-path="drake.html"><a href="drake.html#transitioning-to-targets"><i class="fa fa-check"></i><b>14.2</b> Transitioning to <code>targets</code></a></li>
-<li class="chapter" data-level="14.3" data-path="drake.html"><a href="drake.html#advantages-of-targets-over-drake"><i class="fa fa-check"></i><b>14.3</b> Advantages of <code>targets</code> over <code>drake</code></a>
-<ul>
-<li class="chapter" data-level="14.3.1" data-path="drake.html"><a href="drake.html#better-guardrails-by-design"><i class="fa fa-check"></i><b>14.3.1</b> Better guardrails by design</a></li>
-<li class="chapter" data-level="14.3.2" data-path="drake.html"><a href="drake.html#enhanced-debugging-support"><i class="fa fa-check"></i><b>14.3.2</b> Enhanced debugging support</a></li>
-<li class="chapter" data-level="14.3.3" data-path="drake.html"><a href="drake.html#improved-tracking-of-package-functions"><i class="fa fa-check"></i><b>14.3.3</b> Improved tracking of package functions</a></li>
-<li class="chapter" data-level="14.3.4" data-path="drake.html"><a href="drake.html#lighter-friendlier-data-management"><i class="fa fa-check"></i><b>14.3.4</b> Lighter, friendlier data management</a></li>
-<li class="chapter" data-level="14.3.5" data-path="drake.html"><a href="drake.html#cloud-storage-1"><i class="fa fa-check"></i><b>14.3.5</b> Cloud storage</a></li>
-<li class="chapter" data-level="14.3.6" data-path="drake.html"><a href="drake.html#show-status-of-functions-and-global-objects"><i class="fa fa-check"></i><b>14.3.6</b> Show status of functions and global objects</a></li>
-<li class="chapter" data-level="14.3.7" data-path="drake.html"><a href="drake.html#dynamic-branching-with-dplyrgroup_by"><i class="fa fa-check"></i><b>14.3.7</b> Dynamic branching with <code>dplyr::group_by()</code></a></li>
-<li class="chapter" data-level="14.3.8" data-path="drake.html"><a href="drake.html#composable-dynamic-branching"><i class="fa fa-check"></i><b>14.3.8</b> Composable dynamic branching</a></li>
-<li class="chapter" data-level="14.3.9" data-path="drake.html"><a href="drake.html#improved-parallel-efficiency"><i class="fa fa-check"></i><b>14.3.9</b> Improved parallel efficiency</a></li>
-<li class="chapter" data-level="14.3.10" data-path="drake.html"><a href="drake.html#metaprogramming-1"><i class="fa fa-check"></i><b>14.3.10</b> Metaprogramming</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="15" data-path="markdown.html"><a href="markdown.html"><i class="fa fa-check"></i><b>15</b> R Markdown</a></li>
-<li class="divider"></li>
-<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
-
-</ul>
-
-      </nav>
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Dynamic branching</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
     </div>
-
-    <div class="book-body">
-      <div class="body-inner">
-        <div class="book-header" role="navigation">
-          <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">The targets R Package User Manual</a>
-          </h1>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">The targets R package user manual</a> 
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
         </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./walkthrough.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Walkthrough</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./debugging.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Debugging</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./performance.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Performance</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./targets.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Target construction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./packages.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Packages</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./projects.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Projects</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Data: storage and memory</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./literate-programming.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Literate programming</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dynamic.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Dynamic branching</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./static.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Static branching</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./hpc.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">High-performance computing</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./drake.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">What about <code>drake</code>?</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">R Markdown</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#branching" id="toc-branching" class="nav-link active" data-scroll-target="#branching"> <span class="header-section-number">11.1</span> Branching</a></li>
+  <li><a href="#about-dynamic-branching" id="toc-about-dynamic-branching" class="nav-link" data-scroll-target="#about-dynamic-branching"> <span class="header-section-number">11.2</span> About dynamic branching</a></li>
+  <li><a href="#example" id="toc-example" class="nav-link" data-scroll-target="#example"> <span class="header-section-number">11.3</span> Example</a></li>
+  <li><a href="#provenance" id="toc-provenance" class="nav-link" data-scroll-target="#provenance"> <span class="header-section-number">11.4</span> Provenance</a></li>
+  <li><a href="#patterns" id="toc-patterns" class="nav-link" data-scroll-target="#patterns"> <span class="header-section-number">11.5</span> Patterns</a></li>
+  <li><a href="#iteration" id="toc-iteration" class="nav-link" data-scroll-target="#iteration"> <span class="header-section-number">11.6</span> Iteration</a></li>
+  <li><a href="#branching-over-row-groups" id="toc-branching-over-row-groups" class="nav-link" data-scroll-target="#branching-over-row-groups"> <span class="header-section-number">11.7</span> Branching over row groups</a></li>
+  <li><a href="#branching-over-files" id="toc-branching-over-files" class="nav-link" data-scroll-target="#branching-over-files"> <span class="header-section-number">11.8</span> Branching over files</a></li>
+  <li><a href="#performance-and-batching" id="toc-performance-and-batching" class="nav-link" data-scroll-target="#performance-and-batching"> <span class="header-section-number">11.9</span> Performance and batching</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
 
-        <div class="page-wrapper" tabindex="-1" role="main">
-          <div class="page-inner">
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="dynamic" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Dynamic branching</span></span></h1>
+</div>
 
-            <section class="normal" id="section-">
-<div id="dynamic" class="section level1 hasAnchor" number="11">
-<h1><span class="header-section-number">Chapter 11</span> Dynamic branching<a href="dynamic.html#dynamic" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<div id="branching" class="section level2 hasAnchor" number="11.1">
-<h2><span class="header-section-number">11.1</span> Branching<a href="dynamic.html#branching" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<div class="cell">
+
+</div>
+<div class="cell">
+
+</div>
+<section id="branching" class="level2" data-number="11.1">
+<h2 data-number="11.1" class="anchored" data-anchor-id="branching"><span class="header-section-number">11.1</span> Branching</h2>
 <p>Sometimes, a pipeline contains more targets than a user can comfortably type by hand. For projects with hundreds of targets, branching can make the code in <code>_targets.R</code> shorter and more concise.</p>
-<p><code>targets</code> supports two types of branching: dynamic branching and <a href="static.html#static">static branching</a>. Some projects are better suited to dynamic branching, while others benefit more from <a href="static.html#static">static branching</a> or a combination of both. Here is a short list of tradeoffs.</p>
-<table>
+<p><code>targets</code> supports two types of branching: dynamic branching and <a href="static.html">static branching</a>. Some projects are better suited to dynamic branching, while others benefit more from <a href="static.html">static branching</a> or a combination of both. Here is a short list of tradeoffs.</p>
+<table class="table">
 <colgroup>
-<col width="50%" />
-<col width="50%" />
+<col style="width: 50%">
+<col style="width: 50%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -390,144 +306,167 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </tr>
 </tbody>
 </table>
-</div>
-<div id="about-dynamic-branching" class="section level2 hasAnchor" number="11.2">
-<h2><span class="header-section-number">11.2</span> About dynamic branching<a href="dynamic.html#about-dynamic-branching" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Dynamic branching is the act of defining new targets (called branches) while the pipeline is running (e.g. during <code>tar_make()</code>). Prior to launching the pipeline, the user does not need to know the number of branches or the input data of each branch.</p>
+</section>
+<section id="about-dynamic-branching" class="level2" data-number="11.2">
+<h2 data-number="11.2" class="anchored" data-anchor-id="about-dynamic-branching"><span class="header-section-number">11.2</span> About dynamic branching</h2>
+<p>Dynamic branching is the act of defining new targets (called branches) while the pipeline is running (e.g.&nbsp;during <code>tar_make()</code>). Prior to launching the pipeline, the user does not need to know the number of branches or the input data of each branch.</p>
 <p>To use dynamic branching, set the <code>pattern</code> argument of <code>tar_target()</code>. The pattern determines how dynamic branches are created and how the input data is partitioned among the branches. A branch is single iteration of the target’s command on a single piece of the input data. Branches are automatically created based on how the input data breaks into pieces, and <code>targets</code> automatically combines the output from all the branches when you reference the dynamic target as a whole.</p>
+</section>
+<section id="example" class="level2" data-number="11.3">
+<h2 data-number="11.3" class="anchored" data-anchor-id="example"><span class="header-section-number">11.3</span> Example</h2>
+<p>To illustrate, consider the example pipeline below. It uses dynamic branching to generate random <a href="https://en.wikipedia.org/wiki/Spirograph">spirographs</a> using code borrowed from <a href="wjschne">W. Joel Schneider</a>’s <a href="https://wjschne.github.io/spiro/index.html"><code>spiro</code></a> package.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. A spirograph is a type of two-dimensional algebraic curve determined (in part) by parameters <code>fixed_radius</code> and <code>cycling_radius</code>. Targets <code>fixed_radius</code> and <code>cycling_radius</code> draw random parameter values, and the dynamic target <code>points</code> generates a spirograph dataset for each set of parameters (one spirograph per dynamic branch). Target <code>single_plot</code> plots each spirograph separately, and <code>combine_plot</code> plots all the spirographs together.</p>
+<div class="cell">
+
 </div>
-<div id="example-1" class="section level2 hasAnchor" number="11.3">
-<h2><span class="header-section-number">11.3</span> Example<a href="dynamic.html#example-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>To illustrate, consider the example pipeline below. It uses dynamic branching to generate random <a href="https://en.wikipedia.org/wiki/Spirograph">spirographs</a> using code borrowed from <a href="wjschne">W. Joel Schneider</a>’s <a href="https://wjschne.github.io/spiro/index.html"><code>spiro</code></a> package.<a href="#fn23" class="footnote-ref" id="fnref23"><sup>23</sup></a>. A spirograph is a type of two-dimensional algebraic curve determined (in part) by parameters <code>fixed_radius</code> and <code>cycling_radius</code>. Targets <code>fixed_radius</code> and <code>cycling_radius</code> draw random parameter values, and the dynamic target <code>points</code> generates a spirograph dataset for each set of parameters (one spirograph per dynamic branch). Target <code>single_plot</code> plots each spirograph separately, and <code>combine_plot</code> plots all the spirographs together.</p>
-<div class="sourceCode" id="cb120"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb120-1"><a href="dynamic.html#cb120-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
-<span id="cb120-2"><a href="dynamic.html#cb120-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb120-3"><a href="dynamic.html#cb120-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb120-4"><a href="dynamic.html#cb120-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
-<span id="cb120-5"><a href="dynamic.html#cb120-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb120-6"><a href="dynamic.html#cb120-6" aria-hidden="true" tabindex="-1"></a><span class="co"># From https://github.com/wjschne/spiro/blob/87f73ec37ceb0a7a9d09856ada8ae28d587a2ebd/R/spirograph.R</span></span>
-<span id="cb120-7"><a href="dynamic.html#cb120-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Adapted under the CC0 1.0 Universal license: https://github.com/wjschne/spiro/blob/87f73ec37ceb0a7a9d09856ada8ae28d587a2ebd/LICENSE.md</span></span>
-<span id="cb120-8"><a href="dynamic.html#cb120-8" aria-hidden="true" tabindex="-1"></a>spirograph_points <span class="ot">&lt;-</span> <span class="cf">function</span>(fixed_radius, cycling_radius) {</span>
-<span id="cb120-9"><a href="dynamic.html#cb120-9" aria-hidden="true" tabindex="-1"></a>  t <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">1</span>, <span class="dv">30</span> <span class="sc">*</span> pi, <span class="at">length.out =</span> <span class="fl">1e4</span>)</span>
-<span id="cb120-10"><a href="dynamic.html#cb120-10" aria-hidden="true" tabindex="-1"></a>  diff <span class="ot">&lt;-</span> (fixed_radius <span class="sc">-</span> cycling_radius)</span>
-<span id="cb120-11"><a href="dynamic.html#cb120-11" aria-hidden="true" tabindex="-1"></a>  ratio <span class="ot">&lt;-</span> diff <span class="sc">/</span> cycling_radius</span>
-<span id="cb120-12"><a href="dynamic.html#cb120-12" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> diff <span class="sc">*</span> <span class="fu">cos</span>(t) <span class="sc">+</span> <span class="fu">cos</span>(t <span class="sc">*</span> ratio)</span>
-<span id="cb120-13"><a href="dynamic.html#cb120-13" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">&lt;-</span> diff <span class="sc">*</span> <span class="fu">sin</span>(t) <span class="sc">-</span> <span class="fu">sin</span>(t <span class="sc">*</span> ratio)</span>
-<span id="cb120-14"><a href="dynamic.html#cb120-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">x =</span> x, <span class="at">y =</span> y, <span class="at">fixed_radius =</span> fixed_radius, <span class="at">cycling_radius =</span> cycling_radius)</span>
-<span id="cb120-15"><a href="dynamic.html#cb120-15" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb120-16"><a href="dynamic.html#cb120-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb120-17"><a href="dynamic.html#cb120-17" aria-hidden="true" tabindex="-1"></a>plot_spirographs <span class="ot">&lt;-</span> <span class="cf">function</span>(points) {</span>
-<span id="cb120-18"><a href="dynamic.html#cb120-18" aria-hidden="true" tabindex="-1"></a>  label <span class="ot">&lt;-</span> <span class="st">&quot;fixed_radius = %s, cycling_radius = %s&quot;</span></span>
-<span id="cb120-19"><a href="dynamic.html#cb120-19" aria-hidden="true" tabindex="-1"></a>  points<span class="sc">$</span>parameters <span class="ot">&lt;-</span> <span class="fu">sprintf</span>(label, points<span class="sc">$</span>fixed_radius, points<span class="sc">$</span>cycling_radius)</span>
-<span id="cb120-20"><a href="dynamic.html#cb120-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(points) <span class="sc">+</span></span>
-<span id="cb120-21"><a href="dynamic.html#cb120-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y, <span class="at">color =</span> parameters), <span class="at">size =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
-<span id="cb120-22"><a href="dynamic.html#cb120-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>parameters) <span class="sc">+</span></span>
-<span id="cb120-23"><a href="dynamic.html#cb120-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_gray</span>(<span class="dv">16</span>) <span class="sc">+</span></span>
-<span id="cb120-24"><a href="dynamic.html#cb120-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">guides</span>(<span class="at">color =</span> <span class="st">&quot;none&quot;</span>)</span>
-<span id="cb120-25"><a href="dynamic.html#cb120-25" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb120-26"><a href="dynamic.html#cb120-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb120-27"><a href="dynamic.html#cb120-27" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb120-28"><a href="dynamic.html#cb120-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(fixed_radius, <span class="fu">sample.int</span>(<span class="at">n =</span> <span class="dv">10</span>, <span class="at">size =</span> <span class="dv">2</span>)),</span>
-<span id="cb120-29"><a href="dynamic.html#cb120-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(cycling_radius, <span class="fu">sample.int</span>(<span class="at">n =</span> <span class="dv">10</span>, <span class="at">size =</span> <span class="dv">2</span>)),</span>
-<span id="cb120-30"><a href="dynamic.html#cb120-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
-<span id="cb120-31"><a href="dynamic.html#cb120-31" aria-hidden="true" tabindex="-1"></a>    points,</span>
-<span id="cb120-32"><a href="dynamic.html#cb120-32" aria-hidden="true" tabindex="-1"></a>    <span class="fu">spirograph_points</span>(fixed_radius, cycling_radius),</span>
-<span id="cb120-33"><a href="dynamic.html#cb120-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">pattern =</span> <span class="fu">map</span>(fixed_radius, cycling_radius)</span>
-<span id="cb120-34"><a href="dynamic.html#cb120-34" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb120-35"><a href="dynamic.html#cb120-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
-<span id="cb120-36"><a href="dynamic.html#cb120-36" aria-hidden="true" tabindex="-1"></a>    single_plot,</span>
-<span id="cb120-37"><a href="dynamic.html#cb120-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plot_spirographs</span>(points),</span>
-<span id="cb120-38"><a href="dynamic.html#cb120-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">pattern =</span> <span class="fu">map</span>(points),</span>
-<span id="cb120-39"><a href="dynamic.html#cb120-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">iteration =</span> <span class="st">&quot;list&quot;</span></span>
-<span id="cb120-40"><a href="dynamic.html#cb120-40" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb120-41"><a href="dynamic.html#cb120-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(combined_plot, <span class="fu">plot_spirographs</span>(points))</span>
-<span id="cb120-42"><a href="dynamic.html#cb120-42" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<div class="sourceCode" id="cb121"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb121-1"><a href="dynamic.html#cb121-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
-<span id="cb121-2"><a href="dynamic.html#cb121-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start target cycling_radius</span></span>
-<span id="cb121-3"><a href="dynamic.html#cb121-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built target cycling_radius</span></span>
-<span id="cb121-4"><a href="dynamic.html#cb121-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start target fixed_radius</span></span>
-<span id="cb121-5"><a href="dynamic.html#cb121-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built target fixed_radius</span></span>
-<span id="cb121-6"><a href="dynamic.html#cb121-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start branch points_940d58fc</span></span>
-<span id="cb121-7"><a href="dynamic.html#cb121-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built branch points_940d58fc</span></span>
-<span id="cb121-8"><a href="dynamic.html#cb121-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start branch points_bf28fe5a</span></span>
-<span id="cb121-9"><a href="dynamic.html#cb121-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built branch points_bf28fe5a</span></span>
-<span id="cb121-10"><a href="dynamic.html#cb121-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built pattern points</span></span>
-<span id="cb121-11"><a href="dynamic.html#cb121-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start target combined_plot</span></span>
-<span id="cb121-12"><a href="dynamic.html#cb121-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built target combined_plot</span></span>
-<span id="cb121-13"><a href="dynamic.html#cb121-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start branch single_plot_805763e1</span></span>
-<span id="cb121-14"><a href="dynamic.html#cb121-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built branch single_plot_805763e1</span></span>
-<span id="cb121-15"><a href="dynamic.html#cb121-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start branch single_plot_ebcb8a12</span></span>
-<span id="cb121-16"><a href="dynamic.html#cb121-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built branch single_plot_ebcb8a12</span></span>
-<span id="cb121-17"><a href="dynamic.html#cb121-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built pattern single_plot</span></span>
-<span id="cb121-18"><a href="dynamic.html#cb121-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • end pipeline: 0.45 seconds</span></span></code></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># From https://github.com/wjschne/spiro/blob/87f73ec37ceb0a7a9d09856ada8ae28d587a2ebd/R/spirograph.R</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Adapted under the CC0 1.0 Universal license: https://github.com/wjschne/spiro/blob/87f73ec37ceb0a7a9d09856ada8ae28d587a2ebd/LICENSE.md</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>spirograph_points <span class="ot">&lt;-</span> <span class="cf">function</span>(fixed_radius, cycling_radius) {</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  t <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">1</span>, <span class="dv">30</span> <span class="sc">*</span> pi, <span class="at">length.out =</span> <span class="fl">1e4</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  diff <span class="ot">&lt;-</span> (fixed_radius <span class="sc">-</span> cycling_radius)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  ratio <span class="ot">&lt;-</span> diff <span class="sc">/</span> cycling_radius</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> diff <span class="sc">*</span> <span class="fu">cos</span>(t) <span class="sc">+</span> <span class="fu">cos</span>(t <span class="sc">*</span> ratio)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">&lt;-</span> diff <span class="sc">*</span> <span class="fu">sin</span>(t) <span class="sc">-</span> <span class="fu">sin</span>(t <span class="sc">*</span> ratio)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">x =</span> x, <span class="at">y =</span> y, <span class="at">fixed_radius =</span> fixed_radius, <span class="at">cycling_radius =</span> cycling_radius)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>plot_spirographs <span class="ot">&lt;-</span> <span class="cf">function</span>(points) {</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  label <span class="ot">&lt;-</span> <span class="st">"fixed_radius = %s, cycling_radius = %s"</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  points<span class="sc">$</span>parameters <span class="ot">&lt;-</span> <span class="fu">sprintf</span>(label, points<span class="sc">$</span>fixed_radius, points<span class="sc">$</span>cycling_radius)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(points) <span class="sc">+</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y, <span class="at">color =</span> parameters), <span class="at">size =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>parameters) <span class="sc">+</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_gray</span>(<span class="dv">16</span>) <span class="sc">+</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">guides</span>(<span class="at">color =</span> <span class="st">"none"</span>)</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(fixed_radius, <span class="fu">sample.int</span>(<span class="at">n =</span> <span class="dv">10</span>, <span class="at">size =</span> <span class="dv">2</span>)),</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(cycling_radius, <span class="fu">sample.int</span>(<span class="at">n =</span> <span class="dv">10</span>, <span class="at">size =</span> <span class="dv">2</span>)),</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    points,</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>    <span class="fu">spirograph_points</span>(fixed_radius, cycling_radius),</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">pattern =</span> <span class="fu">map</span>(fixed_radius, cycling_radius)</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>    single_plot,</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plot_spirographs</span>(points),</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">pattern =</span> <span class="fu">map</span>(points),</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">iteration =</span> <span class="st">"list"</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(combined_plot, <span class="fu">plot_spirographs</span>(points))</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start target cycling_radius</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built target cycling_radius</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start target fixed_radius</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built target fixed_radius</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start branch points_940d58fc</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built branch points_940d58fc</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start branch points_bf28fe5a</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built branch points_bf28fe5a</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built pattern points</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start target combined_plot</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built target combined_plot</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start branch single_plot_805763e1</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built branch single_plot_805763e1</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start branch single_plot_ebcb8a12</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built branch single_plot_ebcb8a12</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built pattern single_plot</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • end pipeline: 0.459 seconds</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>The final plot shows all the spirographs together.</p>
-<div class="sourceCode" id="cb122"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb122-1"><a href="dynamic.html#cb122-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(combined_plot)</span></code></pre></div>
-<p><img src="targets-manual_files/figure-html/unnamed-chunk-121-1.png" width="672" /></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(combined_plot)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="dynamic_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
 <p>This plot comes from all the branches of <code>points</code> aggregated together. Because target <code>points</code> has <code>iteration = "vector"</code> in <code>tar_target()</code>, any reference to the whole target automatically aggregates the branches using <code>vctrs::vec_c()</code>. For data frames, this just binds all the rows.</p>
-<div class="sourceCode" id="cb123"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb123-1"><a href="dynamic.html#cb123-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(points)</span>
-<span id="cb123-2"><a href="dynamic.html#cb123-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 20,000 × 4</span></span>
-<span id="cb123-3"><a href="dynamic.html#cb123-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        x     y fixed_radius cycling_radius</span></span>
-<span id="cb123-4"><a href="dynamic.html#cb123-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;dbl&gt; &lt;dbl&gt;        &lt;int&gt;          &lt;int&gt;</span></span>
-<span id="cb123-5"><a href="dynamic.html#cb123-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1 -2.46 -4.43            3              9</span></span>
-<span id="cb123-6"><a href="dynamic.html#cb123-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2 -2.41 -4.46            3              9</span></span>
-<span id="cb123-7"><a href="dynamic.html#cb123-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3 -2.37 -4.48            3              9</span></span>
-<span id="cb123-8"><a href="dynamic.html#cb123-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4 -2.33 -4.50            3              9</span></span>
-<span id="cb123-9"><a href="dynamic.html#cb123-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5 -2.28 -4.53            3              9</span></span>
-<span id="cb123-10"><a href="dynamic.html#cb123-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6 -2.24 -4.55            3              9</span></span>
-<span id="cb123-11"><a href="dynamic.html#cb123-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7 -2.19 -4.57            3              9</span></span>
-<span id="cb123-12"><a href="dynamic.html#cb123-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8 -2.15 -4.60            3              9</span></span>
-<span id="cb123-13"><a href="dynamic.html#cb123-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9 -2.10 -4.62            3              9</span></span>
-<span id="cb123-14"><a href="dynamic.html#cb123-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10 -2.06 -4.64            3              9</span></span>
-<span id="cb123-15"><a href="dynamic.html#cb123-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # … with 19,990 more rows</span></span>
-<span id="cb123-16"><a href="dynamic.html#cb123-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ Use `print(n = ...)` to see more rows</span></span></code></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(points)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 20,000 × 4</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        x     y fixed_radius cycling_radius</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;dbl&gt; &lt;dbl&gt;        &lt;int&gt;          &lt;int&gt;</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1 -2.46 -4.43            3              9</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2 -2.41 -4.46            3              9</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3 -2.37 -4.48            3              9</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4 -2.33 -4.50            3              9</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5 -2.28 -4.53            3              9</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6 -2.24 -4.55            3              9</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7 -2.19 -4.57            3              9</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8 -2.15 -4.60            3              9</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9 -2.10 -4.62            3              9</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10 -2.06 -4.64            3              9</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # … with 19,990 more rows</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ Use `print(n = ...)` to see more rows</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>By contrast, target <code>single_plot</code> list of branches because of <code>iteration = "list"</code>.</p>
-<div class="sourceCode" id="cb124"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb124-1"><a href="dynamic.html#cb124-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_load</span>(single_plot)</span>
-<span id="cb124-2"><a href="dynamic.html#cb124-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(single_plot)</span>
-<span id="cb124-3"><a href="dynamic.html#cb124-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;list&quot;</span></span>
-<span id="cb124-4"><a href="dynamic.html#cb124-4" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(single_plot)</span>
-<span id="cb124-5"><a href="dynamic.html#cb124-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 2</span></span></code></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_load</span>(single_plot)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(single_plot)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "list"</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(single_plot)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>Use the <code>branches</code> argument of <code>tar_read()</code> to read an individual branch or subset of branches.</p>
-<div class="sourceCode" id="cb125"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb125-1"><a href="dynamic.html#cb125-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(single_plot, <span class="at">branches =</span> <span class="dv">1</span>)</span>
-<span id="cb125-2"><a href="dynamic.html#cb125-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $single_plot_805763e1</span></span></code></pre></div>
-<p><img src="targets-manual_files/figure-html/unnamed-chunk-124-1.png" width="672" /></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(single_plot, <span class="at">branches =</span> <span class="dv">1</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $single_plot_805763e1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="dynamic_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
 </div>
-<div id="provenance" class="section level2 hasAnchor" number="11.4">
-<h2><span class="header-section-number">11.4</span> Provenance<a href="dynamic.html#provenance" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Recall our dynamic target <code>points</code> with branches for spirograph datasets. Each branch has columns <code>fixed_radius</code> and <code>cycling_radius</code> so we know which parameter set each spirograph used. It is good practice to proactively append this metadata to each branch, e.g. in <code>spirograph_points()</code>. That way, if a branch errors out, it is easy to track down the upstream data that caused it.<a href="#fn24" class="footnote-ref" id="fnref24"><sup>24</sup></a></p>
-<div class="sourceCode" id="cb126"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb126-1"><a href="dynamic.html#cb126-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(points, <span class="at">branches =</span> <span class="dv">1</span>) <span class="co"># first branch</span></span>
-<span id="cb126-2"><a href="dynamic.html#cb126-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 10,000 × 4</span></span>
-<span id="cb126-3"><a href="dynamic.html#cb126-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        x     y fixed_radius cycling_radius</span></span>
-<span id="cb126-4"><a href="dynamic.html#cb126-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;dbl&gt; &lt;dbl&gt;        &lt;int&gt;          &lt;int&gt;</span></span>
-<span id="cb126-5"><a href="dynamic.html#cb126-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1 -2.46 -4.43            3              9</span></span>
-<span id="cb126-6"><a href="dynamic.html#cb126-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2 -2.41 -4.46            3              9</span></span>
-<span id="cb126-7"><a href="dynamic.html#cb126-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3 -2.37 -4.48            3              9</span></span>
-<span id="cb126-8"><a href="dynamic.html#cb126-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4 -2.33 -4.50            3              9</span></span>
-<span id="cb126-9"><a href="dynamic.html#cb126-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5 -2.28 -4.53            3              9</span></span>
-<span id="cb126-10"><a href="dynamic.html#cb126-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6 -2.24 -4.55            3              9</span></span>
-<span id="cb126-11"><a href="dynamic.html#cb126-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7 -2.19 -4.57            3              9</span></span>
-<span id="cb126-12"><a href="dynamic.html#cb126-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8 -2.15 -4.60            3              9</span></span>
-<span id="cb126-13"><a href="dynamic.html#cb126-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9 -2.10 -4.62            3              9</span></span>
-<span id="cb126-14"><a href="dynamic.html#cb126-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10 -2.06 -4.64            3              9</span></span>
-<span id="cb126-15"><a href="dynamic.html#cb126-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # … with 9,990 more rows</span></span>
-<span id="cb126-16"><a href="dynamic.html#cb126-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ Use `print(n = ...)` to see more rows</span></span></code></pre></div>
-<div class="sourceCode" id="cb127"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb127-1"><a href="dynamic.html#cb127-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(points, <span class="at">branches =</span> <span class="dv">2</span>) <span class="co"># second branch</span></span>
-<span id="cb127-2"><a href="dynamic.html#cb127-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 10,000 × 4</span></span>
-<span id="cb127-3"><a href="dynamic.html#cb127-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        x     y fixed_radius cycling_radius</span></span>
-<span id="cb127-4"><a href="dynamic.html#cb127-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;dbl&gt; &lt;dbl&gt;        &lt;int&gt;          &lt;int&gt;</span></span>
-<span id="cb127-5"><a href="dynamic.html#cb127-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1  1.90  3.61            7              2</span></span>
-<span id="cb127-6"><a href="dynamic.html#cb127-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2  1.85  3.65            7              2</span></span>
-<span id="cb127-7"><a href="dynamic.html#cb127-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3  1.79  3.70            7              2</span></span>
-<span id="cb127-8"><a href="dynamic.html#cb127-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4  1.74  3.74            7              2</span></span>
-<span id="cb127-9"><a href="dynamic.html#cb127-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5  1.69  3.78            7              2</span></span>
-<span id="cb127-10"><a href="dynamic.html#cb127-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6  1.64  3.83            7              2</span></span>
-<span id="cb127-11"><a href="dynamic.html#cb127-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7  1.59  3.87            7              2</span></span>
-<span id="cb127-12"><a href="dynamic.html#cb127-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8  1.53  3.91            7              2</span></span>
-<span id="cb127-13"><a href="dynamic.html#cb127-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9  1.48  3.96            7              2</span></span>
-<span id="cb127-14"><a href="dynamic.html#cb127-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10  1.43  4.00            7              2</span></span>
-<span id="cb127-15"><a href="dynamic.html#cb127-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # … with 9,990 more rows</span></span>
-<span id="cb127-16"><a href="dynamic.html#cb127-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ Use `print(n = ...)` to see more rows</span></span></code></pre></div>
 </div>
-<div id="patterns" class="section level2 hasAnchor" number="11.5">
-<h2><span class="header-section-number">11.5</span> Patterns<a href="dynamic.html#patterns" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+</section>
+<section id="provenance" class="level2" data-number="11.4">
+<h2 data-number="11.4" class="anchored" data-anchor-id="provenance"><span class="header-section-number">11.4</span> Provenance</h2>
+<p>Recall our dynamic target <code>points</code> with branches for spirograph datasets. Each branch has columns <code>fixed_radius</code> and <code>cycling_radius</code> so we know which parameter set each spirograph used. It is good practice to proactively append this metadata to each branch, e.g.&nbsp;in <code>spirograph_points()</code>. That way, if a branch errors out, it is easy to track down the upstream data that caused it.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(points, <span class="at">branches =</span> <span class="dv">1</span>) <span class="co"># first branch</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 10,000 × 4</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        x     y fixed_radius cycling_radius</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;dbl&gt; &lt;dbl&gt;        &lt;int&gt;          &lt;int&gt;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1 -2.46 -4.43            3              9</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2 -2.41 -4.46            3              9</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3 -2.37 -4.48            3              9</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4 -2.33 -4.50            3              9</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5 -2.28 -4.53            3              9</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6 -2.24 -4.55            3              9</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7 -2.19 -4.57            3              9</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8 -2.15 -4.60            3              9</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9 -2.10 -4.62            3              9</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10 -2.06 -4.64            3              9</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # … with 9,990 more rows</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ Use `print(n = ...)` to see more rows</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(points, <span class="at">branches =</span> <span class="dv">2</span>) <span class="co"># second branch</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 10,000 × 4</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        x     y fixed_radius cycling_radius</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;dbl&gt; &lt;dbl&gt;        &lt;int&gt;          &lt;int&gt;</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1  1.90  3.61            7              2</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2  1.85  3.65            7              2</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3  1.79  3.70            7              2</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4  1.74  3.74            7              2</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5  1.69  3.78            7              2</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6  1.64  3.83            7              2</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7  1.59  3.87            7              2</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8  1.53  3.91            7              2</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9  1.48  3.96            7              2</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10  1.43  4.00            7              2</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # … with 9,990 more rows</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ Use `print(n = ...)` to see more rows</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="patterns" class="level2" data-number="11.5">
+<h2 data-number="11.5" class="anchored" data-anchor-id="patterns"><span class="header-section-number">11.5</span> Patterns</h2>
 <p><code>targets</code> supports many more types of dynamic branching patterns.</p>
 <ul>
 <li><code>map()</code>: one branch per tuple of elements.</li>
@@ -538,226 +477,313 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><code>sample()</code>: branch over a random subset of elements.</li>
 </ul>
 <p>Patterns are composable. For example, <code>pattern = cross(other_parameter, map(fixed_radius, cycling_radius))</code> is conceptually equivalent to <code>tidyr::crossing(other_parameter, tidyr::nesting(fixed_radius, cycling_radius))</code>. You can test and experiment with branching structures using <a href="https://docs.ropensci.org/targets/reference/tar_pattern.html"><code>tar_pattern()</code></a>. In the output below, suffixes <code>_1</code>, <code>_2</code>, and <code>_3</code>, denote both dynamic branches and the slices of upstream data they branch over.</p>
-<div class="sourceCode" id="cb128"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb128-1"><a href="dynamic.html#cb128-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_pattern</span>(</span>
-<span id="cb128-2"><a href="dynamic.html#cb128-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cross</span>(other_parameter, <span class="fu">map</span>(fixed_radius, cycling_radius)),</span>
-<span id="cb128-3"><a href="dynamic.html#cb128-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">other_parameter =</span> <span class="dv">3</span>,</span>
-<span id="cb128-4"><a href="dynamic.html#cb128-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">fixed_radius =</span> <span class="dv">2</span>,</span>
-<span id="cb128-5"><a href="dynamic.html#cb128-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">cycling_radius =</span> <span class="dv">2</span></span>
-<span id="cb128-6"><a href="dynamic.html#cb128-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb128-7"><a href="dynamic.html#cb128-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 3</span></span>
-<span id="cb128-8"><a href="dynamic.html#cb128-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   other_parameter   fixed_radius   cycling_radius  </span></span>
-<span id="cb128-9"><a href="dynamic.html#cb128-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;             &lt;chr&gt;          &lt;chr&gt;           </span></span>
-<span id="cb128-10"><a href="dynamic.html#cb128-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 other_parameter_1 fixed_radius_1 cycling_radius_1</span></span>
-<span id="cb128-11"><a href="dynamic.html#cb128-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 other_parameter_1 fixed_radius_2 cycling_radius_2</span></span>
-<span id="cb128-12"><a href="dynamic.html#cb128-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 other_parameter_2 fixed_radius_1 cycling_radius_1</span></span>
-<span id="cb128-13"><a href="dynamic.html#cb128-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 other_parameter_2 fixed_radius_2 cycling_radius_2</span></span>
-<span id="cb128-14"><a href="dynamic.html#cb128-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 other_parameter_3 fixed_radius_1 cycling_radius_1</span></span>
-<span id="cb128-15"><a href="dynamic.html#cb128-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 other_parameter_3 fixed_radius_2 cycling_radius_2</span></span></code></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_pattern</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cross</span>(other_parameter, <span class="fu">map</span>(fixed_radius, cycling_radius)),</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">other_parameter =</span> <span class="dv">3</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">fixed_radius =</span> <span class="dv">2</span>,</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">cycling_radius =</span> <span class="dv">2</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 3</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   other_parameter   fixed_radius   cycling_radius  </span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;             &lt;chr&gt;          &lt;chr&gt;           </span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 other_parameter_1 fixed_radius_1 cycling_radius_1</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 other_parameter_1 fixed_radius_2 cycling_radius_2</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 other_parameter_2 fixed_radius_1 cycling_radius_1</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 other_parameter_2 fixed_radius_2 cycling_radius_2</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 other_parameter_3 fixed_radius_1 cycling_radius_1</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 other_parameter_3 fixed_radius_2 cycling_radius_2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="iteration" class="section level2 hasAnchor" number="11.6">
-<h2><span class="header-section-number">11.6</span> Iteration<a href="dynamic.html#iteration" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+</section>
+<section id="iteration" class="level2" data-number="11.6">
+<h2 data-number="11.6" class="anchored" data-anchor-id="iteration"><span class="header-section-number">11.6</span> Iteration</h2>
 <p>The <code>iteration</code> argument of <code>tar_target()</code> determines how to split non-dynamic targets and how to aggregate dynamic ones. Consider the following subset of the spirograph pipeline. Below, <code>iteration</code> is equal to <code>"vector"</code> by default.</p>
-<div class="sourceCode" id="cb129"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb129-1"><a href="dynamic.html#cb129-1" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb129-2"><a href="dynamic.html#cb129-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(fixed_radius, <span class="fu">sample.int</span>(<span class="at">n =</span> <span class="dv">10</span>, <span class="at">size =</span> <span class="dv">2</span>)),</span>
-<span id="cb129-3"><a href="dynamic.html#cb129-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(cycling_radius, <span class="fu">sample.int</span>(<span class="at">n =</span> <span class="dv">10</span>, <span class="at">size =</span> <span class="dv">2</span>)),</span>
-<span id="cb129-4"><a href="dynamic.html#cb129-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
-<span id="cb129-5"><a href="dynamic.html#cb129-5" aria-hidden="true" tabindex="-1"></a>    points,</span>
-<span id="cb129-6"><a href="dynamic.html#cb129-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">spirograph_points</span>(fixed_radius, cycling_radius),</span>
-<span id="cb129-7"><a href="dynamic.html#cb129-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">pattern =</span> <span class="fu">map</span>(fixed_radius, cycling_radius)</span>
-<span id="cb129-8"><a href="dynamic.html#cb129-8" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb129-9"><a href="dynamic.html#cb129-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(combined_plot, <span class="fu">plot_spirographs</span>(points))</span>
-<span id="cb129-10"><a href="dynamic.html#cb129-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(fixed_radius, <span class="fu">sample.int</span>(<span class="at">n =</span> <span class="dv">10</span>, <span class="at">size =</span> <span class="dv">2</span>)),</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(cycling_radius, <span class="fu">sample.int</span>(<span class="at">n =</span> <span class="dv">10</span>, <span class="at">size =</span> <span class="dv">2</span>)),</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    points,</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">spirograph_points</span>(fixed_radius, cycling_radius),</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">pattern =</span> <span class="fu">map</span>(fixed_radius, cycling_radius)</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(combined_plot, <span class="fu">plot_spirographs</span>(points))</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>For non-dynamic targets <code>fixed_radius</code> and <code>cycling_radius</code>, <code>iteration = "vector"</code> means that downstream dynamic targets branch over slices from <code>vctrs::vec_slice()</code>. In other words, the first branch of <code>points</code> is <code>spirograph_points(vec_slice(fixed_radius, 1), vec_slice(cycling_radius, 1))</code>, and second branch of <code>points</code> is <code>spirograph_points(vec_slice(fixed_radius, 2), vec_slice(cycling_radius, 2))</code>. Since <code>fixed_radius</code> is a numeric vector, <code>vec_slice(fixed_radius, 1)</code> is a vector of length 1. (But if <code>fixed_radius</code> were a data frame, then <code>vec_slice(fixed_radius, 1)</code> would be a one-row data frame). If <code>iteration</code> were equal to <code>"list"</code> for <code>fixed_radius</code> and <code>cycling_radius</code>, then the first and second branches would instead be <code>spirograph_points(fixed_radius[[1]], cycling_radius[[1]])</code> and <code>spirograph_points(fixed_radius[[2]])</code>, respectively.</p>
-<p>For dynamic target <code>points</code>, <code>iteration = "vector"</code> means all the branches are aggregated with <code>vctrs::vec_c()</code>. Since each branch of <code>points</code> is a data frame, aggregation is equivalent to <code>dplyr::bind_rows()</code> in this case. That is why, as previously shown, <code>tar_read(points)</code> returns a monolithic data frame. <code>points</code> becomes a monolithic data frame also when non-dynamic target <code>combined_plot</code> runs its command <code>plot_spirographs(points)</code>. In other words, <code>plot_spirographs(points)</code> is equivalent to <code>plot_spirographs(vec_c(points_940d58fc, points_bf28fe5a))</code>, where <code>points_940d58fc</code> and <code>points_bf28fe5a</code> are the individual branches of <code>points</code>.<a href="#fn25" class="footnote-ref" id="fnref25"><sup>25</sup></a>. If <code>iteration</code> were equal to <code>"list"</code> for <code>points</code>, then <code>plot_spirographs(points)</code> in <code>combined_plot</code> would be equivalent to <code>plot_spirographs(list(points_940d58fc, points_bf28fe5a))</code>.</p>
+<p>For dynamic target <code>points</code>, <code>iteration = "vector"</code> means all the branches are aggregated with <code>vctrs::vec_c()</code>. Since each branch of <code>points</code> is a data frame, aggregation is equivalent to <code>dplyr::bind_rows()</code> in this case. That is why, as previously shown, <code>tar_read(points)</code> returns a monolithic data frame. <code>points</code> becomes a monolithic data frame also when non-dynamic target <code>combined_plot</code> runs its command <code>plot_spirographs(points)</code>. In other words, <code>plot_spirographs(points)</code> is equivalent to <code>plot_spirographs(vec_c(points_940d58fc, points_bf28fe5a))</code>, where <code>points_940d58fc</code> and <code>points_bf28fe5a</code> are the individual branches of <code>points</code>.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>. If <code>iteration</code> were equal to <code>"list"</code> for <code>points</code>, then <code>plot_spirographs(points)</code> in <code>combined_plot</code> would be equivalent to <code>plot_spirographs(list(points_940d58fc, points_bf28fe5a))</code>.</p>
 <p><code>iteration = "group"</code> is for dynamic branching across <code>dplyr::group_by()</code> row groups of a data frame, and it is covered in the next section.</p>
-</div>
-<div id="branching-over-row-groups" class="section level2 hasAnchor" number="11.7">
-<h2><span class="header-section-number">11.7</span> Branching over row groups<a href="dynamic.html#branching-over-row-groups" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+</section>
+<section id="branching-over-row-groups" class="level2" data-number="11.7">
+<h2 data-number="11.7" class="anchored" data-anchor-id="branching-over-row-groups"><span class="header-section-number">11.7</span> Branching over row groups</h2>
 <p>To branch over <code>dplyr::group_by()</code> row groups of a data frame, use <code>iteration = "group"</code> together with <code>tar_group()</code>. To demonstrate, consider the following alternative version of the spirograph pipeline. Below, we start with a monolithic data frame with all the spirographs together, and then we branch over the row groups of that data frame to create one visual for each dynamic branch.</p>
-<div class="sourceCode" id="cb130"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb130-1"><a href="dynamic.html#cb130-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
-<span id="cb130-2"><a href="dynamic.html#cb130-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb130-3"><a href="dynamic.html#cb130-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb130-4"><a href="dynamic.html#cb130-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb130-5"><a href="dynamic.html#cb130-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
-<span id="cb130-6"><a href="dynamic.html#cb130-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb130-7"><a href="dynamic.html#cb130-7" aria-hidden="true" tabindex="-1"></a><span class="co"># From https://github.com/wjschne/spiro/blob/87f73ec37ceb0a7a9d09856ada8ae28d587a2ebd/R/spirograph.R</span></span>
-<span id="cb130-8"><a href="dynamic.html#cb130-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Adapted under the CC0 1.0 Universal license: https://github.com/wjschne/spiro/blob/87f73ec37ceb0a7a9d09856ada8ae28d587a2ebd/LICENSE.md</span></span>
-<span id="cb130-9"><a href="dynamic.html#cb130-9" aria-hidden="true" tabindex="-1"></a>spirograph_points <span class="ot">&lt;-</span> <span class="cf">function</span>(fixed_radius, cycling_radius) {</span>
-<span id="cb130-10"><a href="dynamic.html#cb130-10" aria-hidden="true" tabindex="-1"></a>  t <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">1</span>, <span class="dv">30</span> <span class="sc">*</span> pi, <span class="at">length.out =</span> <span class="fl">1e4</span>)</span>
-<span id="cb130-11"><a href="dynamic.html#cb130-11" aria-hidden="true" tabindex="-1"></a>  diff <span class="ot">&lt;-</span> (fixed_radius <span class="sc">-</span> cycling_radius)</span>
-<span id="cb130-12"><a href="dynamic.html#cb130-12" aria-hidden="true" tabindex="-1"></a>  ratio <span class="ot">&lt;-</span> diff <span class="sc">/</span> cycling_radius</span>
-<span id="cb130-13"><a href="dynamic.html#cb130-13" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> diff <span class="sc">*</span> <span class="fu">cos</span>(t) <span class="sc">+</span> <span class="fu">cos</span>(t <span class="sc">*</span> ratio)</span>
-<span id="cb130-14"><a href="dynamic.html#cb130-14" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">&lt;-</span> diff <span class="sc">*</span> <span class="fu">sin</span>(t) <span class="sc">-</span> <span class="fu">sin</span>(t <span class="sc">*</span> ratio)</span>
-<span id="cb130-15"><a href="dynamic.html#cb130-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">x =</span> x, <span class="at">y =</span> y, <span class="at">fixed_radius =</span> fixed_radius, <span class="at">cycling_radius =</span> cycling_radius)</span>
-<span id="cb130-16"><a href="dynamic.html#cb130-16" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb130-17"><a href="dynamic.html#cb130-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb130-18"><a href="dynamic.html#cb130-18" aria-hidden="true" tabindex="-1"></a>plot_spirographs <span class="ot">&lt;-</span> <span class="cf">function</span>(points) {</span>
-<span id="cb130-19"><a href="dynamic.html#cb130-19" aria-hidden="true" tabindex="-1"></a>  label <span class="ot">&lt;-</span> <span class="st">&quot;fixed_radius = %s, cycling_radius = %s&quot;</span></span>
-<span id="cb130-20"><a href="dynamic.html#cb130-20" aria-hidden="true" tabindex="-1"></a>  points<span class="sc">$</span>parameters <span class="ot">&lt;-</span> <span class="fu">sprintf</span>(label, points<span class="sc">$</span>fixed_radius, points<span class="sc">$</span>cycling_radius)</span>
-<span id="cb130-21"><a href="dynamic.html#cb130-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(points) <span class="sc">+</span></span>
-<span id="cb130-22"><a href="dynamic.html#cb130-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y, <span class="at">color =</span> parameters), <span class="at">size =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
-<span id="cb130-23"><a href="dynamic.html#cb130-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>parameters) <span class="sc">+</span></span>
-<span id="cb130-24"><a href="dynamic.html#cb130-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_gray</span>(<span class="dv">16</span>) <span class="sc">+</span></span>
-<span id="cb130-25"><a href="dynamic.html#cb130-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">guides</span>(<span class="at">color =</span> <span class="st">&quot;none&quot;</span>)</span>
-<span id="cb130-26"><a href="dynamic.html#cb130-26" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb130-27"><a href="dynamic.html#cb130-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb130-28"><a href="dynamic.html#cb130-28" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb130-29"><a href="dynamic.html#cb130-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
-<span id="cb130-30"><a href="dynamic.html#cb130-30" aria-hidden="true" tabindex="-1"></a>    points,</span>
-<span id="cb130-31"><a href="dynamic.html#cb130-31" aria-hidden="true" tabindex="-1"></a>    <span class="fu">bind_rows</span>(</span>
-<span id="cb130-32"><a href="dynamic.html#cb130-32" aria-hidden="true" tabindex="-1"></a>      <span class="fu">spirograph_points</span>(<span class="dv">3</span>, <span class="dv">9</span>),</span>
-<span id="cb130-33"><a href="dynamic.html#cb130-33" aria-hidden="true" tabindex="-1"></a>      <span class="fu">spirograph_points</span>(<span class="dv">7</span>, <span class="dv">2</span>)</span>
-<span id="cb130-34"><a href="dynamic.html#cb130-34" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
-<span id="cb130-35"><a href="dynamic.html#cb130-35" aria-hidden="true" tabindex="-1"></a>      <span class="fu">group_by</span>(fixed_radius, cycling_radius) <span class="sc">%&gt;%</span></span>
-<span id="cb130-36"><a href="dynamic.html#cb130-36" aria-hidden="true" tabindex="-1"></a>      <span class="fu">tar_group</span>(),</span>
-<span id="cb130-37"><a href="dynamic.html#cb130-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">iteration =</span> <span class="st">&quot;group&quot;</span></span>
-<span id="cb130-38"><a href="dynamic.html#cb130-38" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb130-39"><a href="dynamic.html#cb130-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
-<span id="cb130-40"><a href="dynamic.html#cb130-40" aria-hidden="true" tabindex="-1"></a>    single_plot,</span>
-<span id="cb130-41"><a href="dynamic.html#cb130-41" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plot_spirographs</span>(points),</span>
-<span id="cb130-42"><a href="dynamic.html#cb130-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">pattern =</span> <span class="fu">map</span>(points),</span>
-<span id="cb130-43"><a href="dynamic.html#cb130-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">iteration =</span> <span class="st">&quot;list&quot;</span></span>
-<span id="cb130-44"><a href="dynamic.html#cb130-44" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb130-45"><a href="dynamic.html#cb130-45" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<div class="sourceCode" id="cb131"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb131-1"><a href="dynamic.html#cb131-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
-<span id="cb131-2"><a href="dynamic.html#cb131-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start target points</span></span>
-<span id="cb131-3"><a href="dynamic.html#cb131-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built target points</span></span>
-<span id="cb131-4"><a href="dynamic.html#cb131-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start branch single_plot_4cc8331b</span></span>
-<span id="cb131-5"><a href="dynamic.html#cb131-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built branch single_plot_4cc8331b</span></span>
-<span id="cb131-6"><a href="dynamic.html#cb131-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start branch single_plot_c3d0e9d4</span></span>
-<span id="cb131-7"><a href="dynamic.html#cb131-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built branch single_plot_c3d0e9d4</span></span>
-<span id="cb131-8"><a href="dynamic.html#cb131-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built pattern single_plot</span></span>
-<span id="cb131-9"><a href="dynamic.html#cb131-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • end pipeline: 0.345 seconds</span></span></code></pre></div>
-<div class="sourceCode" id="cb132"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb132-1"><a href="dynamic.html#cb132-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(single_plot, <span class="at">branches =</span> <span class="dv">1</span>)</span>
-<span id="cb132-2"><a href="dynamic.html#cb132-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $single_plot_4cc8331b</span></span></code></pre></div>
-<p><img src="targets-manual_files/figure-html/unnamed-chunk-132-1.png" width="672" /></p>
+<div class="cell">
+
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co"># From https://github.com/wjschne/spiro/blob/87f73ec37ceb0a7a9d09856ada8ae28d587a2ebd/R/spirograph.R</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Adapted under the CC0 1.0 Universal license: https://github.com/wjschne/spiro/blob/87f73ec37ceb0a7a9d09856ada8ae28d587a2ebd/LICENSE.md</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>spirograph_points <span class="ot">&lt;-</span> <span class="cf">function</span>(fixed_radius, cycling_radius) {</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  t <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">1</span>, <span class="dv">30</span> <span class="sc">*</span> pi, <span class="at">length.out =</span> <span class="fl">1e4</span>)</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  diff <span class="ot">&lt;-</span> (fixed_radius <span class="sc">-</span> cycling_radius)</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  ratio <span class="ot">&lt;-</span> diff <span class="sc">/</span> cycling_radius</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> diff <span class="sc">*</span> <span class="fu">cos</span>(t) <span class="sc">+</span> <span class="fu">cos</span>(t <span class="sc">*</span> ratio)</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">&lt;-</span> diff <span class="sc">*</span> <span class="fu">sin</span>(t) <span class="sc">-</span> <span class="fu">sin</span>(t <span class="sc">*</span> ratio)</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">x =</span> x, <span class="at">y =</span> y, <span class="at">fixed_radius =</span> fixed_radius, <span class="at">cycling_radius =</span> cycling_radius)</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>plot_spirographs <span class="ot">&lt;-</span> <span class="cf">function</span>(points) {</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>  label <span class="ot">&lt;-</span> <span class="st">"fixed_radius = %s, cycling_radius = %s"</span></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>  points<span class="sc">$</span>parameters <span class="ot">&lt;-</span> <span class="fu">sprintf</span>(label, points<span class="sc">$</span>fixed_radius, points<span class="sc">$</span>cycling_radius)</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(points) <span class="sc">+</span></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y, <span class="at">color =</span> parameters), <span class="at">size =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>parameters) <span class="sc">+</span></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_gray</span>(<span class="dv">16</span>) <span class="sc">+</span></span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">guides</span>(<span class="at">color =</span> <span class="st">"none"</span>)</span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>    points,</span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a>    <span class="fu">bind_rows</span>(</span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a>      <span class="fu">spirograph_points</span>(<span class="dv">3</span>, <span class="dv">9</span>),</span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>      <span class="fu">spirograph_points</span>(<span class="dv">7</span>, <span class="dv">2</span>)</span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a>      <span class="fu">group_by</span>(fixed_radius, cycling_radius) <span class="sc">%&gt;%</span></span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a>      <span class="fu">tar_group</span>(),</span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">iteration =</span> <span class="st">"group"</span></span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a>    single_plot,</span>
+<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plot_spirographs</span>(points),</span>
+<span id="cb11-42"><a href="#cb11-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">pattern =</span> <span class="fu">map</span>(points),</span>
+<span id="cb11-43"><a href="#cb11-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">iteration =</span> <span class="st">"list"</span></span>
+<span id="cb11-44"><a href="#cb11-44" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb11-45"><a href="#cb11-45" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start target points</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built target points</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start branch single_plot_4cc8331b</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built branch single_plot_4cc8331b</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start branch single_plot_c3d0e9d4</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built branch single_plot_c3d0e9d4</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built pattern single_plot</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • end pipeline: 0.398 seconds</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(single_plot, <span class="at">branches =</span> <span class="dv">1</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $single_plot_4cc8331b</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="dynamic_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
 <p>The <code>tar_group_by()</code> function in <code>tarchetypes</code> makes this branching easier. Using <code>tar_group_by()</code>, the pipeline condenses down to:</p>
-<div class="sourceCode" id="cb133"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb133-1"><a href="dynamic.html#cb133-1" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb133-2"><a href="dynamic.html#cb133-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_group_by</span>(</span>
-<span id="cb133-3"><a href="dynamic.html#cb133-3" aria-hidden="true" tabindex="-1"></a>    points,</span>
-<span id="cb133-4"><a href="dynamic.html#cb133-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">bind_rows</span>(</span>
-<span id="cb133-5"><a href="dynamic.html#cb133-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">spirograph_points</span>(<span class="dv">3</span>, <span class="dv">9</span>),</span>
-<span id="cb133-6"><a href="dynamic.html#cb133-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">spirograph_points</span>(<span class="dv">7</span>, <span class="dv">2</span>)</span>
-<span id="cb133-7"><a href="dynamic.html#cb133-7" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb133-8"><a href="dynamic.html#cb133-8" aria-hidden="true" tabindex="-1"></a>    fixed_radius,</span>
-<span id="cb133-9"><a href="dynamic.html#cb133-9" aria-hidden="true" tabindex="-1"></a>    cycling_radius</span>
-<span id="cb133-10"><a href="dynamic.html#cb133-10" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb133-11"><a href="dynamic.html#cb133-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
-<span id="cb133-12"><a href="dynamic.html#cb133-12" aria-hidden="true" tabindex="-1"></a>    single_plot,</span>
-<span id="cb133-13"><a href="dynamic.html#cb133-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plot_spirographs</span>(points),</span>
-<span id="cb133-14"><a href="dynamic.html#cb133-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">pattern =</span> <span class="fu">map</span>(points),</span>
-<span id="cb133-15"><a href="dynamic.html#cb133-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">iteration =</span> <span class="st">&quot;list&quot;</span></span>
-<span id="cb133-16"><a href="dynamic.html#cb133-16" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb133-17"><a href="dynamic.html#cb133-17" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_group_by</span>(</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    points,</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">bind_rows</span>(</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">spirograph_points</span>(<span class="dv">3</span>, <span class="dv">9</span>),</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">spirograph_points</span>(<span class="dv">7</span>, <span class="dv">2</span>)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    fixed_radius,</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    cycling_radius</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>    single_plot,</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plot_spirographs</span>(points),</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">pattern =</span> <span class="fu">map</span>(points),</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">iteration =</span> <span class="st">"list"</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>For similar functions that branch across row groups, visit <a href="https://docs.ropensci.org/tarchetypes/reference/index.html#dynamic-grouped-data-frames" class="uri">https://docs.ropensci.org/tarchetypes/reference/index.html#dynamic-grouped-data-frames</a>.</p>
-</div>
-<div id="branching-over-files" class="section level2 hasAnchor" number="11.8">
-<h2><span class="header-section-number">11.8</span> Branching over files<a href="dynamic.html#branching-over-files" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+</section>
+<section id="branching-over-files" class="level2" data-number="11.8">
+<h2 data-number="11.8" class="anchored" data-anchor-id="branching-over-files"><span class="header-section-number">11.8</span> Branching over files</h2>
 <p>Dynamic branching over files is tricky. A target with <code>format = "file"</code> treats the entire set of files as an irreducible bundle. That means in order to branch over files downstream, each file must already have its own branch. Here is a pipeline that begins with spirograph data files and loads each into a different dynamic branch.</p>
-<div class="sourceCode" id="cb134"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb134-1"><a href="dynamic.html#cb134-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
-<span id="cb134-2"><a href="dynamic.html#cb134-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb134-3"><a href="dynamic.html#cb134-3" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb134-4"><a href="dynamic.html#cb134-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(paths, <span class="fu">c</span>(<span class="st">&quot;spirograph_dataset_1.csv&quot;</span>, <span class="st">&quot;spirograph_dataset_1.csv&quot;</span>)),</span>
-<span id="cb134-5"><a href="dynamic.html#cb134-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(files, paths, <span class="at">format =</span> <span class="st">&quot;file&quot;</span>, <span class="at">pattern =</span> <span class="fu">map</span>(paths)),</span>
-<span id="cb134-6"><a href="dynamic.html#cb134-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data, <span class="fu">read_csv</span>(files), <span class="at">pattern =</span> <span class="fu">map</span>(files))</span>
-<span id="cb134-7"><a href="dynamic.html#cb134-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<p>The <a href="https://docs.ropensci.org/tarchetypes/reference/tar_files.html"><code>tar_files()</code></a> function from the <a href="https://github.com/ropensci/tarchetypes"><code>tarchetypes</code></a> package is shorthand for the first two targets above.</p>
-<div class="sourceCode" id="cb135"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb135-1"><a href="dynamic.html#cb135-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
-<span id="cb135-2"><a href="dynamic.html#cb135-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb135-3"><a href="dynamic.html#cb135-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
-<span id="cb135-4"><a href="dynamic.html#cb135-4" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb135-5"><a href="dynamic.html#cb135-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_files</span>(files, <span class="fu">c</span>(<span class="st">&quot;spirograph_dataset_1.csv&quot;</span>, <span class="st">&quot;spirograph_dataset_1.csv&quot;</span>)),</span>
-<span id="cb135-6"><a href="dynamic.html#cb135-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data, <span class="fu">read_csv</span>(files), <span class="at">pattern =</span> <span class="fu">map</span>(files))</span>
-<span id="cb135-7"><a href="dynamic.html#cb135-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(paths, <span class="fu">c</span>(<span class="st">"spirograph_dataset_1.csv"</span>, <span class="st">"spirograph_dataset_1.csv"</span>)),</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(files, paths, <span class="at">format =</span> <span class="st">"file"</span>, <span class="at">pattern =</span> <span class="fu">map</span>(paths)),</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data, <span class="fu">read_csv</span>(files), <span class="at">pattern =</span> <span class="fu">map</span>(files))</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="performance-and-batching" class="section level2 hasAnchor" number="11.9">
-<h2><span class="header-section-number">11.9</span> Performance and batching<a href="dynamic.html#performance-and-batching" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The <a href="https://docs.ropensci.org/tarchetypes/reference/tar_files.html"><code>tar_files()</code></a> function from the <a href="https://github.com/ropensci/tarchetypes"><code>tarchetypes</code></a> package is shorthand for the first two targets above.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_files</span>(files, <span class="fu">c</span>(<span class="st">"spirograph_dataset_1.csv"</span>, <span class="st">"spirograph_dataset_1.csv"</span>)),</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data, <span class="fu">read_csv</span>(files), <span class="at">pattern =</span> <span class="fu">map</span>(files))</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="performance-and-batching" class="level2" data-number="11.9">
+<h2 data-number="11.9" class="anchored" data-anchor-id="performance-and-batching"><span class="header-section-number">11.9</span> Performance and batching</h2>
 <p>Dynamic branching makes it easy to create many targets. Unfortunately, if the number of targets exceeds several thousand, overhead may build up and the package may slow down. Temporary workarounds can avoid overhead in specific cases: for example, the <code>shortcut</code> argument of <code>tar_make()</code>, and choosing a pattern like <code>slice()</code> or <code>head()</code> instead of a full <code>map()</code>. But to minimize overhead at scale, it is better to accomplish the same amount of work with a fewer number of targets. In other words, do more work inside each dynamic branch.</p>
 <p>Batching is particularly useful to reduce overhead. In batching, each dynamic branch performs multiple computations instead of just one. The <code>tarchetypes</code> package supports several general-purpose functions that do batching automatically: most notably <code>tar_rep()</code> and <code>tar_map_rep()</code> for simulation studies and <code>tar_group_count()</code>, <code>tar_group_size()</code>, and <code>tar_group_select()</code> for batching over the rows of a data frame.</p>
 <p>The packages in the <a href="https://wlandau.github.io/targetopia.html">R Targetopia</a> support batching for specific use cases. For example, in <a href="https://wlandau.github.io/stantargets/"><code>stantargets</code></a>, <a href="https://wlandau.github.io/stantargets/articles/mcmc_rep.html"><code>tar_stan_mcmc_rep_summary()</code></a> dynamically branches over batches of simulated datasets for Stan models.</p>
 <p>The <a href="https://github.com/ropensci/targets-stan"><code>targets-stan</code></a> repository has an example of custom batching implemented from scratch. The goal of the pipeline is to validate a Bayesian model by simulating thousands of dataset, analyzing each with a Bayesian model, and assessing the overall accuracy of the inference. Rather than define a target for each dataset in model, the pipeline breaks up the work into batches, where each batch has multiple datasets or multiple analyses. Here is a version of the pipeline with 40 batches and 25 simulation reps per batch (1000 reps total in a pipeline of 82 targets).</p>
-<div class="sourceCode" id="cb136"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb136-1"><a href="dynamic.html#cb136-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
-<span id="cb136-2"><a href="dynamic.html#cb136-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb136-3"><a href="dynamic.html#cb136-3" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb136-4"><a href="dynamic.html#cb136-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(model_file, <span class="fu">compile_model</span>(<span class="st">&quot;stan/model.stan&quot;</span>), <span class="at">format =</span> <span class="st">&quot;file&quot;</span>),</span>
-<span id="cb136-5"><a href="dynamic.html#cb136-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(index_batch, <span class="fu">seq_len</span>(<span class="dv">40</span>)),</span>
-<span id="cb136-6"><a href="dynamic.html#cb136-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(index_sim, <span class="fu">seq_len</span>(<span class="dv">25</span>)),</span>
-<span id="cb136-7"><a href="dynamic.html#cb136-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
-<span id="cb136-8"><a href="dynamic.html#cb136-8" aria-hidden="true" tabindex="-1"></a>    data_continuous,</span>
-<span id="cb136-9"><a href="dynamic.html#cb136-9" aria-hidden="true" tabindex="-1"></a>    purrr<span class="sc">::</span><span class="fu">map_dfr</span>(index_sim, <span class="sc">~</span><span class="fu">simulate_data_continuous</span>()),</span>
-<span id="cb136-10"><a href="dynamic.html#cb136-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">pattern =</span> <span class="fu">map</span>(index_batch)</span>
-<span id="cb136-11"><a href="dynamic.html#cb136-11" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb136-12"><a href="dynamic.html#cb136-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
-<span id="cb136-13"><a href="dynamic.html#cb136-13" aria-hidden="true" tabindex="-1"></a>    fit_continuous,</span>
-<span id="cb136-14"><a href="dynamic.html#cb136-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">map_sims</span>(data_continuous, <span class="at">model_file =</span> model_file),</span>
-<span id="cb136-15"><a href="dynamic.html#cb136-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">pattern =</span> <span class="fu">map</span>(data_continuous)</span>
-<span id="cb136-16"><a href="dynamic.html#cb136-16" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb136-17"><a href="dynamic.html#cb136-17" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(model_file, <span class="fu">compile_model</span>(<span class="st">"stan/model.stan"</span>), <span class="at">format =</span> <span class="st">"file"</span>),</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(index_batch, <span class="fu">seq_len</span>(<span class="dv">40</span>)),</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(index_sim, <span class="fu">seq_len</span>(<span class="dv">25</span>)),</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    data_continuous,</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    purrr<span class="sc">::</span><span class="fu">map_dfr</span>(index_sim, <span class="sc">~</span><span class="fu">simulate_data_continuous</span>()),</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">pattern =</span> <span class="fu">map</span>(index_batch)</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>    fit_continuous,</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">map_sims</span>(data_continuous, <span class="at">model_file =</span> model_file),</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">pattern =</span> <span class="fu">map</span>(data_continuous)</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 
-</div>
-</div>
-<div class="footnotes">
-<hr />
-<ol start="23">
-<li id="fn23"><p>The pipeline uses code borrowed from the <a href="https://wjschne.github.io/spiro/index.html"><code>spiro</code></a> package. The code in the <code>spirograph_points()</code> function is adapted from <a href="https://github.com/wjschne/spiro/blob/87f73ec37ceb0a7a9d09856ada8ae28d587a2ebd/R/spirograph.R" class="uri">https://github.com/wjschne/spiro/blob/87f73ec37ceb0a7a9d09856ada8ae28d587a2ebd/R/spirograph.R</a>
-under the CC0 1.0 Universal license: <a href="https://github.com/wjschne/spiro/blob/87f73ec37ceb0a7a9d09856ada8ae28d587a2ebd/LICENSE.md" class="uri">https://github.com/wjschne/spiro/blob/87f73ec37ceb0a7a9d09856ada8ae28d587a2ebd/LICENSE.md</a><a href="dynamic.html#fnref23" class="footnote-back">↩︎</a></p></li>
-<li id="fn24"><p>See also <a href="https://books.ropensci.org/targets/debugging.html#workspaces" class="uri">https://books.ropensci.org/targets/debugging.html#workspaces</a>.<a href="dynamic.html#fnref24" class="footnote-back">↩︎</a></p></li>
-<li id="fn25"><p><code>points_940d58fc</code> and <code>points_bf28fe5a</code> are targets in their own right and can be inspected with <code>tar_read(points_940d58fc)</code> and <code>tar_read(points_bf28fe5a)</code><a href="dynamic.html#fnref25" class="footnote-back">↩︎</a></p></li>
+
+</section>
+<section class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1" role="doc-endnote"><p>The pipeline uses code borrowed from the <a href="https://wjschne.github.io/spiro/index.html"><code>spiro</code></a> package. The code in the <code>spirograph_points()</code> function is adapted from <a href="https://github.com/wjschne/spiro/blob/87f73ec37ceb0a7a9d09856ada8ae28d587a2ebd/R/spirograph.R" class="uri">https://github.com/wjschne/spiro/blob/87f73ec37ceb0a7a9d09856ada8ae28d587a2ebd/R/spirograph.R</a> under the CC0 1.0 Universal license: <a href="https://github.com/wjschne/spiro/blob/87f73ec37ceb0a7a9d09856ada8ae28d587a2ebd/LICENSE.md" class="uri">https://github.com/wjschne/spiro/blob/87f73ec37ceb0a7a9d09856ada8ae28d587a2ebd/LICENSE.md</a><a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2" role="doc-endnote"><p>See also <a href="https://books.ropensci.org/targets/debugging.html#workspaces" class="uri">https://books.ropensci.org/targets/debugging.html#workspaces</a>.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3" role="doc-endnote"><p><code>points_940d58fc</code> and <code>points_bf28fe5a</code> are targets in their own right and can be inspected with <code>tar_read(points_940d58fc)</code> and <code>tar_read(points_bf28fe5a)</code><a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
-</div>
-<div style = "background: #1C356D; color: white; padding: 10px 10px 10px 25px; font-size: 1em; width: 100%;">
-  Copyright Eli Lilly and Company
-</div>
-            </section>
+</section>
 
-          </div>
-        </div>
-      </div>
-<a href="literate-programming.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="static.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
-    </div>
-  </div>
-<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
-<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
-<script>
-gitbook.require(["gitbook"], function(gitbook) {
-gitbook.start({
-"sharing": null,
-"fontsettings": {
-"theme": "white",
-"family": "sans",
-"size": 2
-},
-"edit": {
-"link": "https://github.com/ropensci-books/targets/edit/main/dynamic.Rmd",
-"text": "Edit this chapter"
-},
-"history": {
-"link": "https://github.com/ropensci-books/targets/commits/main/dynamic.Rmd",
-"text": "Chapter edit history"
-},
-"view": {
-"link": null,
-"text": null
-},
-"download": null,
-"search": {
-"engine": "fuse",
-"options": null
-},
-"toc": {
-"collapse": "subsection"
-}
-});
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
 });
 </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./literate-programming.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Literate programming</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./static.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Static branching</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+      <div class="nav-footer-center">Copyright 2022, Eli Lilly and Company</div>
+  </div>
+</footer>
 
-</body>
 
-</html>
+
+</body></html>

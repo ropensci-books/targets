@@ -1,78 +1,26 @@
 <!DOCTYPE html>
-<html lang="" xml:lang="">
-<head>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 14 What about drake? | The targets R Package User Manual</title>
-  <meta name="description" content="In-depth discussion of the major functionality of targets." />
-  <meta name="generator" content="bookdown 0.27 and GitBook 2.6.7" />
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.38">
 
-  <meta property="og:title" content="Chapter 14 What about drake? | The targets R Package User Manual" />
-  <meta property="og:type" content="book" />
-  <meta property="og:image" content="https://books.ropensci.org/targets/man/figures/logo.png" />
-  <meta property="og:description" content="In-depth discussion of the major functionality of targets." />
-  <meta name="github-repo" content="ropensci-books/targets" />
-
-  <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 14 What about drake? | The targets R Package User Manual" />
-  
-  <meta name="twitter:description" content="In-depth discussion of the major functionality of targets." />
-  <meta name="twitter:image" content="https://books.ropensci.org/targets/man/figures/logo.png" />
-
-<meta name="author" content="Will Landau" />
-<meta name="author" content="Copyright Eli Lilly and Company" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-  <link rel="apple-touch-icon-precomposed" sizes="120x120" href="man/figures/apple-touch-icon.png" />
-  <link rel="shortcut icon" href="man/figures/favicon.ico" type="image/x-icon" />
-<link rel="prev" href="hpc.html"/>
-<link rel="next" href="markdown.html"/>
-<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
-<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
-<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
-
-
-
-
-
-
-
-
-<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
-<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
-<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
-<script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
-<link href="libs/vis-9.1.0/vis-network.min.css" rel="stylesheet" />
-<script src="libs/vis-9.1.0/vis-network.min.js"></script>
-<script src="libs/visNetwork-binding-2.1.0/visNetwork.js"></script>
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-150843595-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-150843595-1');
-</script>
-
-
-<style type="text/css">
+<title>The targets R package user manual - 14&nbsp; What about drake?</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
@@ -133,243 +81,210 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </style>
 
 
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./markdown.html" rel="next">
+<link href="./hpc.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
 </head>
 
-<body>
+<body class="nav-sidebar floating">
 
-
-
-  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
-
-    <div class="book-summary">
-      <nav role="navigation">
-
-<ul class="summary">
-<li><a href="./">The targets R Package User Manual</a></li>
-
-<li class="divider"></li>
-<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
-<ul>
-<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#motivation"><i class="fa fa-check"></i><b>1.1</b> Motivation</a></li>
-<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#pipeline-tools"><i class="fa fa-check"></i><b>1.2</b> Pipeline tools</a></li>
-<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#the-targets-package"><i class="fa fa-check"></i><b>1.3</b> The <code>targets</code> package</a></li>
-<li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#about-this-manual"><i class="fa fa-check"></i><b>1.4</b> About this manual</a></li>
-<li class="chapter" data-level="1.5" data-path="index.html"><a href="index.html#what-about-drake"><i class="fa fa-check"></i><b>1.5</b> What about <code>drake</code>?</a></li>
-</ul></li>
-<li class="chapter" data-level="2" data-path="walkthrough.html"><a href="walkthrough.html"><i class="fa fa-check"></i><b>2</b> Walkthrough</a>
-<ul>
-<li class="chapter" data-level="2.1" data-path="walkthrough.html"><a href="walkthrough.html#about-this-example"><i class="fa fa-check"></i><b>2.1</b> About this example</a></li>
-<li class="chapter" data-level="2.2" data-path="walkthrough.html"><a href="walkthrough.html#file-structure"><i class="fa fa-check"></i><b>2.2</b> File structure</a></li>
-<li class="chapter" data-level="2.3" data-path="walkthrough.html"><a href="walkthrough.html#target-script-file"><i class="fa fa-check"></i><b>2.3</b> Target script file</a></li>
-<li class="chapter" data-level="2.4" data-path="walkthrough.html"><a href="walkthrough.html#inspect-the-pipeline"><i class="fa fa-check"></i><b>2.4</b> Inspect the pipeline</a></li>
-<li class="chapter" data-level="2.5" data-path="walkthrough.html"><a href="walkthrough.html#run-the-pipeline"><i class="fa fa-check"></i><b>2.5</b> Run the pipeline</a></li>
-<li class="chapter" data-level="2.6" data-path="walkthrough.html"><a href="walkthrough.html#changes"><i class="fa fa-check"></i><b>2.6</b> Changes</a>
-<ul>
-<li class="chapter" data-level="2.6.1" data-path="walkthrough.html"><a href="walkthrough.html#change-code"><i class="fa fa-check"></i><b>2.6.1</b> Change code</a></li>
-<li class="chapter" data-level="2.6.2" data-path="walkthrough.html"><a href="walkthrough.html#change-data"><i class="fa fa-check"></i><b>2.6.2</b> Change data</a></li>
-</ul></li>
-<li class="chapter" data-level="2.7" data-path="walkthrough.html"><a href="walkthrough.html#read-metadata"><i class="fa fa-check"></i><b>2.7</b> Read metadata</a></li>
-</ul></li>
-<li class="chapter" data-level="3" data-path="debugging.html"><a href="debugging.html"><i class="fa fa-check"></i><b>3</b> Debugging</a>
-<ul>
-<li class="chapter" data-level="3.1" data-path="debugging.html"><a href="debugging.html#error-messages"><i class="fa fa-check"></i><b>3.1</b> Error messages</a></li>
-<li class="chapter" data-level="3.2" data-path="debugging.html"><a href="debugging.html#environment-browser"><i class="fa fa-check"></i><b>3.2</b> Environment browser</a></li>
-<li class="chapter" data-level="3.3" data-path="debugging.html"><a href="debugging.html#the-debug-option"><i class="fa fa-check"></i><b>3.3</b> The debug option</a></li>
-<li class="chapter" data-level="3.4" data-path="debugging.html"><a href="debugging.html#workspaces"><i class="fa fa-check"></i><b>3.4</b> Workspaces</a></li>
-<li class="chapter" data-level="3.5" data-path="debugging.html"><a href="debugging.html#tradeoffs"><i class="fa fa-check"></i><b>3.5</b> Tradeoffs</a></li>
-</ul></li>
-<li class="chapter" data-level="4" data-path="performance.html"><a href="performance.html"><i class="fa fa-check"></i><b>4</b> Performance</a>
-<ul>
-<li class="chapter" data-level="4.1" data-path="performance.html"><a href="performance.html#monitoring-the-pipeline"><i class="fa fa-check"></i><b>4.1</b> Monitoring the pipeline</a></li>
-<li class="chapter" data-level="4.2" data-path="performance.html"><a href="performance.html#performance-1"><i class="fa fa-check"></i><b>4.2</b> Performance</a></li>
-</ul></li>
-<li class="chapter" data-level="5" data-path="functions.html"><a href="functions.html"><i class="fa fa-check"></i><b>5</b> Functions</a>
-<ul>
-<li class="chapter" data-level="5.1" data-path="functions.html"><a href="functions.html#problems-with-script-based-workflows"><i class="fa fa-check"></i><b>5.1</b> Problems with script-based workflows</a></li>
-<li class="chapter" data-level="5.2" data-path="functions.html"><a href="functions.html#functions-1"><i class="fa fa-check"></i><b>5.2</b> Functions</a></li>
-<li class="chapter" data-level="5.3" data-path="functions.html"><a href="functions.html#writing-functions"><i class="fa fa-check"></i><b>5.3</b> Writing functions</a></li>
-<li class="chapter" data-level="5.4" data-path="functions.html"><a href="functions.html#functions-in-pipelines"><i class="fa fa-check"></i><b>5.4</b> Functions in pipelines</a></li>
-<li class="chapter" data-level="5.5" data-path="functions.html"><a href="functions.html#tracking-changes"><i class="fa fa-check"></i><b>5.5</b> Tracking changes</a></li>
-</ul></li>
-<li class="chapter" data-level="6" data-path="targets.html"><a href="targets.html"><i class="fa fa-check"></i><b>6</b> Target construction</a>
-<ul>
-<li class="chapter" data-level="6.1" data-path="targets.html"><a href="targets.html#target-names"><i class="fa fa-check"></i><b>6.1</b> Target names</a></li>
-<li class="chapter" data-level="6.2" data-path="targets.html"><a href="targets.html#what-a-target-should-do"><i class="fa fa-check"></i><b>6.2</b> What a target should do</a></li>
-<li class="chapter" data-level="6.3" data-path="targets.html"><a href="targets.html#how-much-a-target-should-do"><i class="fa fa-check"></i><b>6.3</b> How much a target should do</a></li>
-<li class="chapter" data-level="6.4" data-path="targets.html"><a href="targets.html#working-with-tools-outside-r"><i class="fa fa-check"></i><b>6.4</b> Working with tools outside R</a></li>
-<li class="chapter" data-level="6.5" data-path="targets.html"><a href="targets.html#side-effects"><i class="fa fa-check"></i><b>6.5</b> Side effects</a></li>
-<li class="chapter" data-level="6.6" data-path="targets.html"><a href="targets.html#dependencies"><i class="fa fa-check"></i><b>6.6</b> Dependencies</a></li>
-<li class="chapter" data-level="6.7" data-path="targets.html"><a href="targets.html#return-value"><i class="fa fa-check"></i><b>6.7</b> Return value</a>
-<ul>
-<li class="chapter" data-level="6.7.1" data-path="targets.html"><a href="targets.html#saving"><i class="fa fa-check"></i><b>6.7.1</b> Saving</a></li>
-<li class="chapter" data-level="6.7.2" data-path="targets.html"><a href="targets.html#hashing"><i class="fa fa-check"></i><b>6.7.2</b> Hashing</a></li>
-<li class="chapter" data-level="6.7.3" data-path="targets.html"><a href="targets.html#workaround"><i class="fa fa-check"></i><b>6.7.3</b> Workaround</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="7" data-path="packages.html"><a href="packages.html"><i class="fa fa-check"></i><b>7</b> Packages</a>
-<ul>
-<li class="chapter" data-level="7.1" data-path="packages.html"><a href="packages.html#loading-and-configuring-r-packages"><i class="fa fa-check"></i><b>7.1</b> Loading and configuring R packages</a></li>
-<li class="chapter" data-level="7.2" data-path="packages.html"><a href="packages.html#r-packages-as-projects"><i class="fa fa-check"></i><b>7.2</b> R packages as projects</a></li>
-<li class="chapter" data-level="7.3" data-path="packages.html"><a href="packages.html#target-factories"><i class="fa fa-check"></i><b>7.3</b> Target Factories</a></li>
-<li class="chapter" data-level="7.4" data-path="packages.html"><a href="packages.html#package-based-invalidation"><i class="fa fa-check"></i><b>7.4</b> Package-based invalidation</a></li>
-</ul></li>
-<li class="chapter" data-level="8" data-path="projects.html"><a href="projects.html"><i class="fa fa-check"></i><b>8</b> Projects</a>
-<ul>
-<li class="chapter" data-level="8.1" data-path="projects.html"><a href="projects.html#extra-reproducibility"><i class="fa fa-check"></i><b>8.1</b> Extra reproducibility</a></li>
-<li class="chapter" data-level="8.2" data-path="projects.html"><a href="projects.html#project-files"><i class="fa fa-check"></i><b>8.2</b> Project files</a></li>
-<li class="chapter" data-level="8.3" data-path="projects.html"><a href="projects.html#multiple-projects"><i class="fa fa-check"></i><b>8.3</b> Multiple projects</a>
-<ul>
-<li class="chapter" data-level="8.3.1" data-path="projects.html"><a href="projects.html#create-each-project."><i class="fa fa-check"></i><b>8.3.1</b> Create each project.</a></li>
-<li class="chapter" data-level="8.3.2" data-path="projects.html"><a href="projects.html#configure-each-project."><i class="fa fa-check"></i><b>8.3.2</b> Configure each project.</a></li>
-<li class="chapter" data-level="8.3.3" data-path="projects.html"><a href="projects.html#run-each-project"><i class="fa fa-check"></i><b>8.3.3</b> Run each project</a></li>
-</ul></li>
-<li class="chapter" data-level="8.4" data-path="projects.html"><a href="projects.html#interdependent-projects"><i class="fa fa-check"></i><b>8.4</b> Interdependent projects</a>
-<ul>
-<li class="chapter" data-level="8.4.1" data-path="projects.html"><a href="projects.html#config-inheritance"><i class="fa fa-check"></i><b>8.4.1</b> Config inheritance</a></li>
-<li class="chapter" data-level="8.4.2" data-path="projects.html"><a href="projects.html#sharing-targets"><i class="fa fa-check"></i><b>8.4.2</b> Sharing targets</a></li>
-</ul></li>
-<li class="chapter" data-level="8.5" data-path="projects.html"><a href="projects.html#the-config-package"><i class="fa fa-check"></i><b>8.5</b> The config package</a></li>
-</ul></li>
-<li class="chapter" data-level="9" data-path="data.html"><a href="data.html"><i class="fa fa-check"></i><b>9</b> Data: storage and memory</a>
-<ul>
-<li class="chapter" data-level="9.1" data-path="data.html"><a href="data.html#local-data-store"><i class="fa fa-check"></i><b>9.1</b> Local data store</a></li>
-<li class="chapter" data-level="9.2" data-path="data.html"><a href="data.html#external-files"><i class="fa fa-check"></i><b>9.2</b> External files</a></li>
-<li class="chapter" data-level="9.3" data-path="data.html"><a href="data.html#memory"><i class="fa fa-check"></i><b>9.3</b> Memory</a></li>
-<li class="chapter" data-level="9.4" data-path="data.html"><a href="data.html#cloud-storage"><i class="fa fa-check"></i><b>9.4</b> Cloud storage</a>
-<ul>
-<li class="chapter" data-level="9.4.1" data-path="data.html"><a href="data.html#cost"><i class="fa fa-check"></i><b>9.4.1</b> Cost</a></li>
-<li class="chapter" data-level="9.4.2" data-path="data.html"><a href="data.html#aws-setup"><i class="fa fa-check"></i><b>9.4.2</b> AWS setup</a></li>
-<li class="chapter" data-level="9.4.3" data-path="data.html"><a href="data.html#gcp-setup"><i class="fa fa-check"></i><b>9.4.3</b> GCP setup</a></li>
-<li class="chapter" data-level="9.4.4" data-path="data.html"><a href="data.html#usage"><i class="fa fa-check"></i><b>9.4.4</b> Usage</a></li>
-<li class="chapter" data-level="9.4.5" data-path="data.html"><a href="data.html#data-version-control"><i class="fa fa-check"></i><b>9.4.5</b> Data version control</a></li>
-</ul></li>
-<li class="chapter" data-level="9.5" data-path="data.html"><a href="data.html#cleaning-up-local-internal-data-files"><i class="fa fa-check"></i><b>9.5</b> Cleaning up local internal data files</a></li>
-</ul></li>
-<li class="chapter" data-level="10" data-path="literate-programming.html"><a href="literate-programming.html"><i class="fa fa-check"></i><b>10</b> Literate programming</a>
-<ul>
-<li class="chapter" data-level="10.1" data-path="literate-programming.html"><a href="literate-programming.html#literate-programming-within-a-target"><i class="fa fa-check"></i><b>10.1</b> Literate programming within a target</a>
-<ul>
-<li class="chapter" data-level="10.1.1" data-path="literate-programming.html"><a href="literate-programming.html#r-markdown-targets"><i class="fa fa-check"></i><b>10.1.1</b> R Markdown targets</a></li>
-<li class="chapter" data-level="10.1.2" data-path="literate-programming.html"><a href="literate-programming.html#quarto-targets"><i class="fa fa-check"></i><b>10.1.2</b> Quarto targets</a></li>
-<li class="chapter" data-level="10.1.3" data-path="literate-programming.html"><a href="literate-programming.html#parameterized-documents"><i class="fa fa-check"></i><b>10.1.3</b> Parameterized documents</a></li>
-<li class="chapter" data-level="10.1.4" data-path="literate-programming.html"><a href="literate-programming.html#single-parameter-set"><i class="fa fa-check"></i><b>10.1.4</b> Single parameter set</a></li>
-<li class="chapter" data-level="10.1.5" data-path="literate-programming.html"><a href="literate-programming.html#multiple-parameter-sets"><i class="fa fa-check"></i><b>10.1.5</b> Multiple parameter sets</a></li>
-</ul></li>
-<li class="chapter" data-level="10.2" data-path="literate-programming.html"><a href="literate-programming.html#target-markdown"><i class="fa fa-check"></i><b>10.2</b> Target Markdown</a>
-<ul>
-<li class="chapter" data-level="10.2.1" data-path="literate-programming.html"><a href="literate-programming.html#access"><i class="fa fa-check"></i><b>10.2.1</b> Access</a></li>
-<li class="chapter" data-level="10.2.2" data-path="literate-programming.html"><a href="literate-programming.html#purpose"><i class="fa fa-check"></i><b>10.2.2</b> Purpose</a></li>
-<li class="chapter" data-level="10.2.3" data-path="literate-programming.html"><a href="literate-programming.html#example"><i class="fa fa-check"></i><b>10.2.3</b> Example</a></li>
-<li class="chapter" data-level="10.2.4" data-path="literate-programming.html"><a href="literate-programming.html#required-packages"><i class="fa fa-check"></i><b>10.2.4</b> Required packages</a></li>
-<li class="chapter" data-level="10.2.5" data-path="literate-programming.html"><a href="literate-programming.html#setup"><i class="fa fa-check"></i><b>10.2.5</b> Setup</a></li>
-<li class="chapter" data-level="10.2.6" data-path="literate-programming.html"><a href="literate-programming.html#globals"><i class="fa fa-check"></i><b>10.2.6</b> Globals</a></li>
-<li class="chapter" data-level="10.2.7" data-path="literate-programming.html"><a href="literate-programming.html#target-definitions"><i class="fa fa-check"></i><b>10.2.7</b> Target definitions</a></li>
-<li class="chapter" data-level="10.2.8" data-path="literate-programming.html"><a href="literate-programming.html#pipeline"><i class="fa fa-check"></i><b>10.2.8</b> Pipeline</a></li>
-<li class="chapter" data-level="10.2.9" data-path="literate-programming.html"><a href="literate-programming.html#output"><i class="fa fa-check"></i><b>10.2.9</b> Output</a></li>
-<li class="chapter" data-level="10.2.10" data-path="literate-programming.html"><a href="literate-programming.html#conditioning-on-interactive-mode"><i class="fa fa-check"></i><b>10.2.10</b> Conditioning on interactive mode</a></li>
-<li class="chapter" data-level="10.2.11" data-path="literate-programming.html"><a href="literate-programming.html#tar_interactive"><i class="fa fa-check"></i><b>10.2.11</b> <code>tar_interactive()</code></a></li>
-<li class="chapter" data-level="10.2.12" data-path="literate-programming.html"><a href="literate-programming.html#tar_toggle"><i class="fa fa-check"></i><b>10.2.12</b> <code>tar_toggle()</code></a></li>
-<li class="chapter" data-level="10.2.13" data-path="literate-programming.html"><a href="literate-programming.html#chunk-options"><i class="fa fa-check"></i><b>10.2.13</b> Chunk options</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="11" data-path="dynamic.html"><a href="dynamic.html"><i class="fa fa-check"></i><b>11</b> Dynamic branching</a>
-<ul>
-<li class="chapter" data-level="11.1" data-path="dynamic.html"><a href="dynamic.html#branching"><i class="fa fa-check"></i><b>11.1</b> Branching</a></li>
-<li class="chapter" data-level="11.2" data-path="dynamic.html"><a href="dynamic.html#about-dynamic-branching"><i class="fa fa-check"></i><b>11.2</b> About dynamic branching</a></li>
-<li class="chapter" data-level="11.3" data-path="dynamic.html"><a href="dynamic.html#example-1"><i class="fa fa-check"></i><b>11.3</b> Example</a></li>
-<li class="chapter" data-level="11.4" data-path="dynamic.html"><a href="dynamic.html#provenance"><i class="fa fa-check"></i><b>11.4</b> Provenance</a></li>
-<li class="chapter" data-level="11.5" data-path="dynamic.html"><a href="dynamic.html#patterns"><i class="fa fa-check"></i><b>11.5</b> Patterns</a></li>
-<li class="chapter" data-level="11.6" data-path="dynamic.html"><a href="dynamic.html#iteration"><i class="fa fa-check"></i><b>11.6</b> Iteration</a></li>
-<li class="chapter" data-level="11.7" data-path="dynamic.html"><a href="dynamic.html#branching-over-row-groups"><i class="fa fa-check"></i><b>11.7</b> Branching over row groups</a></li>
-<li class="chapter" data-level="11.8" data-path="dynamic.html"><a href="dynamic.html#branching-over-files"><i class="fa fa-check"></i><b>11.8</b> Branching over files</a></li>
-<li class="chapter" data-level="11.9" data-path="dynamic.html"><a href="dynamic.html#performance-and-batching"><i class="fa fa-check"></i><b>11.9</b> Performance and batching</a></li>
-</ul></li>
-<li class="chapter" data-level="12" data-path="static.html"><a href="static.html"><i class="fa fa-check"></i><b>12</b> Static branching</a>
-<ul>
-<li class="chapter" data-level="12.1" data-path="static.html"><a href="static.html#branching-1"><i class="fa fa-check"></i><b>12.1</b> Branching</a></li>
-<li class="chapter" data-level="12.2" data-path="static.html"><a href="static.html#when-to-use-static-branching"><i class="fa fa-check"></i><b>12.2</b> When to use static branching</a></li>
-<li class="chapter" data-level="12.3" data-path="static.html"><a href="static.html#map"><i class="fa fa-check"></i><b>12.3</b> Map</a></li>
-<li class="chapter" data-level="12.4" data-path="static.html"><a href="static.html#dynamic-within-static-branching"><i class="fa fa-check"></i><b>12.4</b> Dynamic-within-static branching</a></li>
-<li class="chapter" data-level="12.5" data-path="static.html"><a href="static.html#combine"><i class="fa fa-check"></i><b>12.5</b> Combine</a></li>
-<li class="chapter" data-level="12.6" data-path="static.html"><a href="static.html#metaprogramming"><i class="fa fa-check"></i><b>12.6</b> Metaprogramming</a></li>
-<li class="chapter" data-level="12.7" data-path="static.html"><a href="static.html#hooks"><i class="fa fa-check"></i><b>12.7</b> Hooks</a></li>
-</ul></li>
-<li class="chapter" data-level="13" data-path="hpc.html"><a href="hpc.html"><i class="fa fa-check"></i><b>13</b> High-performance computing</a>
-<ul>
-<li class="chapter" data-level="13.1" data-path="hpc.html"><a href="hpc.html#clustermq"><i class="fa fa-check"></i><b>13.1</b> Clustermq</a>
-<ul>
-<li class="chapter" data-level="13.1.1" data-path="hpc.html"><a href="hpc.html#persistent-workers"><i class="fa fa-check"></i><b>13.1.1</b> Persistent workers</a></li>
-<li class="chapter" data-level="13.1.2" data-path="hpc.html"><a href="hpc.html#clustermq-installation"><i class="fa fa-check"></i><b>13.1.2</b> Clustermq installation</a></li>
-<li class="chapter" data-level="13.1.3" data-path="hpc.html"><a href="hpc.html#clustermq-local-configuration"><i class="fa fa-check"></i><b>13.1.3</b> Clustermq local configuration</a></li>
-<li class="chapter" data-level="13.1.4" data-path="hpc.html"><a href="hpc.html#clustermq-remote-configuration"><i class="fa fa-check"></i><b>13.1.4</b> Clustermq remote configuration</a></li>
-<li class="chapter" data-level="13.1.5" data-path="hpc.html"><a href="hpc.html#clustermq-template-file-configuration"><i class="fa fa-check"></i><b>13.1.5</b> Clustermq template file configuration</a></li>
-</ul></li>
-<li class="chapter" data-level="13.2" data-path="hpc.html"><a href="hpc.html#future"><i class="fa fa-check"></i><b>13.2</b> Future</a>
-<ul>
-<li class="chapter" data-level="13.2.1" data-path="hpc.html"><a href="hpc.html#transient-workers"><i class="fa fa-check"></i><b>13.2.1</b> Transient workers</a></li>
-<li class="chapter" data-level="13.2.2" data-path="hpc.html"><a href="hpc.html#future-installation"><i class="fa fa-check"></i><b>13.2.2</b> Future installation</a></li>
-<li class="chapter" data-level="13.2.3" data-path="hpc.html"><a href="hpc.html#future-locally"><i class="fa fa-check"></i><b>13.2.3</b> Future locally</a></li>
-<li class="chapter" data-level="13.2.4" data-path="hpc.html"><a href="hpc.html#future-remotely"><i class="fa fa-check"></i><b>13.2.4</b> Future remotely</a></li>
-<li class="chapter" data-level="13.2.5" data-path="hpc.html"><a href="hpc.html#future-configuration"><i class="fa fa-check"></i><b>13.2.5</b> Future configuration</a></li>
-</ul></li>
-<li class="chapter" data-level="13.3" data-path="hpc.html"><a href="hpc.html#advanced"><i class="fa fa-check"></i><b>13.3</b> Advanced</a></li>
-<li class="chapter" data-level="13.4" data-path="hpc.html"><a href="hpc.html#cloud-computing"><i class="fa fa-check"></i><b>13.4</b> Cloud computing</a></li>
-</ul></li>
-<li class="chapter" data-level="14" data-path="drake.html"><a href="drake.html"><i class="fa fa-check"></i><b>14</b> What about <code>drake</code>?</a>
-<ul>
-<li class="chapter" data-level="14.1" data-path="drake.html"><a href="drake.html#why-is-drake-superseded"><i class="fa fa-check"></i><b>14.1</b> Why is <code>drake</code> superseded?</a></li>
-<li class="chapter" data-level="14.2" data-path="drake.html"><a href="drake.html#transitioning-to-targets"><i class="fa fa-check"></i><b>14.2</b> Transitioning to <code>targets</code></a></li>
-<li class="chapter" data-level="14.3" data-path="drake.html"><a href="drake.html#advantages-of-targets-over-drake"><i class="fa fa-check"></i><b>14.3</b> Advantages of <code>targets</code> over <code>drake</code></a>
-<ul>
-<li class="chapter" data-level="14.3.1" data-path="drake.html"><a href="drake.html#better-guardrails-by-design"><i class="fa fa-check"></i><b>14.3.1</b> Better guardrails by design</a></li>
-<li class="chapter" data-level="14.3.2" data-path="drake.html"><a href="drake.html#enhanced-debugging-support"><i class="fa fa-check"></i><b>14.3.2</b> Enhanced debugging support</a></li>
-<li class="chapter" data-level="14.3.3" data-path="drake.html"><a href="drake.html#improved-tracking-of-package-functions"><i class="fa fa-check"></i><b>14.3.3</b> Improved tracking of package functions</a></li>
-<li class="chapter" data-level="14.3.4" data-path="drake.html"><a href="drake.html#lighter-friendlier-data-management"><i class="fa fa-check"></i><b>14.3.4</b> Lighter, friendlier data management</a></li>
-<li class="chapter" data-level="14.3.5" data-path="drake.html"><a href="drake.html#cloud-storage-1"><i class="fa fa-check"></i><b>14.3.5</b> Cloud storage</a></li>
-<li class="chapter" data-level="14.3.6" data-path="drake.html"><a href="drake.html#show-status-of-functions-and-global-objects"><i class="fa fa-check"></i><b>14.3.6</b> Show status of functions and global objects</a></li>
-<li class="chapter" data-level="14.3.7" data-path="drake.html"><a href="drake.html#dynamic-branching-with-dplyrgroup_by"><i class="fa fa-check"></i><b>14.3.7</b> Dynamic branching with <code>dplyr::group_by()</code></a></li>
-<li class="chapter" data-level="14.3.8" data-path="drake.html"><a href="drake.html#composable-dynamic-branching"><i class="fa fa-check"></i><b>14.3.8</b> Composable dynamic branching</a></li>
-<li class="chapter" data-level="14.3.9" data-path="drake.html"><a href="drake.html#improved-parallel-efficiency"><i class="fa fa-check"></i><b>14.3.9</b> Improved parallel efficiency</a></li>
-<li class="chapter" data-level="14.3.10" data-path="drake.html"><a href="drake.html#metaprogramming-1"><i class="fa fa-check"></i><b>14.3.10</b> Metaprogramming</a></li>
-</ul></li>
-</ul></li>
-<li class="chapter" data-level="15" data-path="markdown.html"><a href="markdown.html"><i class="fa fa-check"></i><b>15</b> R Markdown</a></li>
-<li class="divider"></li>
-<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
-
-</ul>
-
-      </nav>
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">What about <code>drake</code>?</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
     </div>
-
-    <div class="book-body">
-      <div class="body-inner">
-        <div class="book-header" role="navigation">
-          <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">The targets R Package User Manual</a>
-          </h1>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">The targets R package user manual</a> 
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
         </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./walkthrough.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Walkthrough</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./debugging.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Debugging</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./performance.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Performance</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./functions.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Functions</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./targets.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Target construction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./packages.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Packages</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./projects.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Projects</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Data: storage and memory</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./literate-programming.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Literate programming</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dynamic.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Dynamic branching</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./static.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Static branching</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./hpc.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">High-performance computing</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./drake.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">What about <code>drake</code>?</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">R Markdown</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#why-is-drake-superseded" id="toc-why-is-drake-superseded" class="nav-link active" data-scroll-target="#why-is-drake-superseded"> <span class="header-section-number">14.1</span> Why is <code>drake</code> superseded?</a></li>
+  <li><a href="#transitioning-to-targets" id="toc-transitioning-to-targets" class="nav-link" data-scroll-target="#transitioning-to-targets"> <span class="header-section-number">14.2</span> Transitioning to <code>targets</code></a></li>
+  <li><a href="#advantages-of-targets-over-drake" id="toc-advantages-of-targets-over-drake" class="nav-link" data-scroll-target="#advantages-of-targets-over-drake"> <span class="header-section-number">14.3</span> Advantages of <code>targets</code> over <code>drake</code></a>
+  <ul class="collapse">
+  <li><a href="#better-guardrails-by-design" id="toc-better-guardrails-by-design" class="nav-link" data-scroll-target="#better-guardrails-by-design"> <span class="header-section-number">14.3.1</span> Better guardrails by design</a></li>
+  <li><a href="#enhanced-debugging-support" id="toc-enhanced-debugging-support" class="nav-link" data-scroll-target="#enhanced-debugging-support"> <span class="header-section-number">14.3.2</span> Enhanced debugging support</a></li>
+  <li><a href="#improved-tracking-of-package-functions" id="toc-improved-tracking-of-package-functions" class="nav-link" data-scroll-target="#improved-tracking-of-package-functions"> <span class="header-section-number">14.3.3</span> Improved tracking of package functions</a></li>
+  <li><a href="#lighter-friendlier-data-management" id="toc-lighter-friendlier-data-management" class="nav-link" data-scroll-target="#lighter-friendlier-data-management"> <span class="header-section-number">14.3.4</span> Lighter, friendlier data management</a></li>
+  <li><a href="#cloud-storage" id="toc-cloud-storage" class="nav-link" data-scroll-target="#cloud-storage"> <span class="header-section-number">14.3.5</span> Cloud storage</a></li>
+  <li><a href="#show-status-of-functions-and-global-objects" id="toc-show-status-of-functions-and-global-objects" class="nav-link" data-scroll-target="#show-status-of-functions-and-global-objects"> <span class="header-section-number">14.3.6</span> Show status of functions and global objects</a></li>
+  <li><a href="#dynamic-branching-with-dplyrgroup_by" id="toc-dynamic-branching-with-dplyrgroup_by" class="nav-link" data-scroll-target="#dynamic-branching-with-dplyrgroup_by"> <span class="header-section-number">14.3.7</span> Dynamic branching with <code>dplyr::group_by()</code></a></li>
+  <li><a href="#composable-dynamic-branching" id="toc-composable-dynamic-branching" class="nav-link" data-scroll-target="#composable-dynamic-branching"> <span class="header-section-number">14.3.8</span> Composable dynamic branching</a></li>
+  <li><a href="#improved-parallel-efficiency" id="toc-improved-parallel-efficiency" class="nav-link" data-scroll-target="#improved-parallel-efficiency"> <span class="header-section-number">14.3.9</span> Improved parallel efficiency</a></li>
+  <li><a href="#metaprogramming" id="toc-metaprogramming" class="nav-link" data-scroll-target="#metaprogramming"> <span class="header-section-number">14.3.10</span> Metaprogramming</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
 
-        <div class="page-wrapper" tabindex="-1" role="main">
-          <div class="page-inner">
-
-            <section class="normal" id="section-">
-<div id="drake" class="section level1 hasAnchor" number="14">
-<h1><span class="header-section-number">Chapter 14</span> What about <code>drake</code>?<a href="drake.html#drake" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<p><a href="https://www.tidyverse.org/lifecycle/#superseded"><img src="https://img.shields.io/badge/lifecycle-superseded-blue.svg" alt='superseded lifecycle'></a></p>
-<p><a href="https://github.com/ropensci/targets"><code>targets</code></a> is the successor of <a href="https://github.com/ropensci/drake"><code>drake</code></a>, an older pipeline tool. As of 2021-01-21, <a href="https://github.com/ropensci/drake"><code>drake</code></a> is <a href="https://lifecycle.r-lib.org/articles/stages.html#superseded">superseded</a>, which means there are no plans for new features or discretionary enhancements, but basic maintenance and support will continue indefinitely. Existing projects that use <a href="https://github.com/ropensci/drake"><code>drake</code></a> can safely continue to use <a href="https://github.com/ropensci/drake"><code>drake</code></a>, and there is no need to retrofit <a href="https://github.com/ropensci/targets"><code>targets</code></a>. New projects should use <a href="https://github.com/ropensci/targets"><code>targets</code></a> because it is friendlier and more robust.</p>
-<div id="why-is-drake-superseded" class="section level2 hasAnchor" number="14.1">
-<h2><span class="header-section-number">14.1</span> Why is <code>drake</code> superseded?<a href="drake.html#why-is-drake-superseded" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Nearly four years of community feedback have exposed major user-side limitations regarding data management, collaboration, dynamic branching, and parallel efficiency. Unfortunately, these limitations are permanent. Solutions in <a href="https://github.com/ropensci/drake"><code>drake</code></a> itself would make the package incompatible with existing projects that use it, and the internal architecture is too copious, elaborate, and mature for such extreme refactoring. That is why <a href="https://github.com/ropensci/targets"><code>targets</code></a> was created. The <a href="https://github.com/ropensci/targets"><code>targets</code></a> package borrows from past learnings, user suggestions, discussions, complaints, success stories, and feature requests, and it improves the user experience in ways that will never be possible in <a href="https://github.com/ropensci/drake"><code>drake</code></a>.</p>
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="drake" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">What about <code>drake</code>?</span></span></h1>
 </div>
-<div id="transitioning-to-targets" class="section level2 hasAnchor" number="14.2">
-<h2><span class="header-section-number">14.2</span> Transitioning to <code>targets</code><a href="drake.html#transitioning-to-targets" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<div class="cell">
+
+</div>
+<p><a href="https://www.tidyverse.org/lifecycle/#superseded"><img src="https://img.shields.io/badge/lifecycle-superseded-blue.svg" alt="superseded lifecycle"></a></p>
+<p><a href="https://github.com/ropensci/targets"><code>targets</code></a> is the successor of <a href="https://github.com/ropensci/drake"><code>drake</code></a>, an older pipeline tool. As of 2021-01-21, <a href="https://github.com/ropensci/drake"><code>drake</code></a> is <a href="https://lifecycle.r-lib.org/articles/stages.html#superseded">superseded</a>, which means there are no plans for new features or discretionary enhancements, but basic maintenance and support will continue indefinitely. Existing projects that use <a href="https://github.com/ropensci/drake"><code>drake</code></a> can safely continue to use <a href="https://github.com/ropensci/drake"><code>drake</code></a>, and there is no need to retrofit <a href="https://github.com/ropensci/targets"><code>targets</code></a>. New projects should use <a href="https://github.com/ropensci/targets"><code>targets</code></a> because it is friendlier and more robust.</p>
+<section id="why-is-drake-superseded" class="level2" data-number="14.1">
+<h2 data-number="14.1" class="anchored" data-anchor-id="why-is-drake-superseded"><span class="header-section-number">14.1</span> Why is <code>drake</code> superseded?</h2>
+<p>Nearly four years of community feedback have exposed major user-side limitations regarding data management, collaboration, dynamic branching, and parallel efficiency. Unfortunately, these limitations are permanent. Solutions in <a href="https://github.com/ropensci/drake"><code>drake</code></a> itself would make the package incompatible with existing projects that use it, and the internal architecture is too copious, elaborate, and mature for such extreme refactoring. That is why <a href="https://github.com/ropensci/targets"><code>targets</code></a> was created. The <a href="https://github.com/ropensci/targets"><code>targets</code></a> package borrows from past learnings, user suggestions, discussions, complaints, success stories, and feature requests, and it improves the user experience in ways that will never be possible in <a href="https://github.com/ropensci/drake"><code>drake</code></a>.</p>
+</section>
+<section id="transitioning-to-targets" class="level2" data-number="14.2">
+<h2 data-number="14.2" class="anchored" data-anchor-id="transitioning-to-targets"><span class="header-section-number">14.2</span> Transitioning to <code>targets</code></h2>
 <p>If you know <a href="https://github.com/ropensci/drake"><code>drake</code></a>, then you already almost know <code>targets</code>. The programming style is similar, and most functions in <code>targets</code> have counterparts in <a href="https://github.com/ropensci/drake"><code>drake</code></a>.</p>
-<table>
-<colgroup>
-<col width="50%" />
-<col width="50%" />
-</colgroup>
+<table class="table">
 <thead>
 <tr class="header">
 <th>Functions in <code>drake</code></th>
@@ -467,7 +382,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </tr>
 <tr class="odd">
 <td><a href="https://docs.ropensci.org/drake/reference/missed.html"><code>missed()</code></a>, <a href="https://docs.ropensci.org/drake/reference/tracked.html"><code>tracked()</code></a>, <a href="https://docs.ropensci.org/drake/reference/deps_code.html"><code>deps_code()</code></a>, <a href="https://docs.ropensci.org/drake/reference/deps_target.html"><code>deps_target()</code></a>, <a href="https://docs.ropensci.org/drake/reference/deps_knitr.html"><code>deps_knitr()</code></a>, <a href="https://docs.ropensci.org/drake/reference/deps_profile.html"><code>deps_profile()</code></a></td>
-<td>Unsupported in <code>targets</code> because dependency detection is <a href="targets.html#targets">easier to understand</a> than in <code>drake</code>.</td>
+<td>Unsupported in <code>targets</code> because dependency detection is <a href="targets.html">easier to understand</a> than in <code>drake</code>.</td>
 </tr>
 <tr class="even">
 <td><a href="https://docs.ropensci.org/drake/reference/drake_hpc_template_file.html"><code>drake_hpc_template_file()</code></a>, <a href="https://docs.ropensci.org/drake/reference/drake_hpc_template_files.html"><code>drake_hpc_template_files()</code></a></td>
@@ -504,11 +419,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </tbody>
 </table>
 <p>Likewise, many <code>make()</code> arguments have equivalent arguments elsewhere.</p>
-<table>
-<colgroup>
-<col width="50%" />
-<col width="50%" />
-</colgroup>
+<table class="table">
 <thead>
 <tr class="header">
 <th>Argument of <code>drake::make()</code></th>
@@ -583,11 +494,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </tbody>
 </table>
 <p>In addition, many <a href="https://books.ropensci.org/drake/plans.html#special-columns">optional columns of <code>drake</code> plans</a> are expressed differently in <code>targets</code>.</p>
-<table>
-<colgroup>
-<col width="50%" />
-<col width="50%" />
-</colgroup>
+<table class="table">
 <thead>
 <tr class="header">
 <th><a href="https://books.ropensci.org/drake/plans.html#special-columns">Optional column of <code>drake</code> plans</a></th>
@@ -625,29 +532,29 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </tr>
 </tbody>
 </table>
-</div>
-<div id="advantages-of-targets-over-drake" class="section level2 hasAnchor" number="14.3">
-<h2><span class="header-section-number">14.3</span> Advantages of <code>targets</code> over <code>drake</code><a href="drake.html#advantages-of-targets-over-drake" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<div id="better-guardrails-by-design" class="section level3 hasAnchor" number="14.3.1">
-<h3><span class="header-section-number">14.3.1</span> Better guardrails by design<a href="drake.html#better-guardrails-by-design" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+</section>
+<section id="advantages-of-targets-over-drake" class="level2" data-number="14.3">
+<h2 data-number="14.3" class="anchored" data-anchor-id="advantages-of-targets-over-drake"><span class="header-section-number">14.3</span> Advantages of <code>targets</code> over <code>drake</code></h2>
+<section id="better-guardrails-by-design" class="level3" data-number="14.3.1">
+<h3 data-number="14.3.1" class="anchored" data-anchor-id="better-guardrails-by-design"><span class="header-section-number">14.3.1</span> Better guardrails by design</h3>
 <p><a href="https://github.com/ropensci/drake"><code>drake</code></a> leaves ample room for user-side mistakes, and some of these mistakes require extra awareness or advanced knowledge of R to consistently avoid. The example behaviors below are too systemic to solve and still preserve back-compatibility.</p>
-<ol style="list-style-type: decimal">
+<ol type="1">
 <li>By default, <code>make()</code> looks for functions and global objects in the parent environment of the calling R session. Because the global environment is often old and stale in practical situations, which causes targets to become incorrectly invalidated. Users need to remember to restart the session before calling <code>make()</code>. The issue is <a href="https://github.com/ropensci/drake/issues/761">discussed here</a>, and the discussion led to functions like <code>r_make()</code> which always create a fresh session to do the work. However, <code>r_make()</code> is not a complete replacement for <code>make()</code>, and beginner users still run into the original problems.</li>
 <li>Similar to the above, <code>make()</code> does not find the intended functions and global objects if it is called in a different environment. Edge cases like <a href="https://github.com/ropensci/drake/issues/874">this one</a> and <a href="https://github.com/ropensci/drake/issues/527">this one</a> continue to surprise users.</li>
 <li><a href="https://github.com/ropensci/drake"><code>drake</code></a> is extremely flexible about the location of the <code>.drake/</code> cache. When a user calls <code>readd()</code>, <code>loadd()</code>, <code>make()</code>, and similar functions, <a href="https://github.com/ropensci/drake"><code>drake</code></a> searches up through the parent directories until it finds a <code>.drake/</code> folder. This flexibility seldom helps, and it creates uncertainty and inconsistency when it comes to initializing and accessing projects, especially if there are multiple projects with nested file systems.</li>
 </ol>
 <p>The <a href="https://github.com/ropensci/targets"><code>targets</code></a> package solves all these issues by design. Functions <code>tar_make()</code>, <code>tar_make_clustermq()</code>, and <code>tar_make_future()</code> all create fresh new R sessions by default. They all require a <code>_targets.R</code> configuration file in the project root (working directory of the <code>tar_make()</code> call) so that the functions, global objects, and settings are all populated in the exact same way each session, leading to less frustration, greater consistency, and greater reproducibility. In addition, the <code>_targets/</code> data store always lives in the project root.</p>
-</div>
-<div id="enhanced-debugging-support" class="section level3 hasAnchor" number="14.3.2">
-<h3><span class="header-section-number">14.3.2</span> Enhanced debugging support<a href="drake.html#enhanced-debugging-support" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+</section>
+<section id="enhanced-debugging-support" class="level3" data-number="14.3.2">
+<h3 data-number="14.3.2" class="anchored" data-anchor-id="enhanced-debugging-support"><span class="header-section-number">14.3.2</span> Enhanced debugging support</h3>
 <p><a href="https://github.com/ropensci/targets"><code>targets</code></a> has enhanced debugging support. With the <code>workspaces</code> argument to <code>tar_option_set()</code>, users can locally recreate the conditions under which a target runs. This includes packages, global functions and objects, and the random number generator seed. Similarly, <code>tar_option_set(error = "workspace")</code> automatically saves debugging workspaces for targets that encounter errors. The <code>debug</code> option lets users enter an interactive debugger for a given target while the pipeline is running. And unlike <code>drake</code>, all debugging features are fully compatible with dynamic branching.</p>
-</div>
-<div id="improved-tracking-of-package-functions" class="section level3 hasAnchor" number="14.3.3">
-<h3><span class="header-section-number">14.3.3</span> Improved tracking of package functions<a href="drake.html#improved-tracking-of-package-functions" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+</section>
+<section id="improved-tracking-of-package-functions" class="level3" data-number="14.3.3">
+<h3 data-number="14.3.3" class="anchored" data-anchor-id="improved-tracking-of-package-functions"><span class="header-section-number">14.3.3</span> Improved tracking of package functions</h3>
 <p>By default, <a href="https://github.com/ropensci/targets"><code>targets</code></a> ignores changes to functions inside external packages. However, if a workflow centers on a custom package with methodology under development, users can make <a href="https://github.com/ropensci/targets"><code>targets</code></a> automatically watch the package’s functions for changes. Simply supply the names of the relevant packages to the <code>imports</code> argument of <code>tar_option_set()</code>. Unlike <a href="https://github.com/ropensci/drake"><code>drake</code></a>, <a href="https://github.com/ropensci/targets"><code>targets</code></a> can track multiple packages this way, and the internal mechanism is much safer.</p>
-</div>
-<div id="lighter-friendlier-data-management" class="section level3 hasAnchor" number="14.3.4">
-<h3><span class="header-section-number">14.3.4</span> Lighter, friendlier data management<a href="drake.html#lighter-friendlier-data-management" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+</section>
+<section id="lighter-friendlier-data-management" class="level3" data-number="14.3.4">
+<h3 data-number="14.3.4" class="anchored" data-anchor-id="lighter-friendlier-data-management"><span class="header-section-number">14.3.4</span> Lighter, friendlier data management</h3>
 <p><a href="https://github.com/ropensci/drake"><code>drake</code></a>’s cache is an intricate file system in a hidden <code>.drake</code> folder. It contains multiple files for each target, and those names are not informative. (See the files in the <code>data/</code> folder in the diagram below.) Users often have trouble understanding how <a href="https://github.com/ropensci/drake"><code>drake</code></a> manages data, resolving problems when files are corrupted, placing the data under version control, collaborating with others on the same pipeline, and clearing out superfluous data when the cache grows large in storage.</p>
 <pre><code>.drake/
 ├── config/
@@ -681,150 +588,235 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ├───── ...
 ├── scratch/ # tar_make() deletes this folder after it finishes.
 └── user/ # gittargets users can put custom files here for data version control.</code></pre>
-</div>
-<div id="cloud-storage-1" class="section level3 hasAnchor" number="14.3.5">
-<h3><span class="header-section-number">14.3.5</span> Cloud storage<a href="drake.html#cloud-storage-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+</section>
+<section id="cloud-storage" class="level3" data-number="14.3.5">
+<h3 data-number="14.3.5" class="anchored" data-anchor-id="cloud-storage"><span class="header-section-number">14.3.5</span> Cloud storage</h3>
 <p>Thanks to the simplified data store and simplified internals, <a href="https://github.com/ropensci/targets"><code>targets</code></a> can automatically upload data to the Amazon S3 bucket of your choice. Simply configure <a href="https://github.com/cloudyr/aws.s3"><code>aws.s3</code></a>, create a bucket, and select one of the AWS-powered storage formats. Then, <a href="https://github.com/ropensci/targets"><code>targets</code></a> will automatically upload the return values to the cloud.</p>
-<div class="sourceCode" id="cb182"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb182-1"><a href="drake.html#cb182-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
-<span id="cb182-2"><a href="drake.html#cb182-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">resources =</span> <span class="fu">list</span>(<span class="at">bucket =</span> <span class="st">&quot;my-bucket-name&quot;</span>))</span>
-<span id="cb182-3"><a href="drake.html#cb182-3" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb182-4"><a href="drake.html#cb182-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(dataset, <span class="fu">get_large_dataset</span>(), <span class="at">format =</span> <span class="st">&quot;aws_fst_tbl&quot;</span>),</span>
-<span id="cb182-5"><a href="drake.html#cb182-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(analysis, <span class="fu">analyze_dataset</span>(dataset), <span class="at">format =</span> <span class="st">&quot;aws_qs&quot;</span>)</span>
-<span id="cb182-6"><a href="drake.html#cb182-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<p>Data retrieval is still super easy.</p>
-<div class="sourceCode" id="cb183"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb183-1"><a href="drake.html#cb183-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(dataset)</span></code></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">resources =</span> <span class="fu">list</span>(<span class="at">bucket =</span> <span class="st">"my-bucket-name"</span>))</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(dataset, <span class="fu">get_large_dataset</span>(), <span class="at">format =</span> <span class="st">"aws_fst_tbl"</span>),</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(analysis, <span class="fu">analyze_dataset</span>(dataset), <span class="at">format =</span> <span class="st">"aws_qs"</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="show-status-of-functions-and-global-objects" class="section level3 hasAnchor" number="14.3.6">
-<h3><span class="header-section-number">14.3.6</span> Show status of functions and global objects<a href="drake.html#show-status-of-functions-and-global-objects" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Data retrieval is still super easy.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(dataset)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="show-status-of-functions-and-global-objects" class="level3" data-number="14.3.6">
+<h3 data-number="14.3.6" class="anchored" data-anchor-id="show-status-of-functions-and-global-objects"><span class="header-section-number">14.3.6</span> Show status of functions and global objects</h3>
 <p><a href="https://github.com/ropensci/drake"><code>drake</code></a> has several utilities that inform users which targets are up to date and which need to rerun. However, those utilities are limited by how <a href="https://github.com/ropensci/drake"><code>drake</code></a> manages functions and other global objects. Whenever <a href="https://github.com/ropensci/drake"><code>drake</code></a> inspects globals, it stores their values in its cache and loses track of their previous state from the last run of the pipeline. As a result, it has trouble informing users exactly why a given target is out of date. And because the system for tracking global objects is tightly coupled with the cache, this limitation is permanent.</p>
 <p>In <a href="https://github.com/ropensci/targets"><code>targets</code></a>, the metadata management system only updates information on global objects when the pipeline actually runs. This makes it possible to understand which specific changes to your code could have invalided your targets. In large projects with long runtimes, this feature contributes significantly to reproducibility and peace of mind.</p>
-<p><img src="man/figures/drake-graph.png" /></p>
-</div>
-<div id="dynamic-branching-with-dplyrgroup_by" class="section level3 hasAnchor" number="14.3.7">
-<h3><span class="header-section-number">14.3.7</span> Dynamic branching with <code>dplyr::group_by()</code><a href="drake.html#dynamic-branching-with-dplyrgroup_by" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><img src="./man/figures/drake-graph.png" class="img-fluid"></p>
+</section>
+<section id="dynamic-branching-with-dplyrgroup_by" class="level3" data-number="14.3.7">
+<h3 data-number="14.3.7" class="anchored" data-anchor-id="dynamic-branching-with-dplyrgroup_by"><span class="header-section-number">14.3.7</span> Dynamic branching with <code>dplyr::group_by()</code></h3>
 <p><a href="https://books.ropensci.org/drake/dynamic.html">Dynamic branching</a> was an architecturally difficult fit in <a href="https://github.com/ropensci/drake"><code>drake</code></a>, and it can only support one single (<a href="https://github.com/r-lib/vctrs"><code>vctrs</code></a>-based) method of slicing and aggregation for processing sub-targets. This limitation has frustrated members of the community, as discussed <a href="https://github.com/ropensci/drake/issues/1087">here</a> and <a href="https://github.com/ropensci/drake/issues/1170">here</a>.</p>
 <p><a href="https://github.com/ropensci/targets"><code>targets</code></a>, on the other hand, is more flexible regarding slicing and aggregation. When it branches over an object, it can iterate over vectors, lists, and even data frames grouped with <code>dplyr::group_by()</code>. To branch over chunks of a data frame, our data frame target needs to have a special <code>tar_group</code> column. We can create this column in our target’s return value with the <code>tar_group()</code> function.</p>
-<div class="sourceCode" id="cb184"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb184-1"><a href="drake.html#cb184-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb184-2"><a href="drake.html#cb184-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb184-3"><a href="drake.html#cb184-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
-<span id="cb184-4"><a href="drake.html#cb184-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
-<span id="cb184-5"><a href="drake.html#cb184-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">seq_len</span>(<span class="dv">6</span>),</span>
-<span id="cb184-6"><a href="drake.html#cb184-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> <span class="fu">rep</span>(letters[<span class="fu">seq_len</span>(<span class="dv">3</span>)], <span class="at">each =</span> <span class="dv">2</span>)</span>
-<span id="cb184-7"><a href="drake.html#cb184-7" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb184-8"><a href="drake.html#cb184-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(id) <span class="sc">%&gt;%</span></span>
-<span id="cb184-9"><a href="drake.html#cb184-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_group</span>()</span>
-<span id="cb184-10"><a href="drake.html#cb184-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 3</span></span>
-<span id="cb184-11"><a href="drake.html#cb184-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       x id    tar_group</span></span>
-<span id="cb184-12"><a href="drake.html#cb184-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;int&gt; &lt;chr&gt;     &lt;int&gt;</span></span>
-<span id="cb184-13"><a href="drake.html#cb184-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1     1 a             1</span></span>
-<span id="cb184-14"><a href="drake.html#cb184-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2     2 a             1</span></span>
-<span id="cb184-15"><a href="drake.html#cb184-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3     3 b             2</span></span>
-<span id="cb184-16"><a href="drake.html#cb184-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4     4 b             2</span></span>
-<span id="cb184-17"><a href="drake.html#cb184-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5     5 c             3</span></span>
-<span id="cb184-18"><a href="drake.html#cb184-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6     6 c             3</span></span></code></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Attaching package: 'dplyr'</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; The following objects are masked from 'package:stats':</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     filter, lag</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">seq_len</span>(<span class="dv">6</span>),</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> <span class="fu">rep</span>(letters[<span class="fu">seq_len</span>(<span class="dv">3</span>)], <span class="at">each =</span> <span class="dv">2</span>)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(id) <span class="sc">%&gt;%</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_group</span>()</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 3</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       x id    tar_group</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;int&gt; &lt;chr&gt;     &lt;int&gt;</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1     1 a             1</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2     2 a             1</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3     3 b             2</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4     4 b             2</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5     5 c             3</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6     6 c             3</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>Our actual target has the command above and <code>iteration = "group"</code>.</p>
-<div class="sourceCode" id="cb185"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb185-1"><a href="drake.html#cb185-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_target</span>(</span>
-<span id="cb185-2"><a href="drake.html#cb185-2" aria-hidden="true" tabindex="-1"></a>  data,</span>
-<span id="cb185-3"><a href="drake.html#cb185-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
-<span id="cb185-4"><a href="drake.html#cb185-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">seq_len</span>(<span class="dv">6</span>),</span>
-<span id="cb185-5"><a href="drake.html#cb185-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">id =</span> <span class="fu">rep</span>(letters[<span class="fu">seq_len</span>(<span class="dv">3</span>)], <span class="at">each =</span> <span class="dv">2</span>)</span>
-<span id="cb185-6"><a href="drake.html#cb185-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb185-7"><a href="drake.html#cb185-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(id) <span class="sc">%&gt;%</span></span>
-<span id="cb185-8"><a href="drake.html#cb185-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_group</span>(),</span>
-<span id="cb185-9"><a href="drake.html#cb185-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">iteration =</span> <span class="st">&quot;group&quot;</span></span>
-<span id="cb185-10"><a href="drake.html#cb185-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_target</span>(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  data,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">seq_len</span>(<span class="dv">6</span>),</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">id =</span> <span class="fu">rep</span>(letters[<span class="fu">seq_len</span>(<span class="dv">3</span>)], <span class="at">each =</span> <span class="dv">2</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(id) <span class="sc">%&gt;%</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_group</span>(),</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">iteration =</span> <span class="st">"group"</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>Now, any target that maps over <code>data</code> is going to define one branch for each group in the data frame. The following target creates three branches when run in a pipeline: one returning 3, one returning 7, and one returning 11.</p>
-<div class="sourceCode" id="cb186"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb186-1"><a href="drake.html#cb186-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_target</span>(</span>
-<span id="cb186-2"><a href="drake.html#cb186-2" aria-hidden="true" tabindex="-1"></a>  sums,</span>
-<span id="cb186-3"><a href="drake.html#cb186-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(data<span class="sc">$</span>x),</span>
-<span id="cb186-4"><a href="drake.html#cb186-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">pattern =</span> <span class="fu">map</span>(data)</span>
-<span id="cb186-5"><a href="drake.html#cb186-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_target</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  sums,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(data<span class="sc">$</span>x),</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">pattern =</span> <span class="fu">map</span>(data)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="composable-dynamic-branching" class="section level3 hasAnchor" number="14.3.8">
-<h3><span class="header-section-number">14.3.8</span> Composable dynamic branching<a href="drake.html#composable-dynamic-branching" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+</section>
+<section id="composable-dynamic-branching" class="level3" data-number="14.3.8">
+<h3 data-number="14.3.8" class="anchored" data-anchor-id="composable-dynamic-branching"><span class="header-section-number">14.3.8</span> Composable dynamic branching</h3>
 <p>Because the design of <a href="https://github.com/ropensci/targets"><code>targets</code></a> is fundamentally dynamic, users can create complicated dynamic branching patterns that are never going to be possible in <code>drake</code>. Below, target <code>z</code> creates six branches, one for each combination of <code>w</code> and tuple (<code>x</code>, <code>y</code>). The pattern <code>cross(w, map(x, y))</code> is equivalent to <code>tidyr::crossing(w, tidyr::nesting(x, y))</code>.</p>
-<div class="sourceCode" id="cb187"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb187-1"><a href="drake.html#cb187-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
-<span id="cb187-2"><a href="drake.html#cb187-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb187-3"><a href="drake.html#cb187-3" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb187-4"><a href="drake.html#cb187-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(w, <span class="fu">seq_len</span>(<span class="dv">2</span>)),</span>
-<span id="cb187-5"><a href="drake.html#cb187-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(x, <span class="fu">head</span>(letters, <span class="dv">3</span>)),</span>
-<span id="cb187-6"><a href="drake.html#cb187-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(y, <span class="fu">head</span>(LETTERS, <span class="dv">3</span>)),</span>
-<span id="cb187-7"><a href="drake.html#cb187-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
-<span id="cb187-8"><a href="drake.html#cb187-8" aria-hidden="true" tabindex="-1"></a>    z,</span>
-<span id="cb187-9"><a href="drake.html#cb187-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.frame</span>(<span class="at">w =</span> w, <span class="at">x =</span> x, <span class="at">y =</span> y),</span>
-<span id="cb187-10"><a href="drake.html#cb187-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">pattern =</span> <span class="fu">cross</span>(w, <span class="fu">map</span>(x, y))</span>
-<span id="cb187-11"><a href="drake.html#cb187-11" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb187-12"><a href="drake.html#cb187-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(w, <span class="fu">seq_len</span>(<span class="dv">2</span>)),</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(x, <span class="fu">head</span>(letters, <span class="dv">3</span>)),</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(y, <span class="fu">head</span>(LETTERS, <span class="dv">3</span>)),</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    z,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.frame</span>(<span class="at">w =</span> w, <span class="at">x =</span> x, <span class="at">y =</span> y),</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">pattern =</span> <span class="fu">cross</span>(w, <span class="fu">map</span>(x, y))</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>Thanks to <a href="https://github.com/glep"><code>glep</code></a> and <a href="https://github.com/djbirke"><code>djbirke</code></a> on GitHub for the idea.</p>
-</div>
-<div id="improved-parallel-efficiency" class="section level3 hasAnchor" number="14.3.9">
-<h3><span class="header-section-number">14.3.9</span> Improved parallel efficiency<a href="drake.html#improved-parallel-efficiency" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+</section>
+<section id="improved-parallel-efficiency" class="level3" data-number="14.3.9">
+<h3 data-number="14.3.9" class="anchored" data-anchor-id="improved-parallel-efficiency"><span class="header-section-number">14.3.9</span> Improved parallel efficiency</h3>
 <p><a href="https://books.ropensci.org/drake/dynamic.html">Dynamic branching</a> in <a href="https://github.com/ropensci/drake"><code>drake</code></a> is staged. In other words, all the sub-targets of a dynamic target must complete before the pipeline moves on to downstream targets. The diagram below illustrates this behavior in a pipeline with a dynamic target B that maps over another dynamic target A. For thousands of dynamic sub-targets with highly variable runtimes, this behavior consumes unnecessary runtime and computing resources. And because <a href="https://github.com/ropensci/drake"><code>drake</code></a>’s architecture was designed at a fundamental level for static branching only, this limitation is permanent.</p>
-<p><img src="man/figures/drake-dynamic-drake.png" /></p>
+<p><img src="./man/figures/drake-dynamic-drake.png" class="img-fluid"></p>
 <p>By contrast, the internal data structures in <a href="https://github.com/ropensci/targets"><code>targets</code></a> are dynamic by design, which allows for a dynamic branching model with more flexibility and parallel efficiency. Branches can always start as soon as their upstream dependencies complete, even if some of those upstream dependencies are branches. This behavior reduces runtime and reduces consumption of computing resources.</p>
-<p><img src="man/figures/drake-dynamic-targets.png" /></p>
-</div>
-<div id="metaprogramming-1" class="section level3 hasAnchor" number="14.3.10">
-<h3><span class="header-section-number">14.3.10</span> Metaprogramming<a href="drake.html#metaprogramming-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><img src="./man/figures/drake-dynamic-targets.png" class="img-fluid"></p>
+</section>
+<section id="metaprogramming" class="level3" data-number="14.3.10">
+<h3 data-number="14.3.10" class="anchored" data-anchor-id="metaprogramming"><span class="header-section-number">14.3.10</span> Metaprogramming</h3>
 <p>In <a href="https://github.com/ropensci/drake"><code>drake</code></a>, pipelines are defined with the <code>drake_plan()</code> function. <code>drake_plan()</code> supports an elaborate domain specific language that diffuses user-supplied R expressions. This makes it convenient to assign commands to targets in the vast majority of cases, but it also obstructs custom metaprogramming by users (<a href="https://github.com/ropensci/drake/issues/1251">example here</a>). Granted, it is possible to completely circumvent <code>drake_plan()</code> and create the whole data frame from scratch, but this is hardly ideal and seldom done in practice.</p>
 <p>The <a href="https://github.com/ropensci/targets"><code>targets</code></a> package tries to make customization easier. Relative to <a href="https://github.com/ropensci/drake"><code>drake</code></a>, <a href="https://github.com/ropensci/targets"><code>targets</code></a> takes a decentralized approach to setting up pipelines, moving as much custom configuration as possible to the target level rather than the whole pipeline level. In addition, the <code>tar_target_raw()</code> function avoids non-standard evaluation while mirroring <code>tar_target()</code> in all other respects. All this makes it much easier to create <a href="https://books.ropensci.org/targets/static.html#metaprogram">custom metaprogrammed pipelines</a> and <a href="https://github.com/ropensci/tarchetypes">target archetypes</a> while avoiding an elaborate domain specific language for <a href="https://books.ropensci.org/drake/static.html">static branching</a>, which was extremely difficult to understand and error prone in <a href="https://github.com/ropensci/drake"><code>drake</code></a>. The <a href="https://wlandau.github.io/targetopia.html">R Targetopia</a> is an emerging ecosystem of workflow frameworks that take full advantage of this customization and democratize reproducible pipelines.</p>
 
-</div>
-</div>
-</div>
-<div style = "background: #1C356D; color: white; padding: 10px 10px 10px 25px; font-size: 1em; width: 100%;">
-  Copyright Eli Lilly and Company
-</div>
-            </section>
 
-          </div>
-        </div>
-      </div>
-<a href="hpc.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="markdown.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
-    </div>
-  </div>
-<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
-<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
-<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
-<script>
-gitbook.require(["gitbook"], function(gitbook) {
-gitbook.start({
-"sharing": null,
-"fontsettings": {
-"theme": "white",
-"family": "sans",
-"size": 2
-},
-"edit": {
-"link": "https://github.com/ropensci-books/targets/edit/main/drake.Rmd",
-"text": "Edit this chapter"
-},
-"history": {
-"link": "https://github.com/ropensci-books/targets/commits/main/drake.Rmd",
-"text": "Chapter edit history"
-},
-"view": {
-"link": null,
-"text": null
-},
-"download": null,
-"search": {
-"engine": "fuse",
-"options": null
-},
-"toc": {
-"collapse": "subsection"
-}
-});
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
 });
 </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./hpc.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">High-performance computing</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./markdown.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">R Markdown</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+      <div class="nav-footer-center">Copyright 2022, Eli Lilly and Company</div>
+  </div>
+</footer>
 
-</body>
 
-</html>
+
+</body></html>
