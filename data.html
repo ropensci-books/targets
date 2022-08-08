@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>The targets R package user manual - 9&nbsp; Data: storage and memory</title>
+<title>The {targets} R package user manual - 9&nbsp; Data</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -128,7 +128,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Data: storage and memory</span></h1>
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Data</span></h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -141,7 +141,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">The targets R package user manual</a> 
+      <a href="./">The {targets} R package user manual</a> 
     </div>
       </div>
       <div class="mt-2 flex-shrink-0 align-items-center">
@@ -178,7 +178,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./targets.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Target construction</span></a>
+  <a href="./targets.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Targets</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -193,7 +193,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./data.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Data: storage and memory</span></a>
+  <a href="./data.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Data</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -255,7 +255,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="data" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Data: storage and memory</span></span></h1>
+<h1 class="title"><span id="data" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Data</span></span></h1>
 </div>
 
 
@@ -276,6 +276,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </div>
 <p>This chapter describes how the <code>targets</code> package stores data, manages memory, allows you to customize the data processing model.</p>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Performance
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>See the <a href="performance.html">performance chapter</a> for options, settings, and other choices to make storage and memory more efficient for large data workflows.</p>
+</div>
+</div>
 <section id="local-data-store" class="level2" data-number="9.1">
 <h2 data-number="9.1" class="anchored" data-anchor-id="local-data-store"><span class="header-section-number">9.1</span> Local data store</h2>
 <p>When a target finishes running during <code>tar_make()</code>, it returns an R object. Those return values, along with descriptive metadata, are saved to persistent storage so your pipeline stays up to date even after you exit R. By default, this persistent storage is a special <code>_targets/</code> folder created in your working directory by <code>tar_make()</code>. The files in the local data store are organized as follows.</p>
@@ -294,7 +307,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 └── user/ # gittargets users can put custom files here for data version control.</code></pre>
 <p>The two most important components are:</p>
 <ol type="1">
-<li><code>_targets/meta/meta</code>, a flat text file with descriptive metadata about each target, and</li>
+<li><code>_targets/meta/meta</code>, a flat text file with descriptive metadata about each target, including warning, errors, and runtime. You can read this data as a data frame <code>tar_meta()</code>. and</li>
 <li><code>_targets/objects/</code>, a folder with one data file per target.</li>
 </ol>
 <p>If your pipeline has a target defined by <code>tar_target(name = x, command = 1 + 1, format = "rds", repository = "local")</code>, during <code>tar_make()</code>:</p>

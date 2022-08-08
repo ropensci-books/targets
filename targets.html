@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>The targets R package user manual - 6&nbsp; Target construction</title>
+<title>The {targets} R package user manual - 6&nbsp; Targets</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -128,7 +128,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Target construction</span></h1>
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Targets</span></h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -141,7 +141,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">The targets R package user manual</a> 
+      <a href="./">The {targets} R package user manual</a> 
     </div>
       </div>
       <div class="mt-2 flex-shrink-0 align-items-center">
@@ -178,7 +178,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./targets.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Target construction</span></a>
+  <a href="./targets.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Targets</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -193,7 +193,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./data.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Data: storage and memory</span></a>
+  <a href="./data.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Data</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -255,7 +255,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="targets" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Target construction</span></span></h1>
+<h1 class="title"><span id="targets" class="quarto-section-identifier d-none d-lg-block"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Targets</span></span></h1>
 </div>
 
 
@@ -275,7 +275,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="cell">
 
 </div>
-<p>Targets are high-level steps of the workflow that run the work you define in your functions. A target runs some R code and saves the returned R object to storage, usually a single file inside <code>_targets/objects/</code>.</p>
+<p>A target is a high-level steps of the computational pipeline, and it a piece of work that you define with your custom functions. A target runs some R code and saves the returned R object to storage, usually a single file inside <code>_targets/objects/</code>.</p>
 <section id="target-names" class="level2" data-number="6.1">
 <h2 data-number="6.1" class="anchored" data-anchor-id="target-names"><span class="header-section-number">6.1</span> Target names</h2>
 <p>A target is an abstraction. The <code>targets</code> package automatically manages data storage and retrieval under the hood, which means you do not need to reference a target’s data file directly (e.g.&nbsp;<code>_targets/objects/your_target_name</code>). Instead, your R code should refer to a target name as if it were a variable in an R session. In other words, from the point of view of the user, a target is an R object in memory. That means a target name must be a valid visible symbol name for an R variable. The name must not begin with a dot, and it must be a string that lets you assign a value, e.g.&nbsp;<code>your_target_name &lt;- TRUE</code>. For stylistic considerations, please refer to the <a href="https://style.tidyverse.org/syntax.html">tidyverse style guide syntax chapter</a>.</p>
