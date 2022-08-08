@@ -236,10 +236,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
    
   <ul>
   <li><a href="#error-messages" id="toc-error-messages" class="nav-link active" data-scroll-target="#error-messages"> <span class="header-section-number">3.1</span> Error messages</a></li>
-  <li><a href="#environment-browser" id="toc-environment-browser" class="nav-link" data-scroll-target="#environment-browser"> <span class="header-section-number">3.2</span> Environment browser</a></li>
-  <li><a href="#the-debug-option" id="toc-the-debug-option" class="nav-link" data-scroll-target="#the-debug-option"> <span class="header-section-number">3.3</span> The debug option</a></li>
-  <li><a href="#workspaces" id="toc-workspaces" class="nav-link" data-scroll-target="#workspaces"> <span class="header-section-number">3.4</span> Workspaces</a></li>
-  <li><a href="#tradeoffs" id="toc-tradeoffs" class="nav-link" data-scroll-target="#tradeoffs"> <span class="header-section-number">3.5</span> Tradeoffs</a></li>
+  <li><a href="#isolate-the-problem" id="toc-isolate-the-problem" class="nav-link" data-scroll-target="#isolate-the-problem"> <span class="header-section-number">3.2</span> Isolate the problem</a></li>
+  <li><a href="#environment-browser" id="toc-environment-browser" class="nav-link" data-scroll-target="#environment-browser"> <span class="header-section-number">3.3</span> Environment browser</a></li>
+  <li><a href="#the-debug-option" id="toc-the-debug-option" class="nav-link" data-scroll-target="#the-debug-option"> <span class="header-section-number">3.4</span> The debug option</a></li>
+  <li><a href="#workspaces" id="toc-workspaces" class="nav-link" data-scroll-target="#workspaces"> <span class="header-section-number">3.5</span> Workspaces</a></li>
+  <li><a href="#tradeoffs" id="toc-tradeoffs" class="nav-link" data-scroll-target="#tradeoffs"> <span class="header-section-number">3.6</span> Tradeoffs</a></li>
   </ul>
 </nav>
     </div>
@@ -268,17 +269,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="cell">
 
 </div>
-<p>Under the default settings, conventional debugging tools such as <code>traceback()</code>, <a href="https://rstats.wtf/debugging-r-code.html"><code>debug()</code></a>, <a href="https://rstats.wtf/debugging-r-code.html"><code>browser()</code></a> and <a href="https://rstats.wtf/debugging-r-code.html">other popular debugging techniques</a> may not provide useful information on why a given target is failing. Not even <code>.Last.error</code> or <code>.Last.error.trace</code> from <code>callr</code> are automatically informative. However, <code>targets</code> provides its own extensive support for debugging and troubleshooting errors. This chapter demonstrates the techniques.</p>
+<p>Pipelines are computationally demanding, complicated, and time-consuming to run. The scale can make it hard to troubleshoot when things go wrong. In addition, a pipeline is automated in a special non-interactive R process, so conventional debugging techniques like <code>traceback()</code>, <a href="https://rstats.wtf/debugging-r-code.html"><code>debug()</code></a>, <a href="https://rstats.wtf/debugging-r-code.html"><code>browser()</code></a>, and <a href="https://rstats.wtf/debugging-r-code.html">others</a> seldom work. This chapter describes solutions to these challenges in terms of both best practices and and features in <code>targets</code>.</p>
 <section id="error-messages" class="level2" data-number="3.1">
 <h2 data-number="3.1" class="anchored" data-anchor-id="error-messages"><span class="header-section-number">3.1</span> Error messages</h2>
-<p>The metadata in <code>_targets/meta/meta</code> contains error messages and warning messages from when each target last ran. <code>tar_meta()</code> can retrieve these clues.</p>
+<p>The metadata in <code>_targets/meta/meta</code> contains error messages and warning messages from when each target last ran. <code>tar_meta()</code> can retrieve these clues. Sometimes they are enough to fix the problems.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_meta</span>(<span class="at">fields =</span> error, <span class="at">complete_only =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_meta</span>(<span class="at">fields =</span> warnings, <span class="at">complete_only =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="environment-browser" class="level2" data-number="3.2">
-<h2 data-number="3.2" class="anchored" data-anchor-id="environment-browser"><span class="header-section-number">3.2</span> Environment browser</h2>
+<section id="isolate-the-problem" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="isolate-the-problem"><span class="header-section-number">3.2</span> Isolate the problem</h2>
+<p>When you identify an error, i.e.&nbsp;from an error message, the solution is not always obvious, especially in a large complicated pipeline. Before even beginning to troubleshoot, it is best to reproduce the error in a smaller, more manageable version of the project that runs quickly and relies on fewer components. If you can, it is best to reproduce it with fast-running downsized code that does not use <code>targets</code> at all. That way, your can run it in an interactive R session and use traditional tools like <a href="https://rstats.wtf/debugging-r-code.html"><code>debug()</code></a> to go to the error and figure out why it is happening. If it is not possible to reproduce the error outside the pipeline, you could create a smaller version of the pipeline that is faster to run and easier test. Just for testing purposes, you could use fewer targets, fewer data records, or fewer iterations of a data analysis algorithm. By temporarily downsizing the pipeline while still reproducing the error, you make it easier to take advantage of the built-in debugging support described in the rest of this chapter.</p>
+</section>
+<section id="environment-browser" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="environment-browser"><span class="header-section-number">3.3</span> Environment browser</h2>
 <p>By default, <code>tar_make()</code> runs in a reproducible background process, so <a href="https://rstats.wtf/debugging-r-code.html"><code>debug()</code></a> and <a href="https://rstats.wtf/debugging-r-code.html"><code>browser()</code></a> do not interrupt the pipeline. To use the environment browser your the main session, restart R and supply <code>callr_function = NULL</code> to <code>tar_make()</code>. <code>callr_function = NULL</code> risks invalidating your hard-earned results, so only use it after you have just restarted R and only use it for debugging.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Restart R first...</span></span>
@@ -288,8 +293,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Browse[1]&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="the-debug-option" class="level2" data-number="3.3">
-<h2 data-number="3.3" class="anchored" data-anchor-id="the-debug-option"><span class="header-section-number">3.3</span> The debug option</h2>
+<section id="the-debug-option" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="the-debug-option"><span class="header-section-number">3.4</span> The debug option</h2>
 <p><code>targets</code> has a more convenient way to launch the environment browser from inside a target:</p>
 <ol type="1">
 <li>In the target script file (default: <code>_targets.R</code>) write a call to <code>tar_option_set()</code> with <code>debug</code> equal to the target name.</li>
@@ -345,8 +350,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 123</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="workspaces" class="level2" data-number="3.4">
-<h2 data-number="3.4" class="anchored" data-anchor-id="workspaces"><span class="header-section-number">3.4</span> Workspaces</h2>
+<section id="workspaces" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="workspaces"><span class="header-section-number">3.5</span> Workspaces</h2>
 <p>Workspaces are a persistent alternative to the environment browser. A workspace is a special lightweight reference file that lists the elements of a target’s runtime environment. Using <code>tar_workspace()</code>, you can recover a target’s workspace and locally debug it even if the pipeline is not running. If you tell <code>targets</code> to record workspaces in advance, you can preempt errors and debug later at your convenience. To enable workspaces, use the <code>workspace_on_error</code> and <code>workspaces</code> arguments of <code>tar_option_set()</code>. These arguments set the conditions under which workspace files are saved. For example, <code>tar_option_set(workspace_on_error = TRUE, workspaces = c("x", "y"))</code> tells <code>tar_make()</code> and friends to save a workspace for a target named <code>x</code>, a target named <code>y</code>, and every target that throws and error. Example in a pipeline:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R file:</span></span>
@@ -417,8 +422,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [4] "(function (condition) \n{\n    state$error &lt;- build_message(condition)\n    stat"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="tradeoffs" class="level2" data-number="3.5">
-<h2 data-number="3.5" class="anchored" data-anchor-id="tradeoffs"><span class="header-section-number">3.5</span> Tradeoffs</h2>
+<section id="tradeoffs" class="level2" data-number="3.6">
+<h2 data-number="3.6" class="anchored" data-anchor-id="tradeoffs"><span class="header-section-number">3.6</span> Tradeoffs</h2>
 <p>For small to medium-sized workloads, the environment browser and the debug option are usually the best choices. These techniques immediately direct control to prewritten function calls and get you as close to the error as possible. However, this may not always be feasible in <a href="hpc.html">large distributed workloads</a>, e.g.&nbsp;<code>tar_make_clustermq()</code>, where most of your targets are not even running on the same computer as your main R process. For those complicated situations where it is not possible to access the R interpreter, workspaces are ideal because they store a persistent reproducible runtime state that you can recover locally.</p>
 
 
