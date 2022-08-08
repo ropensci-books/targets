@@ -14,16 +14,20 @@ library(targets)
 
 # Debugging {#debugging}
 
-Under the default settings, conventional debugging tools such as `traceback()`, [`debug()`](https://rstats.wtf/debugging-r-code.html), [`browser()`](https://rstats.wtf/debugging-r-code.html) and [other popular debugging techniques](https://rstats.wtf/debugging-r-code.html) may not provide useful information on why a given target is failing. Not even `.Last.error` or `.Last.error.trace` from `callr` are automatically informative. However, `targets` provides its own extensive support for debugging and troubleshooting errors. This chapter demonstrates the techniques.
+Pipelines are computationally demanding, complicated, and time-consuming to run. The scale can make it hard to troubleshoot when things go wrong. In addition, a pipeline is automated in a special non-interactive R process, so conventional debugging techniques like `traceback()`, [`debug()`](https://rstats.wtf/debugging-r-code.html), [`browser()`](https://rstats.wtf/debugging-r-code.html), and [others](https://rstats.wtf/debugging-r-code.html) seldom work. This chapter describes solutions to these challenges in terms of both best practices and and features in `targets`.
 
 ## Error messages
 
-The metadata in `_targets/meta/meta` contains error messages and warning messages from when each target last ran. `tar_meta()` can retrieve these clues.
+The metadata in `_targets/meta/meta` contains error messages and warning messages from when each target last ran. `tar_meta()` can retrieve these clues. Sometimes they are enough to fix the problems.
 
 ```{r, eval = FALSE}
 tar_meta(fields = error, complete_only = TRUE)
 tar_meta(fields = warnings, complete_only = TRUE)
 ```
+
+## Isolate the problem
+
+When you identify an error, i.e. from an error message, the solution is not always obvious, especially in a large complicated pipeline. Before even beginning to troubleshoot, it is best to reproduce the error in a smaller, more manageable version of the project that runs quickly and relies on fewer components. If you can, it is best to reproduce it with fast-running downsized code that does not use `targets` at all. That way, your can run it in an interactive R session and use traditional tools like  [`debug()`](https://rstats.wtf/debugging-r-code.html) to go to the error and figure out why it is happening. If it is not possible to reproduce the error outside the pipeline, you could create a smaller version of the pipeline that is faster to run and easier test. Just for testing purposes, you could use  fewer targets, fewer data records, or fewer iterations of a data analysis algorithm. By temporarily downsizing the pipeline while still reproducing the error, you make it easier to take advantage of the built-in debugging support described in the rest of this chapter.
 
 ## Environment browser
 

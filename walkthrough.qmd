@@ -107,7 +107,7 @@ plot_model <- function(model, data) {
 
 ## Target script file
 
-Whereas files `data.csv` and `functions.R` are typical user-defined components of a [project-oriented workflow](https://rstats.wtf/project-oriented-workflow.html), the target script file `_targets.R` file is special. Every [`targets`](https://github.com/ropensci/targets) workflow needs a [target script file](https://docs.ropensci.org/targets/reference/tar_script.html) to configure and define the pipeline.^[By default, the target script is a file called `_targets.R` in the project's [root directory](https://martinctc.github.io/blog/rstudio-projects-and-working-directories-a-beginner%27s-guide/). However, you can set the target script file path to something other than `_targets.R`. You can either set the path persistently for your project using [`tar_config_set()`](https://docs.ropensci.org/targets/reference/tar_config_set.html), or you can set it temporarily for an individual function call using the `script` argument of [`tar_make()`](https://docs.ropensci.org/targets/reference/tar_make.html) and related functions.] The [`use_targets()`](https://docs.ropensci.org/targets/reference/use_targets.html) function in `targets` version >= 0.12.0 creates an initial target script for you to fill in. Ours looks like this:
+Whereas files `data.csv` and `functions.R` are typical user-defined components of a [project-oriented workflow](https://rstats.wtf/project-oriented-workflow.html), the target script file `_targets.R` file is special. Every [`targets`](https://github.com/ropensci/targets) workflow needs a [target script file](https://docs.ropensci.org/targets/reference/tar_script.html) to configure and define the pipeline.^[By default, the target script is a file called `_targets.R` in the project's [root directory](https://martinctc.github.io/blog/rstudio-projects-and-working-directories-a-beginner%27s-guide/). However, you can set the target script file path to something other than `_targets.R`. You can either set the path persistently for your project using [`tar_config_set()`](https://docs.ropensci.org/targets/reference/tar_config_set.html), or you can set it temporarily for an individual function call using the `script` argument of [`tar_make()`](https://docs.ropensci.org/targets/reference/tar_make.html) and related functions.] The [`use_targets()`](https://docs.ropensci.org/targets/reference/use_targets.html) function in `targets` version >= 0.12.0 creates an initial target script with comments to help you fill it in. Ours looks like this:
 
 ```{r, eval = FALSE}
 # _targets.R file
@@ -124,11 +124,16 @@ list(
 
 All target script files have these requirements.
 
-1. Load the packages required for configuration, e.g. [`targets`](https://github.com/ropensci/targets) itself.^[target scripts created with `tar_script()` automatically insert a `library(targets)` line at the top by default.]
+1. Load the packages needet to define the pipeline, e.g. [`targets`](https://github.com/ropensci/targets) itself.^[target scripts created with `tar_script()` automatically insert a `library(targets)` line at the top by default.]
+1. Use `tar_option_set()` to declare the packages that the targets themselves need, as well as other settings such as the default [storage format](https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats).
 1. Load your custom functions and small input objects into the R session: in our case, with `source("R/functions.R")`.
-1. Use `tar_option_set()` to declare the packages required for analysis, as well as other settings such as the default [storage format](https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats).
-1. Write the pipeline at the bottom of `_targets.R`. A pipeline is a list of target objects, which you can create with `tar_target()`. Each target is a step of the analysis. It looks and feels like a variable in R, but it runs reproducibly and stores a value in `_targets/objects/` when we run the pipeline with `tar_make()`.
-1. Set additional arguments in [`tar_target()`](https://docs.ropensci.org/targets/reference/tar_target.html#arguments) as needed. For example, `format = "file"` says that the target is an external file, and changes to the contents of the file will invalidate the target (i.e. cause it to rerun).^[`format = "file"` allows you to track multiple files and directories.]
+1. Write the pipeline at the bottom of `_targets.R`. A pipeline is a list of target objects, which you can create with `tar_target()`. Each target is a step of the analysis. It looks and feels like a variable in R, but during `tar_make()`, it will reproducibly and stores a value in `_targets/objects/`.
+
+:::{.callout-tip}
+## Start small
+
+Even if you plan to create a large-scale heavy-duty pipeline with hundreds of time-consuming targets, it is best to start small. First create a version of the pipeline with a small number of quick-to-run targets, follow the sections below to inspect and test it, and then scale up to the full-sized pipeline after you are sure everything is working.
+:::
 
 ## Inspect the pipeline
 

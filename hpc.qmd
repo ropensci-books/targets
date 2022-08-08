@@ -20,7 +20,7 @@ library(targets)
 See the [performance chapter](#performance) for options, settings, and other choices to make parallel and distributed pipelines more efficient.
 :::
 
-`targets` supports parallel and distributed computing with the `tar_make_clustermq()` and `tar_make_future()` functions. These functions are like `tar_make()`, but they allow multiple targets to run simultaneously over parallel workers. These workers can be processes on your local machine, or they can be jobs on a computing cluster. The main process automatically sends a target to a worker as soon as
+`targets` supports parallel and distributed computing with the `tar_make_clustermq()` and `tar_make_future()` functions. These functions are like `tar_make()`, but they allow multiple targets to run simultaneously over parallel workers.^[Please use `tar_make_clustermq()` or `tar_make_future()` instead of multiple concurrent calls to `tar_make()`. The former is the proper way to use parallel computing in `targets`, and the latter will probably break the [data store](#data).] These workers can be processes on your local machine, or they can be jobs on a computing cluster. The main process automatically sends a target to a worker as soon as
 
 1. The worker is available, and
 1. All the target's upstream dependency targets have been checked or built.
@@ -58,7 +58,13 @@ tar_visnetwork()
 
 When we run this pipeline with high-performance computing, `targets` automatically knows to wait for `data` to finish running before moving on to the other targets. Once `data` is finished, it moves on to targets `fast_fit` and `slow_fit`. If `fast_fit` finishes before `slow_fit`, target `plot_1` begins even as `slow_fit` is still running. Unlike [`drake`](https://github.com/ropensci/drake), `targets` applies this behavior not only to stem targets, but also to branches of patterns.
 
-The following sections cover the mechanics and configuration details of high-performance computing in `targets`.
+The following sections cover the implementation details of parallel and distributed pipelines in `targets`.
+
+:::{.callout-tip}
+## Start small
+
+Even if you plan to create a large-scale heavy-duty pipeline with hundreds of time-consuming parallel targets, it is best to start small. First, create a version of the pipeline with a small number of quick-to-run targets, follow directions in the [walkthrough](#walkthrough) chapter to inspect it, and run it locally with `tar_make()`. Do not scale up to the full-sized pipeline until you are sure everything is working in the downsized pipeline that runs locally.
+:::
 
 ## Clustermq
 
