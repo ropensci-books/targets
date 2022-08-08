@@ -243,8 +243,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <ul class="collapse">
   <li><a href="#batching" id="toc-batching" class="nav-link" data-scroll-target="#batching"> <span class="header-section-number">4.5.1</span> Batching</a></li>
   </ul></li>
-  <li><a href="#profiling" id="toc-profiling" class="nav-link" data-scroll-target="#profiling"> <span class="header-section-number">4.6</span> Profiling</a></li>
-  <li><a href="#monitoring-the-pipeline" id="toc-monitoring-the-pipeline" class="nav-link" data-scroll-target="#monitoring-the-pipeline"> <span class="header-section-number">4.7</span> Monitoring the pipeline</a></li>
+  <li><a href="#monitoring-the-pipeline" id="toc-monitoring-the-pipeline" class="nav-link" data-scroll-target="#monitoring-the-pipeline"> <span class="header-section-number">4.6</span> Monitoring the pipeline</a></li>
+  <li><a href="#profiling" id="toc-profiling" class="nav-link" data-scroll-target="#profiling"> <span class="header-section-number">4.7</span> Profiling</a></li>
   </ul>
 </nav>
     </div>
@@ -333,19 +333,8 @@ Summary
 <p>Simulation studies and other iterative stochastic pipelines may need to run thousands of independent random replications. For these pipelines, consider <a href="https://books.ropensci.org/targets/dynamic.html#performance-and-batching">batching</a> to reduce the number of targets while preserving the number of replications. In <a href="https://books.ropensci.org/targets/dynamic.html#performance-and-batching">batching</a>, each batch is a <a href="https://books.ropensci.org/targets/dynamic.html">dynamic branch</a> target that performs a subset of the replications. For 1000 replications, you might want 40 batches of 25 replications each, 10 batches with 100 replications each, or a different balance depending on the use case. Functions <code>tarchetypes::tar_rep()</code>, <code>tarchetypes::tar_map_rep()</code>, and <a href="https://wlandau.github.io/stantargets/articles/mcmc_rep.html"><code>stantargets::tar_stan_mcmc_rep_summary()</code></a> are examples of <a href="https://wlandau.github.io/targetopia/contributing.html#target-factories">target factories</a> that set up the batching structure without needing to understand <a href="https://books.ropensci.org/targets/dynamic.html">dynamic branching</a>.</p>
 </section>
 </section>
-<section id="profiling" class="level2" data-number="4.6">
-<h2 data-number="4.6" class="anchored" data-anchor-id="profiling"><span class="header-section-number">4.6</span> Profiling</h2>
-<p>If the above workarounds fail, then before expending more effort on optimization, please empirically confirm why the code is slow in the first place. Scanning a running instance of a program for performance issues is called “profiling”. Expand the menu below to learn more.</p>
-<p>:::{.callout-tip, collapse = “true”} ## Profile a pipeline</p>
-<ol type="1">
-<li>Install the <a href="https://r-prof.github.io/proffer/"><code>proffer</code></a> R package and its dependencies.</li>
-<li>Run <code>proffer::pprof(tar_make(callr_function = NULL))</code> on your project.</li>
-<li>When a web browser pops up with <code>pprof</code>, select the flame graph and screenshot it.</li>
-<li>Post the flame graph, along with any code and data you can share, to the <a href="https://github.com/ropensci/targets/issues"><code>targets</code> package issue tracker</a>. The maintainer will have a look and try to make the package faster for your use case if speedups are possible. :::</li>
-</ol>
-</section>
-<section id="monitoring-the-pipeline" class="level2" data-number="4.7">
-<h2 data-number="4.7" class="anchored" data-anchor-id="monitoring-the-pipeline"><span class="header-section-number">4.7</span> Monitoring the pipeline</h2>
+<section id="monitoring-the-pipeline" class="level2" data-number="4.6">
+<h2 data-number="4.6" class="anchored" data-anchor-id="monitoring-the-pipeline"><span class="header-section-number">4.6</span> Monitoring the pipeline</h2>
 <p>Even the most efficient <code>targets</code> pipelines can take time to complete because the user-defined tasks themselves are slow. There are convenient ways to monitor the progress of a running pipeline:</p>
 <ol type="1">
 <li><code>tar_poll()</code> continuously refreshes a text summary of runtime progress in the R console. Run it in a new R session at the project root directory. (Only supported in <code>targets</code> version 0.3.1.9000 and higher.)</li>
@@ -384,6 +373,16 @@ Summary
 </div>
 <p><img src="./man/figures/tar_watch.png" class="img-fluid"> <code>tar_watch_ui()</code> and <code>tar_watch_server()</code> make this functionality available to other apps through a Shiny module.</p>
 <p>Unfortunately, none of these options can tell you if any <a href="hpc.html">parallel workers</a> or external processes are <em>actually</em> still alive. You can monitor local processes with a utility like <code>top</code> or <code>htop</code>, and traditional HPC scheduler like SLURM or SGE support their own polling utilities such as <code>squeue</code> and <code>qstat</code>. <code>tar_process()</code> and <code>tar_pid()</code> get the process ID of the main R process that last attempted to run the pipeline.</p>
+</section>
+<section id="profiling" class="level2" data-number="4.7">
+<h2 data-number="4.7" class="anchored" data-anchor-id="profiling"><span class="header-section-number">4.7</span> Profiling</h2>
+<p>The first sections of the chapter describe quick tips and tricks to improve the performance of a pipeline. If these workarounds fail, then before putting more effort into optimization, it is best to empirically confirm why the code is slow in the first place. “Profiling” is the act of scanning a running instance of a program, and it can detect <a href="https://en.wikipedia.org/wiki/Bottleneck_(software)">computational bottlenecks</a>. Follow these steps to profile a <code>targets</code> pipeline.</p>
+<ol type="1">
+<li>Install the <a href="https://r-prof.github.io/proffer/"><code>proffer</code></a> R package and its dependencies.</li>
+<li>Run <code>proffer::pprof(tar_make(callr_function = NULL))</code> on your project.</li>
+<li>When a web browser pops up with <code>pprof</code>, select the flame graph and screenshot it.</li>
+<li>Post the flame graph, along with any code and data you can share, to the <a href="https://github.com/ropensci/targets/issues"><code>targets</code> package issue tracker</a>. The maintainer will have a look and try to make the package faster for your use case if speedups are possible.</li>
+</ol>
 
 
 </section>
