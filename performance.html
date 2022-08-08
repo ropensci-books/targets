@@ -236,7 +236,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
    
   <ul>
   <li><a href="#data-location" id="toc-data-location" class="nav-link active" data-scroll-target="#data-location"> <span class="header-section-number">4.1</span> Data location</a></li>
-  <li><a href="#storage-formats" id="toc-storage-formats" class="nav-link" data-scroll-target="#storage-formats"> <span class="header-section-number">4.2</span> Storage formats</a></li>
+  <li><a href="#efficient-storage-formats" id="toc-efficient-storage-formats" class="nav-link" data-scroll-target="#efficient-storage-formats"> <span class="header-section-number">4.2</span> Efficient storage formats</a></li>
   <li><a href="#memory" id="toc-memory" class="nav-link" data-scroll-target="#memory"> <span class="header-section-number">4.3</span> Memory</a></li>
   <li><a href="#parallel-workers" id="toc-parallel-workers" class="nav-link" data-scroll-target="#parallel-workers"> <span class="header-section-number">4.4</span> Parallel workers</a></li>
   <li><a href="#many-targets" id="toc-many-targets" class="nav-link" data-scroll-target="#many-targets"> <span class="header-section-number">4.5</span> Many targets</a>
@@ -286,9 +286,9 @@ Summary
 <div class="callout-body-container callout-body">
 <ul>
 <li>Choose fast persistent storage for the <a href="data.html">data store</a>.</li>
+<li>Choose <a href="https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats">efficient data storage formats</a> for large targets.</li>
 <li>For high-memory pipelines, consider <code>memory = "transient"</code> and <code>garbage_collection = TRUE</code> in <code>tar_option_set()</code> or <code>tar_target()</code>.</li>
-<li>For large data pipelines, consider <a href="https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats">alternative formats</a> to more efficiently store your data.</li>
-<li>For large data <em>parallel</em> pipelines, consider <code>storage = "worker"</code> and <code>retrieval = "worker"</code> in <code>tar_option_set()</code> or <code>tar_target()</code>.</li>
+<li>For highly parallel pipelines, consider <code>storage = "worker"</code> and <code>retrieval = "worker"</code> in <code>tar_option_set()</code> or <code>tar_target()</code>.</li>
 <li>For high-overhead pipelines with thousands of targets, consider grouping same amount of work into a smaller number of targets.</li>
 <li><code>targets</code> has functions to monitor the progress of the pipeline.</li>
 <li>The <code>proffer</code> package can help discover <a href="https://en.wikipedia.org/wiki/Bottleneck_(software)">bottlenecks</a>.</li>
@@ -299,8 +299,8 @@ Summary
 <h2 data-number="4.1" class="anchored" data-anchor-id="data-location"><span class="header-section-number">4.1</span> Data location</h2>
 <p>The <a href="data.html">data store</a> is a folder on a computer, usually at the root of your project, and <code>targets</code> makes innumerable quick modifications over the course of a pipeline. For best performance, the <a href="data.html">data store</a> should live on high-performant storage hardware on your local computer. Any slowdown due to disk issues or latency due to a slow network will severely impact the performance of your pipeline.<sup>[ <a href="https://support.microsoft.com/en-us/windows/map-a-network-drive-in-windows-29ce55d1-34e3-a7e2-4801-131475f9557d">Mounted network drives</a> are the particularly egregious.]</sup>[At the same time, the files in the <a href="data.html">data store</a> are important and must be available for subsequent runs of the pipeline, so <code>tempdir()</code> is not suitable.]</p>
 </section>
-<section id="storage-formats" class="level2" data-number="4.2">
-<h2 data-number="4.2" class="anchored" data-anchor-id="storage-formats"><span class="header-section-number">4.2</span> Storage formats</h2>
+<section id="efficient-storage-formats" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="efficient-storage-formats"><span class="header-section-number">4.2</span> Efficient storage formats</h2>
 <p>The default <a href="https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats">data storage format</a> is <a href="https://rdrr.io/r/base/readRDS.html">RDS</a>, which can be slow and bulky for large data. For large data pipipelines, consider <a href="https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats">alternative formats</a> to more efficiently store and manage your data. Set the storage format using <code>tar_option_set()</code> or <code>tar_target()</code>:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">format =</span> <span class="st">"qs"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>

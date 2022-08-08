@@ -154,11 +154,11 @@
     "text": "4.1 Data location\nThe data store is a folder on a computer, usually at the root of your project, and targets makes innumerable quick modifications over the course of a pipeline. For best performance, the data store should live on high-performant storage hardware on your local computer. Any slowdown due to disk issues or latency due to a slow network will severely impact the performance of your pipeline.[ Mounted network drives are the particularly egregious.][At the same time, the files in the data store are important and must be available for subsequent runs of the pipeline, so tempdir() is not suitable.]"
   },
   {
-    "objectID": "performance.html#storage-formats",
-    "href": "performance.html#storage-formats",
+    "objectID": "performance.html#efficient-storage-formats",
+    "href": "performance.html#efficient-storage-formats",
     "title": "4  Performance",
-    "section": "4.2 Storage formats",
-    "text": "4.2 Storage formats\nThe default data storage format is RDS, which can be slow and bulky for large data. For large data pipipelines, consider alternative formats to more efficiently store and manage your data. Set the storage format using tar_option_set() or tar_target():\n\ntar_option_set(format = \"qs\")\n\nSome formats such as \"qs\" work on all kinds of data, whereas others like \"feather\" works only on data frames. Most non-default formats store the data faster and in smaller files than the default \"rds\" format, but they require extra packages to be installed. For example, format = \"qs\" requries the qs package, and format = \"feather\" requires the arrow package."
+    "section": "4.2 Efficient storage formats",
+    "text": "4.2 Efficient storage formats\nThe default data storage format is RDS, which can be slow and bulky for large data. For large data pipipelines, consider alternative formats to more efficiently store and manage your data. Set the storage format using tar_option_set() or tar_target():\n\ntar_option_set(format = \"qs\")\n\nSome formats such as \"qs\" work on all kinds of data, whereas others like \"feather\" works only on data frames. Most non-default formats store the data faster and in smaller files than the default \"rds\" format, but they require extra packages to be installed. For example, format = \"qs\" requries the qs package, and format = \"feather\" requires the arrow package."
   },
   {
     "objectID": "performance.html#memory",
