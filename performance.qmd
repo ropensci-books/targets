@@ -21,9 +21,9 @@ If your `targets` pipeline runs slowly or consumes too many resources, you can m
 ## Summary
 
 * Choose fast persistent storage for the [data store](#data).
+* Choose [efficient data storage formats](https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats) for large targets.
 * For high-memory pipelines, consider `memory = "transient"` and `garbage_collection = TRUE` in `tar_option_set()` or `tar_target()`.
-* For large data pipelines, consider [alternative formats](https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats) to more efficiently store your data.
-* For large data *parallel* pipelines, consider `storage = "worker"` and `retrieval = "worker"` in `tar_option_set()` or `tar_target()`.
+* For highly parallel pipelines, consider `storage = "worker"` and `retrieval = "worker"` in `tar_option_set()` or `tar_target()`.
 * For high-overhead pipelines with thousands of targets, consider grouping same amount of work into a smaller number of targets.
 * `targets` has functions to monitor the progress of the pipeline.
 * The `proffer` package can help discover [bottlenecks](https://en.wikipedia.org/wiki/Bottleneck_(software)).
@@ -33,7 +33,7 @@ If your `targets` pipeline runs slowly or consumes too many resources, you can m
 
 The [data store](#data) is a folder on a computer, usually at the root of your project, and `targets` makes innumerable quick modifications over the course of a pipeline. For best performance, the [data store](#data) should live on high-performant storage hardware on your local computer. Any slowdown due to disk issues or latency due to a slow network will severely impact the performance of your pipeline.^[ [Mounted network drives](https://support.microsoft.com/en-us/windows/map-a-network-drive-in-windows-29ce55d1-34e3-a7e2-4801-131475f9557d) are the particularly egregious.]^[At the same time, the files in the [data store](#data) are important and must be available for subsequent runs of the pipeline, so `tempdir()` is not suitable.]
 
-## Storage formats
+## Efficient storage formats
 
 The default [data storage format](https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats) is [RDS](https://rdrr.io/r/base/readRDS.html), which can be slow and bulky for large data. For large data pipipelines, consider [alternative formats](https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats) to more efficiently store and manage your data. Set the storage format using `tar_option_set()` or `tar_target()`:
 
