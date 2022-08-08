@@ -56,7 +56,7 @@ list(
 tar_visnetwork()
 ```
 
-When we run this pipeline with high-performance computing, `targets` automatically knows to wait for `data` to finish running before moving on to the other targets. Once `data` is finished, it moves on to targets `fast_fit` and `slow_fit`. If `fast_fit` finishes before `slow_fit`, target `plot_1` begins even as `slow_fit` is still running. Unlike [`drake`](https://github.com/ropensci/drake), `targets` applies this behavior not only to stem targets, but also to branches of patterns.
+When we run this pipeline with high-performance computing, `targets` automatically knows to wait for `data` to finish running before moving on to the other targets. Once `data` is finished, it moves on to targets `fast_fit` and `slow_fit`. If `fast_fit` finishes before `slow_fit`, target `plot_1` begins even as `slow_fit` is still running.^[Unlike [`drake`](https://github.com/ropensci/drake), `targets` applies this behavior not only to stem targets, but also to branches of patterns.]
 
 The following sections cover the implementation details of parallel and distributed pipelines in `targets`.
 
