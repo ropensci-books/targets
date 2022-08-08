@@ -44,8 +44,8 @@ jobs:
           path: |
             _book
             _freeze
-          key: book-${{ hashFiles('**/*qmd') }}
-          restore-keys: book-
+          key: book-publish-${{ hashFiles('**/*qmd') }}
+          restore-keys: book-publish-
 
       - name: Render
         run: quarto render
