@@ -3,7 +3,7 @@ execute:
   freeze: auto
 ---
 
-# Data: storage and memory {#data}
+# Data {#data}
 
 ```{r, message = FALSE, warning = FALSE, echo = FALSE}
 knitr::opts_knit$set(root.dir = fs::dir_create(tempfile()))
@@ -15,6 +15,12 @@ library(targets)
 ```
 
 This chapter describes how the `targets` package stores data, manages memory, allows you to customize the data processing model.
+
+:::{.callout-tip}
+## Performance
+
+See the [performance chapter](#performance) for options, settings, and other choices to make storage and memory more efficient for large data workflows.
+:::
 
 ## Local data store
 
@@ -38,7 +44,7 @@ _targets/ # Can be customized with tar_config_set().
 
 The two most important components are:
 
-1. `_targets/meta/meta`, a flat text file with descriptive metadata about each target, and
+1. `_targets/meta/meta`, a flat text file with descriptive metadata about each target, including warning, errors, and runtime. You can read this data as a data frame `tar_meta()`. and
 2. `_targets/objects/`, a folder with one data file per target.
 
 If your pipeline has a target defined by `tar_target(name = x, command = 1 + 1, format = "rds", repository = "local")`, during `tar_make()`:

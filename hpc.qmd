@@ -14,12 +14,18 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = TRUE)
 library(targets)
 ```
 
-`targets` supports high-performance computing with the `tar_make_clustermq()` and `tar_make_future()` functions. These functions are like `tar_make()`, but they allow multiple targets to run simultaneously over parallel workers. These workers can be processes on your local machine, or they can be jobs on a computing cluster. The main process automatically sends a target to a worker as soon as
+:::{.callout-tip}
+## Performance
+
+See the [performance chapter](#performance) for options, settings, and other choices to make parallel and distributed pipelines more efficient.
+:::
+
+`targets` supports parallel and distributed computing with the `tar_make_clustermq()` and `tar_make_future()` functions. These functions are like `tar_make()`, but they allow multiple targets to run simultaneously over parallel workers. These workers can be processes on your local machine, or they can be jobs on a computing cluster. The main process automatically sends a target to a worker as soon as
 
 1. The worker is available, and
 1. All the target's upstream dependency targets have been checked or built.
 
-Practical real-world examples of high-performance computing in `targets` can be found at the examples [linked from here](https://docs.ropensci.org/targets/index.html#examples). But for the purposes of explaining the mechanics of the package, consider the following sketch of a pipeline.
+Consider the following sketch of a pipeline.
 
 ```{r, echo = FALSE, eval = TRUE}
 tar_script({

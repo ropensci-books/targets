@@ -14,11 +14,84 @@ library(targets)
 
 # Performance {#performance}
 
-This chapter explains how to monitor the progress of your pipeline and troubleshoot performance issues.
+If your `targets` pipeline runs slowly or consumes too many resources, you can make adjustments to improve efficiency. In addition, `targets` has tools to monitor the runtime progress of a pipeline.
+
+:::{.callout-note}
+
+## Summary
+
+* Choose fast persistent storage for the [data store](#data).
+* For high-memory pipelines, consider `memory = "transient"` and `garbage_collection = TRUE` in `tar_option_set()` or `tar_target()`.
+* For large data pipelines, consider [alternative formats](https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats) to more efficiently store your data.
+* For large data *parallel* pipelines, consider `storage = "worker"` and `retrieval = "worker"` in `tar_option_set()` or `tar_target()`.
+* For high-overhead pipelines with thousands of targets, consider grouping same amount of work into a smaller number of targets.
+* `targets` has functions to monitor the progress of the pipeline.
+* The `proffer` package can help discover [bottlenecks](https://en.wikipedia.org/wiki/Bottleneck_(software)).
+:::
+
+## Data location
+
+The [data store](#data) is a folder on a computer, usually at the root of your project, and `targets` makes innumerable quick modifications over the course of a pipeline. For best performance, the [data store](#data) should live on high-performant storage hardware on your local computer. Any slowdown due to disk issues or latency due to a slow network will severely impact the performance of your pipeline.^[ [Mounted network drives](https://support.microsoft.com/en-us/windows/map-a-network-drive-in-windows-29ce55d1-34e3-a7e2-4801-131475f9557d) are the particularly egregious.]^[At the same time, the files in the [data store](#data) are important and must be available for subsequent runs of the pipeline, so `tempdir()` is not suitable.]
+
+## Storage formats
+
+The default [data storage format](https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats) is [RDS](https://rdrr.io/r/base/readRDS.html), which can be slow and bulky for large data. For large data pipipelines, consider [alternative formats](https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats) to more efficiently store and manage your data. Set the storage format using `tar_option_set()` or `tar_target()`:
+
+```{r, eval = FALSE}
+tar_option_set(format = "qs")
+```
+
+Some formats such as `"qs"` work on all kinds of data, whereas others like `"feather"` works only on data frames. Most non-default formats store the data faster and in smaller files than the default `"rds"` format, but they require extra packages to be installed. For example, `format = "qs"` requries the `qs` package, and `format = "feather"` requires the `arrow` package.
+
+## Memory
+
+By default, the pipeline retains targets in memory while it is running. In large data workloads, this could consume too much [computer memory](http://adv-r.had.co.nz/memory.html) and overwhelm the local R session. The solution is simple: in `tar_option_set()` or `tar_target()` in the `_targets.R` file, activate transient memory and garbage collection:
+
+```{r, eval = FALSE}
+tar_option_set(memory = "transient", garbage_collection = TRUE)
+```
+
+These options tell `tar_make()` to remove data from the R environment as soon as possible and run garbage collection to make sure the data is really gone from memory (but still in [storage](#data)). This memory cleanup phase happens once per target.
+
+As with everything performance-related, there is a cost. With transient memory and garbage collection, the pipeline reads data from storage far more often. These data reads take additional time, and if you use [cloud storage](https://books.ropensci.org/targets/data.html#cloud-storage), they could incur additional monetary charges. In addition, garbage collection is usually a slow operation, and repeated garbage collections could slow down a pipeline with thousands of targets. Please think about the tradeoffs for your specific use case.
+
+## Parallel workers
+
+By default, the main controlling R process stores and retreives the data. So in large parallel data pipelines, `tar_make_clustermq()` and `tar_make_future()` may [bottleneck](https://en.wikipedia.org/wiki/Bottleneck_(software)) at the data management phase. Solution: if all [parallel workers](#hpc) have access to the [local data store](#data), you can make those workers store and retrieve the data instead of putting it all on the main controlling R process. In `tar_target()` or `tar_option_set()` in the `_targets.R` file, activate worker storage and retrieval:
+
+```{r, eval = FALSE}
+tar_option_set(storage = "worker", retrieval = "worker")
+```
+
+If the [workers](#hpc) do not have access to the [local data store](#data), you can still set `storage = "worker"` and `retrieval = "worker"` if you use [cloud storage](https://books.ropensci.org/targets/data.html#cloud-storage) to store and retrieve your data.
+
+## Many targets
+
+A pipeline with too many targets will begin to slow down. You may notice a minor slowdown at about 1000 targets and a more significant one at around 5000 or 10000 targets. This happens because each target needs to check its data, decide whether it needs to rerun, load its upstream dependencies from memory if applicable, and store its data after running. The overhead of these actions adds up. 
+
+To reduce overhead, consider dividing up the work into a smaller number of targets. Each target is a cached operation, and not all steps of the pipeline needs to be cached at a perfect level of granularity.
+See the sections on [what a target should do](https://books.ropensci.org/targets/targets.html#what-a-target-should-do) and [how much a target should do](https://books.ropensci.org/targets/targets.html#how-much-a-target-should-do). 
+
+### Batching
+
+Simulation studies and other iterative stochastic pipelines may need to run thousands of independent random replications. For these pipelines, consider [batching](https://books.ropensci.org/targets/dynamic.html#performance-and-batching) to reduce the number of targets while preserving the number of replications. In [batching](https://books.ropensci.org/targets/dynamic.html#performance-and-batching), each batch is a [dynamic branch](https://books.ropensci.org/targets/dynamic.html) target that performs a subset of the replications. For 1000 replications, you might want 40 batches of 25 replications each, 10 batches with 100 replications each, or a different balance depending on the use case. Functions `tarchetypes::tar_rep()`, `tarchetypes::tar_map_rep()`, and [`stantargets::tar_stan_mcmc_rep_summary()`](https://wlandau.github.io/stantargets/articles/mcmc_rep.html) are examples of [target factories](https://wlandau.github.io/targetopia/contributing.html#target-factories) that set up the batching structure without needing to understand [dynamic branching](https://books.ropensci.org/targets/dynamic.html).
+
+## Profiling
+
+If the above workarounds fail, then before expending more effort on optimization, please empirically confirm why the code is slow in the first place. Scanning a running instance of a program for performance issues is called "profiling". Expand the menu below to learn more.
+
+:::{.callout-tip, collapse = "true"}
+## Profile a pipeline
+
+1. Install the [`proffer`](https://r-prof.github.io/proffer/) R package and its dependencies.
+1. Run `proffer::pprof(tar_make(callr_function = NULL))` on your project.
+1. When a web browser pops up with `pprof`, select the flame graph and screenshot it.
+1. Post the flame graph, along with any code and data you can share, to the [`targets` package issue tracker](https://github.com/ropensci/targets/issues). The maintainer will have a look and try to make the package faster for your use case if speedups are possible.
+:::
 
 ## Monitoring the pipeline
 
-If you are using `targets`, then you probably have an intense computation like Bayesian data analysis or machine learning. These tasks take a long time to run, and it is a good idea to monitor them. Here are some options built directly into `targets`:
+Even the most efficient `targets` pipelines can take time to complete because the user-defined tasks themselves are slow. There are convenient ways to monitor the progress of a running pipeline:
 
 1. `tar_poll()` continuously refreshes a text summary of runtime progress in the R console. Run it in a new R session at the project root directory. (Only supported in `targets` version 0.3.1.9000 and higher.)
 1. `tar_visnetwork()`, `tar_progress_summary()`, `tar_progress_branches()`, and `tar_progress()` show runtime information at a single moment in time.
@@ -58,21 +131,5 @@ px <- tar_make()
 ![](./man/figures/tar_watch.png)
 `tar_watch_ui()` and `tar_watch_server()` make this functionality available to other apps through a Shiny module.
 
-Unfortunately, none of these options can tell you if any [parallel workers](#hpc) or external processes are still running. You can monitor local processes with a utility like `top` or `htop`, and traditional HPC scheduler like SLURM or SGE support their own polling utilities such as `squeue` and `qstat`. `tar_process()` and `tar_pid()` get the process ID of the main R process that last attempted to run the pipeline.
+Unfortunately, none of these options can tell you if any [parallel workers](#hpc) or external processes are *actually* still alive. You can monitor local processes with a utility like `top` or `htop`, and traditional HPC scheduler like SLURM or SGE support their own polling utilities such as `squeue` and `qstat`. `tar_process()` and `tar_pid()` get the process ID of the main R process that last attempted to run the pipeline.
 
-## Performance
-
-If your pipeline has several thousand targets, functions like `tar_make()`, `tar_outdated()`, and `tar_visnetwork()` may take longer to run. There is an inevitable per-target runtime cost because package needs to check the code and data of each target individually. If this overhead becomes too much, consider batching your work into a smaller group of heavier targets. Using your custom functions, you can make each target perform multiple iterations of a task that was previously given to targets one at a time. For details and an example, please see the discussion on batching at the bottom of the [dynamic branching chapter](#dynamic).
-
-With dynamic branching, it is super easy to create an enormous number of targets. But when the number of targets starts to exceed a couple hundred, `tar_make()` slows down, and graphs from `tar_visnetwork()` start to become unmanageable.
-
-In `targets` version 0.5.0.9000, the `names` and `shortcut` arguments to `tar_make()` provide an alternative workaround. `tar_make(names = all_of("only", "these", "targets"), shortcut = TRUE)` can completely omit thousands of upstream targets for the sake of concentrating on one section at a time. However, this technique is only a temporary measure, and it is best to eventually revert back to the default `names = NULL` and `shortcut = FALSE` to ensure reproducibility.
-
-In the case of dynamic branching, another temporary workaround is to temporarily select subsets of branches. For example, instead of `pattern = map(large_target)` in `tar_target()`, you could prototype on a target that uses `pattern = head(map(large_target), n = 1)` or `pattern = slice(map(large_target), c(4, 5, 6))`. In the case of `slice()`, the `tar_branch_index()` function (only in `targets` version 0.5.0.9000 and above) can help you find the required integer indexes  corresponding to individual branch names you may want.
-
-Alternatively, if you see slowness in your project, you can contribute to the package with a profiling study. These contributions are great because they help improve the package. Here are the recommended steps.
-
-1. Install the [`proffer`](https://github.com/r-prof/proffer) R package and its dependencies.
-1. Run `proffer::pprof(tar_make(callr_function = NULL))` on your project.
-1. When a web browser pops up with `pprof`, select the flame graph and screenshot it.
-1. Post the flame graph, along with any code and data you can share, to the [`targets` package issue tracker](https://github.com/ropensci/targets/issues). The maintainer will have a look and try to make the package faster for your use case if speedups are possible.

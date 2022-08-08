@@ -107,7 +107,7 @@ plot_model <- function(model, data) {
 
 ## Target script file
 
-Whereas files `data.csv` and `functions.R` are typical user-defined components of a [project-oriented workflow](https://rstats.wtf/project-oriented-workflow.html), the target script file `_targets.R` file is special. Every [`targets`](https://github.com/ropensci/targets) workflow needs a [target script file](https://docs.ropensci.org/targets/reference/tar_script.html) to configure and define the pipeline.^[By default, the target script is a file called `_targets.R` in the project's [root directory](https://martinctc.github.io/blog/rstudio-projects-and-working-directories-a-beginner%27s-guide/). However, in `targets` version 0.5.0.9000 and above, you can set the target script file path to something other than `_targets.R`. You can either set the path persistently for your project using [`tar_config_set()`](https://docs.ropensci.org/targets/reference/tar_config_set.html), or you can set it temporarily for an individual function call using the `script` argument of [`tar_make()`](https://docs.ropensci.org/targets/reference/tar_make.html) and related functions.] The [`use_targets()`](https://docs.ropensci.org/targets/reference/use_targets.html) function in `targets` version >= 0.12.0 creates an initial target script for you to fill in. Ours looks like this:
+Whereas files `data.csv` and `functions.R` are typical user-defined components of a [project-oriented workflow](https://rstats.wtf/project-oriented-workflow.html), the target script file `_targets.R` file is special. Every [`targets`](https://github.com/ropensci/targets) workflow needs a [target script file](https://docs.ropensci.org/targets/reference/tar_script.html) to configure and define the pipeline.^[By default, the target script is a file called `_targets.R` in the project's [root directory](https://martinctc.github.io/blog/rstudio-projects-and-working-directories-a-beginner%27s-guide/). However, you can set the target script file path to something other than `_targets.R`. You can either set the path persistently for your project using [`tar_config_set()`](https://docs.ropensci.org/targets/reference/tar_config_set.html), or you can set it temporarily for an individual function call using the `script` argument of [`tar_make()`](https://docs.ropensci.org/targets/reference/tar_make.html) and related functions.] The [`use_targets()`](https://docs.ropensci.org/targets/reference/use_targets.html) function in `targets` version >= 0.12.0 creates an initial target script for you to fill in. Ours looks like this:
 
 ```{r, eval = FALSE}
 # _targets.R file
@@ -260,16 +260,8 @@ tar_make()
 
 ## Read metadata
 
-To read the build progress of your targets while `tar_make()` is running, you can open a new R session and run `tar_progress()`. It reads the flat file in `_targets/meta/progress` and tells you which targets are running, built, errored, or cancelled.
+:::{.callout-tip}
+## Performance
 
-```{r, eval = TRUE}
-tar_progress()
-```
-
-Likewise, the `tar_meta()` function reads `_targets/meta/meta` and tells you high-level information about the target's settings, data, and results. The `warnings`, `error`, and `traceback` columns give you diagnostic information about targets with problems.
-
-```{r, eval = TRUE, paged.print = FALSE}
-tar_meta()
-```
-
-The `_targets/meta/meta` file is critically important. Although `targets` can still work properly if files are missing from `_targets/objects`, the pipeline will error out if `_targets/meta/meta` is corrupted. If `tar_meta()` works, the project should be fine.
+See the [performance chapter](#performance) for options, settings, and other choices to make the pipeline more efficient. This chapter also has guidance for [monitoring the progress of a running pipeline](https://books.ropensci.org/targets/performance.html#monitoring-the-pipeline).
+:::
