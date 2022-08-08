@@ -76,19 +76,6 @@ See the sections on [what a target should do](https://books.ropensci.org/targets
 
 Simulation studies and other iterative stochastic pipelines may need to run thousands of independent random replications. For these pipelines, consider [batching](https://books.ropensci.org/targets/dynamic.html#performance-and-batching) to reduce the number of targets while preserving the number of replications. In [batching](https://books.ropensci.org/targets/dynamic.html#performance-and-batching), each batch is a [dynamic branch](https://books.ropensci.org/targets/dynamic.html) target that performs a subset of the replications. For 1000 replications, you might want 40 batches of 25 replications each, 10 batches with 100 replications each, or a different balance depending on the use case. Functions `tarchetypes::tar_rep()`, `tarchetypes::tar_map_rep()`, and [`stantargets::tar_stan_mcmc_rep_summary()`](https://wlandau.github.io/stantargets/articles/mcmc_rep.html) are examples of [target factories](https://wlandau.github.io/targetopia/contributing.html#target-factories) that set up the batching structure without needing to understand [dynamic branching](https://books.ropensci.org/targets/dynamic.html).
 
-## Profiling
-
-If the above workarounds fail, then before expending more effort on optimization, please empirically confirm why the code is slow in the first place. Scanning a running instance of a program for performance issues is called "profiling". Expand the menu below to learn more.
-
-:::{.callout-tip collapse = "true"}
-## Profile a pipeline
-
-1. Install the [`proffer`](https://r-prof.github.io/proffer/) R package and its dependencies.
-1. Run `proffer::pprof(tar_make(callr_function = NULL))` on your project.
-1. When a web browser pops up with `pprof`, select the flame graph and screenshot it.
-1. Post the flame graph, along with any code and data you can share, to the [`targets` package issue tracker](https://github.com/ropensci/targets/issues). The maintainer will have a look and try to make the package faster for your use case if speedups are possible.
-:::
-
 ## Monitoring the pipeline
 
 Even the most efficient `targets` pipelines can take time to complete because the user-defined tasks themselves are slow. There are convenient ways to monitor the progress of a running pipeline:
@@ -133,3 +120,11 @@ px <- tar_make()
 
 Unfortunately, none of these options can tell you if any [parallel workers](#hpc) or external processes are *actually* still alive. You can monitor local processes with a utility like `top` or `htop`, and traditional HPC scheduler like SLURM or SGE support their own polling utilities such as `squeue` and `qstat`. `tar_process()` and `tar_pid()` get the process ID of the main R process that last attempted to run the pipeline.
 
+## Profiling
+
+The first sections of the chapter describe quick tips and tricks to improve the performance of a pipeline. If these workarounds fail, then before putting more effort into optimization, it is best to empirically confirm why the code is slow in the first place. "Profiling" is the act of scanning a running instance of a program, and it can detect [computational bottlenecks](https://en.wikipedia.org/wiki/Bottleneck_(software)). Follow these steps to profile a `targets` pipeline.
+
+1. Install the [`proffer`](https://r-prof.github.io/proffer/) R package and its dependencies.
+1. Run `proffer::pprof(tar_make(callr_function = NULL))` on your project.
+1. When a web browser pops up with `pprof`, select the flame graph and screenshot it.
+1. Post the flame graph, along with any code and data you can share, to the [`targets` package issue tracker](https://github.com/ropensci/targets/issues). The maintainer will have a look and try to make the package faster for your use case if speedups are possible.
