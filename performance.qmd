@@ -24,6 +24,7 @@ If your `targets` pipeline runs slowly or consumes too many resources, you can m
 * Choose [efficient data storage formats](https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats) for large targets.
 * For high-memory pipelines, consider `memory = "transient"` and `garbage_collection = TRUE` in `tar_option_set()` or `tar_target()`.
 * For highly parallel pipelines, consider `storage = "worker"` and `retrieval = "worker"` in `tar_option_set()` or `tar_target()`.
+* To avoid wasting computational resources, consider setting `deployment = "main"` in `tar_target()` for light targets that do not need to run on parallel workers.
 * For high-overhead pipelines with thousands of targets, consider grouping same amount of work into a smaller number of targets.
 * `targets` has functions to monitor the progress of the pipeline.
 * Profiling with the [`proffer`](https://r-prof.github.io/proffer/) package can help discover [bottlenecks](https://en.wikipedia.org/wiki/Bottleneck_(software)).
@@ -35,13 +36,13 @@ The [data store](#data) is a folder on a computer, usually at the root of your p
 
 ## Efficient storage formats
 
-The default [data storage format](https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats) is [RDS](https://rdrr.io/r/base/readRDS.html), which can be slow and bulky for large data. For large data pipipelines, consider [alternative formats](https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats) to more efficiently store and manage your data. Set the storage format using `tar_option_set()` or `tar_target()`:
+The default [data storage format](https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats) is [RDS](https://rdrr.io/r/base/readRDS.html), which can be slow and bulky for large data. For large data pipelines, consider [alternative formats](https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats) to more efficiently store and manage your data. Set the storage format using `tar_option_set()` or `tar_target()`:
 
 ```{r, eval = FALSE}
 tar_option_set(format = "qs")
 ```
 
-Some formats such as `"qs"` work on all kinds of data, whereas others like `"feather"` works only on data frames. Most non-default formats store the data faster and in smaller files than the default `"rds"` format, but they require extra packages to be installed. For example, `format = "qs"` requries the `qs` package, and `format = "feather"` requires the `arrow` package.
+Some formats such as `"qs"` work on all kinds of data, whereas others like `"feather"` works only on data frames. Most non-default formats store the data faster and in smaller files than the default `"rds"` format, but they require extra packages to be installed. For example, `format = "qs"` requires the `qs` package, and `format = "feather"` requires the `arrow` package.
 
 ## Memory
 
@@ -55,15 +56,34 @@ These options tell `tar_make()` to remove data from the R environment as soon as
 
 As with everything performance-related, there is a cost. With transient memory and garbage collection, the pipeline reads data from storage far more often. These data reads take additional time, and if you use [cloud storage](https://books.ropensci.org/targets/data.html#cloud-storage), they could incur additional monetary charges. In addition, garbage collection is usually a slow operation, and repeated garbage collections could slow down a pipeline with thousands of targets. Please think about the tradeoffs for your specific use case.
 
-## Parallel workers
+## Parallel workers and data
 
-By default, the main controlling R process stores and retreives the data. So in large parallel data pipelines, `tar_make_clustermq()` and `tar_make_future()` may [bottleneck](https://en.wikipedia.org/wiki/Bottleneck_(software)) at the data management phase. Solution: if all [parallel workers](#hpc) have access to the [local data store](#data), you can make those workers store and retrieve the data instead of putting it all on the main controlling R process. In `tar_target()` or `tar_option_set()` in the `_targets.R` file, activate worker storage and retrieval:
+By default, the main controlling R process stores and retrieves the data. So in large parallel data pipelines, `tar_make_clustermq()` and `tar_make_future()` may [bottleneck](https://en.wikipedia.org/wiki/Bottleneck_(software)) at the data management phase. Solution: if all [parallel workers](#hpc) have access to the [local data store](#data), you can make those workers store and retrieve the data instead of putting it all on the main controlling R process. In `tar_target()` or `tar_option_set()` in the `_targets.R` file, activate worker storage and retrieval:
 
 ```{r, eval = FALSE}
 tar_option_set(storage = "worker", retrieval = "worker")
 ```
 
 If the [workers](#hpc) do not have access to the [local data store](#data), you can still set `storage = "worker"` and `retrieval = "worker"` if you use [cloud storage](https://books.ropensci.org/targets/data.html#cloud-storage) to store and retrieve your data.
+
+## Local targets
+
+In `tar_make_clustermq()`, the [persistent workers](https://books.ropensci.org/targets/hpc.html#persistent-workers) launch as soon as a target needs them, and they keep running until no more targets need them anymore. In addition, `tar_make_future()` submits a new job for every target that needs one. Both behaviors could waste computational resources. For targets that run quickly and cheaply, consider setting `deployment = "main"` in `tar_target()`:
+
+```{r, eval = FALSE}
+tar_target(dataset, get_dataset(), deployment = "main")
+tar_target(summary, compute_summary_statistics(), deployment = "main")
+```
+
+`deployment = "main"` says to run the target on the main controlling process instead of a parallel worker. If the target is upstream, then `deployment = "main"` avoids launching [persistent workers](https://books.ropensci.org/targets/hpc.html#persistent-workers) too early. If the target is downstream, `deployment = "main"` allows [persistent workers](https://books.ropensci.org/targets/hpc.html#persistent-workers) to safely shut down earlier. In the case of [transient workers](https://books.ropensci.org/targets/hpc.html#transient-workers), `deployment = "main"` avoids the overhead and cost of submitting an unnecessary job or background process.
+
+For targets that really do need parallel workers, make sure `deployment = "worker"` (default).
+
+```{r, eval = FALSE}
+tar_target(model, run_machine_learning_model(dataset), deployment = "worker")
+```
+
+The `deployment` argument of `tar_option_set()` controls the default `deployment` argument of subsequent calls to `tar_target()`.
 
 ## Many targets
 
