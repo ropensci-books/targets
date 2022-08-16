@@ -238,13 +238,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#data-location" id="toc-data-location" class="nav-link active" data-scroll-target="#data-location"> <span class="header-section-number">4.1</span> Data location</a></li>
   <li><a href="#efficient-storage-formats" id="toc-efficient-storage-formats" class="nav-link" data-scroll-target="#efficient-storage-formats"> <span class="header-section-number">4.2</span> Efficient storage formats</a></li>
   <li><a href="#memory" id="toc-memory" class="nav-link" data-scroll-target="#memory"> <span class="header-section-number">4.3</span> Memory</a></li>
-  <li><a href="#parallel-workers" id="toc-parallel-workers" class="nav-link" data-scroll-target="#parallel-workers"> <span class="header-section-number">4.4</span> Parallel workers</a></li>
-  <li><a href="#many-targets" id="toc-many-targets" class="nav-link" data-scroll-target="#many-targets"> <span class="header-section-number">4.5</span> Many targets</a>
+  <li><a href="#parallel-workers-and-data" id="toc-parallel-workers-and-data" class="nav-link" data-scroll-target="#parallel-workers-and-data"> <span class="header-section-number">4.4</span> Parallel workers and data</a></li>
+  <li><a href="#local-targets" id="toc-local-targets" class="nav-link" data-scroll-target="#local-targets"> <span class="header-section-number">4.5</span> Local targets</a></li>
+  <li><a href="#many-targets" id="toc-many-targets" class="nav-link" data-scroll-target="#many-targets"> <span class="header-section-number">4.6</span> Many targets</a>
   <ul class="collapse">
-  <li><a href="#batching" id="toc-batching" class="nav-link" data-scroll-target="#batching"> <span class="header-section-number">4.5.1</span> Batching</a></li>
+  <li><a href="#batching" id="toc-batching" class="nav-link" data-scroll-target="#batching"> <span class="header-section-number">4.6.1</span> Batching</a></li>
   </ul></li>
-  <li><a href="#monitoring-the-pipeline" id="toc-monitoring-the-pipeline" class="nav-link" data-scroll-target="#monitoring-the-pipeline"> <span class="header-section-number">4.6</span> Monitoring the pipeline</a></li>
-  <li><a href="#profiling" id="toc-profiling" class="nav-link" data-scroll-target="#profiling"> <span class="header-section-number">4.7</span> Profiling</a></li>
+  <li><a href="#monitoring-the-pipeline" id="toc-monitoring-the-pipeline" class="nav-link" data-scroll-target="#monitoring-the-pipeline"> <span class="header-section-number">4.7</span> Monitoring the pipeline</a></li>
+  <li><a href="#profiling" id="toc-profiling" class="nav-link" data-scroll-target="#profiling"> <span class="header-section-number">4.8</span> Profiling</a></li>
   </ul>
 </nav>
     </div>
@@ -289,6 +290,7 @@ Summary
 <li>Choose <a href="https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats">efficient data storage formats</a> for large targets.</li>
 <li>For high-memory pipelines, consider <code>memory = "transient"</code> and <code>garbage_collection = TRUE</code> in <code>tar_option_set()</code> or <code>tar_target()</code>.</li>
 <li>For highly parallel pipelines, consider <code>storage = "worker"</code> and <code>retrieval = "worker"</code> in <code>tar_option_set()</code> or <code>tar_target()</code>.</li>
+<li>To avoid wasting computational resources, consider setting <code>deployment = "main"</code> in <code>tar_target()</code> for light targets that do not need to run on parallel workers.</li>
 <li>For high-overhead pipelines with thousands of targets, consider grouping same amount of work into a smaller number of targets.</li>
 <li><code>targets</code> has functions to monitor the progress of the pipeline.</li>
 <li>Profiling with the <a href="https://r-prof.github.io/proffer/"><code>proffer</code></a> package can help discover <a href="https://en.wikipedia.org/wiki/Bottleneck_(software)">bottlenecks</a>.</li>
@@ -301,11 +303,11 @@ Summary
 </section>
 <section id="efficient-storage-formats" class="level2" data-number="4.2">
 <h2 data-number="4.2" class="anchored" data-anchor-id="efficient-storage-formats"><span class="header-section-number">4.2</span> Efficient storage formats</h2>
-<p>The default <a href="https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats">data storage format</a> is <a href="https://rdrr.io/r/base/readRDS.html">RDS</a>, which can be slow and bulky for large data. For large data pipipelines, consider <a href="https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats">alternative formats</a> to more efficiently store and manage your data. Set the storage format using <code>tar_option_set()</code> or <code>tar_target()</code>:</p>
+<p>The default <a href="https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats">data storage format</a> is <a href="https://rdrr.io/r/base/readRDS.html">RDS</a>, which can be slow and bulky for large data. For large data pipelines, consider <a href="https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats">alternative formats</a> to more efficiently store and manage your data. Set the storage format using <code>tar_option_set()</code> or <code>tar_target()</code>:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">format =</span> <span class="st">"qs"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Some formats such as <code>"qs"</code> work on all kinds of data, whereas others like <code>"feather"</code> works only on data frames. Most non-default formats store the data faster and in smaller files than the default <code>"rds"</code> format, but they require extra packages to be installed. For example, <code>format = "qs"</code> requries the <code>qs</code> package, and <code>format = "feather"</code> requires the <code>arrow</code> package.</p>
+<p>Some formats such as <code>"qs"</code> work on all kinds of data, whereas others like <code>"feather"</code> works only on data frames. Most non-default formats store the data faster and in smaller files than the default <code>"rds"</code> format, but they require extra packages to be installed. For example, <code>format = "qs"</code> requires the <code>qs</code> package, and <code>format = "feather"</code> requires the <code>arrow</code> package.</p>
 </section>
 <section id="memory" class="level2" data-number="4.3">
 <h2 data-number="4.3" class="anchored" data-anchor-id="memory"><span class="header-section-number">4.3</span> Memory</h2>
@@ -316,25 +318,39 @@ Summary
 <p>These options tell <code>tar_make()</code> to remove data from the R environment as soon as possible and run garbage collection to make sure the data is really gone from memory (but still in <a href="data.html">storage</a>). This memory cleanup phase happens once per target.</p>
 <p>As with everything performance-related, there is a cost. With transient memory and garbage collection, the pipeline reads data from storage far more often. These data reads take additional time, and if you use <a href="https://books.ropensci.org/targets/data.html#cloud-storage">cloud storage</a>, they could incur additional monetary charges. In addition, garbage collection is usually a slow operation, and repeated garbage collections could slow down a pipeline with thousands of targets. Please think about the tradeoffs for your specific use case.</p>
 </section>
-<section id="parallel-workers" class="level2" data-number="4.4">
-<h2 data-number="4.4" class="anchored" data-anchor-id="parallel-workers"><span class="header-section-number">4.4</span> Parallel workers</h2>
-<p>By default, the main controlling R process stores and retreives the data. So in large parallel data pipelines, <code>tar_make_clustermq()</code> and <code>tar_make_future()</code> may <a href="https://en.wikipedia.org/wiki/Bottleneck_(software)">bottleneck</a> at the data management phase. Solution: if all <a href="hpc.html">parallel workers</a> have access to the <a href="data.html">local data store</a>, you can make those workers store and retrieve the data instead of putting it all on the main controlling R process. In <code>tar_target()</code> or <code>tar_option_set()</code> in the <code>_targets.R</code> file, activate worker storage and retrieval:</p>
+<section id="parallel-workers-and-data" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="parallel-workers-and-data"><span class="header-section-number">4.4</span> Parallel workers and data</h2>
+<p>By default, the main controlling R process stores and retrieves the data. So in large parallel data pipelines, <code>tar_make_clustermq()</code> and <code>tar_make_future()</code> may <a href="https://en.wikipedia.org/wiki/Bottleneck_(software)">bottleneck</a> at the data management phase. Solution: if all <a href="hpc.html">parallel workers</a> have access to the <a href="data.html">local data store</a>, you can make those workers store and retrieve the data instead of putting it all on the main controlling R process. In <code>tar_target()</code> or <code>tar_option_set()</code> in the <code>_targets.R</code> file, activate worker storage and retrieval:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">storage =</span> <span class="st">"worker"</span>, <span class="at">retrieval =</span> <span class="st">"worker"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>If the <a href="hpc.html">workers</a> do not have access to the <a href="data.html">local data store</a>, you can still set <code>storage = "worker"</code> and <code>retrieval = "worker"</code> if you use <a href="https://books.ropensci.org/targets/data.html#cloud-storage">cloud storage</a> to store and retrieve your data.</p>
 </section>
-<section id="many-targets" class="level2" data-number="4.5">
-<h2 data-number="4.5" class="anchored" data-anchor-id="many-targets"><span class="header-section-number">4.5</span> Many targets</h2>
+<section id="local-targets" class="level2" data-number="4.5">
+<h2 data-number="4.5" class="anchored" data-anchor-id="local-targets"><span class="header-section-number">4.5</span> Local targets</h2>
+<p>In <code>tar_make_clustermq()</code>, the <a href="https://books.ropensci.org/targets/hpc.html#persistent-workers">persistent workers</a> launch as soon as a target needs them, and they keep running until no more targets need them anymore. In addition, <code>tar_make_future()</code> submits a new job for every target that needs one. Both behaviors could waste computational resources. For targets that run quickly and cheaply, consider setting <code>deployment = "main"</code> in <code>tar_target()</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_target</span>(dataset, <span class="fu">get_dataset</span>(), <span class="at">deployment =</span> <span class="st">"main"</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_target</span>(summary, <span class="fu">compute_summary_statistics</span>(), <span class="at">deployment =</span> <span class="st">"main"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>deployment = "main"</code> says to run the target on the main controlling process instead of a parallel worker. If the target is upstream, then <code>deployment = "main"</code> avoids launching <a href="https://books.ropensci.org/targets/hpc.html#persistent-workers">persistent workers</a> too early. If the target is downstream, <code>deployment = "main"</code> allows <a href="https://books.ropensci.org/targets/hpc.html#persistent-workers">persistent workers</a> to safely shut down earlier. In the case of <a href="https://books.ropensci.org/targets/hpc.html#transient-workers">transient workers</a>, <code>deployment = "main"</code> avoids the overhead and cost of submitting an unnecessary job or background process.</p>
+<p>For targets that really do need parallel workers, make sure <code>deployment = "worker"</code> (default).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_target</span>(model, <span class="fu">run_machine_learning_model</span>(dataset), <span class="at">deployment =</span> <span class="st">"worker"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The <code>deployment</code> argument of <code>tar_option_set()</code> controls the default <code>deployment</code> argument of subsequent calls to <code>tar_target()</code>.</p>
+</section>
+<section id="many-targets" class="level2" data-number="4.6">
+<h2 data-number="4.6" class="anchored" data-anchor-id="many-targets"><span class="header-section-number">4.6</span> Many targets</h2>
 <p>A pipeline with too many targets will begin to slow down. You may notice a minor slowdown at about 1000 targets and a more significant one at around 5000 or 10000 targets. This happens because each target needs to check its data, decide whether it needs to rerun, load its upstream dependencies from memory if applicable, and store its data after running. The overhead of these actions adds up.</p>
 <p>To reduce overhead, consider dividing up the work into a smaller number of targets. Each target is a cached operation, and not all steps of the pipeline needs to be cached at a perfect level of granularity. See the sections on <a href="https://books.ropensci.org/targets/targets.html#what-a-target-should-do">what a target should do</a> and <a href="https://books.ropensci.org/targets/targets.html#how-much-a-target-should-do">how much a target should do</a>.</p>
-<section id="batching" class="level3" data-number="4.5.1">
-<h3 data-number="4.5.1" class="anchored" data-anchor-id="batching"><span class="header-section-number">4.5.1</span> Batching</h3>
+<section id="batching" class="level3" data-number="4.6.1">
+<h3 data-number="4.6.1" class="anchored" data-anchor-id="batching"><span class="header-section-number">4.6.1</span> Batching</h3>
 <p>Simulation studies and other iterative stochastic pipelines may need to run thousands of independent random replications. For these pipelines, consider <a href="https://books.ropensci.org/targets/dynamic.html#performance-and-batching">batching</a> to reduce the number of targets while preserving the number of replications. In <a href="https://books.ropensci.org/targets/dynamic.html#performance-and-batching">batching</a>, each batch is a <a href="https://books.ropensci.org/targets/dynamic.html">dynamic branch</a> target that performs a subset of the replications. For 1000 replications, you might want 40 batches of 25 replications each, 10 batches with 100 replications each, or a different balance depending on the use case. Functions <code>tarchetypes::tar_rep()</code>, <code>tarchetypes::tar_map_rep()</code>, and <a href="https://wlandau.github.io/stantargets/articles/mcmc_rep.html"><code>stantargets::tar_stan_mcmc_rep_summary()</code></a> are examples of <a href="https://wlandau.github.io/targetopia/contributing.html#target-factories">target factories</a> that set up the batching structure without needing to understand <a href="https://books.ropensci.org/targets/dynamic.html">dynamic branching</a>.</p>
 </section>
 </section>
-<section id="monitoring-the-pipeline" class="level2" data-number="4.6">
-<h2 data-number="4.6" class="anchored" data-anchor-id="monitoring-the-pipeline"><span class="header-section-number">4.6</span> Monitoring the pipeline</h2>
+<section id="monitoring-the-pipeline" class="level2" data-number="4.7">
+<h2 data-number="4.7" class="anchored" data-anchor-id="monitoring-the-pipeline"><span class="header-section-number">4.7</span> Monitoring the pipeline</h2>
 <p>Even the most efficient <code>targets</code> pipelines can take time to complete because the user-defined tasks themselves are slow. There are convenient ways to monitor the progress of a running pipeline:</p>
 <ol type="1">
 <li><code>tar_poll()</code> continuously refreshes a text summary of runtime progress in the R console. Run it in a new R session at the project root directory. (Only supported in <code>targets</code> version 0.3.1.9000 and higher.)</li>
@@ -342,40 +358,40 @@ Summary
 <li><code>tar_watch()</code> launches an Shiny app that automatically refreshes the graph every few seconds. Try it out in the example below.</li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define an example target script file with a slow pipeline.</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_script</span>({</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  sleep_run <span class="ot">&lt;-</span> <span class="cf">function</span>(...) {</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Sys.sleep</span>(<span class="dv">10</span>)</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(settings, <span class="fu">sleep_run</span>()),</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(data1, <span class="fu">sleep_run</span>(settings)),</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(data2, <span class="fu">sleep_run</span>(settings)),</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(data3, <span class="fu">sleep_run</span>(settings)),</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(model1, <span class="fu">sleep_run</span>(data1)),</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(model2, <span class="fu">sleep_run</span>(data2)),</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(model3, <span class="fu">sleep_run</span>(data3)),</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(figure1, <span class="fu">sleep_run</span>(model1)),</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(figure2, <span class="fu">sleep_run</span>(model2)),</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(figure3, <span class="fu">sleep_run</span>(model3)),</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(conclusions, <span class="fu">sleep_run</span>(<span class="fu">c</span>(figure1, figure2, figure3)))</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Launch the app in a background process.</span></span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="co"># You may need to refresh the browser if the app is slow to start.</span></span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="co"># The graph automatically refreshes every 10 seconds</span></span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_watch</span>(<span class="at">seconds =</span> <span class="dv">10</span>, <span class="at">outdated =</span> <span class="cn">FALSE</span>, <span class="at">targets_only =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Now run the pipeline and watch the graph change.</span></span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>px <span class="ot">&lt;-</span> <span class="fu">tar_make</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define an example target script file with a slow pipeline.</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_script</span>({</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  sleep_run <span class="ot">&lt;-</span> <span class="cf">function</span>(...) {</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Sys.sleep</span>(<span class="dv">10</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(settings, <span class="fu">sleep_run</span>()),</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(data1, <span class="fu">sleep_run</span>(settings)),</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(data2, <span class="fu">sleep_run</span>(settings)),</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(data3, <span class="fu">sleep_run</span>(settings)),</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(model1, <span class="fu">sleep_run</span>(data1)),</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(model2, <span class="fu">sleep_run</span>(data2)),</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(model3, <span class="fu">sleep_run</span>(data3)),</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(figure1, <span class="fu">sleep_run</span>(model1)),</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(figure2, <span class="fu">sleep_run</span>(model2)),</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(figure3, <span class="fu">sleep_run</span>(model3)),</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(conclusions, <span class="fu">sleep_run</span>(<span class="fu">c</span>(figure1, figure2, figure3)))</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Launch the app in a background process.</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="co"># You may need to refresh the browser if the app is slow to start.</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="co"># The graph automatically refreshes every 10 seconds</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_watch</span>(<span class="at">seconds =</span> <span class="dv">10</span>, <span class="at">outdated =</span> <span class="cn">FALSE</span>, <span class="at">targets_only =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Now run the pipeline and watch the graph change.</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>px <span class="ot">&lt;-</span> <span class="fu">tar_make</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><img src="./man/figures/tar_watch.png" class="img-fluid"> <code>tar_watch_ui()</code> and <code>tar_watch_server()</code> make this functionality available to other apps through a Shiny module.</p>
 <p>Unfortunately, none of these options can tell you if any <a href="hpc.html">parallel workers</a> or external processes are <em>actually</em> still alive. You can monitor local processes with a utility like <code>top</code> or <code>htop</code>, and traditional HPC scheduler like SLURM or SGE support their own polling utilities such as <code>squeue</code> and <code>qstat</code>. <code>tar_process()</code> and <code>tar_pid()</code> get the process ID of the main R process that last attempted to run the pipeline.</p>
 </section>
-<section id="profiling" class="level2" data-number="4.7">
-<h2 data-number="4.7" class="anchored" data-anchor-id="profiling"><span class="header-section-number">4.7</span> Profiling</h2>
+<section id="profiling" class="level2" data-number="4.8">
+<h2 data-number="4.8" class="anchored" data-anchor-id="profiling"><span class="header-section-number">4.8</span> Profiling</h2>
 <p>The first sections of the chapter describe quick tips and tricks to improve the performance of a pipeline. If these workarounds fail, then before putting more effort into optimization, it is best to empirically confirm why the code is slow in the first place. “Profiling” is the act of scanning a running instance of a program, and it can detect <a href="https://en.wikipedia.org/wiki/Bottleneck_(software)">computational bottlenecks</a>. Follow these steps to profile a <code>targets</code> pipeline.</p>
 <ol type="1">
 <li>Install the <a href="https://r-prof.github.io/proffer/"><code>proffer</code></a> R package and its dependencies.</li>
