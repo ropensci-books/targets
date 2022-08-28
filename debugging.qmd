@@ -14,7 +14,7 @@ library(targets)
 
 # Debugging {#debugging}
 
-Pipelines are computationally demanding, complicated, and time-consuming to run. The scale can make it hard to troubleshoot when things go wrong. In addition, a pipeline is automated in a special non-interactive R process, so conventional debugging techniques like `traceback()`, [`debug()`](https://rstats.wtf/debugging-r-code.html), [`browser()`](https://rstats.wtf/debugging-r-code.html), and [others](https://rstats.wtf/debugging-r-code.html) seldom work. This chapter describes solutions to these challenges in terms of both best practices and and features in `targets`.
+Pipelines are computationally demanding, complicated, and time-consuming to run. The scale can make it hard to troubleshoot when things go wrong. In addition, a pipeline is automated in a special non-interactive R process, so special steps are needed for interactive debugging with [`debug()`](https://rstats.wtf/debugging-r-code.html) and  [`browser()`](https://rstats.wtf/debugging-r-code.html). This chapter describes solutions to these challenges in terms of both best practices and and features in `targets`.
 
 ## Error messages
 
@@ -27,18 +27,97 @@ tar_meta(fields = warnings, complete_only = TRUE)
 
 ## Isolate the problem
 
-When you identify an error, i.e. from an error message, the solution is not always obvious, especially in a large complicated pipeline. Before even beginning to troubleshoot, it is best to reproduce the error in a smaller, more manageable version of the project that runs quickly and relies on fewer components. If you can, it is best to reproduce it with fast-running downsized code that does not use `targets` at all. That way, your can run it in an interactive R session and use traditional tools like  [`debug()`](https://rstats.wtf/debugging-r-code.html) to go to the error and figure out why it is happening. If it is not possible to reproduce the error outside the pipeline, you could create a smaller version of the pipeline that is faster to run and easier test. Just for testing purposes, you could use  fewer targets, fewer data records, or fewer iterations of a data analysis algorithm. By temporarily downsizing the pipeline while still reproducing the error, you make it easier to take advantage of the built-in debugging support described in the rest of this chapter.
+When you identify an error, i.e. from an error message, the solution is not always obvious, especially in a large complicated pipeline. Before even beginning to troubleshoot, it is best to reproduce the error in a smaller, more manageable version of the project that runs quickly and with few targets. In fact, it is best to reproduce it with fast-running downsized code that does not use a `targets` pipeline at all. That way, your can run it in an interactive R session and use traditional tools like  [`debug()`](https://rstats.wtf/debugging-r-code.html) to go to the error and figure out why it is happening. If it is not possible to reproduce the error outside the pipeline, you could create a smaller version of the pipeline that is faster to run and easier test. Just for testing purposes, you could use  fewer targets, fewer data records, or fewer iterations of a data analysis algorithm. By temporarily downsizing the pipeline while still reproducing the error, you make it easier to take advantage of the built-in debugging support described in the rest of this chapter.
+
+## The dependency graph
+
+`tar_visnetwork()` checks the dependency graph of the pipeline. When you call `tar_visentwork()`, you should see a natural left-to-right flow of work and dependency relationships. 
+
+```{r, echo = FALSE, eval = TRUE}
+tar_script({
+  your_analysis_function <- function(data) {}
+  list(tar_target(data, get_data()), tar_target(analysis, your_analysis_function(data)))
+})
+```
+
+```{r, eval = TRUE}
+tar_visnetwork()
+```
+
+If there are disconnected or missing nodes or edges, you may need to correct a spelling mistake in a target or function.
+
+## The manifest
+
+`tar_manifest()` shows the names, commands, and other settings of the targets in the pipeline.
+
+```{r, eval = TRUE}
+tar_manifest()
+```
+
+With the manifest, can check that the targets in the pipeline have the correct R commands.
+
+```{r, eval = FALSE}
+# Interactive R console:
+> data <- get_data()
+> your_analysis_function(data)
+```
+
+This is especially helpful for [static branching](#static) with [`tar_map()`](https://docs.ropensci.org/tarchetypes/reference/tar_map.html), which tries to generate the commands automatically and may not succeed on your first attempt.
 
 ## Environment browser
 
-By default, `tar_make()` runs in a reproducible background process, so [`debug()`](https://rstats.wtf/debugging-r-code.html) and [`browser()`](https://rstats.wtf/debugging-r-code.html) do not interrupt the pipeline. To use the environment browser your the main session, restart R and supply `callr_function = NULL` to `tar_make()`. `callr_function = NULL` risks invalidating your hard-earned results, so only use it after you have just restarted R and only use it for debugging.
+The environment browser lets you pause R and troubleshoot interactively in the middle of a running pipeline. To prepare, insert a [`debug()`](https://rstats.wtf/debugging-r-code.html) or  [`browser()`](https://rstats.wtf/debugging-r-code.html) statement in the code where you want to start the interactive session. You could either put [`debug()`](https://rstats.wtf/debugging-r-code.html) in `_targets.R`:
 
 ```{r, eval = FALSE}
-# Restart R first...
-debug(custom_function_called_from_a_target)
-tar_make(names = target_to_debug, callr_function = NULL)
-#> debugging in: custom_function_called_from_a_target()
-#> Browse[1]>
+# _targets.R file:
+library(targets)
+
+# Defines your_analysis_function():
+source("R/script_with_your_analysis_function.R")
+
+# Tells R to pause next time you run your_analysis_function():
+debug(your_analysis_function)
+
+# Then write your target list as usual:
+list(
+  tar_target(data, get_data()),
+  # your_analysis_function() is called in a target:
+  tar_target(analysis, your_analysis_function(data))
+)
+```
+
+Or alternatively, insert a [`browser()`](https://rstats.wtf/debugging-r-code.html) inside the function itself:
+
+```{r, eval = FALSE}
+your_analysis_function <- function(data) {
+  browser() # Pause R here.
+  # The rest of the function goes here:
+  # ...
+}
+```
+
+Then, restart your R session and call `tar_make()` with `callr_function = NULL`:
+
+```{r, eval = FALSE}
+rstudioapi::restartSession()
+
+#> Restarting R session...
+
+tar_make(callr_function = NULL)
+#> ✔ skip target data
+#> • start target analysis
+#> Called from: your_analysis_function(data)
+#> Browse[1]> 
+```
+
+At `Browse[1]>`, you have an interactive R console inside a of running instance of `your_analysis_function()`. Use R to check the function arguments or [step through the code](https://rstats.wtf/debugging-r-code.html).
+
+
+```{r, eval = FALSE}
+#> Browse[1]> str(data)
+#> 'data.frame':	100 obs. of  2 variables:
+#>  $ x: int  73 24 15 4 86 64 39 35 83 58 ...
+#>  $ y: int  78 93 31 67 40 34 59 82 52 38 ...
 ```
 
 ## The debug option

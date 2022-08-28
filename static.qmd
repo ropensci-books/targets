@@ -125,9 +125,13 @@ tar_script({
 })
 ```
 
+It is extra important to run `tar_manifest()` to check that `tar_map()` generates the right R code for the targets. Sometimes, the metaprogramming may not produce the desired commands on your first try.
+
 ```{r, paged.print = FALSE, eval = TRUE}
 tar_manifest()
 ```
+
+And of course, check the dependency graph to ensure the pipeline is properly connected. If  `tar_map()` generates a lot of targets, the graph may render slowly or look too cumbersome. If that happens, choose a small subset of rows of `values` for `tar_map()` and then try again on the smaller pipeline.
 
 ```{r, eval = TRUE}
 # You may need to zoom out on this interactive graph to see all 8 targets.
