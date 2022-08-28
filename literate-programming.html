@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.0.38">
+<meta name="generator" content="quarto-1.1.149">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -11,10 +11,15 @@
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-span.underline{text-decoration: underline;}
-div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -53,7 +58,7 @@ code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code span.at { color: #7d9029; } /* Attribute */
 code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
+code span.bu { color: #008000; } /* BuiltIn */
 code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
 code span.ch { color: #4070a0; } /* Char */
 code span.cn { color: #880000; } /* Constant */
@@ -66,7 +71,7 @@ code span.er { color: #ff0000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
 code span.fl { color: #40a070; } /* Float */
 code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
+code span.im { color: #008000; font-weight: bold; } /* Import */
 code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 code span.kw { color: #007020; font-weight: bold; } /* Keyword */
 code span.op { color: #666666; } /* Operator */
@@ -235,33 +240,33 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </nav>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc">
+        <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#literate-programming-within-a-target" id="toc-literate-programming-within-a-target" class="nav-link active" data-scroll-target="#literate-programming-within-a-target"> <span class="header-section-number">10.1</span> Literate programming within a target</a>
+  <li><a href="#literate-programming-within-a-target" id="toc-literate-programming-within-a-target" class="nav-link active" data-scroll-target="#literate-programming-within-a-target"><span class="toc-section-number">10.1</span>  Literate programming within a target</a>
   <ul class="collapse">
-  <li><a href="#r-markdown-targets" id="toc-r-markdown-targets" class="nav-link" data-scroll-target="#r-markdown-targets"> <span class="header-section-number">10.1.1</span> R Markdown targets</a></li>
-  <li><a href="#quarto-targets" id="toc-quarto-targets" class="nav-link" data-scroll-target="#quarto-targets"> <span class="header-section-number">10.1.2</span> Quarto targets</a></li>
-  <li><a href="#parameterized-documents" id="toc-parameterized-documents" class="nav-link" data-scroll-target="#parameterized-documents"> <span class="header-section-number">10.1.3</span> Parameterized documents</a></li>
-  <li><a href="#single-parameter-set" id="toc-single-parameter-set" class="nav-link" data-scroll-target="#single-parameter-set"> <span class="header-section-number">10.1.4</span> Single parameter set</a></li>
-  <li><a href="#multiple-parameter-sets" id="toc-multiple-parameter-sets" class="nav-link" data-scroll-target="#multiple-parameter-sets"> <span class="header-section-number">10.1.5</span> Multiple parameter sets</a></li>
+  <li><a href="#r-markdown-targets" id="toc-r-markdown-targets" class="nav-link" data-scroll-target="#r-markdown-targets"><span class="toc-section-number">10.1.1</span>  R Markdown targets</a></li>
+  <li><a href="#quarto-targets" id="toc-quarto-targets" class="nav-link" data-scroll-target="#quarto-targets"><span class="toc-section-number">10.1.2</span>  Quarto targets</a></li>
+  <li><a href="#parameterized-documents" id="toc-parameterized-documents" class="nav-link" data-scroll-target="#parameterized-documents"><span class="toc-section-number">10.1.3</span>  Parameterized documents</a></li>
+  <li><a href="#single-parameter-set" id="toc-single-parameter-set" class="nav-link" data-scroll-target="#single-parameter-set"><span class="toc-section-number">10.1.4</span>  Single parameter set</a></li>
+  <li><a href="#multiple-parameter-sets" id="toc-multiple-parameter-sets" class="nav-link" data-scroll-target="#multiple-parameter-sets"><span class="toc-section-number">10.1.5</span>  Multiple parameter sets</a></li>
   </ul></li>
-  <li><a href="#target-markdown" id="toc-target-markdown" class="nav-link" data-scroll-target="#target-markdown"> <span class="header-section-number">10.2</span> Target Markdown</a>
+  <li><a href="#target-markdown" id="toc-target-markdown" class="nav-link" data-scroll-target="#target-markdown"><span class="toc-section-number">10.2</span>  Target Markdown</a>
   <ul class="collapse">
-  <li><a href="#access" id="toc-access" class="nav-link" data-scroll-target="#access"> <span class="header-section-number">10.2.1</span> Access</a></li>
-  <li><a href="#purpose" id="toc-purpose" class="nav-link" data-scroll-target="#purpose"> <span class="header-section-number">10.2.2</span> Purpose</a></li>
-  <li><a href="#example" id="toc-example" class="nav-link" data-scroll-target="#example"> <span class="header-section-number">10.2.3</span> Example</a></li>
-  <li><a href="#required-packages" id="toc-required-packages" class="nav-link" data-scroll-target="#required-packages"> <span class="header-section-number">10.2.4</span> Required packages</a></li>
-  <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup"> <span class="header-section-number">10.2.5</span> Setup</a></li>
-  <li><a href="#globals" id="toc-globals" class="nav-link" data-scroll-target="#globals"> <span class="header-section-number">10.2.6</span> Globals</a></li>
-  <li><a href="#target-definitions" id="toc-target-definitions" class="nav-link" data-scroll-target="#target-definitions"> <span class="header-section-number">10.2.7</span> Target definitions</a></li>
-  <li><a href="#pipeline" id="toc-pipeline" class="nav-link" data-scroll-target="#pipeline"> <span class="header-section-number">10.2.8</span> Pipeline</a></li>
-  <li><a href="#output" id="toc-output" class="nav-link" data-scroll-target="#output"> <span class="header-section-number">10.2.9</span> Output</a></li>
-  <li><a href="#conditioning-on-interactive-mode" id="toc-conditioning-on-interactive-mode" class="nav-link" data-scroll-target="#conditioning-on-interactive-mode"> <span class="header-section-number">10.2.10</span> Conditioning on interactive mode</a></li>
-  <li><a href="#tar_interactive" id="toc-tar_interactive" class="nav-link" data-scroll-target="#tar_interactive"> <span class="header-section-number">10.2.11</span> <code>tar_interactive()</code></a></li>
-  <li><a href="#tar_toggle" id="toc-tar_toggle" class="nav-link" data-scroll-target="#tar_toggle"> <span class="header-section-number">10.2.12</span> <code>tar_toggle()</code></a></li>
-  <li><a href="#chunk-options" id="toc-chunk-options" class="nav-link" data-scroll-target="#chunk-options"> <span class="header-section-number">10.2.13</span> Chunk options</a></li>
+  <li><a href="#access" id="toc-access" class="nav-link" data-scroll-target="#access"><span class="toc-section-number">10.2.1</span>  Access</a></li>
+  <li><a href="#purpose" id="toc-purpose" class="nav-link" data-scroll-target="#purpose"><span class="toc-section-number">10.2.2</span>  Purpose</a></li>
+  <li><a href="#example" id="toc-example" class="nav-link" data-scroll-target="#example"><span class="toc-section-number">10.2.3</span>  Example</a></li>
+  <li><a href="#required-packages" id="toc-required-packages" class="nav-link" data-scroll-target="#required-packages"><span class="toc-section-number">10.2.4</span>  Required packages</a></li>
+  <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup"><span class="toc-section-number">10.2.5</span>  Setup</a></li>
+  <li><a href="#globals" id="toc-globals" class="nav-link" data-scroll-target="#globals"><span class="toc-section-number">10.2.6</span>  Globals</a></li>
+  <li><a href="#target-definitions" id="toc-target-definitions" class="nav-link" data-scroll-target="#target-definitions"><span class="toc-section-number">10.2.7</span>  Target definitions</a></li>
+  <li><a href="#pipeline" id="toc-pipeline" class="nav-link" data-scroll-target="#pipeline"><span class="toc-section-number">10.2.8</span>  Pipeline</a></li>
+  <li><a href="#output" id="toc-output" class="nav-link" data-scroll-target="#output"><span class="toc-section-number">10.2.9</span>  Output</a></li>
+  <li><a href="#conditioning-on-interactive-mode" id="toc-conditioning-on-interactive-mode" class="nav-link" data-scroll-target="#conditioning-on-interactive-mode"><span class="toc-section-number">10.2.10</span>  Conditioning on interactive mode</a></li>
+  <li><a href="#tar_interactive" id="toc-tar_interactive" class="nav-link" data-scroll-target="#tar_interactive"><span class="toc-section-number">10.2.11</span>  <code>tar_interactive()</code></a></li>
+  <li><a href="#tar_toggle" id="toc-tar_toggle" class="nav-link" data-scroll-target="#tar_toggle"><span class="toc-section-number">10.2.12</span>  <code>tar_toggle()</code></a></li>
+  <li><a href="#chunk-options" id="toc-chunk-options" class="nav-link" data-scroll-target="#chunk-options"><span class="toc-section-number">10.2.13</span>  Chunk options</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -588,7 +593,7 @@ tar_make()
 #&gt; • built target fit
 #&gt; • start target hist
 #&gt; • built target hist
-#&gt; • end pipeline: 0.985 seconds</code></pre>
+#&gt; • end pipeline: 0.625 seconds</code></pre>
 </div>
 </section>
 <section id="output" class="level3" data-number="10.2.9">
@@ -616,8 +621,8 @@ tar_visnetwork()
 ```</code></pre>
 <div class="cell">
 <div class="cell-output-display">
-<div id="htmlwidget-435d7119adc133e91f34" style="width:100%;height:464px;" class="visNetwork html-widget"></div>
-<script type="application/json" data-for="htmlwidget-435d7119adc133e91f34">{"x":{"nodes":{"name":["data","fit","hist","raw_data","create_plot"],"type":["stem","stem","stem","stem","function"],"status":["uptodate","uptodate","uptodate","uptodate","uptodate"],"seconds":[0.008,0.003,0.012,0.826,null],"bytes":[1081,1575,44521,1262,null],"branches":[null,null,null,null,null],"label":["data","fit","hist","raw_data","create_plot"],"color":["#354823","#354823","#354823","#354823","#354823"],"id":["data","fit","hist","raw_data","create_plot"],"level":[2,3,3,1,1],"shape":["dot","dot","dot","dot","triangle"]},"edges":{"from":["data","create_plot","data","raw_data"],"to":["fit","hist","hist","data"],"arrows":["to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"interaction":{"zoomSpeed":1},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Up to date","Stem","Function"],"color":["#354823","#899DA4","#899DA4"],"shape":["dot","dot","triangle"]},"nodesToDataframe":true},"tooltipStay":300,"tooltipStyle":"position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;border: 1px solid #808074;box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-b3f3adda08a749e642d5" style="width:100%;height:464px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-b3f3adda08a749e642d5">{"x":{"nodes":{"name":["data","fit","hist","raw_data","create_plot"],"type":["stem","stem","stem","stem","function"],"status":["uptodate","uptodate","uptodate","uptodate","uptodate"],"seconds":[0.007,0.003,0.011,0.478,null],"bytes":[1081,1575,44521,1262,null],"branches":[null,null,null,null,null],"label":["data","fit","hist","raw_data","create_plot"],"color":["#354823","#354823","#354823","#354823","#354823"],"id":["data","fit","hist","raw_data","create_plot"],"level":[2,3,3,1,1],"shape":["dot","dot","dot","dot","triangle"]},"edges":{"from":["data","create_plot","data","raw_data"],"to":["fit","hist","hist","data"],"arrows":["to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"interaction":{"zoomSpeed":1},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Up to date","Stem","Function"],"color":["#354823","#899DA4","#899DA4"],"shape":["dot","dot","triangle"]},"nodesToDataframe":true},"tooltipStay":300,"tooltipStyle":"position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;border: 1px solid #808074;box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <p>At this point, you can go back and run <code>{targets}</code> chunks in interactive mode without interfering with the code or data of the non-interactive pipeline.</p>
@@ -690,14 +695,14 @@ tar_stan_mcmc_rep_summary(
 
 </section>
 </section>
-<section class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn1" role="doc-endnote"><p>except the parameter grid argument is called <code>execute_params</code> in <code>tar_quarto_rep()</code>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2" role="doc-endnote"><p>Target Markdown is powered entirely by <code>targets</code> and <code>knitr</code>. It does not actually require Markdown, although Markdown is the recommended way to interact with it.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3" role="doc-endnote"><p>In <code>targets</code> version 0.6.0, the mode is interactive if <code>interactive()</code> is <code>TRUE</code>. In subsequent versions, the mode is interactive if <code>!isTRUE(getOption("knitr.in.progress"))</code> is <code>TRUE</code>.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn4" role="doc-endnote"><p>The <code>_targets.R</code> file from Target Markdown never changes from chunk to chunk or report to report, so you can spread your work over multiple reports without worrying about aligning <code>_targets.R</code> scripts. Just be sure all your chunk names are unique across all the reports of a project, or you set the <code>tar_name</code> chunk option to specify base names of script file paths.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn5" role="doc-endnote"><p>In addition, for <code>bookdown</code> projects, chunk labels should only use alphanumeric characters and dashes.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>except the parameter grid argument is called <code>execute_params</code> in <code>tar_quarto_rep()</code>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Target Markdown is powered entirely by <code>targets</code> and <code>knitr</code>. It does not actually require Markdown, although Markdown is the recommended way to interact with it.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>In <code>targets</code> version 0.6.0, the mode is interactive if <code>interactive()</code> is <code>TRUE</code>. In subsequent versions, the mode is interactive if <code>!isTRUE(getOption("knitr.in.progress"))</code> is <code>TRUE</code>.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>The <code>_targets.R</code> file from Target Markdown never changes from chunk to chunk or report to report, so you can spread your work over multiple reports without worrying about aligning <code>_targets.R</code> scripts. Just be sure all your chunk names are unique across all the reports of a project, or you set the <code>tar_name</code> chunk option to specify base names of script file paths.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>In addition, for <code>bookdown</code> projects, chunk labels should only use alphanumeric characters and dashes.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
 
@@ -771,7 +776,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   for (var i=0; i<noterefs.length; i++) {
     const ref = noterefs[i];
     tippyHover(ref, function() {
-      let href = ref.getAttribute('href');
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.0.38">
+<meta name="generator" content="quarto-1.1.149">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -11,10 +11,15 @@
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-span.underline{text-decoration: underline;}
-div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -53,7 +58,7 @@ code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code span.at { color: #7d9029; } /* Attribute */
 code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
+code span.bu { color: #008000; } /* BuiltIn */
 code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
 code span.ch { color: #4070a0; } /* Char */
 code span.cn { color: #880000; } /* Constant */
@@ -66,7 +71,7 @@ code span.er { color: #ff0000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
 code span.fl { color: #40a070; } /* Float */
 code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
+code span.im { color: #008000; font-weight: bold; } /* Import */
 code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 code span.kw { color: #007020; font-weight: bold; } /* Keyword */
 code span.op { color: #666666; } /* Operator */
@@ -235,30 +240,30 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </nav>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc">
+        <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#clustermq" id="toc-clustermq" class="nav-link active" data-scroll-target="#clustermq"> <span class="header-section-number">13.1</span> Clustermq</a>
+  <li><a href="#clustermq" id="toc-clustermq" class="nav-link active" data-scroll-target="#clustermq"><span class="toc-section-number">13.1</span>  Clustermq</a>
   <ul class="collapse">
-  <li><a href="#persistent-workers" id="toc-persistent-workers" class="nav-link" data-scroll-target="#persistent-workers"> <span class="header-section-number">13.1.1</span> Persistent workers</a></li>
-  <li><a href="#clustermq-installation" id="toc-clustermq-installation" class="nav-link" data-scroll-target="#clustermq-installation"> <span class="header-section-number">13.1.2</span> Clustermq installation</a></li>
-  <li><a href="#automatic-configuration-with-use_targets" id="toc-automatic-configuration-with-use_targets" class="nav-link" data-scroll-target="#automatic-configuration-with-use_targets"> <span class="header-section-number">13.1.3</span> Automatic configuration with <code>use_targets()</code></a></li>
-  <li><a href="#clustermq-local-configuration" id="toc-clustermq-local-configuration" class="nav-link" data-scroll-target="#clustermq-local-configuration"> <span class="header-section-number">13.1.4</span> Clustermq local configuration</a></li>
-  <li><a href="#clustermq-remote-configuration" id="toc-clustermq-remote-configuration" class="nav-link" data-scroll-target="#clustermq-remote-configuration"> <span class="header-section-number">13.1.5</span> Clustermq remote configuration</a></li>
-  <li><a href="#clustermq-template-file-configuration" id="toc-clustermq-template-file-configuration" class="nav-link" data-scroll-target="#clustermq-template-file-configuration"> <span class="header-section-number">13.1.6</span> Clustermq template file configuration</a></li>
+  <li><a href="#persistent-workers" id="toc-persistent-workers" class="nav-link" data-scroll-target="#persistent-workers"><span class="toc-section-number">13.1.1</span>  Persistent workers</a></li>
+  <li><a href="#clustermq-installation" id="toc-clustermq-installation" class="nav-link" data-scroll-target="#clustermq-installation"><span class="toc-section-number">13.1.2</span>  Clustermq installation</a></li>
+  <li><a href="#automatic-configuration-with-use_targets" id="toc-automatic-configuration-with-use_targets" class="nav-link" data-scroll-target="#automatic-configuration-with-use_targets"><span class="toc-section-number">13.1.3</span>  Automatic configuration with <code>use_targets()</code></a></li>
+  <li><a href="#clustermq-local-configuration" id="toc-clustermq-local-configuration" class="nav-link" data-scroll-target="#clustermq-local-configuration"><span class="toc-section-number">13.1.4</span>  Clustermq local configuration</a></li>
+  <li><a href="#clustermq-remote-configuration" id="toc-clustermq-remote-configuration" class="nav-link" data-scroll-target="#clustermq-remote-configuration"><span class="toc-section-number">13.1.5</span>  Clustermq remote configuration</a></li>
+  <li><a href="#clustermq-template-file-configuration" id="toc-clustermq-template-file-configuration" class="nav-link" data-scroll-target="#clustermq-template-file-configuration"><span class="toc-section-number">13.1.6</span>  Clustermq template file configuration</a></li>
   </ul></li>
-  <li><a href="#future" id="toc-future" class="nav-link" data-scroll-target="#future"> <span class="header-section-number">13.2</span> Future</a>
+  <li><a href="#future" id="toc-future" class="nav-link" data-scroll-target="#future"><span class="toc-section-number">13.2</span>  Future</a>
   <ul class="collapse">
-  <li><a href="#transient-workers" id="toc-transient-workers" class="nav-link" data-scroll-target="#transient-workers"> <span class="header-section-number">13.2.1</span> Transient workers</a></li>
-  <li><a href="#automatic-configuration-with-use_targets-1" id="toc-automatic-configuration-with-use_targets-1" class="nav-link" data-scroll-target="#automatic-configuration-with-use_targets-1"> <span class="header-section-number">13.2.2</span> Automatic configuration with <code>use_targets()</code></a></li>
-  <li><a href="#future-installation" id="toc-future-installation" class="nav-link" data-scroll-target="#future-installation"> <span class="header-section-number">13.2.3</span> Future installation</a></li>
-  <li><a href="#future-locally" id="toc-future-locally" class="nav-link" data-scroll-target="#future-locally"> <span class="header-section-number">13.2.4</span> Future locally</a></li>
-  <li><a href="#future-remotely" id="toc-future-remotely" class="nav-link" data-scroll-target="#future-remotely"> <span class="header-section-number">13.2.5</span> Future remotely</a></li>
-  <li><a href="#future-configuration" id="toc-future-configuration" class="nav-link" data-scroll-target="#future-configuration"> <span class="header-section-number">13.2.6</span> Future configuration</a></li>
+  <li><a href="#transient-workers" id="toc-transient-workers" class="nav-link" data-scroll-target="#transient-workers"><span class="toc-section-number">13.2.1</span>  Transient workers</a></li>
+  <li><a href="#automatic-configuration-with-use_targets-1" id="toc-automatic-configuration-with-use_targets-1" class="nav-link" data-scroll-target="#automatic-configuration-with-use_targets-1"><span class="toc-section-number">13.2.2</span>  Automatic configuration with <code>use_targets()</code></a></li>
+  <li><a href="#future-installation" id="toc-future-installation" class="nav-link" data-scroll-target="#future-installation"><span class="toc-section-number">13.2.3</span>  Future installation</a></li>
+  <li><a href="#future-locally" id="toc-future-locally" class="nav-link" data-scroll-target="#future-locally"><span class="toc-section-number">13.2.4</span>  Future locally</a></li>
+  <li><a href="#future-remotely" id="toc-future-remotely" class="nav-link" data-scroll-target="#future-remotely"><span class="toc-section-number">13.2.5</span>  Future remotely</a></li>
+  <li><a href="#future-configuration" id="toc-future-configuration" class="nav-link" data-scroll-target="#future-configuration"><span class="toc-section-number">13.2.6</span>  Future configuration</a></li>
   </ul></li>
-  <li><a href="#advanced" id="toc-advanced" class="nav-link" data-scroll-target="#advanced"> <span class="header-section-number">13.3</span> Advanced</a></li>
-  <li><a href="#cloud-computing" id="toc-cloud-computing" class="nav-link" data-scroll-target="#cloud-computing"> <span class="header-section-number">13.4</span> Cloud computing</a></li>
+  <li><a href="#advanced" id="toc-advanced" class="nav-link" data-scroll-target="#advanced"><span class="toc-section-number">13.3</span>  Advanced</a></li>
+  <li><a href="#cloud-computing" id="toc-cloud-computing" class="nav-link" data-scroll-target="#cloud-computing"><span class="toc-section-number">13.4</span>  Cloud computing</a></li>
   </ul>
 </nav>
     </div>
@@ -324,8 +329,8 @@ Performance
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_visnetwork</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="htmlwidget-74c3e2071bffb47539e8" style="width:100%;height:464px;" class="visNetwork html-widget"></div>
-<script type="application/json" data-for="htmlwidget-74c3e2071bffb47539e8">{"x":{"nodes":{"name":["data","fast_fit","plot_1","plot_2","slow_fit"],"type":["stem","stem","stem","stem","stem"],"status":["outdated","outdated","outdated","outdated","outdated"],"seconds":[null,null,null,null,null],"bytes":[null,null,null,null,null],"branches":[null,null,null,null,null],"label":["data","fast_fit","plot_1","plot_2","slow_fit"],"color":["#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5"],"id":["data","fast_fit","plot_1","plot_2","slow_fit"],"level":[1,2,3,3,2],"shape":["dot","dot","dot","dot","dot"]},"edges":{"from":["data","fast_fit","data","slow_fit"],"to":["fast_fit","plot_1","slow_fit","plot_2"],"arrows":["to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"interaction":{"zoomSpeed":1},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Outdated","Stem"],"color":["#78B7C5","#899DA4"],"shape":["dot","dot"]},"nodesToDataframe":true},"tooltipStay":300,"tooltipStyle":"position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;border: 1px solid #808074;box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-86ffa6934bd3f4b86fb4" style="width:100%;height:464px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-86ffa6934bd3f4b86fb4">{"x":{"nodes":{"name":["data","fast_fit","plot_1","plot_2","slow_fit"],"type":["stem","stem","stem","stem","stem"],"status":["outdated","outdated","outdated","outdated","outdated"],"seconds":[null,null,null,null,null],"bytes":[null,null,null,null,null],"branches":[null,null,null,null,null],"label":["data","fast_fit","plot_1","plot_2","slow_fit"],"color":["#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5"],"id":["data","fast_fit","plot_1","plot_2","slow_fit"],"level":[1,2,3,3,2],"shape":["dot","dot","dot","dot","dot"]},"edges":{"from":["data","fast_fit","data","slow_fit"],"to":["fast_fit","plot_1","slow_fit","plot_2"],"arrows":["to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"interaction":{"zoomSpeed":1},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Outdated","Stem"],"color":["#78B7C5","#899DA4"],"shape":["dot","dot"]},"nodesToDataframe":true},"tooltipStay":300,"tooltipStyle":"position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;border: 1px solid #808074;box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <p>When we run this pipeline with high-performance computing, <code>targets</code> automatically knows to wait for <code>data</code> to finish running before moving on to the other targets. Once <code>data</code> is finished, it moves on to targets <code>fast_fit</code> and <code>slow_fit</code>. If <code>fast_fit</code> finishes before <code>slow_fit</code>, target <code>plot_1</code> begins even as <code>slow_fit</code> is still running.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
@@ -616,14 +621,14 @@ exit 0</code></pre>
 
 
 </section>
-<section class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn1" role="doc-endnote"><p>Please use <code>tar_make_clustermq()</code> or <code>tar_make_future()</code> instead of multiple concurrent calls to <code>tar_make()</code>. The former is the proper way to use parallel computing in <code>targets</code>, and the latter will probably break the <a href="data.html">data store</a>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2" role="doc-endnote"><p>Unlike <a href="https://github.com/ropensci/drake"><code>drake</code></a>, <code>targets</code> applies this behavior not only to stem targets, but also to branches of patterns.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3" role="doc-endnote"><p>Some alternative local future plans are <a href="https://github.com/HenrikBengtsson/future/#controlling-how-futures-are-resolved">listed here</a>.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn4" role="doc-endnote"><p>The <code>resources</code> of <code>tar_target()</code> defaults to <code>tar_option_get("resources")</code>. You can set the default value for all targets using <code>tar_option_set()</code>.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn5" role="doc-endnote"><p>In older version of <code>targets</code>, <code>resources</code> was a named list. In <code>targets</code> version 0.5.0.9000 and above, please create the <code>resources</code> argument with helpers <code>tar_resources()</code> and <code>tar_resources_future()</code>.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>Please use <code>tar_make_clustermq()</code> or <code>tar_make_future()</code> instead of multiple concurrent calls to <code>tar_make()</code>. The former is the proper way to use parallel computing in <code>targets</code>, and the latter will probably break the <a href="data.html">data store</a>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Unlike <a href="https://github.com/ropensci/drake"><code>drake</code></a>, <code>targets</code> applies this behavior not only to stem targets, but also to branches of patterns.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>Some alternative local future plans are <a href="https://github.com/HenrikBengtsson/future/#controlling-how-futures-are-resolved">listed here</a>.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>The <code>resources</code> of <code>tar_target()</code> defaults to <code>tar_option_get("resources")</code>. You can set the default value for all targets using <code>tar_option_set()</code>.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>In older version of <code>targets</code>, <code>resources</code> was a named list. In <code>targets</code> version 0.5.0.9000 and above, please create the <code>resources</code> argument with helpers <code>tar_resources()</code> and <code>tar_resources_future()</code>.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
 
@@ -697,7 +702,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   for (var i=0; i<noterefs.length; i++) {
     const ref = noterefs[i];
     tippyHover(ref, function() {
-      let href = ref.getAttribute('href');
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);

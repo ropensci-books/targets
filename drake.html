@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.0.38">
+<meta name="generator" content="quarto-1.1.149">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -11,10 +11,15 @@
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-span.underline{text-decoration: underline;}
-div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -53,7 +58,7 @@ code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code span.at { color: #7d9029; } /* Attribute */
 code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
+code span.bu { color: #008000; } /* BuiltIn */
 code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
 code span.ch { color: #4070a0; } /* Char */
 code span.cn { color: #880000; } /* Constant */
@@ -66,7 +71,7 @@ code span.er { color: #ff0000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
 code span.fl { color: #40a070; } /* Float */
 code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
+code span.im { color: #008000; font-weight: bold; } /* Import */
 code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 code span.kw { color: #007020; font-weight: bold; } /* Keyword */
 code span.op { color: #666666; } /* Operator */
@@ -231,24 +236,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </nav>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc">
+        <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#why-is-drake-superseded" id="toc-why-is-drake-superseded" class="nav-link active" data-scroll-target="#why-is-drake-superseded"> <span class="header-section-number">14.1</span> Why is <code>drake</code> superseded?</a></li>
-  <li><a href="#transitioning-to-targets" id="toc-transitioning-to-targets" class="nav-link" data-scroll-target="#transitioning-to-targets"> <span class="header-section-number">14.2</span> Transitioning to <code>targets</code></a></li>
-  <li><a href="#advantages-of-targets-over-drake" id="toc-advantages-of-targets-over-drake" class="nav-link" data-scroll-target="#advantages-of-targets-over-drake"> <span class="header-section-number">14.3</span> Advantages of <code>targets</code> over <code>drake</code></a>
+  <li><a href="#why-is-drake-superseded" id="toc-why-is-drake-superseded" class="nav-link active" data-scroll-target="#why-is-drake-superseded"><span class="toc-section-number">14.1</span>  Why is <code>drake</code> superseded?</a></li>
+  <li><a href="#transitioning-to-targets" id="toc-transitioning-to-targets" class="nav-link" data-scroll-target="#transitioning-to-targets"><span class="toc-section-number">14.2</span>  Transitioning to <code>targets</code></a></li>
+  <li><a href="#advantages-of-targets-over-drake" id="toc-advantages-of-targets-over-drake" class="nav-link" data-scroll-target="#advantages-of-targets-over-drake"><span class="toc-section-number">14.3</span>  Advantages of <code>targets</code> over <code>drake</code></a>
   <ul class="collapse">
-  <li><a href="#better-guardrails-by-design" id="toc-better-guardrails-by-design" class="nav-link" data-scroll-target="#better-guardrails-by-design"> <span class="header-section-number">14.3.1</span> Better guardrails by design</a></li>
-  <li><a href="#enhanced-debugging-support" id="toc-enhanced-debugging-support" class="nav-link" data-scroll-target="#enhanced-debugging-support"> <span class="header-section-number">14.3.2</span> Enhanced debugging support</a></li>
-  <li><a href="#improved-tracking-of-package-functions" id="toc-improved-tracking-of-package-functions" class="nav-link" data-scroll-target="#improved-tracking-of-package-functions"> <span class="header-section-number">14.3.3</span> Improved tracking of package functions</a></li>
-  <li><a href="#lighter-friendlier-data-management" id="toc-lighter-friendlier-data-management" class="nav-link" data-scroll-target="#lighter-friendlier-data-management"> <span class="header-section-number">14.3.4</span> Lighter, friendlier data management</a></li>
-  <li><a href="#cloud-storage" id="toc-cloud-storage" class="nav-link" data-scroll-target="#cloud-storage"> <span class="header-section-number">14.3.5</span> Cloud storage</a></li>
-  <li><a href="#show-status-of-functions-and-global-objects" id="toc-show-status-of-functions-and-global-objects" class="nav-link" data-scroll-target="#show-status-of-functions-and-global-objects"> <span class="header-section-number">14.3.6</span> Show status of functions and global objects</a></li>
-  <li><a href="#dynamic-branching-with-dplyrgroup_by" id="toc-dynamic-branching-with-dplyrgroup_by" class="nav-link" data-scroll-target="#dynamic-branching-with-dplyrgroup_by"> <span class="header-section-number">14.3.7</span> Dynamic branching with <code>dplyr::group_by()</code></a></li>
-  <li><a href="#composable-dynamic-branching" id="toc-composable-dynamic-branching" class="nav-link" data-scroll-target="#composable-dynamic-branching"> <span class="header-section-number">14.3.8</span> Composable dynamic branching</a></li>
-  <li><a href="#improved-parallel-efficiency" id="toc-improved-parallel-efficiency" class="nav-link" data-scroll-target="#improved-parallel-efficiency"> <span class="header-section-number">14.3.9</span> Improved parallel efficiency</a></li>
-  <li><a href="#metaprogramming" id="toc-metaprogramming" class="nav-link" data-scroll-target="#metaprogramming"> <span class="header-section-number">14.3.10</span> Metaprogramming</a></li>
+  <li><a href="#better-guardrails-by-design" id="toc-better-guardrails-by-design" class="nav-link" data-scroll-target="#better-guardrails-by-design"><span class="toc-section-number">14.3.1</span>  Better guardrails by design</a></li>
+  <li><a href="#enhanced-debugging-support" id="toc-enhanced-debugging-support" class="nav-link" data-scroll-target="#enhanced-debugging-support"><span class="toc-section-number">14.3.2</span>  Enhanced debugging support</a></li>
+  <li><a href="#improved-tracking-of-package-functions" id="toc-improved-tracking-of-package-functions" class="nav-link" data-scroll-target="#improved-tracking-of-package-functions"><span class="toc-section-number">14.3.3</span>  Improved tracking of package functions</a></li>
+  <li><a href="#lighter-friendlier-data-management" id="toc-lighter-friendlier-data-management" class="nav-link" data-scroll-target="#lighter-friendlier-data-management"><span class="toc-section-number">14.3.4</span>  Lighter, friendlier data management</a></li>
+  <li><a href="#cloud-storage" id="toc-cloud-storage" class="nav-link" data-scroll-target="#cloud-storage"><span class="toc-section-number">14.3.5</span>  Cloud storage</a></li>
+  <li><a href="#show-status-of-functions-and-global-objects" id="toc-show-status-of-functions-and-global-objects" class="nav-link" data-scroll-target="#show-status-of-functions-and-global-objects"><span class="toc-section-number">14.3.6</span>  Show status of functions and global objects</a></li>
+  <li><a href="#dynamic-branching-with-dplyrgroup_by" id="toc-dynamic-branching-with-dplyrgroup_by" class="nav-link" data-scroll-target="#dynamic-branching-with-dplyrgroup_by"><span class="toc-section-number">14.3.7</span>  Dynamic branching with <code>dplyr::group_by()</code></a></li>
+  <li><a href="#composable-dynamic-branching" id="toc-composable-dynamic-branching" class="nav-link" data-scroll-target="#composable-dynamic-branching"><span class="toc-section-number">14.3.8</span>  Composable dynamic branching</a></li>
+  <li><a href="#improved-parallel-efficiency" id="toc-improved-parallel-efficiency" class="nav-link" data-scroll-target="#improved-parallel-efficiency"><span class="toc-section-number">14.3.9</span>  Improved parallel efficiency</a></li>
+  <li><a href="#metaprogramming" id="toc-metaprogramming" class="nav-link" data-scroll-target="#metaprogramming"><span class="toc-section-number">14.3.10</span>  Metaprogramming</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -770,7 +775,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   for (var i=0; i<noterefs.length; i++) {
     const ref = noterefs[i];
     tippyHover(ref, function() {
-      let href = ref.getAttribute('href');
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);

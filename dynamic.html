@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.0.38">
+<meta name="generator" content="quarto-1.1.149">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -11,10 +11,15 @@
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-span.underline{text-decoration: underline;}
-div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -53,7 +58,7 @@ code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code span.at { color: #7d9029; } /* Attribute */
 code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
+code span.bu { color: #008000; } /* BuiltIn */
 code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
 code span.ch { color: #4070a0; } /* Char */
 code span.cn { color: #880000; } /* Constant */
@@ -66,7 +71,7 @@ code span.er { color: #ff0000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
 code span.fl { color: #40a070; } /* Float */
 code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
+code span.im { color: #008000; font-weight: bold; } /* Import */
 code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 code span.kw { color: #007020; font-weight: bold; } /* Keyword */
 code span.op { color: #666666; } /* Operator */
@@ -231,19 +236,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </nav>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc">
+        <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#branching" id="toc-branching" class="nav-link active" data-scroll-target="#branching"> <span class="header-section-number">11.1</span> Branching</a></li>
-  <li><a href="#about-dynamic-branching" id="toc-about-dynamic-branching" class="nav-link" data-scroll-target="#about-dynamic-branching"> <span class="header-section-number">11.2</span> About dynamic branching</a></li>
-  <li><a href="#example" id="toc-example" class="nav-link" data-scroll-target="#example"> <span class="header-section-number">11.3</span> Example</a></li>
-  <li><a href="#provenance" id="toc-provenance" class="nav-link" data-scroll-target="#provenance"> <span class="header-section-number">11.4</span> Provenance</a></li>
-  <li><a href="#patterns" id="toc-patterns" class="nav-link" data-scroll-target="#patterns"> <span class="header-section-number">11.5</span> Patterns</a></li>
-  <li><a href="#iteration" id="toc-iteration" class="nav-link" data-scroll-target="#iteration"> <span class="header-section-number">11.6</span> Iteration</a></li>
-  <li><a href="#branching-over-row-groups" id="toc-branching-over-row-groups" class="nav-link" data-scroll-target="#branching-over-row-groups"> <span class="header-section-number">11.7</span> Branching over row groups</a></li>
-  <li><a href="#branching-over-files" id="toc-branching-over-files" class="nav-link" data-scroll-target="#branching-over-files"> <span class="header-section-number">11.8</span> Branching over files</a></li>
-  <li><a href="#performance-and-batching" id="toc-performance-and-batching" class="nav-link" data-scroll-target="#performance-and-batching"> <span class="header-section-number">11.9</span> Performance and batching</a></li>
+  <li><a href="#branching" id="toc-branching" class="nav-link active" data-scroll-target="#branching"><span class="toc-section-number">11.1</span>  Branching</a></li>
+  <li><a href="#about-dynamic-branching" id="toc-about-dynamic-branching" class="nav-link" data-scroll-target="#about-dynamic-branching"><span class="toc-section-number">11.2</span>  About dynamic branching</a></li>
+  <li><a href="#example" id="toc-example" class="nav-link" data-scroll-target="#example"><span class="toc-section-number">11.3</span>  Example</a></li>
+  <li><a href="#provenance" id="toc-provenance" class="nav-link" data-scroll-target="#provenance"><span class="toc-section-number">11.4</span>  Provenance</a></li>
+  <li><a href="#patterns" id="toc-patterns" class="nav-link" data-scroll-target="#patterns"><span class="toc-section-number">11.5</span>  Patterns</a></li>
+  <li><a href="#iteration" id="toc-iteration" class="nav-link" data-scroll-target="#iteration"><span class="toc-section-number">11.6</span>  Iteration</a></li>
+  <li><a href="#branching-over-row-groups" id="toc-branching-over-row-groups" class="nav-link" data-scroll-target="#branching-over-row-groups"><span class="toc-section-number">11.7</span>  Branching over row groups</a></li>
+  <li><a href="#branching-over-files" id="toc-branching-over-files" class="nav-link" data-scroll-target="#branching-over-files"><span class="toc-section-number">11.8</span>  Branching over files</a></li>
+  <li><a href="#performance-and-batching" id="toc-performance-and-batching" class="nav-link" data-scroll-target="#performance-and-batching"><span class="toc-section-number">11.9</span>  Performance and batching</a></li>
   </ul>
 </nav>
     </div>
@@ -393,7 +398,7 @@ Performance
 <span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start branch single_plot_ebcb8a12</span></span>
 <span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built branch single_plot_ebcb8a12</span></span>
 <span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built pattern single_plot</span></span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • end pipeline: 0.468 seconds</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • end pipeline: 0.408 seconds</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The final plot shows all the spirographs together.</p>
 <div class="cell">
@@ -418,8 +423,7 @@ Performance
 <span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8 -2.15 -4.60            3              9</span></span>
 <span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9 -2.10 -4.62            3              9</span></span>
 <span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10 -2.06 -4.64            3              9</span></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # … with 19,990 more rows</span></span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ Use `print(n = ...)` to see more rows</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # … with 19,990 more rows</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>By contrast, target <code>single_plot</code> list of branches because of <code>iteration = "list"</code>.</p>
 <div class="cell">
@@ -456,8 +460,7 @@ Performance
 <span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8 -2.15 -4.60            3              9</span></span>
 <span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9 -2.10 -4.62            3              9</span></span>
 <span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10 -2.06 -4.64            3              9</span></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # … with 9,990 more rows</span></span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ Use `print(n = ...)` to see more rows</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # … with 9,990 more rows</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(points, <span class="at">branches =</span> <span class="dv">2</span>) <span class="co"># second branch</span></span>
@@ -474,8 +477,7 @@ Performance
 <span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8  1.53  3.91            7              2</span></span>
 <span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9  1.48  3.96            7              2</span></span>
 <span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10  1.43  4.00            7              2</span></span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # … with 9,990 more rows</span></span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ Use `print(n = ...)` to see more rows</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # … with 9,990 more rows</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="patterns" class="level2" data-number="11.5">
@@ -671,12 +673,12 @@ Performance
 
 
 </section>
-<section class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn1" role="doc-endnote"><p>The pipeline uses code borrowed from the <a href="https://wjschne.github.io/spiro/index.html"><code>spiro</code></a> package. The code in the <code>spirograph_points()</code> function is adapted from <a href="https://github.com/wjschne/spiro/blob/87f73ec37ceb0a7a9d09856ada8ae28d587a2ebd/R/spirograph.R" class="uri">https://github.com/wjschne/spiro/blob/87f73ec37ceb0a7a9d09856ada8ae28d587a2ebd/R/spirograph.R</a> under the CC0 1.0 Universal license: <a href="https://github.com/wjschne/spiro/blob/87f73ec37ceb0a7a9d09856ada8ae28d587a2ebd/LICENSE.md" class="uri">https://github.com/wjschne/spiro/blob/87f73ec37ceb0a7a9d09856ada8ae28d587a2ebd/LICENSE.md</a><a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2" role="doc-endnote"><p>See also <a href="https://books.ropensci.org/targets/debugging.html#workspaces" class="uri">https://books.ropensci.org/targets/debugging.html#workspaces</a>.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3" role="doc-endnote"><p><code>points_940d58fc</code> and <code>points_bf28fe5a</code> are targets in their own right and can be inspected with <code>tar_read(points_940d58fc)</code> and <code>tar_read(points_bf28fe5a)</code><a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>The pipeline uses code borrowed from the <a href="https://wjschne.github.io/spiro/index.html"><code>spiro</code></a> package. The code in the <code>spirograph_points()</code> function is adapted from <a href="https://github.com/wjschne/spiro/blob/87f73ec37ceb0a7a9d09856ada8ae28d587a2ebd/R/spirograph.R" class="uri">https://github.com/wjschne/spiro/blob/87f73ec37ceb0a7a9d09856ada8ae28d587a2ebd/R/spirograph.R</a> under the CC0 1.0 Universal license: <a href="https://github.com/wjschne/spiro/blob/87f73ec37ceb0a7a9d09856ada8ae28d587a2ebd/LICENSE.md" class="uri">https://github.com/wjschne/spiro/blob/87f73ec37ceb0a7a9d09856ada8ae28d587a2ebd/LICENSE.md</a><a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>See also <a href="https://books.ropensci.org/targets/debugging.html#workspaces" class="uri">https://books.ropensci.org/targets/debugging.html#workspaces</a>.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p><code>points_940d58fc</code> and <code>points_bf28fe5a</code> are targets in their own right and can be inspected with <code>tar_read(points_940d58fc)</code> and <code>tar_read(points_bf28fe5a)</code><a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
 
@@ -750,7 +752,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   for (var i=0; i<noterefs.length; i++) {
     const ref = noterefs[i];
     tippyHover(ref, function() {
-      let href = ref.getAttribute('href');
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
