@@ -138,6 +138,10 @@ And of course, check the dependency graph to ensure the pipeline is properly con
 tar_visnetwork(targets_only = TRUE)
 ```
 
+### Limitations
+
+[`tar_map()`](https://docs.ropensci.org/tarchetypes/reference/tar_map.html) generates [R expressions](https://adv-r.hadley.nz/expressions.html) to serve as commands in other targets. When it substitutes an element from `values`, it needs a way to transform the element into valid R code. For elements even a little bit complicated, especially nested data frames and objects with attributes, this is not always possible. For these complicated elements, it is best to use `quote()` to work with the underlying [expressions](https://adv-r.hadley.nz/expressions.html) instead of the objects themselves. See <https://github.com/ropensci/tarchetypes/discussions/105> for an example.
+
 ## Dynamic-within-static branching
 
 You can even combine together static and dynamic branching. The static `tar_map()` is an excellent outer layer on top of targets with patterns. The following is a sketch of a pipeline that runs each of two data analysis methods 10 times, once per random seed. Static branching iterates over the method functions, while dynamic branching iterates over the seeds. `tar_map()` creates new patterns as well as new commands. So below, the summary methods map over the analysis methods both statically and dynamically.
