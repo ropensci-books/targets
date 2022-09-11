@@ -54,8 +54,11 @@ tar_option_set(
   packages = c("package1", "package2", ...), # `...` is for other packages.
   imports = c("package1", "package2")
 )
-# Write the rest of _targets.R below.
-# ...
+list(
+  tar_target(name = output, command = function_from_package1())
+)
 ```
 
-`packages = c("package1", "package2", ...)` tells `targets` to call `library(package1)`, `library(package2)`, etc. before running each target. `imports = c("package1", "package2")` tells `targets` to dive into the environments of `package1` and `package2` and reproducibly track all the objects it finds. For example, if you define a function `f()` in `package1`, then you should see a function node for `f()` in the graph produced by `tar_visnetwork(targets_only = FALSE)`, and targets downstream of `f()` will invalidate if you install an update to `package1` with a new version of `f()`. The next time you call `tar_make()`, those invalidated targets will automatically rerun.
+`packages = c("package1", "package2", ...)` tells `targets` to call `library(package1)`, `library(package2)`, etc. before running each target. `imports = c("package1", "package2")` tells `targets` to dive into the environments of `package1` and `package2` and reproducibly track all the objects and datasets as if they were part of the global environment. For example, if you define a function `function_from_package1()` in `package1`, then you should see a function node for `function_from_package1()` in the graph produced by `tar_visnetwork(targets_only = FALSE)`, and targets downstream of `function_from_package1()` will invalidate if you install an update to `package1` with a new version of `function_from_package1()`. The next time you call `tar_make()`, those invalidated targets will automatically rerun.
+
+One limitation is that entire namespaced calls like `package1::function_from_package1()` are not registered in the dependency graph because of the limitations of the static code analysis capabilities of `targets` (powered by `codetools::findGlobals()`). `tar_target(name = output, command = function_from_package1())` has a dependency `function_from_package1()`, but `tar_target(name = output, command = package1::function_from_package1())` does not have a dependency `package1::function_from_package1()`. This is because `::` is treated as a function with arguments `package` and `function_from_package1`.
