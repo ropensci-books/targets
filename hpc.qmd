@@ -72,7 +72,7 @@ Even if you plan to create a large-scale heavy-duty pipeline with hundreds of ti
 
 ### Persistent workers
 
-`tar_make_clustermq()` uses persistent workers. That means all the parallel processes launch together as soon as there is a target to build, and all the processes keep running until the pipeline winds down. The video clip below visualizes the concept.
+`tar_make_clustermq()` uses persistent workers. A persistent worker is an R process that launches early in the pipeline and stays running until the whole pipeline starts to wind down. A persistent worker usually runs multiple targets during its lifecycle, and it is not possible to precisely predict in advance which targets will be assigned to which workers. The video clip below visualizes the concept.
 
 <script src="https://fast.wistia.com/embed/medias/ycczhxwkjw.jsonp" async></script><script src="https://fast.wistia.com/assets/external/E-v1.js" async></script><div class="wistia_responsive_padding" style="padding:56.21% 0 0 0;position:relative;"><div class="wistia_responsive_wrapper" style="height:100%;left:0;position:absolute;top:0;width:100%;"><div class="wistia_embed wistia_async_ycczhxwkjw videoFoam=true" style="height:100%;position:relative;width:100%"><div class="wistia_swatch" style="height:100%;left:0;opacity:0;overflow:hidden;position:absolute;top:0;transition:opacity 200ms;width:100%;"><img src="https://fast.wistia.com/embed/medias/ycczhxwkjw/swatch" style="filter:blur(5px);height:100%;object-fit:contain;width:100%;" alt="" onload="this.parentNode.style.opacity=1;" /></div></div></div></div>
 
@@ -86,7 +86,7 @@ If `clustermq` is installed, then `use_targets()` function configures `clustermq
 
 ### Clustermq local configuration
 
-If you are manually configuring `clustermq` for your pipeline, be sure to set the `clustermq.scheduler` global option to a a local scheduler like `"multiprocess"`. Many of the supported schedulers and their configuration details are [listed here](https://mschubert.github.io/clustermq/articles/userguide.html#configuration).
+To utilize parallel computing on your local machine, set the `clustermq.scheduler` option to `"multicore"` or `"multiprocess"` in your `_targets.R` file. See the [configuration instructions](https://mschubert.github.io/clustermq/articles/userguide.html#configuration) for details.
 
 ```{r, eval = FALSE}
 # _targets.R
@@ -100,7 +100,7 @@ list(
 )
 ```
 
-Then, run `tar_make_clustermq()` with the appropriate number of workers.
+Then, run `tar_make_clustermq()` with the appropriate number of workers. These workers are local R processes that run concurrently to run the outdated targets in the pipeline. The workers launch as soon as there is an outdated target with `deployment = "worker"`, and they continue running until there are no more targets to run.
 
 ```{r, eval = FALSE}
 # R console
@@ -109,7 +109,7 @@ tar_make_clustermq(workers = 2)
 
 ### Clustermq remote configuration
 
-For parallel computing on a cluster,
+A cluster is a collection of multiple computers that work together to run computationally demanding workloads. A cluster is capable of running far more tasks simultaneously than a local workstation like a PC or laptop. When configured for a cluster, `tar_make_clustermq()` uses `clustermq` to run persistent workers as long-running distributed jobs. To manually set the configuration,
 
 1. Choose a [scheduler listed here](https://mschubert.github.io/clustermq/articles/userguide.html#configuration) that corresponds to your cluster's resource manager.
 1. Create a [template file](https://github.com/mschubert/clustermq/tree/master/inst) that configures the computing requirements and other settings for the cluster.
@@ -142,7 +142,7 @@ module load R/3.6.3   # Needed if R is an environment module on the cluster.
 CMQ_AUTH={{ auth }} R --no-save --no-restore -e 'clustermq:::worker("{{ main }}")' # Leave alone.
 ```
 
-Then, run `tar_make_clustermq()` as before.
+Then, run `tar_make_clustermq()` as before. Instead of running locally, the workers will run as jobs on the cluster. Because they are persistent workers, they launch as soon as there is an outdated target with `deployment = "worker"`, and they continue running until they complete their current targets and there are no more targets to assign.
 
 ```{r, eval = FALSE}
 # R console
@@ -193,6 +193,12 @@ tar_make_clustermq(workers = 2)
 ```
 
 This particular use case comes up when you have custom parallel computing within targets and need to take advantage of multiple cores.
+
+:::{.callout-warning}
+## `clustermq` resources
+
+Remember: with `tar_make_clustermq()`, the workers are *persistent*. A persistent worker runs multiple targets, and it is not possible to predict which targets will be assigned to any given persistent worker. So in the `resources` argument of `tar_target()`, any `clustermq`-specific will be ignored. `tar_option_set()` is the only way to set `clustermq` resources.
+:::
 
 ## Future
 
