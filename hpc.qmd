@@ -197,7 +197,7 @@ This particular use case comes up when you have custom parallel computing within
 :::{.callout-warning}
 ## `clustermq` resources
 
-Remember: with `tar_make_clustermq()`, the workers are *persistent*. A persistent worker runs multiple targets, and it is not possible to predict which targets will be assigned to any given persistent worker. So in the `resources` argument of `tar_target()`, any `clustermq`-specific will be ignored. `tar_option_set()` is the only way to set `clustermq` resources.
+Remember: with `tar_make_clustermq()`, the workers are *persistent*, which means there is not a one-to-one correspondence between workers and targets. In the `resources` arguemnt of `tar_option_set()`, the `clustermq`-specific resources apply to the workers, not the targets directly. So in the `resources` argument of `tar_target()`, any `clustermq`-specific will be ignored. `tar_option_set()` is the only way to set `clustermq` resources.
 :::
 
 ## Future
