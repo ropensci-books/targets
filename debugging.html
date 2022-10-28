@@ -426,7 +426,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">2</span>]<span class="sc">&gt;</span> <span class="fu">anyNA</span>(dataset<span class="sc">$</span>outcome) <span class="co"># Do I need to handle missing values?</span></span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Sometimes, however, you may not see the original error:</p>
+<p>In some cases, however, you may not see the original error:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>dataset <span class="ot">&lt;-</span> <span class="fu">simulate_data</span>(<span class="dv">100</span>)</span>
@@ -437,7 +437,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 (Intercept)    0.595    0.152       3.92 1.05e- 4    0.297     0.892</span></span>
 <span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 factor         0.362    0.0476      7.61 2.04e-13    0.269     0.455</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Above, the random number generator seed in your local session is different from the seed assigned to the target in the pipeline. The dataset from the pipeline has missing values, whereas the one in the local session does not. If you cannot reproduce the error in an interactive R session, read on.</p>
+<p>Above, the random number generator seed in your local session is different from the seed assigned to the target in the pipeline. The dataset from the pipeline has missing values, whereas the one in the local session does not.</p>
+<p>If you cannot reproduce the error in an interactive R session, read on.</p>
 </section>
 <section id="system-issues" class="level2" data-number="3.6">
 <h2 data-number="3.6" class="anchored" data-anchor-id="system-issues"><span class="header-section-number">3.6</span> System issues</h2>
@@ -929,7 +930,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li id="fn4"><p>In <code>tarchetypes</code> version <code>0.7.1.9000</code> and above, this re-batching will <a href="https://github.com/ropensci/tarchetypes/pull/113">not change the random number generator seed assigned to each call to <code>simulate_and_analyze_one_dataset()</code></a>.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn5"><p>You can also run <code>tar_make_clustermq(callr_function = NULL)</code> or <code>tar_make_future(callr_function = NULL)</code>. In either case, the target to debug will not run on a parallel worker even if you set <code>deployment = "worker"</code>.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn6"><p><code>tar_option_set()</code> also has a <code>workspaces</code> argument to let you choose which targets save workspace files, regardless of whether they hit errors.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn7"><p>You can retrieve this seed with <code>tar_meta(names = analysis_02de2921, fields = seed)</code>. In the pipeline, <code>targets</code> sets this seed with <code>withr::with_seed()</code> just before running the target. However, other functions or target factories may set their own seeds. For example, <code>tarchetypes::tar_map_rep()</code> sets its own target seeds so they are resilient to re-batching. For more details on seeds, see the documentation of the <code>seed</code> argument of <a href="https://docs.ropensci.org/targets/reference/tar_option_set.html#arguments"><code>tar_option_set()</code></a>.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>You can retrieve this seed with <code>tar_meta(names = analysis_02de2921, fields = seed)</code>. In the pipeline, <code>targets</code> sets this seed with <code>withr::with_seed()</code> just before running the target. However, other functions or target factories may set their own seeds. For example, <code>tarchetypes::tar_map_rep()</code> sets its own target seeds so they are <a href="https://github.com/ropensci/tarchetypes/pull/113">resilient to re-batching</a>. For more details on seeds, see the documentation of the <code>seed</code> argument of <a href="https://docs.ropensci.org/targets/reference/tar_option_set.html#arguments"><code>tar_option_set()</code></a>.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
 
