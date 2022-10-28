@@ -686,7 +686,7 @@ tar_workspace(analysis_02de2921)
 
 At this point, the global objects, functions, and upstream dependencies of target `analysis_02de2921` are in memory. In addition, the target's original random number generator seed is set.[^seed]
 
-[^seed]: You can retrieve this seed with `tar_meta(names = analysis_02de2921, fields = seed)`. `targets` sets this seed with `withr::with_seed()` just before the target runs in the pipeline. However, other functions or target factories may set their own seeds. For example, `tarchetypes::tar_map_rep()` sets its own target seeds so they are resilient to re-batching. For more details on seeds, see the documentation of the `seed` argument of [`tar_option_set()`](https://docs.ropensci.org/targets/reference/tar_option_set.html#arguments).
+[^seed]: You can retrieve this seed with `tar_meta(names = analysis_02de2921, fields = seed)`. In the pipeline, `targets` sets this seed with `withr::with_seed()` just before running the target. However, other functions or target factories may set their own seeds. For example, `tarchetypes::tar_map_rep()` sets its own target seeds so they are resilient to re-batching. For more details on seeds, see the documentation of the `seed` argument of [`tar_option_set()`](https://docs.ropensci.org/targets/reference/tar_option_set.html#arguments).
 
 ```{r, eval = FALSE}
 # R console
