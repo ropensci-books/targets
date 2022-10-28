@@ -14,262 +14,701 @@ library(targets)
 
 # Debugging {#debugging}
 
-Pipelines are computationally demanding, complicated, and time-consuming to run. The scale can make it hard to troubleshoot when things go wrong. In addition, a pipeline is automated in a special non-interactive R process, so special steps are needed for interactive debugging with [`debug()`](https://rstats.wtf/debugging-r-code.html) and  [`browser()`](https://rstats.wtf/debugging-r-code.html). This chapter describes solutions to these challenges in terms of both best practices and features in `targets`.
+This chapter describes how to identify and solve errors in `targets` pipelines.
 
-## Error messages
+## Challenges
 
-The metadata in `_targets/meta/meta` contains error messages and warning messages from when each target last ran. `tar_meta()` can retrieve these clues. Sometimes they are enough to fix the problems.
+Pipelines are automated for reproducibility. When you run `tar_make()`, the following steps occur:
 
-```{r, eval = FALSE}
-tar_meta(fields = error, complete_only = TRUE)
-tar_meta(fields = warnings, complete_only = TRUE)
-```
+1. `targets` starts a new non-interactive R process using `callr::r()`.[^callr]
+1. The non-interactive R process runs `_targets.R` to load functions and objects, set options, and read the pipeline definition.
+1. The non-interactive R process orchestrates the targets, running or skipping each as necessary.
 
-## Isolate the problem
+[^callr]: The `callr_function` argument controls which [`callr`](https://github.com/r-lib/callr) function initializes the process.
 
-When you identify an error, i.e. from an error message, the solution is not always obvious, especially in a large complicated pipeline. Before even beginning to troubleshoot, it is best to reproduce the error in a smaller, more manageable version of the project that runs quickly and with few targets. In fact, it is best to reproduce it with fast-running downsized code that does not use a `targets` pipeline at all. That way, your can run it in an interactive R session and use traditional tools like  [`debug()`](https://rstats.wtf/debugging-r-code.html) to go to the error and figure out why it is happening. If it is not possible to reproduce the error outside the pipeline, you could create a smaller version of the pipeline that is faster to run and easier test. Just for testing purposes, you could use  fewer targets, fewer data records, or fewer iterations of a data analysis algorithm. By temporarily downsizing the pipeline while still reproducing the error, you make it easier to take advantage of the built-in debugging support described in the rest of this chapter.
+Your interactive R session cannot access this non-interactive R process. This makes pipelines more difficult to debug than the informal commands you may type into the R console or the [RStudio IDE](https://www.rstudio.com/products/rstudio/).
 
-## The dependency graph
+## Example
 
-`tar_visnetwork()` checks the dependency graph of the pipeline. When you call `tar_visentwork()`, you should see a natural left-to-right flow of work and dependency relationships. 
-
-```{r, echo = FALSE, eval = TRUE}
-tar_script({
-  your_analysis_function <- function(data) {}
-  list(tar_target(data, get_data()), tar_target(analysis, your_analysis_function(data)))
-})
-```
-
-```{r, eval = TRUE}
-tar_visnetwork()
-```
-
-If there are disconnected or missing nodes or edges, you may need to correct a spelling mistake in a target or function.
-
-## The manifest
-
-`tar_manifest()` shows the names, commands, and other settings of the targets in the pipeline.
-
-```{r, eval = TRUE}
-tar_manifest()
-```
-
-With the manifest, can check that the targets in the pipeline have the correct R commands.
+The following pipeline simulates a repeated measures dataset and analyzes it with generalized least squares.
 
 ```{r, eval = FALSE}
-# Interactive R console:
-> data <- get_data()
-> your_analysis_function(data)
-```
-
-This is especially helpful for [static branching](#static) with [`tar_map()`](https://docs.ropensci.org/tarchetypes/reference/tar_map.html), which tries to generate the commands automatically and may not succeed on your first attempt.
-
-## Environment browser
-
-The environment browser lets you pause R and troubleshoot interactively in the middle of a running pipeline. To prepare, insert a [`debug()`](https://rstats.wtf/debugging-r-code.html) or  [`browser()`](https://rstats.wtf/debugging-r-code.html) statement in the code where you want to start the interactive session. You could either put [`debug()`](https://rstats.wtf/debugging-r-code.html) in `_targets.R`:
-
-```{r, eval = FALSE}
-# _targets.R file:
+# _targets.R
 library(targets)
-
-# Defines your_analysis_function():
-source("R/script_with_your_analysis_function.R")
-
-# Tells R to pause next time you run your_analysis_function():
-debug(your_analysis_function)
-
-# Then write your target list as usual:
-list(
-  tar_target(data, get_data()),
-  # your_analysis_function() is called in a target:
-  tar_target(analysis, your_analysis_function(data))
+tar_option_set(
+  packages = c("broom", "broom.mixed", "dplyr", "nlme", "tibble", "tidyr")
 )
-```
 
-Or alternatively, insert a [`browser()`](https://rstats.wtf/debugging-r-code.html) inside the function itself:
-
-```{r, eval = FALSE}
-your_analysis_function <- function(data) {
-  browser() # Pause R here.
-  # The rest of the function goes here:
-  # ...
+simulate_data <- function(units) {
+  tibble(unit = seq_len(units), factor = rnorm(n = units, mean = 3)) %>%
+    expand_grid(measurement = seq_len(4)) %>%
+    mutate(outcome = sqrt(factor) + rnorm(n()))
 }
-```
 
-Then, restart your R session and call `tar_make()` with `callr_function = NULL`:
+analyze_data <- function(data) {
+  gls(
+    model = outcome ~ factor,
+    data = data,
+    correlation = corSymm(form = ~ measurement | unit),
+    weights = varIdent(form = ~ 1 | measurement)
+  ) %>%
+    tidy(conf.int = TRUE, conf.level = 0.95)
+}
 
-```{r, eval = FALSE}
-rstudioapi::restartSession()
-
-#> Restarting R session...
-
-tar_make(callr_function = NULL)
-#> ✔ skip target data
-#> • start target analysis
-#> Called from: your_analysis_function(data)
-#> Browse[1]> 
-```
-
-At `Browse[1]>`, you have an interactive R console inside a of running instance of `your_analysis_function()`. Use R to check the function arguments or [step through the code](https://rstats.wtf/debugging-r-code.html).
-
-
-```{r, eval = FALSE}
-#> Browse[1]> str(data)
-#> 'data.frame':	100 obs. of  2 variables:
-#>  $ x: int  73 24 15 4 86 64 39 35 83 58 ...
-#>  $ y: int  78 93 31 67 40 34 59 82 52 38 ...
-```
-
-## The debug option
-
-`targets` has a more convenient way to launch the environment browser from inside a target:
-
-1. In the target script file (default: `_targets.R`) write a call to `tar_option_set()` with `debug` equal to the target name.
-1. Launch a fresh clean new interactive R session with the target script file (default: `_targets.R`) script in your working directory.
-1. Run `targets::tar_make()` (or `targets::tar_make_clustermq()`, or `targets::tar_make_future()`) with `callr_function = NULL`. If you are using `targets` version 0.5.0.9000 or above, consider also setting `shortcut` to `TRUE` and supplying the target name to `names`.^[In the case of dynamic branching, `names` does not accept individual branch names, but you can still supply the name of the overarching dynamic target.] This allows `tar_make()` to reach the desired target more quickly.
-1. When `targets` reaches the target you selected to debug, your R session will start an interactive debugger, and you should see `Browse[1]>` in your console. Run `targets::tar_name()` to verify that you are debugging the correct target.
-1. Interactively run any R code that helps you troubleshoot the problem. For example, if the target invokes a function `f()`, enter `debug(f)` and then `c` to immediately enter the function's calling environment where all its arguments are defined.
-
-To try it out yourself, write the following target script file file.
-
-```{r, eval = FALSE}
-# _targets.R file
-library(targets)
-tar_option_set(debug = "b")
-f <- function(x, another_arg = 123) x + another_arg
 list(
-  tar_target(a, 1),
-  tar_target(b, f(a))
+  tar_target(name = dataset1, command = simulate_data(100)),
+  tar_target(name = model, command = analyze_data(dataset1))
 )
 ```
 
-Then, call `tar_make(callr_function = NULL)` to drop into a debugger at the command of `b`. 
+This pipeline has an error.
 
 ```{r, eval = FALSE}
 # R console
-tar_make(callr_function = NULL, names = any_of("b"), shortcut = TRUE)
-#> ● run target b
-#> Called from: eval(expr, envir)
-Browse[1]>
+tar_make()
+#> • start target dataset1
+#> • built target dataset1 [0.499 seconds]
+#> • start target model
+#> ✖ error target model
+#> • end pipeline [0.631 seconds]
+#> Warning messages:
+#> 1: NaNs produced 
+#> 2: 1 targets produced warnings. Run tar_meta(fields = warnings, complete_only = TRUE) for the messages. 
+#> Error:
+#> ! Error running targets::tar_make()
+#>   Target errors: targets::tar_meta(fields = error, complete_only = TRUE)
+#>   Tips: https://books.ropensci.org/targets/debugging.html
+#>   Last error: missing values in object
 ```
 
-When the debugger launches, run `targets::tar_name()` to confirm you are running the correct target.
+## Finish the pipeline anyway
+
+Even if you hit an error, you can still finish the successful parts of the pipeline. The `error` argument of `tar_option_set()` and `tar_target()` tells each target what to do it hits an error. For example, `tar_option_set(error = "null")` tells errored targets to return `NULL`. The output as a whole will not be correct or up to date, but the pipeline will finish so you can look at preliminary results. This is especially helpful with [dynamic branching](#dynamic).
 
 ```{r, eval = FALSE}
-Browse[1]> targets::tar_name()
-#> [1] "b"
-```
-
-In the debugger, the dependency targets of `b` are available in the current environment, and the global objects and functions are available in the parent environment.
-
-```{r, eval = FALSE}
-Browse[1]> ls()
-#> [1] "a"
-Browse[1]> a
-#> [1] 1
-Browse[1]> ls(parent.env(environment()))
-#> [1] "f"
-Browse[1]> f(1)
-#> [1] 124
-```
-
-Enter `debug(f)` to debug the function `f()`, and press `c` to enter the function's calling environment where `another_arg` is defined.
-
-```{r, eval = FALSE}
-Browse[1]> debug(f)
-Browse[1]> c
-#> debugging in: f(a)
-#> debug at _targets.R#3: x + another_arg
-Browse[2]> ls()
-#> [1] "another_arg" "x"   
-Browse[2]> another_arg
-#> [1] 123
-```
-
-## Workspaces
-
-Workspaces are a persistent alternative to the environment browser. A workspace is a special lightweight reference file that lists the elements of a target's runtime environment. Using `tar_workspace()`, you can recover a target's workspace and locally debug it even if the pipeline is not running. If you tell `targets` to record workspaces in advance, you can preempt errors and debug later at your convenience. To enable workspaces, use the `workspace_on_error` and `workspaces` arguments of `tar_option_set()`. These arguments set the conditions under which workspace files are saved. For example, `tar_option_set(workspace_on_error = TRUE, workspaces = c("x", "y"))` tells `tar_make()` and friends to save a workspace for a target named `x`, a target named `y`, and every target that throws and error. Example in a pipeline:
-
-```{r, eval = FALSE}
-# _targets.R file:
-options(tidyverse.quiet = TRUE)
+# _targets.R
 library(targets)
-options(crayon.enabled = FALSE)
-tar_option_set(workspace_on_error = TRUE, packages = "tidyverse")
-f <- function(arg, value, ...) {
-  stopifnot(arg < 4)
+tar_option_set(
+  packages = c("broom", "broom.mixed", "dplyr", "nlme", "tibble", "tidyr")
+  error = "null" # produce a result even if the target errored out.
+)
+
+# Functions etc...
+```
+
+```{r, eval = FALSE}
+# R console
+tar_make()
+#> • start target dataset1
+#> • built target dataset1 [0.657 seconds]
+#> • start target model
+#> ✖ error target model
+#> ✖ error target model
+#> • end pipeline [0.783 seconds]
+#> Warning messages:
+#> 1: NaNs produced 
+#> 2: 1 targets produced warnings. Run tar_meta(fields = warnings, complete_only = TRUE) for the messages.
+
+# We do have a result for target {model}.
+tar_read(model)
+#> NULL
+
+# But it is not up to date.
+tar_outdated()
+#> [1] "model"
+```
+
+
+## Error messages
+
+Still, it is important to fix known errors. The metadata in `_targets/meta/meta` is a good place to start. It stores the most recent error and warning messages for each target. `tar_meta()` can retrieve these messages.
+
+```{r, eval = FALSE}
+# R console
+tar_meta(fields = error, complete_only = TRUE)
+#> # A tibble: 1 × 2
+#>   name  error                   
+#>   <chr> <chr>                   
+#> 1 model missing values in object
+```
+
+```{r, eval = FALSE}
+# R console
+tar_meta(fields = warnings, complete_only = TRUE)
+#> # A tibble: 1 × 2
+#>   name     warnings     
+#>   <chr>    <chr>        
+#> 1 dataset1 NaNs produced
+```
+
+It looks like missing values in the data are responsible for the error in the `model`. Maybe this clue alone is enough to repair the code.[^missing] If not, read on.
+
+[^missing]: You can fix the bug by either removing the missing values from the dataset or by setting `na.action = na.omit` in `gls()`.
+
+## Functions
+
+Most errors are come from custom user-defined functions like `simulate_data()` and `analyze_data()`. See if you can reproduce the error in the R console.
+
+```{r, eval = FALSE}
+# R console
+library(targets)
+
+# Restart your R session.
+rstudioapi::restartSession()
+
+# Loads globals like tar_option_set() packages, simulate_data(), and analyze_data():
+tar_load_globals()
+
+# Load the data that the target depends on.
+tar_load(dataset1)
+
+# Run the command of the errored target.
+analyze_data(dataset1)
+#> Error in na.fail.default(list(measurement = c(1L, 2L, 3L, 4L, 1L, 2L,  : 
+#>   missing values in object
+```
+
+If you see the same error here that you saw in the pipeline, then good! Now that you are in an interactive R session, all the [usual debugging techniques and tools](https://adv-r.hadley.nz/debugging.html) such as `debug()` and `browser()` can help you figure out how to fix your code, and you can exclude `targets` from the rest of the debugging process.
+
+```{r, eval = FALSE}
+# R console
+debug(analyze_data)
+analyze_data(dataset1)
+#> debugging in: analyze_data(dataset)
+#> ...
+Browse[2]> anyNA(dataset$outcome) # Do I need to handle missing values?
+#> [1] TRUE
+```
+
+Sometimes, however, you may not see the original error:
+
+```{r, eval = FALSE}
+# R console
+dataset <- simulate_data(100)
+analyze_data(dataset)
+#> # A tibble: 2 × 7
+#>   term        estimate std.error statistic  p.value conf.low conf.high
+#> * <chr>          <dbl>     <dbl>     <dbl>    <dbl>    <dbl>     <dbl>
+#> 1 (Intercept)    0.595    0.152       3.92 1.05e- 4    0.297     0.892
+#> 2 factor         0.362    0.0476      7.61 2.04e-13    0.269     0.455
+```
+
+Above, the random number generator seed in your local session is different from the seed assigned to the target in the pipeline. The dataset from the pipeline has missing values, whereas the one in the local session does not. If you cannot reproduce the error in an interactive R session, read on.
+
+## System issues
+
+If you see an error in the pipeline but not your local interactive R session, then the bug could be system-related. For example, [this issue](https://github.com/ropensci/targets/discussions/506) was originally reported as a bug in `targets` but actually turned out to be a bug in the [interaction between packages `renv` and `callr`](https://github.com/rstudio/renv/issues/773#issuecomment-973765196). (Remember, `targets` uses `callr::r()` to launch the pipeline). To check for issues like that one, try running `tar_make()` with `callr_function = NULL` to avoid `callr` entirely:
+
+```{r, eval = FALSE}
+# R console
+rstudioapi::restartSession()
+targets::tar_make(callr_function = NULL)
+```
+
+In addition, try running your code with just `callr` and not `targets`:
+
+```{r, eval = FALSE}
+# R console
+callr::r(
+  func = function() {
+    library(targets)
+    tar_load_globals()
+    dataset <- simulate_data(100)
+    analyze_data(dataset)
+  },
+  show = TRUE
+)
+```
+
+Similarly, you can isolate many [high-performance computing](https://books.ropensci.org/targets/hpc.html) problems by directly invoking [`clustermq`](https://github.com/mschubert/clustermq) or [`future`](https://github.com/HenrikBengtsson/future). Examples:
+
+```{r, eval = FALSE}
+# R console with clustermq:
+# see https://mschubert.github.io/clustermq/articles/userguide.html
+options(clustermq.scheduler = "multiprocess")
+clustermq::Q(
+  function(arg) {
+    library(targets)
+    tar_load_globals()
+    dataset <- simulate_data(100)
+    analyze_data(dataset)
+  },
+  arg = 1,
+  n_jobs = 1
+)
+```
+
+```{r, eval = FALSE}
+# R console with future:
+# see https://future.futureverse.org
+future::plan(future::multisession)
+f <- future::future(
+  expr = {
+    library(targets)
+    tar_load_globals()
+    dataset <- simulate_data(100)
+    analyze_data(dataset)
+  },
+  seed = TRUE
+)
+future::value(f)
+```
+
+If you successfully reproduce the bug without using `targets`, then the problem becomes much smaller and much easier to solve, and you can completely exclude `targets` from the rest of the debugging process.
+
+## Pause the pipeline with `browser()`
+
+Sometimes, you may still need to run the pipeline to find the problem. The following trick lets you pause the pipeline and tinker with a running target interactively:
+
+1. Insert [`browser()`](https://adv-r.hadley.nz/debugging.html#browser) into the function that produces the error.
+1. Restart your R session to remove detritus from memory.[^detritus]
+1. Call `tar_make()` with `callr_function = NULL` to run the pipeline in your interactive session without launching a new `callr::r()` process.
+1. Poke around until you find the bug.
+
+[^detritus]: With `callr_function = NULL`, a messy local R environment can accidentally change the functions and objects that a target depends on, which can invalidate those targets and erase hard-earned results that were previously correct. This is why `targets` uses `callr` in the first place, and it is why `callr_function = NULL` is for debugging only. If you do need `callr_function = NULL`, please restart your R session first.
+
+```{r, eval = FALSE}
+# _targets.R
+# ...
+analyze_data <- function(data) {
+  browser() # Pause the pipeline here.
+  gls(
+    model = outcome ~ factor,
+    data = data,
+    correlation = corSymm(form = ~ measurement | unit),
+    weights = varIdent(form = ~ 1 | measurement)
+  ) %>%
+    tidy(conf.int = TRUE, conf.level = 0.95)
 }
+# ...
+```
+
+```{r, eval = FALSE}
+# R console
+library(targets)
+
+# Restart your R session.
+rstudioapi::restartSession()
+
+# Run the pipeline in your interactive R session (no callr process)
+tar_make(callr_function = NULL)
+#> ✔ skip target dataset1
+#> • start target model
+#> Called from: analyze_data(dataset1)
+
+# Tinker with the R session to see if you can reproduce the error.
+Browse[1]> model <- gls(
++   model = outcome ~ factor,
++   data = data,
++   correlation = corSymm(form = ~ measurement | unit),
++   weights = varIdent(form = ~ 1 | measurement)
++ )
+#> Error in na.fail.default(list(measurement = c(1L, 2L, 3L, 4L, 1L, 2L,  : 
+#>   missing values in object
+
+# Figure out what it would take to fix the error.
+Browse[1]> model <- gls(
++   model = outcome ~ factor,
++   data = data,
++   correlation = corSymm(form = ~ measurement | unit),
++   weights = varIdent(form = ~ 1 | measurement),
++   na.action = na.omit
++ )
+
+# Confirm that the bug is fixed.
+Browse[1]> tidy(model, conf.int = TRUE, conf.level = 0.95)
+#> # A tibble: 2 × 7
+#>   term        estimate std.error statistic       p.value conf.low conf.high
+#> * <chr>          <dbl>     <dbl>     <dbl>         <dbl>    <dbl>     <dbl>
+#> 1 (Intercept)    0.795    0.148       5.36 0.000000145      0.504     1.09 
+#> 2 factor         0.275    0.0466      5.92 0.00000000717    0.184     0.367
+```
+
+## Pause the pipeline with the `debug` option
+
+It may be too tedious to comb through all targets with `browser()`. For example, what if the pipeline has hundreds of simulated datasets? The following pipeline simulates 100 datasets with 58 experimental units each and 100 datasets with 70 experimental units each. Each dataset is analyzed with `gls()`. `tar_map_rep()` from the `tarchetypes` package organizes this simulation structure and batches the replications for computational efficiency.
+
+```{r, eval = FALSE}
+# _targets.R
+library(targets)
+library(tarchetypes)
+
+tar_option_set(
+  packages = c("broom", "broom.mixed", "dplyr", "nlme", "tibble", "tidyr")
+)
+
+simulate_data <- function(units) {
+  tibble(unit = seq_len(units), factor = rnorm(units, mean = 3)) %>%
+    expand_grid(measurement = seq_len(4)) %>%
+    mutate(outcome = sqrt(factor) + rnorm(n()))
+}
+
+analyze_data <- function(data) {
+  gls(
+    model = outcome ~ factor,
+    data = data,
+    correlation = corSymm(form = ~ measurement | unit),
+    weights = varIdent(form = ~ 1 | measurement)
+  ) %>%
+    tidy(conf.int = TRUE, conf.level = 0.95)
+}
+
+simulate_and_analyze_one_dataset <- function(units) {
+  data <- simulate_data(units)
+  analyze_data(data)
+}
+
 list(
-  tar_target(x, seq_len(4)),
-  tar_target(
-    y,
-    f(arg = x, value = "succeeded", a = 1, b = 2, key = "my_api_key"),
-    pattern = map(x) # The branching chapter describes patterns.
+  tar_map_rep( # from the {tarchetypes} package
+    name = analysis,
+    command = simulate_and_analyze_one_dataset(units), # 100 rows per dataset
+    values = data.frame(units = c(58, 70)), # 2 data size scenarios.
+    names = all_of("units"), # which columns of values should be used to name the targets
+    batches = 20, # For each scenario, divide the 100 simulations into 20 dynamic branch targets.
+    reps = 5 # Each branch target (batch) runs simulate_and_analyze_one_dataset(n = 100) 5 times.
   )
 )
 ```
 
 ```{r, eval = FALSE}
-# R console:
+# R console
 tar_make()
-#> ● run target x
-#> ● run branch y_29239c8a
-#> ● run branch y_7cc32924
-#> ● run branch y_bd602d50
-#> ● run branch y_05f206d7
-#> x error branch y_05f206d7
-#> ● save workspace y_05f206d7
-#> Error : x < 4 is not TRUE .
-#> Error: callr subprocess failed: x < 4 is not TRUE .
+#> ✔ skip target analysis_batch
+#> • start branch analysis_58_550d992c
+#> • built branch analysis_58_550d992c [1.2 seconds]
+#> • start branch analysis_58_582bca0a
+#> • built branch analysis_58_582bca0a [0.895 seconds]
+#> • start branch analysis_58_f0ac3217
+#> • built branch analysis_58_f0ac3217 [0.848 seconds]
+#> • start branch analysis_58_35d814c0
+#> ✖ error branch analysis_58_35d814c0
+#> • end pipeline [3.56 seconds]
+#> Warning messages:
+#> 1: NaNs produced 
+#> 2: 1 targets produced warnings. Run tar_meta(fields = warnings, complete_only = TRUE) for the messages. 
+#> Error:
+#> ! Error running targets::tar_make()
+#>   Target errors: targets::tar_meta(fields = error, complete_only = TRUE)
+#>   Tips: https://books.ropensci.org/targets/debugging.html
+#>   Last error: missing values in object
 ```
 
-One of the `y_*******` targets errored out.
+Remember, if you just want to see the results that succeeded, run the pipeline with `error = "null"` in `tar_option_set()`. This temporary workaround is especially helpful with so many simulations.
 
 ```{r, eval = FALSE}
-failed <- tar_meta(fields = error) %>%
-  na.omit() %>%
-  pull(name)
+# _targets.R
+library(targets)
+library(tarchetypes)
 
-print(failed)
-#> [1] "y_05f206d7"
+tar_option_set(
+  packages = c("broom", "broom.mixed", "dplyr", "nlme", "tibble", "tidyr"),
+  error = "null"
+)
+
+# Functions etc...
 ```
-
-`tar_workspace()` reads the special metadata in the workspace file and then loads the target's dependencies from various locations in `_targets/objects` and/or the [cloud](#storage_amazon). It also sets the random number generator seed to the seed of the target, loads the required packages, and runs the target script file (default: `_targets.R`) to load other global object dependencies such as functions. 
 
 ```{r, eval = FALSE}
-tar_workspace(y_05f206d7)
+# R console
+tar_make()
+#> • start target analysis_batch
+#> • built target analysis_batch [0.002 seconds]
+#> • start branch analysis_58_550d992c
+#> • built branch analysis_58_550d992c [1.252 seconds]
+#> • start branch analysis_58_582bca0a
+#> • built branch analysis_58_582bca0a [0.864 seconds]
+#> • start branch analysis_58_f0ac3217
+#> • built branch analysis_58_f0ac3217 [0.838 seconds]
+#> • start branch analysis_58_35d814c0
+#> ✖ error branch analysis_58_35d814c0
+#> ✖ error branch analysis_58_35d814c0
+#> • start branch analysis_58_e8c6aeab
+#> • built branch analysis_58_e8c6aeab [0.774 seconds]
+#> # More targets...
+#> # ...
+#> • start target analysis
+#> • built target analysis [0.008 seconds]
+#> • end pipeline [27.823 seconds]
+
+# Read the simulations that succeeded.
+tar_read(analysis)
+#> # A tibble: 270 × 12
+#>    term        estimate std.error statistic      p.value conf.low conf.high units tar_batch tar_rep   tar_seed tar_group
+#>    <chr>          <dbl>     <dbl>     <dbl>        <dbl>    <dbl>     <dbl> <dbl>     <int>   <int>      <int>     <int>
+#>  1 (Intercept)    0.758    0.234       3.24 0.00137        0.300      1.22     58         1       1 -633351515         1
+#>  2 factor         0.306    0.0696      4.40 0.0000168      0.170      0.443    58         1       1 -633351515         1
+#>  3 (Intercept)    0.524    0.229       2.28 0.0232         0.0745     0.974    58         1       2 -915590912         1
+#>  4 factor         0.402    0.0708      5.68 0.0000000402   0.263      0.541    58         1       2 -915590912         1
+#>  5 (Intercept)    0.797    0.195       4.08 0.0000624      0.414      1.18     58         1       3 1619222314         1
+#>  6 factor         0.295    0.0611      4.82 0.00000257     0.175      0.414    58         1       3 1619222314         1
+#>  7 (Intercept)    0.639    0.216       2.96 0.00336        0.216      1.06     58         1       4  825884824         1
+#>  8 factor         0.376    0.0723      5.21 0.000000424    0.235      0.518    58         1       4  825884824         1
+#>  9 (Intercept)    0.850    0.151       5.63 0.0000000521   0.554      1.15     58         1       5 2080314913         1
+#> 10 factor         0.270    0.0507      5.31 0.000000252    0.170      0.369    58         1       5 2080314913         1
+#> # … with 260 more rows
+#> # ℹ Use `print(n = ...)` to see more rows
 ```
 
-We now have the dependencies of `y_05f206d7` in memory, which allows you to try out any failed function calls in your local R session. ^[In addition, current random number generator seed (`.Random.seed`) is also the value `y_05f206d7` started with.] ^[When you are finished debugging, you can remove all workspace files with `tar_destroy(destroy = "workspaces")`.]
+Now let's seriously debug this pipeline. If each call to `simulate_and_analyze_one_dataset()` takes a long time to run, then the first step is to set one rep per batch in `tar_map_rep()` while keeping the total number of reps the same. In other words, increase `batches` from 20 to 100 and decrease `reps` from 5 to 1.[^seed_batching]. Also remove the `units = 70` scenario because we can reproduce the error without it. 
+
+[^seed_batching]: In `tarchetypes` version `0.7.1.9000` and above, this re-batching will [not change the random number generator seed assigned to each call to `simulate_and_analyze_one_dataset()`](https://github.com/ropensci/tarchetypes/pull/113).
 
 ```{r, eval = FALSE}
-print(x)
-#> [1] 4
-f(arg = 0, value = "my_value", a = 1, b = 2, key = "my_api_key")
-#> [1] "my_value"
-f(arg = x, value = "my_value", a = 1, b = 2, key = "my_api_key")
-#> Error in f(x) : x < 4 is not TRUE
+# _targets.R
+# packages, options, and functions...
+list(
+  tar_map_rep(
+    name = analysis,
+    command = simulate_and_analyze_one_dataset(units),
+    values = data.frame(units = 58), # Remove the units = 70 scenario.
+    names = all_of("units"),
+    batches = 100, # 100 batches now
+    reps = 1 # 1 rep per batch now
+  )
+)
 ```
-
-Keep in mind that that although the dependencies of `y_05f206d7` are in memory, the arguments of `f()` are not.
 
 ```{r, eval = FALSE}
-arg
-#> Error: object 'arg' not found
-value
-#> Error: object 'value' not found
+# R console
+tar_make()
+#> • start target analysis_batch
+#> • built target analysis_batch [0.002 seconds]
+#> • start branch analysis_58_550d992c
+#> • built branch analysis_58_550d992c [0.502 seconds]
+#> • start branch analysis_58_582bca0a
+#> • built branch analysis_58_582bca0a [0.208 seconds]
+#> • start branch analysis_58_f0ac3217
+#> # More successful targets...
+#> # ...
+#> • start branch analysis_58_b59aa384
+#> ✖ error branch analysis_58_b59aa384
+#> • end pipeline [3.828 seconds]
+#> Warning messages:
+#> 1: NaNs produced 
+#> 2: 1 targets produced warnings. Run tar_meta(fields = warnings, complete_only = TRUE) for the messages. 
+#> Error:
+#> ! Error running targets::tar_make()
+#>   Target errors: targets::tar_meta(fields = error, complete_only = TRUE)
+#>   Tips: https://books.ropensci.org/targets/debugging.html
+#>   Last error: missing values in object
 ```
 
-The workspace also has a useful traceback, and you can retrieve it with `tar_traceback()`. The last couple lines of the traceback are unavoidably cryptic, but they do sometimes contain useful information.
+Around 20 targets ran successfully, and target `analysis_58_b59aa384` hit an error. Let's interactively debug `analysis_58_b59aa384` without interfering with any other targets:
+
+1. Set the `debug` option to `"analysis_58_b59aa384"` in `tar_option_set()`.
+1. Restart your R session to remove detritus from memory.
+1. Run `tar_make(callr_function = NULL)`.[^interactive]
+
+[^interactive]: You can also run `tar_make_clustermq(callr_function = NULL)` or `tar_make_future(callr_function = NULL)`. In either case, the target to debug will not run on a parallel worker even if you set `deployment = "worker"`.
 
 ```{r, eval = FALSE}
-tar_traceback(y_05f206d7, characters = 77)
-#> [1] "f(arg = x, value = \"succeeded\", a = 1, b = 2, key = \"my_api_key\")"           
-#> [2] "stopifnot(arg < 4)"             
-#> [3] "stop(simpleError(msg, call = if (p <- sys.parent(1)) sys.call(p)))"              
-#> [4] "(function (condition) \n{\n    state$error <- build_message(condition)\n    stat"
+# _targets.R
+library(targets)
+library(tarchetypes)
+
+tar_option_set(
+  packages = c("broom", "broom.mixed", "dplyr", "nlme", "tibble", "tidyr"),
+  debug = "analysis_58_b59aa384" # Set the target you want to debug.
+)
+
+# Functions etc...
 ```
 
-## Tradeoffs
+```{r, eval = FALSE}
+# R console
+library(targets)
 
-For small to medium-sized workloads, the environment browser and the debug option are usually the best choices. These techniques immediately direct control to prewritten function calls and get you as close to the error as possible. However, this may not always be feasible in [large distributed workloads](#hpc), e.g. `tar_make_clustermq()`, where most of your targets are not even running on the same computer as your main R process. For those complicated situations where it is not possible to access the R interpreter, workspaces are ideal because they store a persistent reproducible runtime state that you can recover locally.
+# Restart your R session.
+rstudioapi::restartSession()
+
+# Run the pipeline in your interactive R session (no callr process)
+tar_make(callr_function = NULL)
+#>✔ skip target analysis_batch
+#>✔ skip branch analysis_58_550d992c
+#>✔ skip branch analysis_58_582bca0a
+#>✔ skip branch analysis_58_f0ac3217
+#>✔ skip branch analysis_58_35d814c0
+#>✔ skip branch analysis_58_e8c6aeab
+#>✔ skip branch analysis_58_18f79420
+#>✔ skip branch analysis_58_1af19a55
+#>✔ skip branch analysis_58_5e604f91
+#>✔ skip branch analysis_58_5d2c5812
+#>✔ skip branch analysis_58_729b7859
+#>✔ skip branch analysis_58_d3899b7b
+#>✔ skip branch analysis_58_2a182d3f
+#>✔ skip branch analysis_58_5be362d3
+#>✔ skip branch analysis_58_5d86137a
+#>✔ skip branch analysis_58_a3562efd
+#>✔ skip branch analysis_58_a6d57bfd
+#>✔ skip branch analysis_58_f15d092c
+#>✔ skip branch analysis_58_53efc7f5
+#>• start branch analysis_58_b59aa384
+#>• pause pipeline
+#>  debug target analysis_58_b59aa384
+#>
+#>ℹ You are now running an interactive debugger.
+#>  You can enter code and print objects as with the normal R console.
+#>  How to use: https://adv-r.hadley.nz/debugging.html#browser
+#>
+#>ℹ The debugger is poised to run the command of target analysis_58_b59aa384:
+#>
+#>     tarchetypes::tar_rep_run(command = tarchetypes::tar_append_static_values(object = simulate_and_analyze_one_dataset(58), 
+#>    values = list(units = 58)), batch = analysis_batch, reps = 1, 
+#>    iteration = "vector")
+#>
+#>ℹ Tip: run debug(tarchetypes::tar_rep_run) and then enter "c"
+#>  to move the debugger inside function tarchetypes::tar_rep_run().
+#>  Then debug the function as you would normally (without {targets}).
+#>Called from: eval(expr = expr, envir = envir)
+Browse[1]>
+```
+
+At this point, we are in an interactive debugger again. Only this time, we quickly skipped straight to the target we want to debug. We can follow the advice in the prompt above, or we can tinker in other ways.
+
+```{r, eval = FALSE}
+# R console
+# Jump to the function we want to debug.
+Browse[1]> debug(analyze_data)
+Browse[1]> c # Continue to the next breakpoint.
+#> debugging in: analyze_data(data)
+
+# Tinker with the R session to see if you can reproduce the error.
+Browse[2]> model <- gls(
++   model = outcome ~ factor,
++   data = data,
++   correlation = corSymm(form = ~ measurement | unit),
++   weights = varIdent(form = ~ 1 | measurement)
++ )
+#> Error in na.fail.default(list(measurement = c(1L, 2L, 3L, 4L, 1L, 2L,  : 
+#>   missing values in object
+
+# Figure out what it would take to fix the error.
+Browse[1]>  model <- gls(
++   model = outcome ~ factor,
++   data = data,
++   correlation = corSymm(form = ~ measurement | unit),
++   weights = varIdent(form = ~ 1 | measurement),
++   na.action = na.omit
++ )
+
+# Confirm that the bug is fixed.
+Browse[1]> tidy(model, conf.int = TRUE, conf.level = 0.95)
+#> # A tibble: 2 × 7
+#>   term        estimate std.error statistic   p.value conf.low conf.high
+#> * <chr>          <dbl>     <dbl>     <dbl>     <dbl>    <dbl>     <dbl>
+#> 1 (Intercept)    0.925    0.205       4.51 0.0000103    0.523     1.33 
+#> 2 factor         0.279    0.0646      4.32 0.0000230    0.153     0.406
+```
+
+## Workspaces
+
+A workspace is a special file that helps locally reconstruct the environment of a target outside the pipeline. To demonstrate, consider a different version of the above example which saves the datasets and the models in different targets. We set `workspace_on_error = TRUE` in `tar_option_set()` so that each errored target proactively saves a workspace file.[^workspace_save]
+
+[^workspace_save]: `tar_option_set()` also has a `workspaces` argument to let you choose which targets save workspace files, regardless of whether they hit errors.
+
+```{r, eval = FALSE}
+# _targets.R
+library(targets)
+library(tarchetypes)
+
+tar_option_set(
+  packages = c("broom", "broom.mixed", "dplyr", "nlme", "tibble", "tidyr"),
+  workspace_on_error = TRUE # Save a workspace file for a target that errors out.
+)
+
+simulate_data <- function(units) {
+  tibble(unit = seq_len(units), factor = rnorm(units, mean = 3)) %>%
+    expand_grid(measurement = seq_len(4)) %>%
+    mutate(outcome = sqrt(factor) + rnorm(n()))
+}
+
+analyze_data <- function(data) {
+  gls(
+    model = outcome ~ factor,
+    data = data,
+    correlation = corSymm(form = ~ measurement | unit),
+    weights = varIdent(form = ~ 1 | measurement)
+  ) %>%
+    tidy(conf.int = TRUE, conf.level = 0.95)
+}
+
+list(
+  tar_target(rep, seq_len(100)),
+  tar_target(data, simulate_data(100), pattern = map(rep)),
+  tar_target(analysis, analyze_data(data), pattern = map(data))
+)
+```
+
+
+```{r, eval = FALSE}
+# R console
+tar_make()
+#> • start target rep
+#> • built target rep [0.6 seconds]
+#> • start branch data_c9beb7ca
+#> • built branch data_c9beb7ca [0.015 seconds]
+#> • start branch data_3658ffe6
+#> • built branch data_3658ffe6 [0.009 seconds]
+#> • start branch data_b786c6ae
+#> # More data targets...
+#> # ...
+#> • built pattern data
+#> • start branch analysis_3ccf0b08
+#> • built branch analysis_3ccf0b08 [0.214 seconds]
+#> • start branch analysis_0e85e530
+#> • built branch analysis_0e85e530 [0.227 seconds]
+#> • start branch analysis_03816a9f
+#> # More analysis targets...
+#> # ...
+#> • start branch analysis_02de2921
+#> • record workspace analysis_02de2921
+#> ✖ error branch analysis_02de2921
+#> • end pipeline [5.619 seconds]
+#> There were 15 warnings (use warnings() to see them)
+#> Error:
+#> ! Error running targets::tar_make()
+#>   Target errors: targets::tar_meta(fields = error, complete_only = TRUE)
+#>   Tips: https://books.ropensci.org/targets/debugging.html
+#>   Last error: missing values in object
+```
+
+What went wrong with target `analysis_02de2921`? To find out, we load the workspace in an interactive session.
+
+```{r, eval = FALSE}
+# R console
+# List the available workspaces.
+tar_workspaces()
+#> [1] "analysis_02de2921"
+
+# Load the workspace.
+tar_workspace(analysis_02de2921)
+```
+
+At this point, the global objects, functions, and upstream dependencies of target `analysis_02de2921` are in memory. In addition, the target's original random number generator seed is set.[^seed]
+
+[^seed]: You can retrieve this seed with `tar_meta(names = analysis_02de2921, fields = seed)`. `targets` sets this seed with `withr::with_seed()` just before the target runs in the pipeline. However, other functions or target factories may set their own seeds. For example, `tarchetypes::tar_map_rep()` sets its own target seeds so they are resilient to re-batching. For more details on seeds, see the documentation of the `seed` argument of [`tar_option_set()`](https://docs.ropensci.org/targets/reference/tar_option_set.html#arguments).
+
+```{r, eval = FALSE}
+# R console
+ls()
+#> [1] "analyze_data"  "data"          "simulate_data"
+```
+
+With the data and functions in hand, you can reproduce the error locally.
+
+```{r, eval = FALSE}
+# R console
+analyze_data(data)
+#> Error in na.fail.default(list(measurement = c(1L, 2L, 3L, 4L, 1L, 2L,  : 
+#>   missing values in object
+```
+
+With more interactive tinkering your local R session, you can find the bug.
+
+## Getting help
+
+If you are still stuck, you ask questions at <https://github.com/ropensci/targets/discussions>. Please keep the following in mind.
+
+* Before posting, search previous issues and discussions to see if your issue is already solved ([`targets` discussions](https://github.com/ropensci/targets/discussions), [`targets` issues](https://github.com/ropensci/targets/issues), [`tarchetypes` discussions](https://github.com/ropensci/tarchetypes/discussions), and [`tarchetypes` issues](https://github.com/ropensci/tarchetypes/issues)).
+* Try to isolate the problem and reproduce it without using `targets`. If `targets` is not the root cause, please post on [Stack Overflow](https://stackoverflow.com) etc. and discuss only the packages that are directly relevant to the problem.
+* Share a [minimal, runnable, reproducible example](https://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example): minimal so others can understand it easily, and runnable so others can empirically search for the root cause of the problem.
