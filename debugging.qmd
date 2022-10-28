@@ -180,7 +180,7 @@ Browse[2]> anyNA(dataset$outcome) # Do I need to handle missing values?
 #> [1] TRUE
 ```
 
-Sometimes, however, you may not see the original error:
+In some cases, however, you may not see the original error:
 
 ```{r, eval = FALSE}
 # R console
@@ -193,7 +193,9 @@ analyze_data(dataset)
 #> 2 factor         0.362    0.0476      7.61 2.04e-13    0.269     0.455
 ```
 
-Above, the random number generator seed in your local session is different from the seed assigned to the target in the pipeline. The dataset from the pipeline has missing values, whereas the one in the local session does not. If you cannot reproduce the error in an interactive R session, read on.
+Above, the random number generator seed in your local session is different from the seed assigned to the target in the pipeline. The dataset from the pipeline has missing values, whereas the one in the local session does not.
+
+If you cannot reproduce the error in an interactive R session, read on.
 
 ## System issues
 
