@@ -341,7 +341,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="finish-the-pipeline-anyway" class="level2" data-number="3.3">
 <h2 data-number="3.3" class="anchored" data-anchor-id="finish-the-pipeline-anyway"><span class="header-section-number">3.3</span> Finish the pipeline anyway</h2>
-<p>Even if you hit an error, you can still finish the successful parts of the pipeline. The <code>error</code> argument of <code>tar_option_set()</code> and <code>tar_target()</code> tells each target what to do it hits an error. For example, <code>tar_option_set(error = "null")</code> tells errored targets to return <code>NULL</code>. The output as a whole will not be correct or up to date, but the pipeline will finish so you can look at preliminary results. This is especially helpful with <a href="dynamic.html">dynamic branching</a>.</p>
+<p>Even if you hit an error, you can still finish the successful parts of the pipeline. The <code>error</code> argument of <code>tar_option_set()</code> and <code>tar_target()</code> tells each target what to do if it hits an error. For example, <code>tar_option_set(error = "null")</code> tells errored targets to return <code>NULL</code>. The output as a whole will not be correct or up to date, but the pipeline will finish so you can look at preliminary results. This is especially helpful with <a href="dynamic.html">dynamic branching</a>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
@@ -393,7 +393,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;    &lt;chr&gt;        </span></span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 dataset1 NaNs produced</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>It looks like missing values in the data are responsible for the error in the <code>model</code>. Maybe this clue alone is enough to repair the code.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> If not, read on.</p>
+<p>It looks like missing values in the data are responsible for the error in the <code>model</code> target. Maybe this clue alone is enough to repair the code.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> If not, read on.</p>
 </section>
 <section id="functions" class="level2" data-number="3.5">
 <h2 data-number="3.5" class="anchored" data-anchor-id="functions"><span class="header-section-number">3.5</span> Functions</h2>
