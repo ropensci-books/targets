@@ -83,7 +83,7 @@ tar_make()
 
 ## Finish the pipeline anyway
 
-Even if you hit an error, you can still finish the successful parts of the pipeline. The `error` argument of `tar_option_set()` and `tar_target()` tells each target what to do it hits an error. For example, `tar_option_set(error = "null")` tells errored targets to return `NULL`. The output as a whole will not be correct or up to date, but the pipeline will finish so you can look at preliminary results. This is especially helpful with [dynamic branching](#dynamic).
+Even if you hit an error, you can still finish the successful parts of the pipeline. The `error` argument of `tar_option_set()` and `tar_target()` tells each target what to do if it hits an error. For example, `tar_option_set(error = "null")` tells errored targets to return `NULL`. The output as a whole will not be correct or up to date, but the pipeline will finish so you can look at preliminary results. This is especially helpful with [dynamic branching](#dynamic).
 
 ```{r, eval = FALSE}
 # _targets.R
@@ -141,7 +141,7 @@ tar_meta(fields = warnings, complete_only = TRUE)
 #> 1 dataset1 NaNs produced
 ```
 
-It looks like missing values in the data are responsible for the error in the `model`. Maybe this clue alone is enough to repair the code.[^missing] If not, read on.
+It looks like missing values in the data are responsible for the error in the `model` target. Maybe this clue alone is enough to repair the code.[^missing] If not, read on.
 
 [^missing]: You can fix the bug by either removing the missing values from the dataset or by setting `na.action = na.omit` in `gls()`.
 
