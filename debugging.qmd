@@ -195,7 +195,7 @@ If you cannot reproduce the error in an interactive R session, read on.
 
 ## System issues
 
-If you see an error in the pipeline but not your local interactive R session, then the bug could be system-related. For example, [this issue](https://github.com/ropensci/targets/discussions/506) was originally reported as a bug in `targets` but actually turned out to be a bug in the [interaction between packages `renv` and `callr`](https://github.com/rstudio/renv/issues/773#issuecomment-973765196). (Remember, `targets` uses `callr::r()` to launch the pipeline). To check for issues like that one, try running `tar_make()` with `callr_function = NULL` to avoid `callr` entirely:
+If you see an error in the pipeline but not your local interactive R session, then the bug could be system-related. For example, [this issue](https://github.com/ropensci/targets/discussions/506) was originally reported as a bug in `targets` but actually turned out to be a bug in the [interaction between packages `renv` and `callr`](https://github.com/rstudio/renv/issues/773#issuecomment-973765196). (Remember, `targets` runs the pipeline in a `callr::r()` process.) To check for issues like that one, try running `tar_make()` with `callr_function = NULL` to avoid `callr` entirely:
 
 ```{r, eval = FALSE}
 # R console
