@@ -240,16 +240,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#challenges" id="toc-challenges" class="nav-link active" data-scroll-target="#challenges"><span class="toc-section-number">3.1</span>  Challenges</a></li>
-  <li><a href="#example" id="toc-example" class="nav-link" data-scroll-target="#example"><span class="toc-section-number">3.2</span>  Example</a></li>
-  <li><a href="#finish-the-pipeline-anyway" id="toc-finish-the-pipeline-anyway" class="nav-link" data-scroll-target="#finish-the-pipeline-anyway"><span class="toc-section-number">3.3</span>  Finish the pipeline anyway</a></li>
-  <li><a href="#error-messages" id="toc-error-messages" class="nav-link" data-scroll-target="#error-messages"><span class="toc-section-number">3.4</span>  Error messages</a></li>
-  <li><a href="#functions" id="toc-functions" class="nav-link" data-scroll-target="#functions"><span class="toc-section-number">3.5</span>  Functions</a></li>
-  <li><a href="#system-issues" id="toc-system-issues" class="nav-link" data-scroll-target="#system-issues"><span class="toc-section-number">3.6</span>  System issues</a></li>
-  <li><a href="#pause-the-pipeline-with-browser" id="toc-pause-the-pipeline-with-browser" class="nav-link" data-scroll-target="#pause-the-pipeline-with-browser"><span class="toc-section-number">3.7</span>  Pause the pipeline with <code>browser()</code></a></li>
-  <li><a href="#pause-the-pipeline-with-the-debug-option" id="toc-pause-the-pipeline-with-the-debug-option" class="nav-link" data-scroll-target="#pause-the-pipeline-with-the-debug-option"><span class="toc-section-number">3.8</span>  Pause the pipeline with the <code>debug</code> option</a></li>
-  <li><a href="#workspaces" id="toc-workspaces" class="nav-link" data-scroll-target="#workspaces"><span class="toc-section-number">3.9</span>  Workspaces</a></li>
-  <li><a href="#getting-help" id="toc-getting-help" class="nav-link" data-scroll-target="#getting-help"><span class="toc-section-number">3.10</span>  Getting help</a></li>
+  <li><a href="#example" id="toc-example" class="nav-link active" data-scroll-target="#example"><span class="toc-section-number">3.1</span>  Example</a></li>
+  <li><a href="#finish-the-pipeline-anyway" id="toc-finish-the-pipeline-anyway" class="nav-link" data-scroll-target="#finish-the-pipeline-anyway"><span class="toc-section-number">3.2</span>  Finish the pipeline anyway</a></li>
+  <li><a href="#error-messages" id="toc-error-messages" class="nav-link" data-scroll-target="#error-messages"><span class="toc-section-number">3.3</span>  Error messages</a></li>
+  <li><a href="#functions" id="toc-functions" class="nav-link" data-scroll-target="#functions"><span class="toc-section-number">3.4</span>  Functions</a></li>
+  <li><a href="#system-issues" id="toc-system-issues" class="nav-link" data-scroll-target="#system-issues"><span class="toc-section-number">3.5</span>  System issues</a></li>
+  <li><a href="#pause-the-pipeline-with-browser" id="toc-pause-the-pipeline-with-browser" class="nav-link" data-scroll-target="#pause-the-pipeline-with-browser"><span class="toc-section-number">3.6</span>  Pause the pipeline with <code>browser()</code></a></li>
+  <li><a href="#pause-the-pipeline-with-the-debug-option" id="toc-pause-the-pipeline-with-the-debug-option" class="nav-link" data-scroll-target="#pause-the-pipeline-with-the-debug-option"><span class="toc-section-number">3.7</span>  Pause the pipeline with the <code>debug</code> option</a></li>
+  <li><a href="#workspaces" id="toc-workspaces" class="nav-link" data-scroll-target="#workspaces"><span class="toc-section-number">3.8</span>  Workspaces</a></li>
+  <li><a href="#getting-help" id="toc-getting-help" class="nav-link" data-scroll-target="#getting-help"><span class="toc-section-number">3.9</span>  Getting help</a></li>
   </ul>
 </nav>
     </div>
@@ -278,19 +277,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="cell">
 
 </div>
-<p>This chapter describes how to identify and solve errors in <code>targets</code> pipelines.</p>
-<section id="challenges" class="level2" data-number="3.1">
-<h2 data-number="3.1" class="anchored" data-anchor-id="challenges"><span class="header-section-number">3.1</span> Challenges</h2>
-<p>Pipelines are automated for reproducibility. When you run <code>tar_make()</code>, the following steps occur:</p>
-<ol type="1">
-<li><code>targets</code> starts a new non-interactive R process using <code>callr::r()</code>.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></li>
-<li>The non-interactive R process runs <code>_targets.R</code> to load functions and objects, set options, and read the pipeline definition.</li>
-<li>The non-interactive R process orchestrates the targets, running or skipping each as necessary.</li>
-</ol>
-<p>Your interactive R session cannot access this non-interactive R process. This makes pipelines more difficult to debug than the informal commands you may type into the R console or the <a href="https://www.rstudio.com/products/rstudio/">RStudio IDE</a>.</p>
-</section>
-<section id="example" class="level2" data-number="3.2">
-<h2 data-number="3.2" class="anchored" data-anchor-id="example"><span class="header-section-number">3.2</span> Example</h2>
+<p>R code is easiest to debug when it is interactive. In the R console or <a href="https://www.rstudio.com/products/rstudio/">RStudio IDE</a>, you have full control over the code and the objects in the environment, and you are free to dissect, tinker, and test until you find and fix the issue. However, a pipeline is the <em>opposite</em> of interactive. In <code>targets</code>, several layers of encapsulation separate you from the code you want to debug:</p>
+<ul>
+<li>The pipeline runs in an external <a href="https://github.com/r-lib/callr"><code>callr::r()</code></a> process</li>
+<li>Data management</li>
+<li>Environment management</li>
+<li><a href="hpc.html">High-performance computing</a></li>
+<li>Built-in error handling</li>
+</ul>
+<p>Although each of these layers are crucial for reproducibility and scale, you will need to cut through them to diagnose and solve issues in pipelines. This chapter explains how.</p>
+<section id="example" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="example"><span class="header-section-number">3.1</span> Example</h2>
 <p>The following pipeline simulates a repeated measures dataset and analyzes it with generalized least squares.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
@@ -339,8 +336,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Last error: missing values in object</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="finish-the-pipeline-anyway" class="level2" data-number="3.3">
-<h2 data-number="3.3" class="anchored" data-anchor-id="finish-the-pipeline-anyway"><span class="header-section-number">3.3</span> Finish the pipeline anyway</h2>
+<section id="finish-the-pipeline-anyway" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="finish-the-pipeline-anyway"><span class="header-section-number">3.2</span> Finish the pipeline anyway</h2>
 <p>Even if you hit an error, you can still finish the successful parts of the pipeline. The <code>error</code> argument of <code>tar_option_set()</code> and <code>tar_target()</code> tells each target what to do if it hits an error. For example, <code>tar_option_set(error = "null")</code> tells errored targets to return <code>NULL</code>. The output as a whole will not be correct or up to date, but the pipeline will finish so you can look at preliminary results. This is especially helpful with <a href="dynamic.html">dynamic branching</a>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
@@ -374,8 +371,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "model"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="error-messages" class="level2" data-number="3.4">
-<h2 data-number="3.4" class="anchored" data-anchor-id="error-messages"><span class="header-section-number">3.4</span> Error messages</h2>
+<section id="error-messages" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="error-messages"><span class="header-section-number">3.3</span> Error messages</h2>
 <p>Still, it is important to fix known errors. The metadata in <code>_targets/meta/meta</code> is a good place to start. It stores the most recent error and warning messages for each target. <code>tar_meta()</code> can retrieve these messages.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
@@ -393,10 +390,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;    &lt;chr&gt;        </span></span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 dataset1 NaNs produced</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>It looks like missing values in the data are responsible for the error in the <code>model</code> target. Maybe this clue alone is enough to repair the code.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> If not, read on.</p>
+<p>It looks like missing values in the data are responsible for the error in the <code>model</code> target. Maybe this clue alone is enough to repair the code.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> If not, read on.</p>
 </section>
-<section id="functions" class="level2" data-number="3.5">
-<h2 data-number="3.5" class="anchored" data-anchor-id="functions"><span class="header-section-number">3.5</span> Functions</h2>
+<section id="functions" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="functions"><span class="header-section-number">3.4</span> Functions</h2>
 <p>Most errors are come from custom user-defined functions like <code>simulate_data()</code> and <code>analyze_data()</code>. See if you can reproduce the error in the R console.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
@@ -440,8 +437,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Above, the random number generator seed in your local session is different from the seed assigned to the target in the pipeline. The dataset from the pipeline has missing values, whereas the one in the local session does not.</p>
 <p>If you cannot reproduce the error in an interactive R session, read on.</p>
 </section>
-<section id="system-issues" class="level2" data-number="3.6">
-<h2 data-number="3.6" class="anchored" data-anchor-id="system-issues"><span class="header-section-number">3.6</span> System issues</h2>
+<section id="system-issues" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="system-issues"><span class="header-section-number">3.5</span> System issues</h2>
 <p>If you see an error in the pipeline but not your local interactive R session, then the bug could be system-related. For example, <a href="https://github.com/ropensci/targets/discussions/506">this issue</a> was originally reported as a bug in <code>targets</code> but actually turned out to be a bug in the <a href="https://github.com/rstudio/renv/issues/773#issuecomment-973765196">interaction between packages <code>renv</code> and <code>callr</code></a>. (Remember, <code>targets</code> uses <code>callr::r()</code> to launch the pipeline). To check for issues like that one, try running <code>tar_make()</code> with <code>callr_function = NULL</code> to avoid <code>callr</code> entirely:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
@@ -494,12 +491,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <p>If you successfully reproduce the bug without using <code>targets</code>, then the problem becomes much smaller and much easier to solve. At that point, you can completely exclude <code>targets</code> from the rest of the debugging process.</p>
 </section>
-<section id="pause-the-pipeline-with-browser" class="level2" data-number="3.7">
-<h2 data-number="3.7" class="anchored" data-anchor-id="pause-the-pipeline-with-browser"><span class="header-section-number">3.7</span> Pause the pipeline with <code>browser()</code></h2>
+<section id="pause-the-pipeline-with-browser" class="level2" data-number="3.6">
+<h2 data-number="3.6" class="anchored" data-anchor-id="pause-the-pipeline-with-browser"><span class="header-section-number">3.6</span> Pause the pipeline with <code>browser()</code></h2>
 <p>Sometimes, you may still need to run the pipeline to find the problem. The following trick lets you pause the pipeline and tinker with a running target interactively:</p>
 <ol type="1">
 <li>Insert <a href="https://adv-r.hadley.nz/debugging.html#browser"><code>browser()</code></a> into the function that produces the error.</li>
-<li>Restart your R session to remove detritus from memory.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></li>
+<li>Restart your R session to remove detritus from memory.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></li>
 <li>Call <code>tar_make()</code> with <code>callr_function = NULL</code> to run the pipeline in your interactive session without launching a new <code>callr::r()</code> process.</li>
 <li>Poke around until you find the bug.</li>
 </ol>
@@ -559,8 +556,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 factor         0.275    0.0466      5.92 0.00000000717    0.184     0.367</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="pause-the-pipeline-with-the-debug-option" class="level2" data-number="3.8">
-<h2 data-number="3.8" class="anchored" data-anchor-id="pause-the-pipeline-with-the-debug-option"><span class="header-section-number">3.8</span> Pause the pipeline with the <code>debug</code> option</h2>
+<section id="pause-the-pipeline-with-the-debug-option" class="level2" data-number="3.7">
+<h2 data-number="3.7" class="anchored" data-anchor-id="pause-the-pipeline-with-the-debug-option"><span class="header-section-number">3.7</span> Pause the pipeline with the <code>debug</code> option</h2>
 <p>It may be too tedious to comb through all targets with <code>browser()</code>. For example, what if the pipeline has hundreds of simulated datasets? The following pipeline simulates 100 datasets with 58 experimental units each and 100 datasets with 70 experimental units each. Each dataset is analyzed with <code>gls()</code>. <code>tar_map_rep()</code> from the <code>tarchetypes</code> package organizes this simulation structure and batches the replications for computational efficiency.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
@@ -678,7 +675,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb19-37"><a href="#cb19-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # … with 260 more rows</span></span>
 <span id="cb19-38"><a href="#cb19-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ Use `print(n = ...)` to see more rows</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Now let’s seriously debug this pipeline. If each call to <code>simulate_and_analyze_one_dataset()</code> takes a long time to run, then the first step is to set one rep per batch in <code>tar_map_rep()</code> while keeping the total number of reps the same. In other words, increase <code>batches</code> from 20 to 100 and decrease <code>reps</code> from 5 to 1.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>. Also remove the <code>units = 70</code> scenario because we can reproduce the error without it.</p>
+<p>Now let’s seriously debug this pipeline. If each call to <code>simulate_and_analyze_one_dataset()</code> takes a long time to run, then the first step is to set one rep per batch in <code>tar_map_rep()</code> while keeping the total number of reps the same. In other words, increase <code>batches</code> from 20 to 100 and decrease <code>reps</code> from 5 to 1.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>. Also remove the <code>units = 70</code> scenario because we can reproduce the error without it.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co"># packages, options, and functions...</span></span>
@@ -721,7 +718,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ol type="1">
 <li>Set the <code>debug</code> option to <code>"analysis_58_b59aa384"</code> in <code>tar_option_set()</code>.</li>
 <li>Restart your R session to remove detritus from memory.</li>
-<li>Run <code>tar_make(callr_function = NULL)</code>.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a></li>
+<li>Run <code>tar_make(callr_function = NULL)</code>.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></li>
 </ol>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
@@ -819,9 +816,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb24-32"><a href="#cb24-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 factor         0.279    0.0646      4.32 0.0000230    0.153     0.406</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="workspaces" class="level2" data-number="3.9">
-<h2 data-number="3.9" class="anchored" data-anchor-id="workspaces"><span class="header-section-number">3.9</span> Workspaces</h2>
-<p>A workspace is a special file that helps locally reconstruct the environment of a target outside the pipeline. To demonstrate, consider a different version of the above example which saves the datasets and the models in different targets. We set <code>workspace_on_error = TRUE</code> in <code>tar_option_set()</code> so that each errored target proactively saves a workspace file.<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a></p>
+<section id="workspaces" class="level2" data-number="3.8">
+<h2 data-number="3.8" class="anchored" data-anchor-id="workspaces"><span class="header-section-number">3.8</span> Workspaces</h2>
+<p>A workspace is a special file that helps locally reconstruct the environment of a target outside the pipeline. To demonstrate, consider a different version of the above example which saves the datasets and the models in different targets. We set <code>workspace_on_error = TRUE</code> in <code>tar_option_set()</code> so that each errored target proactively saves a workspace file.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
@@ -895,7 +892,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the workspace.</span></span>
 <span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_workspace</span>(analysis_02de2921)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>At this point, the global objects, functions, and upstream dependencies of target <code>analysis_02de2921</code> are in memory. In addition, the target’s original random number generator seed is set.<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a></p>
+<p>At this point, the global objects, functions, and upstream dependencies of target <code>analysis_02de2921</code> are in memory. In addition, the target’s original random number generator seed is set.<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span>()</span>
@@ -927,8 +924,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a><span class="co"># [14] "h(simpleError(msg, call))"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="getting-help" class="level2" data-number="3.10">
-<h2 data-number="3.10" class="anchored" data-anchor-id="getting-help"><span class="header-section-number">3.10</span> Getting help</h2>
+<section id="getting-help" class="level2" data-number="3.9">
+<h2 data-number="3.9" class="anchored" data-anchor-id="getting-help"><span class="header-section-number">3.9</span> Getting help</h2>
 <p>If you are still stuck, you can ask questions at <a href="https://github.com/ropensci/targets/discussions" class="uri">https://github.com/ropensci/targets/discussions</a>. Because new posts appear frequently, please keep the following in mind.</p>
 <ul>
 <li>Before posting, search previous issues and discussions to see if your issue is already solved (<a href="https://github.com/ropensci/targets/discussions"><code>targets</code> discussions</a>, <a href="https://github.com/ropensci/targets/issues"><code>targets</code> issues</a>, <a href="https://github.com/ropensci/tarchetypes/discussions"><code>tarchetypes</code> discussions</a>, and <a href="https://github.com/ropensci/tarchetypes/issues"><code>tarchetypes</code> issues</a>).</li>
@@ -941,13 +938,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn1"><p>The <code>callr_function</code> argument controls which <a href="https://github.com/r-lib/callr"><code>callr</code></a> function initializes the process.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>You can fix the bug by either removing the missing values from the dataset or by setting <code>na.action = na.omit</code> in <code>gls()</code>.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3"><p>With <code>callr_function = NULL</code>, a messy local R environment can accidentally change the functions and objects that a target depends on, which can invalidate those targets and erase hard-earned results that were previously correct. This is why <code>targets</code> uses <code>callr</code> in the first place, and it is why <code>callr_function = NULL</code> is for debugging only. If you do need <code>callr_function = NULL</code>, please restart your R session first.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn4"><p>In <code>tarchetypes</code> version <code>0.7.1.9000</code> and above, this re-batching will <a href="https://github.com/ropensci/tarchetypes/pull/113">not change the random number generator seed assigned to each call to <code>simulate_and_analyze_one_dataset()</code></a>.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn5"><p>You can also run <code>tar_make_clustermq(callr_function = NULL)</code> or <code>tar_make_future(callr_function = NULL)</code>. In either case, the target to debug will not run on a parallel worker even if you set <code>deployment = "worker"</code>.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn6"><p><code>tar_option_set()</code> also has a <code>workspaces</code> argument to let you choose which targets save workspace files, regardless of whether they hit errors.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn7"><p>You can retrieve this seed with <code>tar_meta(names = analysis_02de2921, fields = seed)</code>. In the pipeline, <code>targets</code> sets this seed with <code>withr::with_seed()</code> just before running the target. However, other functions or target factories may set their own seeds. For example, <code>tarchetypes::tar_map_rep()</code> sets its own target seeds so they are <a href="https://github.com/ropensci/tarchetypes/pull/113">resilient to re-batching</a>. For more details on seeds, see the documentation of the <code>seed</code> argument of <a href="https://docs.ropensci.org/targets/reference/tar_option_set.html#arguments"><code>tar_option_set()</code></a>.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>You can fix the bug by either removing the missing values from the dataset or by setting <code>na.action = na.omit</code> in <code>gls()</code>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>With <code>callr_function = NULL</code>, a messy local R environment can accidentally change the functions and objects that a target depends on, which can invalidate those targets and erase hard-earned results that were previously correct. This is why <code>targets</code> uses <code>callr</code> in the first place, and it is why <code>callr_function = NULL</code> is for debugging only. If you do need <code>callr_function = NULL</code>, please restart your R session first.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>In <code>tarchetypes</code> version <code>0.7.1.9000</code> and above, this re-batching will <a href="https://github.com/ropensci/tarchetypes/pull/113">not change the random number generator seed assigned to each call to <code>simulate_and_analyze_one_dataset()</code></a>.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>You can also run <code>tar_make_clustermq(callr_function = NULL)</code> or <code>tar_make_future(callr_function = NULL)</code>. In either case, the target to debug will not run on a parallel worker even if you set <code>deployment = "worker"</code>.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p><code>tar_option_set()</code> also has a <code>workspaces</code> argument to let you choose which targets save workspace files, regardless of whether they hit errors.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>You can retrieve this seed with <code>tar_meta(names = analysis_02de2921, fields = seed)</code>. In the pipeline, <code>targets</code> sets this seed with <code>withr::with_seed()</code> just before running the target. However, other functions or target factories may set their own seeds. For example, <code>tarchetypes::tar_map_rep()</code> sets its own target seeds so they are <a href="https://github.com/ropensci/tarchetypes/pull/113">resilient to re-batching</a>. For more details on seeds, see the documentation of the <code>seed</code> argument of <a href="https://docs.ropensci.org/targets/reference/tar_option_set.html#arguments"><code>tar_option_set()</code></a>.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
 
