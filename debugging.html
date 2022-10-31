@@ -905,10 +905,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="cell">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">analyze_data</span>(data)</span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error in na.fail.default(list(measurement = c(1L, 2L, 3L, 4L, 1L, 2L,  : </span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error in na.fail.default(list(measurement = c(1L, 2L, 3L, 4L, 1L, 2L,  :</span></span>
 <span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   missing values in object</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>With more interactive tinkering your local R session, you can find the bug.</p>
+<p>For more assistance, you can load the [traceback] from the workspace file.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_traceback</span>(analysis_02de2921)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="co">#  [1] "eval(expr = expr, envir = envir)"</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="co">#  [2] "eval(expr = expr, envir = envir)"</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="co">#  [3] "analyze_data(data)"</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="co">#  [4] "gls(model = outcome ~ factor, data = data, correlation = corSymm(form = ~measurement | unit), weights = varIden"</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="co">#  [5] "tidy(., conf.int = TRUE, conf.level = 0.95)"</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="co">#  [6] "gls(model = outcome ~ factor, data = data, correlation = corSymm(form = ~measurement | unit), weights = varIden"</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a><span class="co">#  [7] "do.call(model.frame, mfArgs)"</span></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a><span class="co">#  [8] "(function (formula, ...) \nUseMethod(\"model.frame\"))(formula = ~measurement + unit + outcome + factor, data = li"</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a><span class="co">#  [9] "model.frame.default(formula = ~measurement + unit + outcome + factor, data = list(c(1, 1, 1, 1, 2, 2, 2, 2, 3, "</span></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a><span class="co"># [10] "(function (object, ...) \nUseMethod(\"na.fail\"))(list(c(1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, "</span></span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a><span class="co"># [11] "na.fail.default(list(c(1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2"</span></span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a><span class="co"># [12] "stop(\"missing values in object\")"</span></span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a><span class="co"># [13] ".handleSimpleError(function (condition) \n{\n    state$error &lt;- build_message(condition)\n    state$traceback &lt;- b"</span></span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a><span class="co"># [14] "h(simpleError(msg, call))"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </section>
 <section id="getting-help" class="level2" data-number="3.10">
 <h2 data-number="3.10" class="anchored" data-anchor-id="getting-help"><span class="header-section-number">3.10</span> Getting help</h2>
