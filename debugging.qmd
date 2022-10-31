@@ -359,9 +359,9 @@ simulate_and_analyze_one_dataset <- function(units) {
 list(
   tar_map_rep( # from the {tarchetypes} package
     name = analysis,
-    command = simulate_and_analyze_one_dataset(units), # 100 rows per dataset
+    command = simulate_and_analyze_one_dataset(units),
     values = data.frame(units = c(58, 70)), # 2 data size scenarios.
-    names = all_of("units"), # which columns of values should be used to name the targets
+    names = all_of("units"), # The columns of values to use to name the targets.
     batches = 20, # For each scenario, divide the 100 simulations into 20 dynamic branch targets.
     reps = 5 # Each branch target (batch) runs simulate_and_analyze_one_dataset(n = 100) 5 times.
   )
