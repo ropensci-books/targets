@@ -277,9 +277,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="cell">
 
 </div>
-<p>R code is easiest to debug when it is interactive. In the R console or <a href="https://www.rstudio.com/products/rstudio/">RStudio IDE</a>, you have full control over the code and the objects in the environment, and you are free to dissect, tinker, and test until you find and fix the issue. However, a pipeline is the <em>opposite</em> of interactive. In <code>targets</code>, several layers of encapsulation separate you from the code you want to debug:</p>
+<p>R code is easiest to debug when it is interactive. In the R console or <a href="https://www.rstudio.com/products/rstudio/">RStudio IDE</a>, you have full control over the code and the objects in the environment, and you are free to dissect, tinker, and test until you find and fix the issue. However, a pipeline is the opposite of interactive. In <code>targets</code>, several layers of encapsulation and automation separate you from the code you want to debug:</p>
 <ul>
-<li>The pipeline runs in an external <a href="https://github.com/r-lib/callr"><code>callr::r()</code></a> process</li>
+<li>The pipeline runs in an external non-interactive <a href="https://github.com/r-lib/callr"><code>callr::r()</code></a> process where you cannot use the R console.</li>
 <li>Data management</li>
 <li>Environment management</li>
 <li><a href="hpc.html">High-performance computing</a></li>
@@ -592,9 +592,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
 <span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_map_rep</span>( <span class="co"># from the {tarchetypes} package</span></span>
 <span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> analysis,</span>
-<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">command =</span> <span class="fu">simulate_and_analyze_one_dataset</span>(units), <span class="co"># 100 rows per dataset</span></span>
+<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">command =</span> <span class="fu">simulate_and_analyze_one_dataset</span>(units),</span>
 <span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">values =</span> <span class="fu">data.frame</span>(<span class="at">units =</span> <span class="fu">c</span>(<span class="dv">58</span>, <span class="dv">70</span>)), <span class="co"># 2 data size scenarios.</span></span>
-<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">names =</span> <span class="fu">all_of</span>(<span class="st">"units"</span>), <span class="co"># which columns of values should be used to name the targets</span></span>
+<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">names =</span> <span class="fu">all_of</span>(<span class="st">"units"</span>), <span class="co"># The columns of values to use to name the targets.</span></span>
 <span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">batches =</span> <span class="dv">20</span>, <span class="co"># For each scenario, divide the 100 simulations into 20 dynamic branch targets.</span></span>
 <span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">reps =</span> <span class="dv">5</span> <span class="co"># Each branch target (batch) runs simulate_and_analyze_one_dataset(n = 100) 5 times.</span></span>
 <span id="cb16-38"><a href="#cb16-38" aria-hidden="true" tabindex="-1"></a>  )</span>
@@ -717,6 +717,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Around 20 targets ran successfully, and target <code>analysis_58_b59aa384</code> hit an error. Let’s interactively debug <code>analysis_58_b59aa384</code> without interfering with any other targets:</p>
 <ol type="1">
 <li>Set the <code>debug</code> option to <code>"analysis_58_b59aa384"</code> in <code>tar_option_set()</code>.</li>
+<li>Optional: set <code>cue = tar_cue(mode = "never")</code> in <code>tar_option_set()</code> to force skip all targets except:
+<ul>
+<li><code>analysis_58_b59aa384</code> and other targets in the <code>debug</code> option.</li>
+<li>targets that do not already exist in the <a href="data.html">metadata</a>.</li>
+<li>targets that set their own <a href="https://docs.ropensci.org/targets/reference/tar_cue.html">cues</a>.</li>
+</ul></li>
 <li>Restart your R session to remove detritus from memory.</li>
 <li>Run <code>tar_make(callr_function = NULL)</code>.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></li>
 </ol>
@@ -727,10 +733,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(</span>
 <span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">packages =</span> <span class="fu">c</span>(<span class="st">"broom"</span>, <span class="st">"broom.mixed"</span>, <span class="st">"dplyr"</span>, <span class="st">"nlme"</span>, <span class="st">"tibble"</span>, <span class="st">"tidyr"</span>),</span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">debug =</span> <span class="st">"analysis_58_b59aa384"</span> <span class="co"># Set the target you want to debug.</span></span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Functions etc...</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">debug =</span> <span class="st">"analysis_58_b59aa384"</span>, <span class="co"># Set the target you want to debug.</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">cue =</span> <span class="fu">tar_cue</span>(<span class="at">mode =</span> <span class="st">"never"</span>) <span class="co"># Force skip non-debugging outdated targets.</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Functions etc...</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
