@@ -494,6 +494,10 @@ tar_make()
 Around 20 targets ran successfully, and target `analysis_58_b59aa384` hit an error. Let's interactively debug `analysis_58_b59aa384` without interfering with any other targets:
 
 1. Set the `debug` option to `"analysis_58_b59aa384"` in `tar_option_set()`.
+1. Optional: set `cue = tar_cue(mode = "never")` in `tar_option_set()` to force skip all targets except:
+    * `analysis_58_b59aa384` and other targets in the `debug` option.
+    * targets that do not already exist in the [metadata](#data).
+    * targets that set their own [cues](https://docs.ropensci.org/targets/reference/tar_cue.html).
 1. Restart your R session to remove detritus from memory.
 1. Run `tar_make(callr_function = NULL)`.[^interactive]
 
@@ -506,7 +510,8 @@ library(tarchetypes)
 
 tar_option_set(
   packages = c("broom", "broom.mixed", "dplyr", "nlme", "tibble", "tidyr"),
-  debug = "analysis_58_b59aa384" # Set the target you want to debug.
+  debug = "analysis_58_b59aa384", # Set the target you want to debug.
+  cue = tar_cue(mode = "never") # Force skip non-debugging outdated targets.
 )
 
 # Functions etc...
