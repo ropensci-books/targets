@@ -24,6 +24,16 @@ R code is easiest to debug when it is interactive. In the R console or [RStudio 
 
 Although these layers are essential for reproducibility and scale, you will need to cut through them in order to diagnose and solve issues in pipelines. This chapter explains how.
 
+## Help
+
+If you are still stuck after reading this chapter, then you can ask for help at <https://github.com/ropensci/targets/discussions>. However, it is difficult for the maintainer to keep up with the large number of incoming questions, so please follow these guidelines. 
+
+1. Before posting, search previous issues and discussions to see if your issue is already solved. This includes [`targets` discussions](https://github.com/ropensci/targets/discussions), [`targets` issues](https://github.com/ropensci/targets/issues), [`tarchetypes` discussions](https://github.com/ropensci/tarchetypes/discussions), and [`tarchetypes` issues](https://github.com/ropensci/tarchetypes/issues).
+1. Try to isolate the problem and reproduce it without using `targets`. If `targets` is not part of the root cause, please post on [Stack Overflow](https://stackoverflow.com) and cite a different set of R packages.
+1. If the issue is definitely `targets`-related, write your post clearly and concisely, leaving out discipline-specific content where possible.
+1. [Share code that demonstrates the problem](https://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example). Please make your [reproducible example](https://reprex.tidyverse.org/) short, easy to read, and quick to run. Above all, [make sure any reader can run it](https://www.tidyverse.org/blog/2017/12/workflow-vs-script/).
+1. Follow the [tidyverse style guide](https://style.tidyverse.org/) so your code is easy to read.
+
 ## Example
 
 The following pipeline simulates a repeated measures dataset and analyzes it with generalized least squares.
@@ -726,10 +736,3 @@ tar_traceback(analysis_02de2921)
 # [14] "h(simpleError(msg, call))"
 ```
 
-## Getting help
-
-If you are still stuck, you can ask questions at <https://github.com/ropensci/targets/discussions>. Because new posts appear frequently, please keep the following in mind.
-
-* Before posting, search previous issues and discussions to see if your issue is already solved ([`targets` discussions](https://github.com/ropensci/targets/discussions), [`targets` issues](https://github.com/ropensci/targets/issues), [`tarchetypes` discussions](https://github.com/ropensci/tarchetypes/discussions), and [`tarchetypes` issues](https://github.com/ropensci/tarchetypes/issues)).
-* Try to isolate the problem and reproduce it without using `targets`. If `targets` is not the root cause, please post on [Stack Overflow](https://stackoverflow.com) etc. and discuss only the packages that are directly relevant to the problem.
-* Share a [minimal, runnable, reproducible example](https://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example): minimal so others can understand it easily, and runnable so others can empirically search for the root cause of the problem.
