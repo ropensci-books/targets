@@ -27,6 +27,17 @@ For most pipelines, it is straightforward to load the R packages that your targe
 
 Some package management workflows are more complicated. If your use special configuration with [conflicted](https://github.com/r-lib/conflicted), [`box`](https://klmr.me/box/), [`import`](https://import.rticulate.org/), or similar utility, please do your configuration inside a project-level `.Rprofile` file instead of the target script file (default: `_targets.R`). In addition, if you use distributed workers inside external containers (Docker, Singularity, AWS AMI, etc.) make sure each container has a copy of this same `.Rprofile` file where the R worker process spawns. This approach is ensures that all [remote workers](#hpc) are configured the same way as the local main process.
 
+## Package management with `renv`
+
+`targets` and `renv` work extremely well together as an overall reproducibility solution for data analysis pipelines. `targets` makes sure your results are up to date, and `renv` keeps track of the packages you use.
+
+If you use [`renv`](https://rstudio.github.io/renv/), consider disabling the slowest startup checks so your pipelines and [workers](#hpc) start faster. You can read about RSPM integration and the synchronized check options at <https://rstudio.github.io/renv/reference/config.html>. Then if you are sure you will not need these checks, you can disable them with the following lines in your user-level `.Renviron` file:
+
+```
+RENV_CONFIG_RSPM_ENABLED = FALSE        
+RENV_CONFIG_SYNCHRONIZED_CHECK = FALSE
+```
+
 ## R packages as projects
 
 It is good practice to organize the files of a `targets` project similar to a research compendium or R package. However, unless have a specific reason to do so, it is usually not necessary to literally implement your `targets` pipeline as an installable R package with its own `DESCRIPTION` file. A research compendium backed by a `renv` library and Git-backed version control is enough reproducibility for most projects.
