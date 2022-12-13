@@ -20,7 +20,7 @@ A project is a `targets` pipeline together with its supporting source code, data
 
 For extra reproducibility, it is good practice to use the [`renv`](https://rstudio.github.io/renv/) R package for package management and Git/GitHub for code version control. The entire `_targets/` data store should generally not be committed to Git because of its large size.^[However, you may wish to commit `_targets/meta/meta`, which is critical to checking the status of each target and reading targets into memory.] The broader R community has excellent resources and tutorials on getting started with these third-party tools.
 
-If you use [`renv`](https://rstudio.github.io/renv/), then overhead from project initialization could slow down pipelines and [workers](#hpc). Fortunately, you can restore efficiency by disabling the slowest initialization checks. After confirming at <https://rstudio.github.io/renv/reference/config.html> that you can safely disable these checks, you can write the following lines in your user-level `.Renviron` file:
+If you use [`renv`](https://rstudio.github.io/renv/), then overhead from project initialization could slow down pipelines and [workers](#hpc). If you experience slowness, please make sure your [`renv`](https://rstudio.github.io/renv/) library is on a fast file system. (For example, slow network drives can severely reduce performance.) In addition, you can disable the slowest initialization checks. After confirming at <https://rstudio.github.io/renv/reference/config.html> that you can safely disable these checks, you can write the following lines in your user-level `.Renviron` file:
 
 ```
 RENV_CONFIG_RSPM_ENABLED=false
