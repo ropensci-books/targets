@@ -287,9 +287,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="extra-reproducibility" class="level2" data-number="8.1">
 <h2 data-number="8.1" class="anchored" data-anchor-id="extra-reproducibility"><span class="header-section-number">8.1</span> Extra reproducibility</h2>
 <p>For extra reproducibility, it is good practice to use the <a href="https://rstudio.github.io/renv/"><code>renv</code></a> R package for package management and Git/GitHub for code version control. The entire <code>_targets/</code> data store should generally not be committed to Git because of its large size.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> The broader R community has excellent resources and tutorials on getting started with these third-party tools.</p>
-<p>If you use <a href="https://rstudio.github.io/renv/"><code>renv</code></a>, consider disabling the slowest startup checks so your pipelines and <a href="hpc.html">workers</a> start faster. You can read about RSPM integration and the synchronized check options at <a href="https://rstudio.github.io/renv/reference/config.html" class="uri">https://rstudio.github.io/renv/reference/config.html</a>. Then if you are sure you will not need these checks, you can disable them with the following lines in your user-level <code>.Renviron</code> file:</p>
-<pre><code>RENV_CONFIG_RSPM_ENABLED = FALSE        
-RENV_CONFIG_SYNCHRONIZED_CHECK = FALSE</code></pre>
+<p>If you use <a href="https://rstudio.github.io/renv/"><code>renv</code></a>, then overhead from project initialization could slow down pipelines and <a href="hpc.html">workers</a>. Fortunately, you can disable the slowest initialization checks to boost speed. After confirming at <a href="https://rstudio.github.io/renv/reference/config.html" class="uri">https://rstudio.github.io/renv/reference/config.html</a> that you can safely disable these checks, you can write the following lines in your user-level <code>.Renviron</code> file:</p>
+<pre><code>RENV_CONFIG_RSPM_ENABLED=false
+RENV_CONFIG_SANDBOX_ENABLED=false
+RENV_CONFIG_SYNCHRONIZED_CHECK=false</code></pre>
 </section>
 <section id="project-files" class="level2" data-number="8.2">
 <h2 data-number="8.2" class="anchored" data-anchor-id="project-files"><span class="header-section-number">8.2</span> Project files</h2>

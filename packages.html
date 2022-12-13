@@ -288,9 +288,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="package-management-with-renv" class="level2" data-number="7.2">
 <h2 data-number="7.2" class="anchored" data-anchor-id="package-management-with-renv"><span class="header-section-number">7.2</span> Package management with <code>renv</code></h2>
 <p><code>targets</code> and <code>renv</code> work extremely well together as an overall reproducibility solution for data analysis pipelines. <code>targets</code> makes sure your results are up to date, and <code>renv</code> keeps track of the packages you use.</p>
-<p>If you use <a href="https://rstudio.github.io/renv/"><code>renv</code></a>, consider disabling the slowest startup checks so your pipelines and <a href="hpc.html">workers</a> start faster. You can read about RSPM integration and the synchronized check options at <a href="https://rstudio.github.io/renv/reference/config.html" class="uri">https://rstudio.github.io/renv/reference/config.html</a>. Then if you are sure you will not need these checks, you can disable them with the following lines in your user-level <code>.Renviron</code> file:</p>
-<pre><code>RENV_CONFIG_RSPM_ENABLED = FALSE        
-RENV_CONFIG_SYNCHRONIZED_CHECK = FALSE</code></pre>
+<p>If you use <a href="https://rstudio.github.io/renv/"><code>renv</code></a>, then overhead from project initialization could slow down pipelines and <a href="hpc.html">workers</a>. Fortunately, you can disable the slowest initialization checks to boost speed. After confirming at <a href="https://rstudio.github.io/renv/reference/config.html" class="uri">https://rstudio.github.io/renv/reference/config.html</a> that you can safely disable these checks, you can write the following lines in your user-level <code>.Renviron</code> file:</p>
+<pre><code>RENV_CONFIG_RSPM_ENABLED=false
+RENV_CONFIG_SANDBOX_ENABLED=false
+RENV_CONFIG_SYNCHRONIZED_CHECK=false</code></pre>
 </section>
 <section id="r-packages-as-projects" class="level2" data-number="7.3">
 <h2 data-number="7.3" class="anchored" data-anchor-id="r-packages-as-projects"><span class="header-section-number">7.3</span> R packages as projects</h2>
