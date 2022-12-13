@@ -28,6 +28,8 @@ RENV_CONFIG_SANDBOX_ENABLED=false
 RENV_CONFIG_SYNCHRONIZED_CHECK=false
 ```
 
+If you disable the synchronization check, remember to call `renv::status()` periodically to check the health of your `renv` project library.
+
 ## Project files
 
 `targets` is mostly indifferent to how you organize the files in your project. However, it is good practice to follow the overall structure of a research compendium or R package (not necessarily with a `DESCRIPTION` file). It also is good practice to give each project its own unique folder with one `targets` pipeline, one `renv` library for package management, and one Git/GitHub repository for code version control. As described later, it is possible to create multiple overlapping projects within a single folder, but this is not recommended for most situations.

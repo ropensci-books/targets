@@ -39,6 +39,8 @@ RENV_CONFIG_SANDBOX_ENABLED=false
 RENV_CONFIG_SYNCHRONIZED_CHECK=false
 ```
 
+If you disable the synchronization check, remember to call `renv::status()` periodically to check the health of your `renv` project library.
+
 ## R packages as projects
 
 It is good practice to organize the files of a `targets` project similar to a research compendium or R package. However, unless have a specific reason to do so, it is usually not necessary to literally implement your `targets` pipeline as an installable R package with its own `DESCRIPTION` file. A research compendium backed by a `renv` library and Git-backed version control is enough reproducibility for most projects.
