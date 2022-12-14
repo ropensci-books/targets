@@ -129,7 +129,7 @@ tar_visnetwork(callr_arguments = list(show = FALSE))
 
 The dependency graph is a [directed acyclic graph](https://en.wikipedia.org/wiki/Directed_acyclic_graph) (DAG) representation of the pipeline, where each node is a target or global object and each directed edge indicates where a downstream node depends on an upstream node.  The DAG is not always a [tree](https://en.wikipedia.org/wiki/Tree_(graph_theory)), but it never contains a [cycle](https://en.wikipedia.org/wiki/Cycle_(graph_theory)) because no target is allowed to directly or indirectly depend on itself. The dependency graph should show a natural progression of work from left to right.^[If you have hundreds of targets, then [`tar_visnetwork()`](https://docs.ropensci.org/targets/reference/tar_visnetwork.html) may be slow. If that happens, consider temporarily commenting out some targets in `_targets.R` just for visualization purposes.] `targets` uses [static code analysis](https://adv-r.hadley.nz/expressions.html#ast-funs) to build the graph, so the order of `tar_target()` calls in the target list does not matter. However, `targets` does not support self-referential [loops](https://en.wikipedia.org/wiki/Loop_(graph_theory)) or other [cycles](https://en.wikipedia.org/wiki/Cycle_(graph_theory)).
 
-When you run the pipeline, `targets` runs the correct targets in the correct order with the correct resources according to the graph. For example, by the time `second_target` starts running, `targets` makes sure:
+When you run the pipeline with `tar_make()`^[or `tar_make_clustermq()` or `tar_make_future()`], `targets` runs the correct targets in the correct order with the correct resources according to the graph. For example, by the time `second_target` starts running, `targets` makes sure:
 
 1. Dependency target `first_target` has already finished running.
 2. Dependencies `first_target` and `outer_function()` are up to date.
@@ -147,17 +147,6 @@ At this point, any of the following changes will cause the next `tar_make()` to 
 * Change the body or arguments of `outer_function()`.
 * Change the command or value of `first_target`.
 * Change the command of `second_target`.
-
-## Dependency graph
-
-Using the dependency detection system explained above, `targets` builds a [directed acyclic graph](https://en.wikipedia.org/wiki/Directed_acyclic_graph) (DAG) representation of the pipeline, where each node is a target or global object and each directed edge indicates that the downstream node depends on the upstream node.
-
-```{r, eval = TRUE}
-# R console
-tar_visnetwork()
-```
-
-The DAG is not always a [tree](https://en.wikipedia.org/wiki/Tree_(graph_theory)), but it never contains a [cycle](https://en.wikipedia.org/wiki/Cycle_(graph_theory)) because no target is allowed to directly or indirectly depend on itself. The dependency graph should show a natural progression of work from left to right.^[If you have hundreds of targets, then [`tar_visnetwork()`](https://docs.ropensci.org/targets/reference/tar_visnetwork.html) may be slow. If that happens, consider temporarily commenting out some targets in `_targets.R` just for visualization purposes.] `targets` uses [static code analysis](https://adv-r.hadley.nz/expressions.html#ast-funs) to build the graph, so the order of `tar_target()` calls in the target list does not matter. However, `targets` does not support self-referential [loops](https://en.wikipedia.org/wiki/Loop_(graph_theory)) or other [cycles](https://en.wikipedia.org/wiki/Cycle_(graph_theory)).
 
 ## Return value
 
