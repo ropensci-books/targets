@@ -54,81 +54,110 @@ Like a good pure function, a good target should return a single value and not pr
 
 ## Dependencies
 
-A dependency `x` of target `y` is a target, global object, or global function that `y` requires in order to run its R command. When target `y` is about to run, `x` is up to date and loaded into memory in the R session.^[`targets` automatically loads dependencies into memory when they are required, so it is rarely advisable to call `tar_read()` or `tar_load()` from inside a target. Except in rare circumstances, `tar_read()` and `tar_load()` are only for exploratory data analysis and [literate programming](#data).] Consequently, when targets `x` and `y` are not up to date, target `x` always finishes running before target `y` starts running. The `targets` package automatically discovers dependencies using static code analysis. In the example below, `x` is automatically detected as a dependency of `y` because the R command of `y` is the expression `x + 1`, which contains the symbol `x`. Consequently, the `tar_visnetwork()` dependency graph contains a left-to-right arrow from `x` to `y`.
+Consider the following pipeline.
 
 ```{r, eval = FALSE}
 # _targets.R file
 library(targets)
-source("R/functions.R")
+
+global_object <- 3
+
+inner_function <- function(argument) {
+  local_object <- 1
+  argument + global_object + local_object + 2
+}
+
+outer_function <- function(object) {
+  object + inner_function(object) + 1
+}
+
 list(
-  tar_target(x, 2),
-  tar_target(y, x + 1)
-)
-```
-
-```{r, eval = FALSE}
-# R console
-tar_visnetwork()
-```
-
-```{r, echo = FALSE, eval = TRUE, message = FALSE, output = FALSE}
-tar_script(list(tar_target(x, 1), tar_target(y, x)))
-tar_visnetwork()
-```
-
-To force a dependency relationship, simply mention the dependency in the target's command. In the following example, target `y` depends on target `z` even though `z` does not actually contribute to the return value of `y`. Target `z` will still finish before target `y` begins, and target `y` will still load target `z` into its memory space before running the R command.
-
-```{r, eval = FALSE}
-# _targets.R file
-library(targets)
-source("R/functions.R")
-list(
-  tar_target(x, 2),
   tar_target(
-    y, {
-      z # Merely mentioned to force y to depend on z.
-      x + 1
-    }
+    name = second_target,
+    command = outer_function(first_target) + 2
   ),
-  tar_target(z, 1)
-)
-```
-
-```{r, eval = FALSE}
-# R console
-tar_visnetwork()
-```
-
-```{r, echo = FALSE, eval = TRUE, message = FALSE, output = FALSE}
-tar_script(
-  list(
-    tar_target(x, 2),
-    tar_target(
-      y, {
-        z # Merely mentioned to force y to depend on z.
-        x + 1
-      }
-    ),
-    tar_target(z, 1)
+  tar_target(
+    name = first_target,
+    command = 2
   )
 )
-tar_visnetwork()
 ```
 
-
-The `tar_deps()` function shows you which dependencies will be detected in a given function or R command.^[`tar_deps()` works mostly like the `findGlobals()` function from the [`codetools`](https://CRAN.R-project.org/package=codetools) package, except the former makes special adjustments for odd cases like formulas.]
-
-```{r, eval = TRUE}
-tar_deps(x + 2)
-
-tar_deps(command_of_y(dependency = x))
-
-tar_deps(function() {
-  read_csv(raw_data_file, col_types = cols())
+```{r, echo = FALSE, eval = TRUE, message = FALSE, output = FALSE}
+tar_script({
+  global_object <- 3
+  inner_function <- function(argument) {
+    local_object <- 1
+    argument + global_object + local_object + 2
+  }
+  outer_function <- function(object) {
+    object + inner_function(object) + 1
+  }
+  list(
+    tar_target(
+      name = second_target, command = outer_function(first_target) + 2),
+    tar_target(name = first_target, command = 2)
+  )
 })
 ```
 
-However, the findings from `tar_deps()` are only *candidate* dependencies. Unless they are either  targets in the pipeline or global objects^[i.e. loaded into `tar_option_get("envir)` from within `_targets.R`], they will be ignored. For example, functions and objects defined in R packages are ignored. To force a pipeline to notice dependencies from an R package, include the name of the package in the `imports` and `packages` fields of `tar_option_set()`.
+In order to run properly, `second_target` needs up-to-date versions of `first_target` and `outer_function()`. In other words, `first_target` and `outer_function()` are *dependencies* of `second_target`. Likewise, `inner_function()` is a dependency of `outer_function()`, and `global_object` is a dependency of `inner_function()`. The `targets` package searches commands and functions for dependencies, noting global symbols like `global_object` and ignoring local symbols like `argument` and `local_object`. The `tar_deps()` function emulates behavior for you.^[`tar_deps()` uses the `findGlobals()` function from the [`codetools`](https://CRAN.R-project.org/package=codetools) package, with some minor adjustments. See <https://adv-r.hadley.nz/expressions.html?q=ast#ast-funs> for more information on static code analysis.]
+
+```{r}
+tar_deps(outer_function(first_target) + 2)
+```
+
+```{r}
+tar_deps(
+  function(argument) {
+    local_object <- 1
+    argument + global_object + local_object + 2
+  }
+)
+```
+
+After it discards dangling symbols like `{` and `<-`, `targets` translates the dependency information into a *dependency [graph](https://en.wikipedia.org/wiki/Graph_(discrete_mathematics))* that you can visualize with `tar_visnetwork()`. It is good practice to make sure this graph has the correct nodes connected with the correct edges.
+
+```{r, eval = FALSE}
+# R console
+tar_visnetwork()
+```
+
+```{r, echo = FALSE, eval = TRUE}
+tar_visnetwork(callr_arguments = list(show = FALSE))
+```
+
+The dependency graph is a [directed acyclic graph](https://en.wikipedia.org/wiki/Directed_acyclic_graph) (DAG) representation of the pipeline, where each node is a target or global object and each directed edge indicates where a downstream node depends on an upstream node.  The DAG is not always a [tree](https://en.wikipedia.org/wiki/Tree_(graph_theory)), but it never contains a [cycle](https://en.wikipedia.org/wiki/Cycle_(graph_theory)) because no target is allowed to directly or indirectly depend on itself. The dependency graph should show a natural progression of work from left to right.^[If you have hundreds of targets, then [`tar_visnetwork()`](https://docs.ropensci.org/targets/reference/tar_visnetwork.html) may be slow. If that happens, consider temporarily commenting out some targets in `_targets.R` just for visualization purposes.] `targets` uses [static code analysis](https://adv-r.hadley.nz/expressions.html#ast-funs) to build the graph, so the order of `tar_target()` calls in the target list does not matter. However, `targets` does not support self-referential [loops](https://en.wikipedia.org/wiki/Loop_(graph_theory)) or other [cycles](https://en.wikipedia.org/wiki/Cycle_(graph_theory)).
+
+When you run the pipeline, `targets` runs the correct targets in the correct order with the correct resources according to the graph. For example, by the time `second_target` starts running, `targets` makes sure:
+
+1. Dependency target `first_target` has already finished running.
+2. Dependencies `first_target` and `outer_function()` are up to date.
+3. Dependencies `first_target` and `outer_function()` are loaded into memory for `second_target` to use.
+
+```{r, eval = TRUE}
+# R console
+tar_make()
+```
+
+At this point, any of the following changes will cause the next `tar_make()` to rerun `second_target`.
+
+* Change the value of `global_object`.
+* Change the body or arguments of `inner_function()`. 
+* Change the body or arguments of `outer_function()`.
+* Change the command or value of `first_target`.
+* Change the command of `second_target`.
+
+## Dependency graph
+
+Using the dependency detection system explained above, `targets` builds a [directed acyclic graph](https://en.wikipedia.org/wiki/Directed_acyclic_graph) (DAG) representation of the pipeline, where each node is a target or global object and each directed edge indicates that the downstream node depends on the upstream node.
+
+```{r, eval = TRUE}
+# R console
+tar_visnetwork()
+```
+
+The DAG is not always a [tree](https://en.wikipedia.org/wiki/Tree_(graph_theory)), but it never contains a [cycle](https://en.wikipedia.org/wiki/Cycle_(graph_theory)) because no target is allowed to directly or indirectly depend on itself. The dependency graph should show a natural progression of work from left to right.^[If you have hundreds of targets, then [`tar_visnetwork()`](https://docs.ropensci.org/targets/reference/tar_visnetwork.html) may be slow. If that happens, consider temporarily commenting out some targets in `_targets.R` just for visualization purposes.] `targets` uses [static code analysis](https://adv-r.hadley.nz/expressions.html#ast-funs) to build the graph, so the order of `tar_target()` calls in the target list does not matter. However, `targets` does not support self-referential [loops](https://en.wikipedia.org/wiki/Loop_(graph_theory)) or other [cycles](https://en.wikipedia.org/wiki/Cycle_(graph_theory)).
 
 ## Return value
 
