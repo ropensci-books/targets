@@ -1,0 +1,70 @@
+---
+execute:
+  freeze: auto
+---
+
+```{r, message = FALSE, warning = FALSE, echo = FALSE}
+knitr::opts_knit$set(root.dir = fs::dir_create(tempfile()))
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = TRUE)
+```
+
+```{r, message = FALSE, warning = FALSE, echo = FALSE}
+library(targets)
+```
+
+# Help {#help}
+
+This chapter explains how to ask for help using `targets`.
+
+## Is it really about `targets`?
+
+Most problems in a `targets` pipeline are not caused by the `targets` package itself. They usually come from the user-defined R code, R commands, and R functions that the pipeline relies on, as well as other R packages on your system. Please attempt to troubleshoot and figure out if `targets` is really the cause, using the tips in the [debugging chapter](#debugging) as needed. If it turns out to be a non-`targets` issue, then please ask your question elsewhere.
+
+## Search existing posts
+
+Please search the forums linked from the bottom of this page to see if your question already has an answer. If a relevant thread exists, please read it first, and please comment there instead of starting a new post.
+
+## How to post
+
+If are using `targets` [as documented](https://books.ropensci.org/targets/), and if you cannot find a preexisting post, then the problem is rare. In most cases, the bug only happens in your pipeline, your R installation, or your system. Nobody else has access to your project or your computing environment, so when someone tries to help, they have to guess. Guesses about code are almost always wrong.
+
+To receive constructive help, please post a reprex, otherwise known as a reproducible example, a minimal reproducible example, or a minimal working example. A reprex is a piece of complete, self-contained, readable, runnable code that fully emulates the problem. You could embed the code inline in your question, or you could upload it to a public repository and post the link. Regardless, everyone trying to help will run the `_targets.R` file in the reprex and tinker with the code you posted. The process is unavoidably empirical.
+
+The following posts explain how to write a good reprex.
+
+  * <https://stackoverflow.com/help/minimal-reproducible-example>
+  * <https://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example>
+  * <https://reprex.tidyverse.org/>
+  * <https://www.tidyverse.org/blog/2017/12/workflow-vs-script/>
+
+Here are examples of excellent reprexes about `targets`.
+
+  * <https://github.com/ropensci/targets/discussions/884>
+  * <https://github.com/ropensci/targets/discussions/953#discussioncomment-3842883>
+  * <https://github.com/ropensci/targets/discussions/944>
+  * <https://github.com/ropensci/targets/discussions/945>
+  * <https://github.com/ropensci/targets/discussions/954>
+
+## Code of conduct
+
+All developers, users, and other discussants must follow the [code of conduct](https://ropensci.org/code-of-conduct/). Please read it before commenting or posting.
+
+## R community
+
+You can reach out to the R community at these forums.
+
+* [Stack Overflow](https://stackoverflow.com/)
+* [Posit Community](https://community.rstudio.com/)
+* [rOpenSci Discuss](https://discuss.ropensci.org)
+* [Mastodon](https://mastodon.social) (`#rstats` hashtag)
+* [R subreddit](https://www.reddit.com/r/rstats/)
+
+## Contact the maintainer
+
+To contact the maintainer directly, please post to the relevant public [GitHub Discussions](https://github.com/features/discussions) page.^[You will need to create a free [GitHub](https://github.com/) account, which is a straightforward process.] Examples:
+
+* `targets`: <https://github.com/ropensci/targets/discussions>
+* `tarchetypes`: <https://github.com/ropensci/tarchetypes/discussions>
+* `gittargets`: <https://github.com/ropensci/gittargets/discussions>
+* `jagstargets`: <https://github.com/ropensci/jagstargets/discussions>
+* `stantargets`: <https://github.com/ropensci/stantargets/discussions>

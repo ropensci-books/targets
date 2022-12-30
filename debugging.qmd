@@ -14,6 +14,10 @@ library(targets)
 
 # Debugging {#debugging}
 
+This chapter explains how to debug `targets` pipelines. The repository at <https://github.com/wlandau/targets-debug> has example R code. To practice the debugging techniques explained below, [download the code](https://github.com/wlandau/targets-debug/archive/refs/heads/main.zip) and step through the interactive R scripts `demo_small.R`, `demo_browser.R`, and `demo_workspace.R`. To ask for help using `targets`, please read the [help chapter](#help).
+
+## Debugging in `targets` is different
+
 R code is easiest to debug when it is interactive. In the R console or [RStudio IDE](https://www.rstudio.com/products/rstudio/), you have full control over the code and the objects in the environment, and you are free to dissect, tinker, and test until you find and fix the issue. However, a pipeline is the opposite of interactive. In `targets`, several layers of encapsulation and automation separate you from the code you want to debug:
 
 * The pipeline runs in an external non-interactive [`callr::r()`](https://github.com/r-lib/callr) process where you cannot use the R console.
@@ -23,28 +27,6 @@ R code is easiest to debug when it is interactive. In the R console or [RStudio 
 * Built-in error handling
 
 Although these layers are essential for reproducibility and scale, you will need to cut through them in order to diagnose and solve issues in pipelines. This chapter explains how.
-
-Hands-on R code examples from this chapter are available at <https://github.com/wlandau/targets-debug>. To practice the debugging techniques explained here, [download the code](https://github.com/wlandau/targets-debug/archive/refs/heads/main.zip) and step through the interactive R scripts `demo_small.R`, `demo_browser.R`, and `demo_workspace.R`.
-
-## Help
-
-If you are still stuck after reading this chapter, then you can ask for help at <https://github.com/ropensci/targets/discussions>. However, it is difficult for the maintainer to keep up with the large number of incoming questions, so please follow these guidelines. 
-
-1. Before posting, search previous issues and discussions to see if your issue is already solved. This includes [`targets` discussions](https://github.com/ropensci/targets/discussions), [`targets` issues](https://github.com/ropensci/targets/issues), [`tarchetypes` discussions](https://github.com/ropensci/tarchetypes/discussions), and [`tarchetypes` issues](https://github.com/ropensci/tarchetypes/issues).
-1. As [described below](https://books.ropensci.org/targets/debugging.html#system-issues), try to isolate the problem using plain R code outside of `targets`. If `targets` is not part of the root cause, please instead post to [Stack Overflow](https://stackoverflow.com) and cite a different set of R packages.
-1. If the issue is definitely `targets`-related, then feel free to post your question. However, since you did not find your issue in the [existing discussions](https://github.com/ropensci/targets/discussions), please assume your issue is not a common problem and does not have a common solution. Your issue could come from any number of unknown causes, and finding a solution will require a complete, concise, and detailed explanation up front.
-1. To ensure your explanation is complete, concise, and detailed, please include a minimal code example which reproduces the problem. The example should be complete and simple enough for anyone to run the code from end to end, short and clean enough to easily understand, and it should reproduce the problem for anyone who runs it. The following links point to helpful guides and excellent instances of reproducible examples.
-    * <https://stackoverflow.com/help/minimal-reproducible-example>
-    * <https://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example>
-    * <https://reprex.tidyverse.org/>
-    * <https://www.tidyverse.org/blog/2017/12/workflow-vs-script/>
-    * <https://github.com/ropensci/targets/discussions/953#discussioncomment-3842883>
-    * <https://github.com/ropensci/targets/discussions/944>
-    * <https://github.com/ropensci/targets/discussions/945>
-    * <https://github.com/ropensci/targets/discussions/954>
-    * <https://github.com/ropensci/targets/discussions/884>
-    
-1. Follow the [tidyverse style guide](https://style.tidyverse.org/) so your code is easy to read.
 
 ## Example
 
