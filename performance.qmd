@@ -44,6 +44,8 @@ tar_option_set(format = "qs")
 
 Some formats such as `"qs"` work on all kinds of data, whereas others like `"feather"` works only on data frames. Most non-default formats store the data faster and in smaller files than the default `"rds"` format, but they require extra packages to be installed. For example, `format = "qs"` requires the `qs` package, and `format = "feather"` requires the `arrow` package.
 
+For extremely large datasets that cannot fit into memory, consider `format = "file"` to treat the data as a file on disk. Downstream targets are free to load only the subsets of the data they need.
+
 ## Memory
 
 By default, the pipeline retains targets in memory while it is running. In large data workloads, this could consume too much [computer memory](http://adv-r.had.co.nz/memory.html) and overwhelm the local R session. The solution is simple: in `tar_option_set()` or `tar_target()` in the `_targets.R` file, activate transient memory and garbage collection:
@@ -55,6 +57,8 @@ tar_option_set(memory = "transient", garbage_collection = TRUE)
 These options tell `tar_make()` to remove data from the R environment as soon as possible and run garbage collection to make sure the data is really gone from memory (but still in [storage](#data)). This memory cleanup phase happens once per target.
 
 As with everything performance-related, there is a cost. With transient memory and garbage collection, the pipeline reads data from storage far more often. These data reads take additional time, and if you use [cloud storage](https://books.ropensci.org/targets/data.html#cloud-storage), they could incur additional monetary charges. In addition, garbage collection is usually a slow operation, and repeated garbage collections could slow down a pipeline with thousands of targets. Please think about the tradeoffs for your specific use case.
+
+And as mentioned previously, `format = "file"` treats a target as a file path, and the data in the file is not automatically loaded into memory. This may be useful for larger-than-memory files. Downstream targets are free to load only strategic subsets of the data file..
 
 ## Parallel workers and data
 
