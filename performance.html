@@ -319,6 +319,7 @@ Summary
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">format =</span> <span class="st">"qs"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Some formats such as <code>"qs"</code> work on all kinds of data, whereas others like <code>"feather"</code> works only on data frames. Most non-default formats store the data faster and in smaller files than the default <code>"rds"</code> format, but they require extra packages to be installed. For example, <code>format = "qs"</code> requires the <code>qs</code> package, and <code>format = "feather"</code> requires the <code>arrow</code> package.</p>
+<p>For extremely large datasets that cannot fit into memory, consider <code>format = "file"</code> to treat the data as a file on disk. Downstream targets are free to load only the subsets of the data they need.</p>
 </section>
 <section id="memory" class="level2" data-number="5.3">
 <h2 data-number="5.3" class="anchored" data-anchor-id="memory"><span class="header-section-number">5.3</span> Memory</h2>
@@ -328,6 +329,7 @@ Summary
 </div>
 <p>These options tell <code>tar_make()</code> to remove data from the R environment as soon as possible and run garbage collection to make sure the data is really gone from memory (but still in <a href="data.html">storage</a>). This memory cleanup phase happens once per target.</p>
 <p>As with everything performance-related, there is a cost. With transient memory and garbage collection, the pipeline reads data from storage far more often. These data reads take additional time, and if you use <a href="https://books.ropensci.org/targets/data.html#cloud-storage">cloud storage</a>, they could incur additional monetary charges. In addition, garbage collection is usually a slow operation, and repeated garbage collections could slow down a pipeline with thousands of targets. Please think about the tradeoffs for your specific use case.</p>
+<p>And as mentioned previously, <code>format = "file"</code> treats a target as a file path, and the data in the file is not automatically loaded into memory. This may be useful for larger-than-memory files. Downstream targets are free to load only strategic subsets of the data file..</p>
 </section>
 <section id="parallel-workers-and-data" class="level2" data-number="5.4">
 <h2 data-number="5.4" class="anchored" data-anchor-id="parallel-workers-and-data"><span class="header-section-number">5.4</span> Parallel workers and data</h2>
