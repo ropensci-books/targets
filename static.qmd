@@ -268,7 +268,7 @@ mapped <- tar_map(
 )
 combined <- tar_combine(
   combined_summaries,
-  mapped[[2]],
+  mapped[["summary"]],
   command = dplyr::bind_rows(!!!.x, .id = "method")
 )
 list(random_seed, mapped, combined)
@@ -296,7 +296,7 @@ tar_script({
   )
   combined <- tar_combine(
     combined_summaries,
-    mapped[[2]],
+    mapped[["summary"]],
     command = dplyr::bind_rows(!!!.x, .id = "method")
   )
   list(random_seed, mapped, combined)
