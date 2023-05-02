@@ -22,7 +22,8 @@ If your `targets` pipeline runs slowly or consumes too many resources, you can m
 
 * Choose fast persistent storage for the [data store](#data).
 * Choose [efficient data storage formats](https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats) for large targets.
-* For high-memory pipelines, consider `memory = "transient"` and `garbage_collection = TRUE` in `tar_option_set()` or `tar_target()`.
+* For high-memory pipelines, consider `memory = "transient"` and `garbage_collection = TRUE` in `tar_option_set()` or `tar_target()`. `tar_make()`, `tar_make_clustermq()`, and `tar_make_future()` also support a `garbage_collection` argument that applies to the controller process.
+* If you are careful to leave the [data store and file targets](#hpc) alone until 2 seconds after the pipeline finishes, `tar_option_set(trust_object_timestamps = TRUE)` and `format = "file_fast` in `tar_target()` can speed up the pipeline by avoiding superfluous hash computations. (Requires `targets` >= 1.1.0.)
 * For highly parallel pipelines, consider `storage = "worker"` and `retrieval = "worker"` in `tar_option_set()` or `tar_target()`.
 * To avoid wasting computational resources, consider setting `deployment = "main"` in `tar_target()` for light targets that do not need to run on parallel workers.
 * For high-overhead pipelines with thousands of targets, consider grouping same amount of work into a smaller number of targets.
@@ -32,7 +33,7 @@ If your `targets` pipeline runs slowly or consumes too many resources, you can m
 
 ## Data location
 
-The [data store](#data) is a folder on a computer, usually at the root of your project, and `targets` makes innumerable quick modifications over the course of a pipeline. For best performance, the [data store](#data) should live on high-performant storage hardware on your local computer. Any slowdown due to disk issues or latency due to a slow network will severely impact the performance of your pipeline.^[ [Mounted network drives](https://support.microsoft.com/en-us/windows/map-a-network-drive-in-windows-29ce55d1-34e3-a7e2-4801-131475f9557d) are the particularly egregious.]^[At the same time, the files in the [data store](#data) are important and must be available for subsequent runs of the pipeline, so `tempdir()` is not suitable.]
+The [data store](#data) is a folder on a computer, usually at the root of your project, and `targets` makes innumerable quick modifications over the course of a pipeline. For best performance, the [data store](#data) should live on high-performant storage hardware on your local computer. Any slowdown due to disk issues or latency due to a slow network will severely impact the performance of your pipeline.^[ [Mounted network drives](https://support.microsoft.com/en-us/windows/map-a-network-drive-in-windows-29ce55d1-34e3-a7e2-4801-131475f9557d) are the particularly egregious. In addition, the files in the [data store](#data) are important and must be available for subsequent runs of the pipeline, so `tempdir()` is not suitable.]
 
 ## Efficient storage formats
 
@@ -48,17 +49,45 @@ For extremely large datasets that cannot fit into memory, consider `format = "fi
 
 ## Memory
 
-By default, the pipeline retains targets in memory while it is running. In large data workloads, this could consume too much [computer memory](http://adv-r.had.co.nz/memory.html) and overwhelm the local R session. The solution is simple: in `tar_option_set()` or `tar_target()` in the `_targets.R` file, activate transient memory and garbage collection:
+By default, the pipeline retains targets in memory while it is running. In large data workloads, this could consume too much [computer memory](http://adv-r.had.co.nz/memory.html) and overwhelm the worker processes there the targets run. The solution is simple: in `tar_option_set()` or `tar_target()` in the `_targets.R` file, activate transient memory and garbage collection:
 
 ```{r, eval = FALSE}
 tar_option_set(memory = "transient", garbage_collection = TRUE)
 ```
 
-These options tell `tar_make()` to remove data from the R environment as soon as possible and run garbage collection to make sure the data is really gone from memory (but still in [storage](#data)). This memory cleanup phase happens once per target.
+And for pipelines that store and retrieve data on the local R process, you can activate garbage collection in the local controller process. (Requires `targets` >= 1.1.0.)
+
+```{r, eval = FALSE}
+tar_make(garbage_collection = TRUE)
+```
+
+::: {.callout-tip collapse="true"}
+## About memory and garbage collection
+
+`memory = "transient"` tells `targets` to remove data from the R environment as soon as possible. However, the computer memory itself is not freed until garbage collection is run. Alternatively,  can invoke garbage collection manually using `gc()`.^[To learn more about memory and garbage colleciton in R, see <http://adv-r.had.co.nz/memory.html>.] For both transient memory and garbage collection, the cleanup phase happens once per target.
 
 As with everything performance-related, there is a cost. With transient memory and garbage collection, the pipeline reads data from storage far more often. These data reads take additional time, and if you use [cloud storage](https://books.ropensci.org/targets/data.html#cloud-storage), they could incur additional monetary charges. In addition, garbage collection is usually a slow operation, and repeated garbage collections could slow down a pipeline with thousands of targets. Please think about the tradeoffs for your specific use case.
 
-And as mentioned previously, `format = "file"` treats a target as a file path, and the data in the file is not automatically loaded into memory. This may be useful for larger-than-memory files. Downstream targets are free to load only strategic subsets of the data file..
+And as mentioned previously, `format = "file"` and `format = "file_fast"` treat a target as a file path, and the data in the file is not automatically loaded into memory. This may be useful for larger-than-memory files. Downstream targets are free to load only strategic subsets of the data file.
+:::
+
+## Hashes
+
+`targets` uses hash computations to check if each target is up to date, and hashes can be slow. To enable timestamps to speed up the processing of [local data store files](#data) in `_targets/objects/`, set `trust_object_timestamps` to `TRUE` in `tar_option_set()` (already the default). To enable timestamps to speed up the processing of large or numerous [external files](#data), set `format = "file_fast"` instead of `format = "file"` in `tar_option_set()`. (Requires `targets` >= 1.1.0.)
+
+::: {.callout-important}
+## Dangers of timestamps
+
+**Where timestamps are used, do not manually change those files while the pipeline is running. `_targets/objects/` in particular should never be modified by hand. And if you have on file system with low-precision time stamps (EXT3, FAT, XFS) wait at least 2 seconds after the pipeline finishes.**
+:::
+
+::: {.callout-tip collapse="true"}
+## About hashes and timestamps
+
+A hash is a fixed-length fingerprint of an object or file. Except in rare cases, different files have different hashes, and two files with the same hash have the same contents. `targets` uses hashes to check if files have changed, which helps decide whether to rerun or skip each target. Unfortunately, hashes are expensive to compute, so a large number of targets or a large data file could slow down your pipeline.
+
+File modification timestamps offer a workaround. Operating systems keep track of when each file was last modified, and R functions `file.mtime()` and `file.info()` can look up these timestamps much faster than hashes can be computed. When you tell `targets` to use timestamps, the package compares the current timestamp to the old timestamp from when the pipeline last ran. If the timestamps agree, then `targets` assumes the file is up to date and does not bother to recompute the hash. Otherwise, if the timestamps disagree, then `targets` recomputes the hash to find out if the contents of the file have really changed. When used safely, this behavior speeds up `tar_make()`, `tar_outdated()`, `tar_visnetwork()`, etc. by avoiding superfluous hash computations when targets are up to date.
+:::
 
 ## Parallel workers and data
 
@@ -96,9 +125,11 @@ A pipeline with too many targets will begin to slow down. You may notice a minor
 To reduce overhead, consider dividing up the work into a smaller number of targets. Each target is a cached operation, and not all steps of the pipeline needs to be cached at a perfect level of granularity.
 See the sections on [what a target should do](https://books.ropensci.org/targets/targets.html#what-a-target-should-do) and [how much a target should do](https://books.ropensci.org/targets/targets.html#how-much-a-target-should-do). 
 
-### Batching
+::: {.callout-tip collapse="true"}
+## About batching
 
 Simulation studies and other iterative stochastic pipelines may need to run thousands of independent random replications. For these pipelines, consider [batching](https://books.ropensci.org/targets/dynamic.html#performance-and-batching) to reduce the number of targets while preserving the number of replications. In [batching](https://books.ropensci.org/targets/dynamic.html#performance-and-batching), each batch is a [dynamic branch](https://books.ropensci.org/targets/dynamic.html) target that performs a subset of the replications. For 1000 replications, you might want 40 batches of 25 replications each, 10 batches with 100 replications each, or a different balance depending on the use case. Functions `tarchetypes::tar_rep()`, `tarchetypes::tar_map_rep()`, and [`stantargets::tar_stan_mcmc_rep_summary()`](https://wlandau.github.io/stantargets/articles/mcmc_rep.html) are examples of [target factories](https://wlandau.github.io/targetopia/contributing.html#target-factories) that set up the batching structure without needing to understand [dynamic branching](https://books.ropensci.org/targets/dynamic.html).
+:::
 
 ## Monitoring the pipeline
 
