@@ -23,6 +23,7 @@ If your `targets` pipeline runs slowly or consumes too many resources, you can m
 * Choose fast persistent storage for the [data store](#data).
 * Choose [efficient data storage formats](https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats) for large targets.
 * For high-memory pipelines, consider `memory = "transient"` and `garbage_collection = TRUE` in `tar_option_set()` or `tar_target()`. `tar_make()`, `tar_make_clustermq()`, and `tar_make_future()` also support a `garbage_collection` argument that applies to the controller process.
+* To reduce the latency and cost of [cloud storage](https://books.ropensci.org/targets/data.html#cloud-storage) in cases where the bucket is trustworthy, set `cue = tar_cue(file = FALSE)` in `tar_target()` and/or `tar_option_set()` 
 * If you are careful to leave the [data store and file targets](#hpc) alone until 2 seconds after the pipeline finishes, `tar_option_set(trust_object_timestamps = TRUE)` and `format = "file_fast` in `tar_target()` can speed up the pipeline by avoiding superfluous hash computations. (Requires `targets` >= 1.1.0.)
 * For highly parallel pipelines, consider `storage = "worker"` and `retrieval = "worker"` in `tar_option_set()` or `tar_target()`.
 * To avoid wasting computational resources, consider setting `deployment = "main"` in `tar_target()` for light targets that do not need to run on parallel workers.
@@ -70,6 +71,10 @@ As with everything performance-related, there is a cost. With transient memory a
 
 And as mentioned previously, `format = "file"` and `format = "file_fast"` treat a target as a file path, and the data in the file is not automatically loaded into memory. This may be useful for larger-than-memory files. Downstream targets are free to load only strategic subsets of the data file.
 :::
+
+## Cloud storage latency
+
+`targets` provides optional [cloud storage](https://books.ropensci.org/targets/data.html#cloud-storage) through the `repository` and `resources` arguments of `tar_target()` and `tar_option_set()`. By default, to check if a target is up to date on the cloud, the local R process downloads the metadata of the target object in the bucket. For a large number of cloud targets, this can create high latency and unwanted monetary costs due to interactions with the web API of Amazon or Google. If you trust the bucket to keep your data, and if you know you will never call `tar_delete()` or modify that data manually, then you can avoid these costs with `cue = tar_cue(file = FALSE)` in `tar_target()` and/or `tar_option_set()`.
 
 ## Hashes
 
