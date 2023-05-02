@@ -95,7 +95,7 @@ Cloud data can lighten the burden of local storage, make the pipeline portable, 
 
 ### Cost
 
-Cloud services cost money. The more resources you use, the more you owe. Resources not only include the data you store, but also the HTTP requests that `tar_make()` uses to check if a target exists and is up to date. So cost increases with the number of cloud targets and the frequency that you run them. Please proactively monitor usage in the AWS or GCP web console and rethink your strategy if usage is too high. For example, you might consider running the pipeline locally and then sycning the data store to a bucket only at infrequent strategic milestones.
+Cloud services cost money. The more resources you use, the more you owe. Resources not only include the data you store, but also the HTTP requests that `tar_make()` uses to check if a target exists and is up to date. So cost increases with the number of cloud targets and the frequency that you run them. Please proactively monitor usage in the AWS or GCP web console and rethink your strategy if usage is too high. If you trust the storage bucket to safely keep your data, and if you know you will never call `tar_delete()` or modify that data manually, then you can avoid some of these costs with `cue = tar_cue(file = FALSE)` in `tar_target()` and/or `tar_option_set()`. Alternatively, you might consider running the pipeline locally and then sycning the data store to a storage bucket only at infrequent strategic milestones.
 
 ### AWS setup
 

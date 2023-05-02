@@ -74,7 +74,7 @@ And as mentioned previously, `format = "file"` and `format = "file_fast"` treat 
 
 ## Cloud storage latency
 
-`targets` provides optional [cloud storage](https://books.ropensci.org/targets/data.html#cloud-storage) through the `repository` and `resources` arguments of `tar_target()` and `tar_option_set()`. By default, to check if a target is up to date on the cloud, the local R process downloads the metadata of the target object in the bucket. For a large number of cloud targets, this can create high latency and unwanted monetary costs due to interactions with the web API of Amazon or Google. If you trust the bucket to keep your data, and if you know you will never call `tar_delete()` or modify that data manually, then you can avoid these costs with `cue = tar_cue(file = FALSE)` in `tar_target()` and/or `tar_option_set()`.
+`targets` provides optional [cloud storage](https://books.ropensci.org/targets/data.html#cloud-storage) through the `repository` and `resources` arguments of `tar_target()` and `tar_option_set()`. By default, to check if a target is up to date on the cloud, the local R process downloads the metadata of the target object in the bucket. For a large number of cloud targets, this can create high latency and unwanted monetary costs due to interactions with the web API of Amazon or Google. If you trust the bucket to safely keep your data, and if you know you will never call `tar_delete()` or modify that data manually, then you can avoid these costs with `cue = tar_cue(file = FALSE)` in `tar_target()` and/or `tar_option_set()`.
 
 ## Hashes
 
