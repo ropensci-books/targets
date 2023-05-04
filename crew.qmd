@@ -1,0 +1,162 @@
+---
+execute:
+  freeze: auto
+---
+
+# Distributed computing {#crew}
+
+```{r, message = FALSE, warning = FALSE, echo = FALSE}
+knitr::opts_knit$set(root.dir = fs::dir_create(tempfile()))
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = TRUE)
+```
+
+```{r, message = FALSE, warning = FALSE, echo = FALSE, eval = TRUE}
+library(targets)
+```
+
+:::{.callout-note}
+## Preview
+
+This appendix is a preview of new high-performance computing capabilities which will supersede [`tar_make_clustermq()`](https://docs.ropensci.org/targets/reference/tar_make_clustermq.html) and [`tar_make_future()`](https://docs.ropensci.org/targets/reference/tar_make_future.html). When the [`crew.cluster`](https://wlandau.github.com/crew.cluster) package accrues a sufficient number of [`crew` launcher plugins](https://wlandau.github.io/crew/articles/launcher_plugins.html), this chapter will become canon and the [original high-performance computing chapter](#hpc) will move to an appendix. 
+:::
+
+:::{.callout-tip}
+## Performance
+
+See the [performance chapter](#performance) for options, settings, and other choices to make parallel and distributed pipelines more efficient.
+:::
+
+To efficiently process a large and complex pipeline, [`tar_make()`](https://docs.ropensci.org/targets/reference/tar_make.html) can run multiple targets at the same time. Thanks to integration with [`crew`](https://wlandau.github.io/crew/) and blazing fast scheduling from [`mirai`](https://github.com/shikokuchuo/mirai) in the backend, those targets can run on a variety of high-performance computing platforms, and they can scale out to the hundreds and beyond.
+
+## How it works
+
+Write your pipeline as usual, but set the `controller` argument of [`tar_option_set`](https://docs.ropensci.org/targets/reference/tar_option_set.html) to the [`crew`](https://books.ropensci.org/crew/) controller of your choice. The controller allows [`tar_make()`](https://docs.ropensci.org/targets/reference/tar_make.html) to launch external R processes called "workers" which can each run one or more targets. By delegating long-running targets to these workers, the local R session is free to focus on other tasks, and the pipeline finishes faster.
+
+## Example
+
+The following `_targets.R` file uses a [local process controller](https://wlandau.github.io/crew/reference/crew_controller_local.html) with 2 workers. That means up to 2 workers can be running at any given time, and each worker is an separate R process on the same computer as the local R process.
+
+```{r, echo = FALSE, eval = TRUE}
+tar_script({
+  list(
+    tar_target(name = data, command = get_data()),
+    tar_target(name = model1, command = run_model1(data)),
+    tar_target(name = model2, command = run_model2(data)),
+    tar_target(name = model3, command = run_model3(data)),
+    tar_target(name = plot1, command = plot_model(model1)),
+    tar_target(name = plot2, command = plot_model(model2)),
+    tar_target(name = plot3, command = plot_model(model3))
+  )
+})
+```
+
+```{r, eval = FALSE}
+# _targets.R
+library(targets)
+library(crew)
+tar_option_set(
+  controller = crew_controller_local(workers = 2)
+)
+tar_source()
+list(
+  tar_target(name = data, command = get_data()),
+  tar_target(name = model1, command = run_model1(data)),
+  tar_target(name = model2, command = run_model2(data)),
+  tar_target(name = model3, command = run_model3(data)),
+  tar_target(name = plot1, command = plot_model(model1)),
+  tar_target(name = plot2, command = plot_model(model2)),
+  tar_target(name = plot3, command = plot_model(model3))
+)
+```
+
+```{r, eval = TRUE}
+# R console
+tar_visnetwork()
+```
+
+On the first [`tar_make()`](https://docs.ropensci.org/targets/reference/tar_make.html), a new worker launches and starts to run the `data` target. After the `data` target completes, all three models are ready to begin. A second worker automatically launches to meet the increased demand of the workload, and each of the two workers starts to run a model. After one of the models finishes, its worker is free to either run the downstream plot or the third model. The process continues until all the targets are complete. The workers shut down when the pipeline is done.
+
+## Auto-scaling
+
+As mentioned above, new workers launch automatically in response to increasing demand. By default, they stay running for the duration of the pipeline. However, you can customize the controller to scale down when circumstances allow. Not only does this help avoid wasting resources, it also helps comply with wall time restrictions on shared computing clusters. See the arguments of [`crew_controller_local()`](https://wlandau.github.io/crew/reference/crew_controller_local.html) for details. The most useful arguments, in order of importance, are:
+
+1. `seconds_idle`: automatically shut down a worker if it spends too long waiting for a target.
+2. `tasks_max`: maximum number of tasks a worker can run before shutting down.
+3. `seconds_wall`: soft wall time of a worker.
+
+## Backends
+
+[`crew`](https://wlandau.github.io/crew/) is a platform for multiple computing platforms, not just local processes, but also traditional high-performance computing systems and cloud computing services. For example, to run each worker as a job on a [Sun Grid Engine](https://en.wikipedia.org/wiki/Oracle_Grid_Engine) cluster, use [`crew_controller_sge()`](https://wlandau.github.io/crew.cluster/reference/crew_controller_sge.html) from the [`crew.cluster`](https://wlandau.github.io/crew.cluster/) package.
+
+```{r, eval = FALSE}
+# _targets.R
+library(targets)
+library(crew.cluster)
+tar_option_set(
+  controller = crew_controller_sge(
+    workers = 3,
+    sge_lines = "module load R"
+    sge_log_files = "log_folder/"
+  )
+)
+tar_source()
+list(
+  tar_target(name = data, command = get_data()),
+  tar_target(name = model1, command = run_model1(data)),
+  tar_target(name = model2, command = run_model2(data)),
+  tar_target(name = model3, command = run_model3(data)),
+  tar_target(name = plot1, command = plot_model(model1)),
+  tar_target(name = plot2, command = plot_model(model2)),
+  tar_target(name = plot3, command = plot_model(model3))
+)
+```
+
+If [`crew.cluster`](https://wlandau.github.io/crew.cluster/) and other official packages do not meet your needs, then you can write your own launcher plugin tailored to your own specific computing environment. [`crew`](https://wlandau.github.io/crew/) makes this process straightforward, and the vignette at <https://wlandau.github.io/crew/articles/launcher_plugins.html> walks through the details step by step.
+
+## Heterogeneous workers
+
+Different targets may have different computing requirements, from memory to GPUs and beyond. You can send different targets to different kinds of workers using [`crew` controller groups](https://wlandau.github.io/crew/articles/controller_groups.html). In the `_targets.R` file below, we create a local process controller alongside a [Sun Grid Engine](https://en.wikipedia.org/wiki/Oracle_Grid_Engine) controller a memory requirement and a GPU. We combine them in a [`crew` controller group](https://wlandau.github.io/crew/articles/controller_groups.html) which we supply to the `controller` argument of [`tar_option_set`](https://docs.ropensci.org/targets/reference/tar_option_set.html). Next, we use [`tar_resources()`](https://docs.ropensci.org/targets/reference/tar_resources.html) and [`tar_resources_crew()`](https://docs.ropensci.org/targets/reference/tar_resources_crew.html) to tell `model2` to run on [Sun Grid Engine](https://en.wikipedia.org/wiki/Oracle_Grid_Engine) and all other targets to run on local processes. The `deployment = "main"` argument tells the plots to avoid worker processes altogether and run on the main central R process.
+
+```{r, eval = FALSE}
+# _targets.R
+library(targets)
+library(crew)
+library(crew.cluster)
+controller_local <- crew_controller_local(
+  name = "my_local_controller",
+  workers = 2,
+  seconds_idle = 10
+)
+controller_sge <- crew_controller_sge(
+  name = "my_sge_controller",
+  workers = 3,
+  seconds_idle = 15,
+  sge_lines = "module load R"
+  sge_log_files = "log_folder/",
+  sge_memory_gigabytes_required = 64,
+  sge_gpu = 1
+)
+tar_option_set(
+  controller = crew_controller_group(controller_local, controller_sge),
+  resources = tar_resources(
+    crew = tar_resources_crew(controller = "my_local_controller")
+  )
+)
+tar_source()
+list(
+  tar_target(name = data, command = get_data()),
+  tar_target(name = model1, command = run_model1(data)),
+  tar_target(
+    name = model2,
+    command = run_model2(data),
+    resources = tar_resources(
+      crew = tar_resources_crew(controller = "my_sge_controller")
+    )
+  ),
+  tar_target(name = model3, run_model3(data)),
+  tar_target(name = plot1, command = plot_model(model1), deployment = "main"),
+  tar_target(name = plot2, command = plot_model(model2), deployment = "main"),
+  tar_target(name = plot3, command = plot_model(model3), deployment = "main")
+)
+```
+
