@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>The {targets} R package user manual - 5&nbsp; Performance</title>
+<title>The {targets} R package user manual - 12&nbsp; Performance</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -64,8 +64,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./functions.html" rel="next">
-<link href="./debugging.html" rel="prev">
+<link href="./dynamic.html" rel="next">
+<link href="./crew.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -107,7 +107,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./walkthrough.html">How to use {targets}</a></li><li class="breadcrumb-item"><a href="./performance.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Performance</span></a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./crew.html">Heavy workloads</a></li><li class="breadcrumb-item"><a href="./performance.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Performance</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -165,12 +165,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Debugging</span></span></a>
   </div>
 </li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./performance.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Performance</span></span></a>
-  </div>
-</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -185,25 +179,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./functions.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Functions</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Functions</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./targets.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Targets</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Targets</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./packages.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Packages</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Packages</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./projects.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Projects</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Projects</span></span></a>
   </div>
 </li>
       </ul>
@@ -220,13 +214,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./data.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Data</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Data</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./literate-programming.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Literate programming</span></span></a>
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Literate programming</span></span></a>
   </div>
 </li>
       </ul>
@@ -234,7 +228,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
- <span class="menu-text">Large pipelines</span></a>
+ <span class="menu-text">Heavy workloads</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -242,10 +236,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./hpc.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">High-performance computing</span></span></a>
+  <a href="./crew.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Distributed computing</span></span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./performance.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Performance</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text">Branching</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./dynamic.html" class="sidebar-item-text sidebar-link">
@@ -262,13 +273,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true">
  <span class="menu-text">Appendices</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./drake.html" class="sidebar-item-text sidebar-link">
@@ -293,16 +304,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#data-location" id="toc-data-location" class="nav-link active" data-scroll-target="#data-location"><span class="header-section-number">5.1</span> Data location</a></li>
-  <li><a href="#efficient-storage-formats" id="toc-efficient-storage-formats" class="nav-link" data-scroll-target="#efficient-storage-formats"><span class="header-section-number">5.2</span> Efficient storage formats</a></li>
-  <li><a href="#memory" id="toc-memory" class="nav-link" data-scroll-target="#memory"><span class="header-section-number">5.3</span> Memory</a></li>
-  <li><a href="#cloud-storage-latency" id="toc-cloud-storage-latency" class="nav-link" data-scroll-target="#cloud-storage-latency"><span class="header-section-number">5.4</span> Cloud storage latency</a></li>
-  <li><a href="#hashes" id="toc-hashes" class="nav-link" data-scroll-target="#hashes"><span class="header-section-number">5.5</span> Hashes</a></li>
-  <li><a href="#parallel-workers-and-data" id="toc-parallel-workers-and-data" class="nav-link" data-scroll-target="#parallel-workers-and-data"><span class="header-section-number">5.6</span> Parallel workers and data</a></li>
-  <li><a href="#local-targets" id="toc-local-targets" class="nav-link" data-scroll-target="#local-targets"><span class="header-section-number">5.7</span> Local targets</a></li>
-  <li><a href="#many-targets" id="toc-many-targets" class="nav-link" data-scroll-target="#many-targets"><span class="header-section-number">5.8</span> Many targets</a></li>
-  <li><a href="#monitoring-the-pipeline" id="toc-monitoring-the-pipeline" class="nav-link" data-scroll-target="#monitoring-the-pipeline"><span class="header-section-number">5.9</span> Monitoring the pipeline</a></li>
-  <li><a href="#profiling" id="toc-profiling" class="nav-link" data-scroll-target="#profiling"><span class="header-section-number">5.10</span> Profiling</a></li>
+  <li><a href="#data-location" id="toc-data-location" class="nav-link active" data-scroll-target="#data-location"><span class="header-section-number">12.1</span> Data location</a></li>
+  <li><a href="#efficient-storage-formats" id="toc-efficient-storage-formats" class="nav-link" data-scroll-target="#efficient-storage-formats"><span class="header-section-number">12.2</span> Efficient storage formats</a></li>
+  <li><a href="#memory" id="toc-memory" class="nav-link" data-scroll-target="#memory"><span class="header-section-number">12.3</span> Memory</a></li>
+  <li><a href="#cloud-storage-latency" id="toc-cloud-storage-latency" class="nav-link" data-scroll-target="#cloud-storage-latency"><span class="header-section-number">12.4</span> Cloud storage latency</a></li>
+  <li><a href="#hashes" id="toc-hashes" class="nav-link" data-scroll-target="#hashes"><span class="header-section-number">12.5</span> Hashes</a></li>
+  <li><a href="#parallel-workers-and-data" id="toc-parallel-workers-and-data" class="nav-link" data-scroll-target="#parallel-workers-and-data"><span class="header-section-number">12.6</span> Parallel workers and data</a></li>
+  <li><a href="#local-targets" id="toc-local-targets" class="nav-link" data-scroll-target="#local-targets"><span class="header-section-number">12.7</span> Local targets</a></li>
+  <li><a href="#many-targets" id="toc-many-targets" class="nav-link" data-scroll-target="#many-targets"><span class="header-section-number">12.8</span> Many targets</a></li>
+  <li><a href="#monitoring-the-pipeline" id="toc-monitoring-the-pipeline" class="nav-link" data-scroll-target="#monitoring-the-pipeline"><span class="header-section-number">12.9</span> Monitoring the pipeline</a></li>
+  <li><a href="#profiling" id="toc-profiling" class="nav-link" data-scroll-target="#profiling"><span class="header-section-number">12.10</span> Profiling</a></li>
   </ul>
 </nav>
     </div>
@@ -311,7 +322,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="performance" class="quarto-section-identifier"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Performance</span></span></h1>
+<h1 class="title"><span id="performance" class="quarto-section-identifier"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Performance</span></span></h1>
 </div>
 
 
@@ -342,7 +353,7 @@ Summary
 <li>Choose <a href="https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats">efficient data storage formats</a> for large targets.</li>
 <li>For high-memory pipelines, consider <code>memory = "transient"</code> and <code>garbage_collection = TRUE</code> in <code>tar_option_set()</code> or <code>tar_target()</code>. <code>tar_make()</code>, <code>tar_make_clustermq()</code>, and <code>tar_make_future()</code> also support a <code>garbage_collection</code> argument that applies to the controller process.</li>
 <li>To reduce the latency and cost of <a href="https://books.ropensci.org/targets/data.html#cloud-storage">cloud storage</a> in cases where the bucket is trustworthy, set <code>cue = tar_cue(file = FALSE)</code> in <code>tar_target()</code> and/or <code>tar_option_set()</code></li>
-<li>If you are careful to leave the <a href="hpc.html">data store and file targets</a> alone until 2 seconds after the pipeline finishes, <code>tar_option_set(trust_object_timestamps = TRUE)</code> and <code>format = "file_fast</code> in <code>tar_target()</code> can speed up the pipeline by avoiding superfluous hash computations. (Requires <code>targets</code> &gt;= 1.1.0.)</li>
+<li>If you are careful to leave the <a href="#hpc">data store and file targets</a> alone until 2 seconds after the pipeline finishes, <code>tar_option_set(trust_object_timestamps = TRUE)</code> and <code>format = "file_fast</code> in <code>tar_target()</code> can speed up the pipeline by avoiding superfluous hash computations. (Requires <code>targets</code> &gt;= 1.1.0.)</li>
 <li>For highly parallel pipelines, consider <code>storage = "worker"</code> and <code>retrieval = "worker"</code> in <code>tar_option_set()</code> or <code>tar_target()</code>.</li>
 <li>To avoid wasting computational resources, consider setting <code>deployment = "main"</code> in <code>tar_target()</code> for light targets that do not need to run on parallel workers.</li>
 <li>For high-overhead pipelines with thousands of targets, consider grouping same amount of work into a smaller number of targets.</li>
@@ -351,12 +362,12 @@ Summary
 </ul>
 </div>
 </div>
-<section id="data-location" class="level2" data-number="5.1">
-<h2 data-number="5.1" class="anchored" data-anchor-id="data-location"><span class="header-section-number">5.1</span> Data location</h2>
+<section id="data-location" class="level2" data-number="12.1">
+<h2 data-number="12.1" class="anchored" data-anchor-id="data-location"><span class="header-section-number">12.1</span> Data location</h2>
 <p>The <a href="data.html">data store</a> is a folder on a computer, usually at the root of your project, and <code>targets</code> makes innumerable quick modifications over the course of a pipeline. For best performance, the <a href="data.html">data store</a> should live on high-performant storage hardware on your local computer. Any slowdown due to disk issues or latency due to a slow network will severely impact the performance of your pipeline.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
 </section>
-<section id="efficient-storage-formats" class="level2" data-number="5.2">
-<h2 data-number="5.2" class="anchored" data-anchor-id="efficient-storage-formats"><span class="header-section-number">5.2</span> Efficient storage formats</h2>
+<section id="efficient-storage-formats" class="level2" data-number="12.2">
+<h2 data-number="12.2" class="anchored" data-anchor-id="efficient-storage-formats"><span class="header-section-number">12.2</span> Efficient storage formats</h2>
 <p>The default <a href="https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats">data storage format</a> is <a href="https://rdrr.io/r/base/readRDS.html">RDS</a>, which can be slow and bulky for large data. For large data pipelines, consider <a href="https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats">alternative formats</a> to more efficiently store and manage your data. Set the storage format using <code>tar_option_set()</code> or <code>tar_target()</code>:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">format =</span> <span class="st">"qs"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -364,8 +375,8 @@ Summary
 <p>Some formats such as <code>"qs"</code> work on all kinds of data, whereas others like <code>"feather"</code> works only on data frames. Most non-default formats store the data faster and in smaller files than the default <code>"rds"</code> format, but they require extra packages to be installed. For example, <code>format = "qs"</code> requires the <code>qs</code> package, and <code>format = "feather"</code> requires the <code>arrow</code> package.</p>
 <p>For extremely large datasets that cannot fit into memory, consider <code>format = "file"</code> to treat the data as a file on disk. Downstream targets are free to load only the subsets of the data they need.</p>
 </section>
-<section id="memory" class="level2" data-number="5.3">
-<h2 data-number="5.3" class="anchored" data-anchor-id="memory"><span class="header-section-number">5.3</span> Memory</h2>
+<section id="memory" class="level2" data-number="12.3">
+<h2 data-number="12.3" class="anchored" data-anchor-id="memory"><span class="header-section-number">12.3</span> Memory</h2>
 <p>By default, the pipeline retains targets in memory while it is running. In large data workloads, this could consume too much <a href="http://adv-r.had.co.nz/memory.html">computer memory</a> and overwhelm the worker processes there the targets run. The solution is simple: in <code>tar_option_set()</code> or <code>tar_target()</code> in the <code>_targets.R</code> file, activate transient memory and garbage collection:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">memory =</span> <span class="st">"transient"</span>, <span class="at">garbage_collection =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -393,12 +404,12 @@ About memory and garbage collection
 </div>
 </div>
 </section>
-<section id="cloud-storage-latency" class="level2" data-number="5.4">
-<h2 data-number="5.4" class="anchored" data-anchor-id="cloud-storage-latency"><span class="header-section-number">5.4</span> Cloud storage latency</h2>
+<section id="cloud-storage-latency" class="level2" data-number="12.4">
+<h2 data-number="12.4" class="anchored" data-anchor-id="cloud-storage-latency"><span class="header-section-number">12.4</span> Cloud storage latency</h2>
 <p><code>targets</code> provides optional <a href="https://books.ropensci.org/targets/data.html#cloud-storage">cloud storage</a> through the <code>repository</code> and <code>resources</code> arguments of <code>tar_target()</code> and <code>tar_option_set()</code>. By default, to check if a target is up to date on the cloud, the local R process downloads the metadata of the target object in the bucket. For a large number of cloud targets, this can create high latency and unwanted monetary costs due to interactions with the web API of Amazon or Google. If you trust the bucket to safely keep your data, and if you know you will never call <code>tar_delete()</code> or modify that data manually, then you can avoid these costs with <code>cue = tar_cue(file = FALSE)</code> in <code>tar_target()</code> and/or <code>tar_option_set()</code>.</p>
 </section>
-<section id="hashes" class="level2" data-number="5.5">
-<h2 data-number="5.5" class="anchored" data-anchor-id="hashes"><span class="header-section-number">5.5</span> Hashes</h2>
+<section id="hashes" class="level2" data-number="12.5">
+<h2 data-number="12.5" class="anchored" data-anchor-id="hashes"><span class="header-section-number">12.5</span> Hashes</h2>
 <p><code>targets</code> uses hash computations to check if each target is up to date, and hashes can be slow. To enable timestamps to speed up the processing of <a href="data.html">local data store files</a> in <code>_targets/objects/</code>, set <code>trust_object_timestamps</code> to <code>TRUE</code> in <code>tar_option_set()</code> (already the default). To enable timestamps to speed up the processing of large or numerous <a href="data.html">external files</a>, set <code>format = "file_fast"</code> instead of <code>format = "file"</code> in <code>tar_option_set()</code>. (Requires <code>targets</code> &gt;= 1.1.0.)</p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -431,16 +442,16 @@ About hashes and timestamps
 </div>
 </div>
 </section>
-<section id="parallel-workers-and-data" class="level2" data-number="5.6">
-<h2 data-number="5.6" class="anchored" data-anchor-id="parallel-workers-and-data"><span class="header-section-number">5.6</span> Parallel workers and data</h2>
-<p>By default, the main controlling R process stores and retrieves the data. So in large parallel data pipelines, <code>tar_make_clustermq()</code> and <code>tar_make_future()</code> may <a href="https://en.wikipedia.org/wiki/Bottleneck_(software)">bottleneck</a> at the data management phase. Solution: if all <a href="hpc.html">parallel workers</a> have access to the <a href="data.html">local data store</a>, you can make those workers store and retrieve the data instead of putting it all on the main controlling R process. In <code>tar_target()</code> or <code>tar_option_set()</code> in the <code>_targets.R</code> file, activate worker storage and retrieval:</p>
+<section id="parallel-workers-and-data" class="level2" data-number="12.6">
+<h2 data-number="12.6" class="anchored" data-anchor-id="parallel-workers-and-data"><span class="header-section-number">12.6</span> Parallel workers and data</h2>
+<p>By default, the main controlling R process stores and retrieves the data. So in large parallel data pipelines, <code>tar_make_clustermq()</code> and <code>tar_make_future()</code> may <a href="https://en.wikipedia.org/wiki/Bottleneck_(software)">bottleneck</a> at the data management phase. Solution: if all <a href="#hpc">parallel workers</a> have access to the <a href="data.html">local data store</a>, you can make those workers store and retrieve the data instead of putting it all on the main controlling R process. In <code>tar_target()</code> or <code>tar_option_set()</code> in the <code>_targets.R</code> file, activate worker storage and retrieval:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">storage =</span> <span class="st">"worker"</span>, <span class="at">retrieval =</span> <span class="st">"worker"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>If the <a href="hpc.html">workers</a> do not have access to the <a href="data.html">local data store</a>, you can still set <code>storage = "worker"</code> and <code>retrieval = "worker"</code> if you use <a href="https://books.ropensci.org/targets/data.html#cloud-storage">cloud storage</a> to store and retrieve your data.</p>
+<p>If the <a href="#hpc">workers</a> do not have access to the <a href="data.html">local data store</a>, you can still set <code>storage = "worker"</code> and <code>retrieval = "worker"</code> if you use <a href="https://books.ropensci.org/targets/data.html#cloud-storage">cloud storage</a> to store and retrieve your data.</p>
 </section>
-<section id="local-targets" class="level2" data-number="5.7">
-<h2 data-number="5.7" class="anchored" data-anchor-id="local-targets"><span class="header-section-number">5.7</span> Local targets</h2>
+<section id="local-targets" class="level2" data-number="12.7">
+<h2 data-number="12.7" class="anchored" data-anchor-id="local-targets"><span class="header-section-number">12.7</span> Local targets</h2>
 <p>In <code>tar_make_clustermq()</code>, the <a href="https://books.ropensci.org/targets/hpc.html#persistent-workers">persistent workers</a> launch as soon as a target needs them, and they keep running until no more targets need them anymore. In addition, <code>tar_make_future()</code> submits a new job for every target that needs one. Both behaviors could waste computational resources. For targets that run quickly and cheaply, consider setting <code>deployment = "main"</code> in <code>tar_target()</code>:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_target</span>(dataset, <span class="fu">get_dataset</span>(), <span class="at">deployment =</span> <span class="st">"main"</span>)</span>
@@ -453,8 +464,8 @@ About hashes and timestamps
 </div>
 <p>The <code>deployment</code> argument of <code>tar_option_set()</code> controls the default <code>deployment</code> argument of subsequent calls to <code>tar_target()</code>.</p>
 </section>
-<section id="many-targets" class="level2" data-number="5.8">
-<h2 data-number="5.8" class="anchored" data-anchor-id="many-targets"><span class="header-section-number">5.8</span> Many targets</h2>
+<section id="many-targets" class="level2" data-number="12.8">
+<h2 data-number="12.8" class="anchored" data-anchor-id="many-targets"><span class="header-section-number">12.8</span> Many targets</h2>
 <p>A pipeline with too many targets will begin to slow down. You may notice a minor slowdown at about 1000 targets and a more significant one at around 5000 or 10000 targets. This happens because each target needs to check its data, decide whether it needs to rerun, load its upstream dependencies from memory if applicable, and store its data after running. The overhead of these actions adds up.</p>
 <p>To reduce overhead, consider dividing up the work into a smaller number of targets. Each target is a cached operation, and not all steps of the pipeline needs to be cached at a perfect level of granularity. See the sections on <a href="https://books.ropensci.org/targets/targets.html#what-a-target-should-do">what a target should do</a> and <a href="https://books.ropensci.org/targets/targets.html#how-much-a-target-should-do">how much a target should do</a>.</p>
 <div class="callout callout-style-default callout-tip callout-titled">
@@ -474,8 +485,8 @@ About batching
 </div>
 </div>
 </section>
-<section id="monitoring-the-pipeline" class="level2" data-number="5.9">
-<h2 data-number="5.9" class="anchored" data-anchor-id="monitoring-the-pipeline"><span class="header-section-number">5.9</span> Monitoring the pipeline</h2>
+<section id="monitoring-the-pipeline" class="level2" data-number="12.9">
+<h2 data-number="12.9" class="anchored" data-anchor-id="monitoring-the-pipeline"><span class="header-section-number">12.9</span> Monitoring the pipeline</h2>
 <p>Even the most efficient <code>targets</code> pipelines can take time to complete because the user-defined tasks themselves are slow. There are convenient ways to monitor the progress of a running pipeline:</p>
 <ol type="1">
 <li><code>tar_poll()</code> continuously refreshes a text summary of runtime progress in the R console. Run it in a new R session at the project root directory. (Only supported in <code>targets</code> version 0.3.1.9000 and higher.)</li>
@@ -513,10 +524,10 @@ About batching
 <span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>px <span class="ot">&lt;-</span> <span class="fu">tar_make</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><img src="./man/figures/tar_watch.png" class="img-fluid"> <code>tar_watch_ui()</code> and <code>tar_watch_server()</code> make this functionality available to other apps through a Shiny module.</p>
-<p>Unfortunately, none of these options can tell you if any <a href="hpc.html">parallel workers</a> or external processes are <em>actually</em> still alive. You can monitor local processes with a utility like <code>top</code> or <code>htop</code>, and traditional HPC scheduler like SLURM or SGE support their own polling utilities such as <code>squeue</code> and <code>qstat</code>. <code>tar_process()</code> and <code>tar_pid()</code> get the process ID of the main R process that last attempted to run the pipeline.</p>
+<p>Unfortunately, none of these options can tell you if any <a href="#hpc">parallel workers</a> or external processes are <em>actually</em> still alive. You can monitor local processes with a utility like <code>top</code> or <code>htop</code>, and traditional HPC scheduler like SLURM or SGE support their own polling utilities such as <code>squeue</code> and <code>qstat</code>. <code>tar_process()</code> and <code>tar_pid()</code> get the process ID of the main R process that last attempted to run the pipeline.</p>
 </section>
-<section id="profiling" class="level2" data-number="5.10">
-<h2 data-number="5.10" class="anchored" data-anchor-id="profiling"><span class="header-section-number">5.10</span> Profiling</h2>
+<section id="profiling" class="level2" data-number="12.10">
+<h2 data-number="12.10" class="anchored" data-anchor-id="profiling"><span class="header-section-number">12.10</span> Profiling</h2>
 <p>The first sections of the chapter describe quick tips and tricks to improve the performance of a pipeline. If these workarounds fail, then before putting more effort into optimization, it is best to empirically confirm why the code is slow in the first place. “Profiling” is the act of scanning a running instance of a program, and it can detect <a href="https://en.wikipedia.org/wiki/Bottleneck_(software)">computational bottlenecks</a>. Follow these steps to profile a <code>targets</code> pipeline.</p>
 <ol type="1">
 <li>Install the <a href="https://r-prof.github.io/proffer/"><code>proffer</code></a> R package and its dependencies.</li>
@@ -771,13 +782,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./debugging.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Debugging</span></span>
+      <a href="./crew.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Distributed computing</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./functions.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Functions</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./dynamic.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Dynamic branching</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
