@@ -95,7 +95,7 @@ library(crew.cluster)
 tar_option_set(
   controller = crew_controller_sge(
     workers = 3,
-    sge_lines = "module load R"
+    script_lines = "module load R",
     sge_log_files = "log_folder/"
   )
 )
@@ -131,7 +131,7 @@ controller_sge <- crew_controller_sge(
   name = "my_sge_controller",
   workers = 3,
   seconds_idle = 15,
-  sge_lines = "module load R"
+  script_lines = "module load R",
   sge_log_files = "log_folder/",
   sge_memory_gigabytes_required = 64,
   sge_gpu = 1
