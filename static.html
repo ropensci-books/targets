@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>The {targets} R package user manual - 13&nbsp; Static branching</title>
+<title>The {targets} R package user manual - 14&nbsp; Static branching</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -64,7 +64,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./hpc.html" rel="next">
+<link href="./drake.html" rel="next">
 <link href="./dynamic.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -111,7 +111,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./static.html"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Static branching</span></a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./hpc.html">Large pipelines</a></li><li class="breadcrumb-item"><a href="./static.html"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Static branching</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -142,96 +142,151 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">How to use {targets}</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./walkthrough.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Walkthrough</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">A walkthrough to get started</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./help.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Help</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./debugging.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Debugging</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./performance.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Performance</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text">Concepts / best practices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./functions.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Functions</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./targets.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Targets</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./packages.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Packages</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./projects.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Projects</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text">Data and files</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./data.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Data</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./literate-programming.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Literate programming</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./dynamic.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Dynamic branching</span></span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./static.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Static branching</span></span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text">Large pipelines</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./hpc.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">High-performance computing</span></span></a>
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">High-performance computing</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dynamic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Dynamic branching</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./static.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Static branching</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./drake.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">What about <code>drake</code>?</span></span></a>
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">What about <code>drake</code>?</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./markdown.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">R Markdown</span></span></a>
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">R Markdown</span></span></a>
   </div>
 </li>
+      </ul>
+  </li>
     </ul>
     </div>
 </nav>
@@ -242,16 +297,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#branching" id="toc-branching" class="nav-link active" data-scroll-target="#branching"><span class="header-section-number">13.1</span> Branching</a></li>
-  <li><a href="#when-to-use-static-branching" id="toc-when-to-use-static-branching" class="nav-link" data-scroll-target="#when-to-use-static-branching"><span class="header-section-number">13.2</span> When to use static branching</a></li>
-  <li><a href="#map" id="toc-map" class="nav-link" data-scroll-target="#map"><span class="header-section-number">13.3</span> Map</a>
+  <li><a href="#branching" id="toc-branching" class="nav-link active" data-scroll-target="#branching"><span class="header-section-number">14.1</span> Branching</a></li>
+  <li><a href="#when-to-use-static-branching" id="toc-when-to-use-static-branching" class="nav-link" data-scroll-target="#when-to-use-static-branching"><span class="header-section-number">14.2</span> When to use static branching</a></li>
+  <li><a href="#map" id="toc-map" class="nav-link" data-scroll-target="#map"><span class="header-section-number">14.3</span> Map</a>
   <ul class="collapse">
-  <li><a href="#limitations" id="toc-limitations" class="nav-link" data-scroll-target="#limitations"><span class="header-section-number">13.3.1</span> Limitations</a></li>
+  <li><a href="#limitations" id="toc-limitations" class="nav-link" data-scroll-target="#limitations"><span class="header-section-number">14.3.1</span> Limitations</a></li>
   </ul></li>
-  <li><a href="#dynamic-within-static-branching" id="toc-dynamic-within-static-branching" class="nav-link" data-scroll-target="#dynamic-within-static-branching"><span class="header-section-number">13.4</span> Dynamic-within-static branching</a></li>
-  <li><a href="#combine" id="toc-combine" class="nav-link" data-scroll-target="#combine"><span class="header-section-number">13.5</span> Combine</a></li>
-  <li><a href="#metaprogramming" id="toc-metaprogramming" class="nav-link" data-scroll-target="#metaprogramming"><span class="header-section-number">13.6</span> Metaprogramming</a></li>
-  <li><a href="#hooks" id="toc-hooks" class="nav-link" data-scroll-target="#hooks"><span class="header-section-number">13.7</span> Hooks</a></li>
+  <li><a href="#dynamic-within-static-branching" id="toc-dynamic-within-static-branching" class="nav-link" data-scroll-target="#dynamic-within-static-branching"><span class="header-section-number">14.4</span> Dynamic-within-static branching</a></li>
+  <li><a href="#combine" id="toc-combine" class="nav-link" data-scroll-target="#combine"><span class="header-section-number">14.5</span> Combine</a></li>
+  <li><a href="#metaprogramming" id="toc-metaprogramming" class="nav-link" data-scroll-target="#metaprogramming"><span class="header-section-number">14.6</span> Metaprogramming</a></li>
+  <li><a href="#hooks" id="toc-hooks" class="nav-link" data-scroll-target="#hooks"><span class="header-section-number">14.7</span> Hooks</a></li>
   </ul>
 </nav>
     </div>
@@ -260,7 +315,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="static" class="quarto-section-identifier"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Static branching</span></span></h1>
+<h1 class="title"><span id="static" class="quarto-section-identifier"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Static branching</span></span></h1>
 </div>
 
 
@@ -275,8 +330,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
-<section id="branching" class="level2" data-number="13.1">
-<h2 data-number="13.1" class="anchored" data-anchor-id="branching"><span class="header-section-number">13.1</span> Branching</h2>
+<section id="branching" class="level2" data-number="14.1">
+<h2 data-number="14.1" class="anchored" data-anchor-id="branching"><span class="header-section-number">14.1</span> Branching</h2>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -323,12 +378,12 @@ Performance
 </tbody>
 </table>
 </section>
-<section id="when-to-use-static-branching" class="level2" data-number="13.2">
-<h2 data-number="13.2" class="anchored" data-anchor-id="when-to-use-static-branching"><span class="header-section-number">13.2</span> When to use static branching</h2>
+<section id="when-to-use-static-branching" class="level2" data-number="14.2">
+<h2 data-number="14.2" class="anchored" data-anchor-id="when-to-use-static-branching"><span class="header-section-number">14.2</span> When to use static branching</h2>
 <p>Static branching is the act of defining a group of targets in bulk before the pipeline starts. Whereas dynamic branching uses last-minute dependency data to define the branches, static branching uses metaprogramming to modify the code of the pipeline up front. Whereas dynamic branching excels at creating a large number of very similar targets, static branching is most useful for smaller number of heterogeneous targets. Some users find it more convenient because they can use <code>tar_manifest()</code> and <code>tar_visnetwork()</code> to check the correctness of static branching before launching the pipeline.</p>
 </section>
-<section id="map" class="level2" data-number="13.3">
-<h2 data-number="13.3" class="anchored" data-anchor-id="map"><span class="header-section-number">13.3</span> Map</h2>
+<section id="map" class="level2" data-number="14.3">
+<h2 data-number="14.3" class="anchored" data-anchor-id="map"><span class="header-section-number">14.3</span> Map</h2>
 <p><a href="https://docs.ropensci.org/tarchetypes/reference/tar_map.html"><code>tar_map()</code></a> from the <a href="https://github.com/ropensci/tarchetypes"><code>tarchetypes</code></a> package creates copies of existing target objects, where each new command is a variation on the original. In the example below, we have a data analysis workflow that iterates over datasets and analysis methods. The <code>values</code> data frame has the operational parameters of each data analysis, and <code>tar_map()</code> creates one new target per row.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R file:</span></span>
@@ -405,13 +460,13 @@ Performance
 <script type="application/json" data-for="htmlwidget-aec2a62a31f5db81d39b">{"x":{"nodes":{"name":["analysis_NIAID","analysis_NIAID_1","analysis_NIH","analysis_NIH_1","summary_NIAID","summary_NIAID_1","summary_NIH","summary_NIH_1"],"type":["stem","stem","stem","stem","stem","stem","stem","stem"],"status":["outdated","outdated","outdated","outdated","outdated","outdated","outdated","outdated"],"seconds":[null,null,null,null,null,null,null,null],"bytes":[null,null,null,null,null,null,null,null],"branches":[null,null,null,null,null,null,null,null],"label":["analysis_NIAID","analysis_NIAID_1","analysis_NIH","analysis_NIH_1","summary_NIAID","summary_NIAID_1","summary_NIH","summary_NIH_1"],"color":["#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5"],"id":["analysis_NIAID","analysis_NIAID_1","analysis_NIH","analysis_NIH_1","summary_NIAID","summary_NIAID_1","summary_NIH","summary_NIH_1"],"level":[1,1,1,1,2,2,2,2],"shape":["dot","dot","dot","dot","dot","dot","dot","dot"]},"edges":{"from":["analysis_NIAID","analysis_NIH_1","analysis_NIAID_1","analysis_NIH"],"to":["summary_NIAID","summary_NIH_1","summary_NIAID_1","summary_NIH"],"arrows":["to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"interaction":{"zoomSpeed":1},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Outdated","Stem"],"color":["#78B7C5","#899DA4"],"shape":["dot","dot"]},"nodesToDataframe":true},"tooltipStay":300,"tooltipStyle":"position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;border: 1px solid #808074;box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
-<section id="limitations" class="level3" data-number="13.3.1">
-<h3 data-number="13.3.1" class="anchored" data-anchor-id="limitations"><span class="header-section-number">13.3.1</span> Limitations</h3>
+<section id="limitations" class="level3" data-number="14.3.1">
+<h3 data-number="14.3.1" class="anchored" data-anchor-id="limitations"><span class="header-section-number">14.3.1</span> Limitations</h3>
 <p><a href="https://docs.ropensci.org/tarchetypes/reference/tar_map.html"><code>tar_map()</code></a> generates <a href="https://adv-r.hadley.nz/expressions.html">R expressions</a> to serve as commands in other targets. When it substitutes an element from <code>values</code>, it needs a way to transform the element into valid R code. For elements even a little bit complicated, especially nested data frames and objects with attributes, this is not always possible. For these complicated elements, it is best to use <code>quote()</code> to work with the underlying <a href="https://adv-r.hadley.nz/expressions.html">expressions</a> instead of the objects themselves. See <a href="https://github.com/ropensci/tarchetypes/discussions/105" class="uri">https://github.com/ropensci/tarchetypes/discussions/105</a> for an example.</p>
 </section>
 </section>
-<section id="dynamic-within-static-branching" class="level2" data-number="13.4">
-<h2 data-number="13.4" class="anchored" data-anchor-id="dynamic-within-static-branching"><span class="header-section-number">13.4</span> Dynamic-within-static branching</h2>
+<section id="dynamic-within-static-branching" class="level2" data-number="14.4">
+<h2 data-number="14.4" class="anchored" data-anchor-id="dynamic-within-static-branching"><span class="header-section-number">14.4</span> Dynamic-within-static branching</h2>
 <p>You can even combine together static and dynamic branching. The static <code>tar_map()</code> is an excellent outer layer on top of targets with patterns. The following is a sketch of a pipeline that runs each of two data analysis methods 10 times, once per random seed. Static branching iterates over the method functions, while dynamic branching iterates over the seeds. <code>tar_map()</code> creates new patterns as well as new commands. So below, the summary methods map over the analysis methods both statically and dynamically.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R file:</span></span>
@@ -453,8 +508,8 @@ Performance
 </div>
 </div>
 </section>
-<section id="combine" class="level2" data-number="13.5">
-<h2 data-number="13.5" class="anchored" data-anchor-id="combine"><span class="header-section-number">13.5</span> Combine</h2>
+<section id="combine" class="level2" data-number="14.5">
+<h2 data-number="14.5" class="anchored" data-anchor-id="combine"><span class="header-section-number">14.5</span> Combine</h2>
 <p><a href="https://docs.ropensci.org/tarchetypes/reference/tar_combine.html"><code>tar_combine()</code></a> from the <a href="https://github.com/ropensci/tarchetypes"><code>tarchetypes</code></a> package creates a new target to aggregate the results of upstream targets. In the simple example below, our combined target simply aggregates the rows returned from two other targets.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R file:</span></span>
@@ -551,8 +606,8 @@ Performance
 </div>
 </div>
 </section>
-<section id="metaprogramming" class="level2" data-number="13.6">
-<h2 data-number="13.6" class="anchored" data-anchor-id="metaprogramming"><span class="header-section-number">13.6</span> Metaprogramming</h2>
+<section id="metaprogramming" class="level2" data-number="14.6">
+<h2 data-number="14.6" class="anchored" data-anchor-id="metaprogramming"><span class="header-section-number">14.6</span> Metaprogramming</h2>
 <p>Custom metaprogramming is a more flexible alternative to <a href="https://docs.ropensci.org/tarchetypes/reference/tar_map.html"><code>tar_map()</code></a> and <a href="https://docs.ropensci.org/tarchetypes/reference/tar_combine.html"><code>tar_combine()</code></a>. <a href="https://docs.ropensci.org/tarchetypes/reference/tar_eval.html"><code>tar_eval()</code></a> from <a href="https://github.com/ropensci/tarchetypes"><code>tarchetypes</code></a> accepts an arbitrary expression and iteratively plugs in symbols. Below, we use it to branch over datasets.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
@@ -577,8 +632,8 @@ Performance
 <span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 who       "get_data(\"who\")"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="hooks" class="level2" data-number="13.7">
-<h2 data-number="13.7" class="anchored" data-anchor-id="hooks"><span class="header-section-number">13.7</span> Hooks</h2>
+<section id="hooks" class="level2" data-number="14.7">
+<h2 data-number="14.7" class="anchored" data-anchor-id="hooks"><span class="header-section-number">14.7</span> Hooks</h2>
 <p>Hooks are supported in <code>tarchtypes</code> version 0.2.0 and above, and they allow you to prepend or wrap code in multiple targets at a time. For example, <code>tar_hook_before()</code> is a robust way to invoke the <a href="https://conflicted.r-lib.org"><code>conflicted</code></a> package to resolve namespace conflicts that works with <a href="hpc.html">distributed computing</a> and does not require a project-level <code>.Rprofile</code> file.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R file</span></span>
@@ -871,12 +926,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="./dynamic.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Dynamic branching</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Dynamic branching</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./hpc.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">High-performance computing</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./drake.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">What about <code>drake</code>?</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>The {targets} R package user manual - 14&nbsp; High-performance computing</title>
+<title>The {targets} R package user manual - 12&nbsp; High-performance computing</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -64,8 +64,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./drake.html" rel="next">
-<link href="./static.html" rel="prev">
+<link href="./dynamic.html" rel="next">
+<link href="./literate-programming.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -111,7 +111,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./hpc.html"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">High-performance computing</span></a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./hpc.html">Large pipelines</a></li><li class="breadcrumb-item"><a href="./hpc.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">High-performance computing</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -142,96 +142,151 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">How to use {targets}</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./walkthrough.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Walkthrough</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">A walkthrough to get started</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./help.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Help</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./debugging.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Debugging</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./performance.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Performance</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text">Concepts / best practices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./functions.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Functions</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./targets.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Targets</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./packages.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Packages</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./projects.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Projects</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text">Data and files</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./data.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Data</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./literate-programming.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Literate programming</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./dynamic.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Dynamic branching</span></span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./static.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Static branching</span></span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text">Large pipelines</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./hpc.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">High-performance computing</span></span></a>
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">High-performance computing</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dynamic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Dynamic branching</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./static.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Static branching</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./drake.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">What about <code>drake</code>?</span></span></a>
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">What about <code>drake</code>?</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./markdown.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">R Markdown</span></span></a>
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">R Markdown</span></span></a>
   </div>
 </li>
+      </ul>
+  </li>
     </ul>
     </div>
 </nav>
@@ -242,26 +297,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#clustermq" id="toc-clustermq" class="nav-link active" data-scroll-target="#clustermq"><span class="header-section-number">14.1</span> Clustermq</a>
+  <li><a href="#clustermq" id="toc-clustermq" class="nav-link active" data-scroll-target="#clustermq"><span class="header-section-number">12.1</span> Clustermq</a>
   <ul class="collapse">
-  <li><a href="#persistent-workers" id="toc-persistent-workers" class="nav-link" data-scroll-target="#persistent-workers"><span class="header-section-number">14.1.1</span> Persistent workers</a></li>
-  <li><a href="#clustermq-installation" id="toc-clustermq-installation" class="nav-link" data-scroll-target="#clustermq-installation"><span class="header-section-number">14.1.2</span> Clustermq installation</a></li>
-  <li><a href="#automatic-configuration-with-use_targets" id="toc-automatic-configuration-with-use_targets" class="nav-link" data-scroll-target="#automatic-configuration-with-use_targets"><span class="header-section-number">14.1.3</span> Automatic configuration with <code>use_targets()</code></a></li>
-  <li><a href="#clustermq-local-configuration" id="toc-clustermq-local-configuration" class="nav-link" data-scroll-target="#clustermq-local-configuration"><span class="header-section-number">14.1.4</span> Clustermq local configuration</a></li>
-  <li><a href="#clustermq-remote-configuration" id="toc-clustermq-remote-configuration" class="nav-link" data-scroll-target="#clustermq-remote-configuration"><span class="header-section-number">14.1.5</span> Clustermq remote configuration</a></li>
-  <li><a href="#clustermq-template-file-configuration" id="toc-clustermq-template-file-configuration" class="nav-link" data-scroll-target="#clustermq-template-file-configuration"><span class="header-section-number">14.1.6</span> Clustermq template file configuration</a></li>
+  <li><a href="#persistent-workers" id="toc-persistent-workers" class="nav-link" data-scroll-target="#persistent-workers"><span class="header-section-number">12.1.1</span> Persistent workers</a></li>
+  <li><a href="#clustermq-installation" id="toc-clustermq-installation" class="nav-link" data-scroll-target="#clustermq-installation"><span class="header-section-number">12.1.2</span> Clustermq installation</a></li>
+  <li><a href="#automatic-configuration-with-use_targets" id="toc-automatic-configuration-with-use_targets" class="nav-link" data-scroll-target="#automatic-configuration-with-use_targets"><span class="header-section-number">12.1.3</span> Automatic configuration with <code>use_targets()</code></a></li>
+  <li><a href="#clustermq-local-configuration" id="toc-clustermq-local-configuration" class="nav-link" data-scroll-target="#clustermq-local-configuration"><span class="header-section-number">12.1.4</span> Clustermq local configuration</a></li>
+  <li><a href="#clustermq-remote-configuration" id="toc-clustermq-remote-configuration" class="nav-link" data-scroll-target="#clustermq-remote-configuration"><span class="header-section-number">12.1.5</span> Clustermq remote configuration</a></li>
+  <li><a href="#clustermq-template-file-configuration" id="toc-clustermq-template-file-configuration" class="nav-link" data-scroll-target="#clustermq-template-file-configuration"><span class="header-section-number">12.1.6</span> Clustermq template file configuration</a></li>
   </ul></li>
-  <li><a href="#future" id="toc-future" class="nav-link" data-scroll-target="#future"><span class="header-section-number">14.2</span> Future</a>
+  <li><a href="#future" id="toc-future" class="nav-link" data-scroll-target="#future"><span class="header-section-number">12.2</span> Future</a>
   <ul class="collapse">
-  <li><a href="#transient-workers" id="toc-transient-workers" class="nav-link" data-scroll-target="#transient-workers"><span class="header-section-number">14.2.1</span> Transient workers</a></li>
-  <li><a href="#automatic-configuration-with-use_targets-1" id="toc-automatic-configuration-with-use_targets-1" class="nav-link" data-scroll-target="#automatic-configuration-with-use_targets-1"><span class="header-section-number">14.2.2</span> Automatic configuration with <code>use_targets()</code></a></li>
-  <li><a href="#future-installation" id="toc-future-installation" class="nav-link" data-scroll-target="#future-installation"><span class="header-section-number">14.2.3</span> Future installation</a></li>
-  <li><a href="#future-locally" id="toc-future-locally" class="nav-link" data-scroll-target="#future-locally"><span class="header-section-number">14.2.4</span> Future locally</a></li>
-  <li><a href="#future-remotely" id="toc-future-remotely" class="nav-link" data-scroll-target="#future-remotely"><span class="header-section-number">14.2.5</span> Future remotely</a></li>
-  <li><a href="#future-configuration" id="toc-future-configuration" class="nav-link" data-scroll-target="#future-configuration"><span class="header-section-number">14.2.6</span> Future configuration</a></li>
+  <li><a href="#transient-workers" id="toc-transient-workers" class="nav-link" data-scroll-target="#transient-workers"><span class="header-section-number">12.2.1</span> Transient workers</a></li>
+  <li><a href="#automatic-configuration-with-use_targets-1" id="toc-automatic-configuration-with-use_targets-1" class="nav-link" data-scroll-target="#automatic-configuration-with-use_targets-1"><span class="header-section-number">12.2.2</span> Automatic configuration with <code>use_targets()</code></a></li>
+  <li><a href="#future-installation" id="toc-future-installation" class="nav-link" data-scroll-target="#future-installation"><span class="header-section-number">12.2.3</span> Future installation</a></li>
+  <li><a href="#future-locally" id="toc-future-locally" class="nav-link" data-scroll-target="#future-locally"><span class="header-section-number">12.2.4</span> Future locally</a></li>
+  <li><a href="#future-remotely" id="toc-future-remotely" class="nav-link" data-scroll-target="#future-remotely"><span class="header-section-number">12.2.5</span> Future remotely</a></li>
+  <li><a href="#future-configuration" id="toc-future-configuration" class="nav-link" data-scroll-target="#future-configuration"><span class="header-section-number">12.2.6</span> Future configuration</a></li>
   </ul></li>
-  <li><a href="#advanced" id="toc-advanced" class="nav-link" data-scroll-target="#advanced"><span class="header-section-number">14.3</span> Advanced</a></li>
-  <li><a href="#cloud-computing" id="toc-cloud-computing" class="nav-link" data-scroll-target="#cloud-computing"><span class="header-section-number">14.4</span> Cloud computing</a></li>
+  <li><a href="#advanced" id="toc-advanced" class="nav-link" data-scroll-target="#advanced"><span class="header-section-number">12.3</span> Advanced</a></li>
+  <li><a href="#cloud-computing" id="toc-cloud-computing" class="nav-link" data-scroll-target="#cloud-computing"><span class="header-section-number">12.4</span> Cloud computing</a></li>
   </ul>
 </nav>
     </div>
@@ -270,7 +325,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="hpc" class="quarto-section-identifier"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">High-performance computing</span></span></h1>
+<h1 class="title"><span id="hpc" class="quarto-section-identifier"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">High-performance computing</span></span></h1>
 </div>
 
 
@@ -338,11 +393,11 @@ Start small
 <p>Even if you plan to create a large-scale heavy-duty pipeline with hundreds of time-consuming parallel targets, it is best to start small. First, create a version of the pipeline with a small number of quick-to-run targets, follow directions in the <a href="walkthrough.html">walkthrough</a> chapter to inspect it, and run it locally with <code>tar_make()</code>. Do not scale up to the full-sized pipeline until you are sure everything is working in the downsized pipeline that runs locally.</p>
 </div>
 </div>
-<section id="clustermq" class="level2" data-number="14.1">
-<h2 data-number="14.1" class="anchored" data-anchor-id="clustermq"><span class="header-section-number">14.1</span> Clustermq</h2>
+<section id="clustermq" class="level2" data-number="12.1">
+<h2 data-number="12.1" class="anchored" data-anchor-id="clustermq"><span class="header-section-number">12.1</span> Clustermq</h2>
 <p><a href="https://docs.ropensci.org/targets/reference/tar_make_clustermq.html"><code>tar_make_clustermq()</code></a> uses the <a href="https://mschubert.github.io/clustermq/"><code>clustermq</code></a> package, and prior familiarity with <a href="https://mschubert.github.io/clustermq/"><code>clustermq</code></a> is extremely helpful for configuring <code>targets</code> and diagnosing errors. So before you use <a href="https://docs.ropensci.org/targets/reference/tar_make_clustermq.html"><code>tar_make_clustermq()</code></a>, please read the documentation at <a href="https://mschubert.github.io/clustermq/" class="uri">https://mschubert.github.io/clustermq/</a> and try out <a href="https://mschubert.github.io/clustermq/"><code>clustermq</code></a> directly. If you plan to use a scheduler like SLURM or SGE, please configure and experiment with <a href="https://mschubert.github.io/clustermq/"><code>clustermq</code></a> on your scheduler without <code>targets</code>. And if you later experience issues with <a href="https://docs.ropensci.org/targets/reference/tar_make_clustermq.html"><code>tar_make_clustermq()</code></a>, try to isolate the problem by creating a <a href="https://www.tidyverse.org/help/">reproducible example</a> that uses <a href="https://mschubert.github.io/clustermq/"><code>clustermq</code></a> and not <code>targets</code>. Peeling back layers can help isolate problems and point toward specific solutions, and <code>targets</code> is usually one of the outer layers.</p>
-<section id="persistent-workers" class="level3" data-number="14.1.1">
-<h3 data-number="14.1.1" class="anchored" data-anchor-id="persistent-workers"><span class="header-section-number">14.1.1</span> Persistent workers</h3>
+<section id="persistent-workers" class="level3" data-number="12.1.1">
+<h3 data-number="12.1.1" class="anchored" data-anchor-id="persistent-workers"><span class="header-section-number">12.1.1</span> Persistent workers</h3>
 <p><code>tar_make_clustermq()</code> uses persistent workers. A persistent worker is an R process that launches early in the pipeline and stays running until the whole pipeline starts to wind down. A persistent worker usually runs multiple targets during its lifecycle, and it is not possible to precisely predict in advance which targets will be assigned to which workers. The video clip below visualizes the concept.</p>
 <script src="https://fast.wistia.com/embed/medias/ycczhxwkjw.jsonp" async=""></script>
 <script src="https://fast.wistia.com/assets/external/E-v1.js" async=""></script>
@@ -356,16 +411,16 @@ Start small
 </div>
 </div>
 </section>
-<section id="clustermq-installation" class="level3" data-number="14.1.2">
-<h3 data-number="14.1.2" class="anchored" data-anchor-id="clustermq-installation"><span class="header-section-number">14.1.2</span> Clustermq installation</h3>
+<section id="clustermq-installation" class="level3" data-number="12.1.2">
+<h3 data-number="12.1.2" class="anchored" data-anchor-id="clustermq-installation"><span class="header-section-number">12.1.2</span> Clustermq installation</h3>
 <p>Persistent workers require the <a href="https://github.com/mschubert/clustermq"><code>clustermq</code></a> R package, which in turn requires <a href="http://zeromq.org/">ZeroMQ</a>. Please refer to the <a href="https://github.com/mschubert/clustermq/blob/master/README.md#installation"><code>clustermq</code> installation guide</a> for specific instructions.</p>
 </section>
-<section id="automatic-configuration-with-use_targets" class="level3" data-number="14.1.3">
-<h3 data-number="14.1.3" class="anchored" data-anchor-id="automatic-configuration-with-use_targets"><span class="header-section-number">14.1.3</span> Automatic configuration with <code>use_targets()</code></h3>
+<section id="automatic-configuration-with-use_targets" class="level3" data-number="12.1.3">
+<h3 data-number="12.1.3" class="anchored" data-anchor-id="automatic-configuration-with-use_targets"><span class="header-section-number">12.1.3</span> Automatic configuration with <code>use_targets()</code></h3>
 <p>If <code>clustermq</code> is installed, then <code>use_targets()</code> function configures <code>clustermq</code> automatically. <code>use_targets()</code> tries to detect the cluster you are using and write the appropriate <code>_targets.R</code> settings <code>clustermq</code> configuration files commensurate with your system resources. On most systems, this should allow you you to run <code>tar_make_clustermq()</code> with no extra configuration. If so, you can skip the rest of the <code>clustermq</code> section. If not, read on to learn how to configure <code>clustermq</code> for <code>targets</code>.</p>
 </section>
-<section id="clustermq-local-configuration" class="level3" data-number="14.1.4">
-<h3 data-number="14.1.4" class="anchored" data-anchor-id="clustermq-local-configuration"><span class="header-section-number">14.1.4</span> Clustermq local configuration</h3>
+<section id="clustermq-local-configuration" class="level3" data-number="12.1.4">
+<h3 data-number="12.1.4" class="anchored" data-anchor-id="clustermq-local-configuration"><span class="header-section-number">12.1.4</span> Clustermq local configuration</h3>
 <p>To utilize parallel computing on your local machine, set the <code>clustermq.scheduler</code> option to <code>"multicore"</code> or <code>"multiprocess"</code> in your <code>_targets.R</code> file. See the <a href="https://mschubert.github.io/clustermq/articles/userguide.html#configuration">configuration instructions</a> for details.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
@@ -384,8 +439,8 @@ Start small
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make_clustermq</span>(<span class="at">workers =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="clustermq-remote-configuration" class="level3" data-number="14.1.5">
-<h3 data-number="14.1.5" class="anchored" data-anchor-id="clustermq-remote-configuration"><span class="header-section-number">14.1.5</span> Clustermq remote configuration</h3>
+<section id="clustermq-remote-configuration" class="level3" data-number="12.1.5">
+<h3 data-number="12.1.5" class="anchored" data-anchor-id="clustermq-remote-configuration"><span class="header-section-number">12.1.5</span> Clustermq remote configuration</h3>
 <p>A cluster is a collection of multiple computers that work together to run computationally demanding workloads. A cluster is capable of running far more tasks simultaneously than a local workstation like a PC or laptop. When configured for a cluster, <code>tar_make_clustermq()</code> uses <code>clustermq</code> to run persistent workers as long-running distributed jobs. To manually set the configuration,</p>
 <ol type="1">
 <li>Choose a <a href="https://mschubert.github.io/clustermq/articles/userguide.html#configuration">scheduler listed here</a> that corresponds to your cluster’s resource manager.</li>
@@ -420,8 +475,8 @@ CMQ_AUTH={{ auth }} R --no-save --no-restore -e 'clustermq:::worker("{{ main }}"
 </div>
 <p>See the examples <a href="https://docs.ropensci.org/targets/index.html#examples">linked from here</a> to see how this setup works in real-world projects.</p>
 </section>
-<section id="clustermq-template-file-configuration" class="level3" data-number="14.1.6">
-<h3 data-number="14.1.6" class="anchored" data-anchor-id="clustermq-template-file-configuration"><span class="header-section-number">14.1.6</span> Clustermq template file configuration</h3>
+<section id="clustermq-template-file-configuration" class="level3" data-number="12.1.6">
+<h3 data-number="12.1.6" class="anchored" data-anchor-id="clustermq-template-file-configuration"><span class="header-section-number">12.1.6</span> Clustermq template file configuration</h3>
 <p>In addition to configuration options hard-coded in the template file, you can supply custom computing resources with the <code>resources</code> argument of <code>tar_option_set()</code>. As an example, let’s use a wildcard for the number of cores per worker on an SGE cluster. In the template file, supply <code>{{ num_cores }}</code> wildcard to the <code>-pe smp</code> flag.</p>
 <pre><code>#$ -pe smp {{ num_cores }} # Number of cores per worker
 #$ -N {{ job_name | 1 }}
@@ -469,11 +524,11 @@ CMQ_AUTH={{ auth }} R --no-save --no-restore -e 'clustermq:::worker("{{ main }}"
 </div>
 </section>
 </section>
-<section id="future" class="level2" data-number="14.2">
-<h2 data-number="14.2" class="anchored" data-anchor-id="future"><span class="header-section-number">14.2</span> Future</h2>
+<section id="future" class="level2" data-number="12.2">
+<h2 data-number="12.2" class="anchored" data-anchor-id="future"><span class="header-section-number">12.2</span> Future</h2>
 <p><a href="https://docs.ropensci.org/targets/reference/tar_make_future.html"><code>tar_make_future()</code></a> uses the <a href="https://future.futureverse.org/"><code>future</code></a> package, and prior familiarity with <a href="https://future.futureverse.org/"><code>future</code></a> is extremely helpful for configuring <code>targets</code> and diagnosing errors. So before you use <a href="https://docs.ropensci.org/targets/reference/tar_make_future.html"><code>tar_make_future()</code></a>, please read the documentation at <a href="https://future.futureverse.org/" class="uri">https://future.futureverse.org/</a> and try out <a href="https://future.futureverse.org/"><code>future</code></a> directly, ideally with backends like <a href="https://future.callr.futureverse.org/"><code>future.callr</code></a> and possibly <a href="https://future.batchtools.futureverse.org/"><code>future.batchtools</code></a>. If you plan to use a scheduler like SLURM or SGE, please configure and experiment with <a href="https://future.futureverse.org/"><code>future</code></a> on your scheduler without <code>targets</code>. And if you later experience issues with <a href="https://docs.ropensci.org/targets/reference/tar_make_future.html"><code>tar_make_future()</code></a>, try to isolate the problem by creating a <a href="https://www.tidyverse.org/help/">reproducible example</a> that uses <a href="https://future.futureverse.org/"><code>future</code></a> and not <code>targets</code>. Same goes for <a href="https://future.batchtools.futureverse.org/"><code>future.batchtools</code></a> if applicable. Peeling back layers can help isolate problems and point toward specific solutions, and <code>targets</code> is usually one of the outer layers.</p>
-<section id="transient-workers" class="level3" data-number="14.2.1">
-<h3 data-number="14.2.1" class="anchored" data-anchor-id="transient-workers"><span class="header-section-number">14.2.1</span> Transient workers</h3>
+<section id="transient-workers" class="level3" data-number="12.2.1">
+<h3 data-number="12.2.1" class="anchored" data-anchor-id="transient-workers"><span class="header-section-number">12.2.1</span> Transient workers</h3>
 <p><code>tar_make_future()</code> runs transient workers. That means each target gets its own worker which initializes when the target begins and terminates when the target ends. The following video clip demonstrates the concept.</p>
 <script src="https://fast.wistia.com/embed/medias/340yvlp515.jsonp" async=""></script>
 <script src="https://fast.wistia.com/assets/external/E-v1.js" async=""></script>
@@ -488,12 +543,12 @@ CMQ_AUTH={{ auth }} R --no-save --no-restore -e 'clustermq:::worker("{{ main }}"
 </div>
 <p><br></p>
 </section>
-<section id="automatic-configuration-with-use_targets-1" class="level3" data-number="14.2.2">
-<h3 data-number="14.2.2" class="anchored" data-anchor-id="automatic-configuration-with-use_targets-1"><span class="header-section-number">14.2.2</span> Automatic configuration with <code>use_targets()</code></h3>
+<section id="automatic-configuration-with-use_targets-1" class="level3" data-number="12.2.2">
+<h3 data-number="12.2.2" class="anchored" data-anchor-id="automatic-configuration-with-use_targets-1"><span class="header-section-number">12.2.2</span> Automatic configuration with <code>use_targets()</code></h3>
 <p>If <code>future</code> and <code>future.batchtools</code> are installed, then <code>use_targets()</code> function configures <code>future</code> automatically. <code>use_targets()</code> tries to detect the cluster you are using and write the appropriate <code>_targets.R</code> settings, and if appropriate, the <code>batchtools</code> configuration file commensurate with your system resources. On most systems, this should allow you you to run <code>tar_make_future()</code> with no extra configuration. If so, you can skip the rest of the <code>future</code> section. If not, read on to learn how to configure <code>future</code> for <code>targets</code>.</p>
 </section>
-<section id="future-installation" class="level3" data-number="14.2.3">
-<h3 data-number="14.2.3" class="anchored" data-anchor-id="future-installation"><span class="header-section-number">14.2.3</span> Future installation</h3>
+<section id="future-installation" class="level3" data-number="12.2.3">
+<h3 data-number="12.2.3" class="anchored" data-anchor-id="future-installation"><span class="header-section-number">12.2.3</span> Future installation</h3>
 <p>Install the <a href="https://github.com/HenrikBengtsson/future"><code>future</code></a> package.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"future"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -507,8 +562,8 @@ CMQ_AUTH={{ auth }} R --no-save --no-restore -e 'clustermq:::worker("{{ main }}"
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"future.callr"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="future-locally" class="level3" data-number="14.2.4">
-<h3 data-number="14.2.4" class="anchored" data-anchor-id="future-locally"><span class="header-section-number">14.2.4</span> Future locally</h3>
+<section id="future-locally" class="level3" data-number="12.2.4">
+<h3 data-number="12.2.4" class="anchored" data-anchor-id="future-locally"><span class="header-section-number">12.2.4</span> Future locally</h3>
 <p>If you ar manually configuring <code>future</code>/<code>future.batchtools</code> for your pipeline, declare a <code>future</code> plan in your target script file (default: <code>_targets.R</code>). The <code>callr</code> plan from the <a href="https://future.callr.futureverse.org"><code>future.callr</code></a> package is recommended.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> It is crucial that <code>future::plan()</code> is called in the target script file itself - defining a plan interactively before invoking <code>tar_make_future()</code> does not leverage the future package.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
@@ -529,8 +584,8 @@ CMQ_AUTH={{ auth }} R --no-save --no-restore -e 'clustermq:::worker("{{ main }}"
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make_future</span>(<span class="at">workers =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="future-remotely" class="level3" data-number="14.2.5">
-<h3 data-number="14.2.5" class="anchored" data-anchor-id="future-remotely"><span class="header-section-number">14.2.5</span> Future remotely</h3>
+<section id="future-remotely" class="level3" data-number="12.2.5">
+<h3 data-number="12.2.5" class="anchored" data-anchor-id="future-remotely"><span class="header-section-number">12.2.5</span> Future remotely</h3>
 <p>To run transient workers on a cluster, first install the <a href="https://github.com/HenrikBengtsson/future.batchtools"><code>future.batchtools</code></a> package. Then, set one of <a href="https://github.com/HenrikBengtsson/future.batchtools#choosing-batchtools-backend">these plans</a> in your target script file (default: <code>_targets.R</code>).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
@@ -556,8 +611,8 @@ module load R/3.6.3   # Uncomment and adjust if R is an environment module.
 Rscript -e 'batchtools::doJobCollection("&lt;%= uri %&gt;")' # Leave alone.
 exit 0 # Leave alone.</code></pre>
 </section>
-<section id="future-configuration" class="level3" data-number="14.2.6">
-<h3 data-number="14.2.6" class="anchored" data-anchor-id="future-configuration"><span class="header-section-number">14.2.6</span> Future configuration</h3>
+<section id="future-configuration" class="level3" data-number="12.2.6">
+<h3 data-number="12.2.6" class="anchored" data-anchor-id="future-configuration"><span class="header-section-number">12.2.6</span> Future configuration</h3>
 <p>The <code>tar_target()</code>, <code>tar_target_raw()</code>, and <code>tar_option_set()</code> functions accept a <code>resources</code> argument.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> For example, if our <code>batchtools</code> template file has a wildcard for the number of cores for a job,</p>
 <pre><code>#!/bin/bash
 #$ -pe smp &lt;%= resources[["num_cores"]] | 1 %&gt; # Wildcard for cores per job.
@@ -605,8 +660,8 @@ exit 0</code></pre>
 </div>
 </section>
 </section>
-<section id="advanced" class="level2" data-number="14.3">
-<h2 data-number="14.3" class="anchored" data-anchor-id="advanced"><span class="header-section-number">14.3</span> Advanced</h2>
+<section id="advanced" class="level2" data-number="12.3">
+<h2 data-number="12.3" class="anchored" data-anchor-id="advanced"><span class="header-section-number">12.3</span> Advanced</h2>
 <p>Functions <code>tar_target()</code>, <code>tar_target_raw()</code>, and <code>tar_option_set()</code> support advanced configuration options for heavy-duty pipelines that require high-performance computing.</p>
 <ul>
 <li><code>deployment</code>: With the <code>deployment</code> argument, you can choose to run some targets locally on the main process instead of on a high-performance computing worker. This options is suitable for lightweight targets such as R Markdown reports where runtime is quick and a cluster would be excessive.</li>
@@ -618,8 +673,8 @@ exit 0</code></pre>
 <li><code>error</code>: Set <code>error</code> to <code>"continue"</code> to let the rest of the pipeline keep running even if a target encounters an error.</li>
 </ul>
 </section>
-<section id="cloud-computing" class="level2" data-number="14.4">
-<h2 data-number="14.4" class="anchored" data-anchor-id="cloud-computing"><span class="header-section-number">14.4</span> Cloud computing</h2>
+<section id="cloud-computing" class="level2" data-number="12.4">
+<h2 data-number="12.4" class="anchored" data-anchor-id="cloud-computing"><span class="header-section-number">12.4</span> Cloud computing</h2>
 <p>Right now, <code>targets</code> does not have built-in cloud-based distributed computing support. However, future development plans include seamless integration with <a href="https://aws.amazon.com/batch/">AWS Batch</a>. As a temporary workaround, it is possible to deploy a burstable <a href="https://slurm.schedmd.com/documentation.html">SLURM</a> cluster using <a href="https://aws.amazon.com/hpc/parallelcluster/">AWS ParallelCluster</a> and leverage <code>targets</code>’ <a href="#hpc">existing support for traditional schedulers</a>.</p>
 
 
@@ -871,13 +926,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./static.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Static branching</span></span>
+      <a href="./literate-programming.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Literate programming</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./drake.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">What about <code>drake</code>?</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./dynamic.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Dynamic branching</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
