@@ -286,14 +286,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./hpc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">High-performance computing (the old way)</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./drake.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">What about <code>drake</code>?</span></span></a>
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">What about <code>drake</code>?</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./markdown.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Target Markdown</span></span></a>
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Target Markdown</span></span></a>
   </div>
 </li>
       </ul>
@@ -313,6 +319,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#auto-scaling" id="toc-auto-scaling" class="nav-link" data-scroll-target="#auto-scaling"><span class="header-section-number">11.3</span> Auto-scaling</a></li>
   <li><a href="#backends" id="toc-backends" class="nav-link" data-scroll-target="#backends"><span class="header-section-number">11.4</span> Backends</a></li>
   <li><a href="#heterogeneous-workers" id="toc-heterogeneous-workers" class="nav-link" data-scroll-target="#heterogeneous-workers"><span class="header-section-number">11.5</span> Heterogeneous workers</a></li>
+  <li><a href="#thanks" id="toc-thanks" class="nav-link" data-scroll-target="#thanks"><span class="header-section-number">11.6</span> Thanks</a></li>
   </ul>
 </nav>
     </div>
@@ -346,7 +353,7 @@ Preview
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>This chapter covers new high-performance computing capabilities which will supersede <a href="https://docs.ropensci.org/targets/reference/tar_make_clustermq.html"><code>tar_make_clustermq()</code></a> and <a href="https://docs.ropensci.org/targets/reference/tar_make_future.html"><code>tar_make_future()</code></a>. However, the <a href="https://wlandau.github.io/crew/"><code>crew</code></a> ecosystem is currently small: <a href="https://wlandau.github.com/crew.cluster"><code>crew.cluster</code></a> package supports few <a href="https://wlandau.github.io/crew/articles/launcher_plugins.html">launcher plugins</a>, and there may not be out-of-the-box capabilities for your specific computing environment yet. Please see <a href="#hpc">this appendix</a> for the original high-performance computing chapter that discusses <a href="https://docs.ropensci.org/targets/reference/tar_make_clustermq.html"><code>tar_make_clustermq()</code></a> and <a href="https://docs.ropensci.org/targets/reference/tar_make_future.html"><code>tar_make_future()</code></a>.</p>
+<p>This chapter covers new high-performance computing capabilities which will supersede <a href="https://docs.ropensci.org/targets/reference/tar_make_clustermq.html"><code>tar_make_clustermq()</code></a> and <a href="https://docs.ropensci.org/targets/reference/tar_make_future.html"><code>tar_make_future()</code></a>. However, the <a href="https://wlandau.github.io/crew/"><code>crew</code></a> ecosystem is currently small: <a href="https://wlandau.github.com/crew.cluster"><code>crew.cluster</code></a> package supports few <a href="https://wlandau.github.io/crew/articles/launcher_plugins.html">launcher plugins</a>, and there may not be out-of-the-box capabilities for your specific computing environment yet. Please see <a href="hpc.html">this appendix</a> for the original high-performance computing chapter that discusses <a href="https://docs.ropensci.org/targets/reference/tar_make_clustermq.html"><code>tar_make_clustermq()</code></a> and <a href="https://docs.ropensci.org/targets/reference/tar_make_future.html"><code>tar_make_future()</code></a>.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip callout-titled">
@@ -362,10 +369,14 @@ Performance
 <p>See the <a href="performance.html">performance chapter</a> for options, settings, and other choices to make parallel and distributed pipelines more efficient.</p>
 </div>
 </div>
-<p>To efficiently process a large and complex pipeline, <a href="https://docs.ropensci.org/targets/reference/tar_make.html"><code>tar_make()</code></a> can run multiple targets at the same time. Thanks to integration with <a href="https://wlandau.github.io/crew/"><code>crew</code></a> and blazing fast scheduling from <a href="https://github.com/shikokuchuo/mirai"><code>mirai</code></a> in the backend, those targets can run on a variety of high-performance computing platforms, and they can scale out to the hundreds and beyond.</p>
+<p>To efficiently process a large and complex pipeline, <a href="https://docs.ropensci.org/targets/reference/tar_make.html"><code>tar_make()</code></a> can run multiple targets at the same time. Thanks to integration with <a href="https://wlandau.github.io/crew/"><code>crew</code></a> and blazing fast scheduling from <a href="https://github.com/shikokuchuo/mirai"><code>mirai</code></a> behind the scenes, those targets can run on a variety of high-performance computing platforms, and they can scale out to the hundreds and beyond.</p>
 <section id="how-it-works" class="level2" data-number="11.1">
 <h2 data-number="11.1" class="anchored" data-anchor-id="how-it-works"><span class="header-section-number">11.1</span> How it works</h2>
-<p>Write your pipeline as usual, but set the <code>controller</code> argument of <a href="https://docs.ropensci.org/targets/reference/tar_option_set.html"><code>tar_option_set</code></a> to the <a href="https://books.ropensci.org/crew/"><code>crew</code></a> controller of your choice. The controller allows <a href="https://docs.ropensci.org/targets/reference/tar_make.html"><code>tar_make()</code></a> to launch external R processes called “workers” which can each run one or more targets. By delegating long-running targets to these workers, the local R session is free to focus on other tasks, and the pipeline finishes faster.</p>
+<ol type="1">
+<li>Write your pipeline as usual, but set the <code>controller</code> argument of <a href="https://docs.ropensci.org/targets/reference/tar_option_set.html"><code>tar_option_set</code></a> to the <a href="https://books.ropensci.org/crew/"><code>crew</code></a> controller of your choice.</li>
+<li>Run the pipeline with a simple <a href="https://docs.ropensci.org/targets/reference/tar_make.html"><code>tar_make()</code></a> (not <a href="https://docs.ropensci.org/targets/reference/tar_make_clustermq.html"><code>tar_make_clustermq()</code></a> or <a href="https://docs.ropensci.org/targets/reference/tar_make_future.html"><code>tar_make_future()</code></a>).</li>
+</ol>
+<p>The <a href="https://books.ropensci.org/crew/"><code>crew</code></a> controller from (1) allows <a href="https://docs.ropensci.org/targets/reference/tar_make.html"><code>tar_make()</code></a> to launch external R processes called “workers” which can each run one or more targets. By delegating long-running targets to these workers, the local R session is free to focus on other tasks, and the pipeline finishes faster.</p>
 </section>
 <section id="example" class="level2" data-number="11.2">
 <h2 data-number="11.2" class="anchored" data-anchor-id="example"><span class="header-section-number">11.2</span> Example</h2>
@@ -390,13 +401,35 @@ Performance
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_visnetwork</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_visnetwork</span>(<span class="at">targets_only =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div class="visNetwork html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-3d34c5544cbf8369be07" style="width:100%;height:464px;"></div>
-<script type="application/json" data-for="htmlwidget-3d34c5544cbf8369be07">{"x":{"nodes":{"name":["data","model1","model2","model3","plot1","plot2","plot3"],"type":["stem","stem","stem","stem","stem","stem","stem"],"status":["outdated","outdated","outdated","outdated","outdated","outdated","outdated"],"seconds":[null,null,null,null,null,null,null],"bytes":[null,null,null,null,null,null,null],"branches":[null,null,null,null,null,null,null],"label":["data","model1","model2","model3","plot1","plot2","plot3"],"color":["#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5"],"id":["data","model1","model2","model3","plot1","plot2","plot3"],"level":[1,2,2,2,3,3,3],"shape":["dot","dot","dot","dot","dot","dot","dot"]},"edges":{"from":["data","model1","data","model2","data","model3"],"to":["model1","plot1","model2","plot2","model3","plot3"],"arrows":["to","to","to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"interaction":{"zoomSpeed":1},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Outdated","Stem"],"color":["#78B7C5","#899DA4"],"shape":["dot","dot"]},"nodesToDataframe":true},"tooltipStay":300,"tooltipStyle":"position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;border: 1px solid #808074;box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);"},"evals":[],"jsHooks":[]}</script>
+<div class="visNetwork html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-8b8b845f3aaa457d0080" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-8b8b845f3aaa457d0080">{"x":{"nodes":{"name":["data","model1","model2","model3","plot1","plot2","plot3"],"type":["stem","stem","stem","stem","stem","stem","stem"],"status":["outdated","outdated","outdated","outdated","outdated","outdated","outdated"],"seconds":[null,null,null,null,null,null,null],"bytes":[null,null,null,null,null,null,null],"branches":[null,null,null,null,null,null,null],"label":["data","model1","model2","model3","plot1","plot2","plot3"],"color":["#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5","#78B7C5"],"id":["data","model1","model2","model3","plot1","plot2","plot3"],"level":[1,2,2,2,3,3,3],"shape":["dot","dot","dot","dot","dot","dot","dot"]},"edges":{"from":["data","model1","data","model2","data","model3"],"to":["model1","plot1","model2","plot2","model3","plot3"],"arrows":["to","to","to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"interaction":{"zoomSpeed":1},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Outdated","Stem"],"color":["#78B7C5","#899DA4"],"shape":["dot","dot"]},"nodesToDataframe":true},"tooltipStay":300,"tooltipStyle":"position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;border: 1px solid #808074;box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
-<p>On the first <a href="https://docs.ropensci.org/targets/reference/tar_make.html"><code>tar_make()</code></a>, a new worker launches and starts to run the <code>data</code> target. After the <code>data</code> target completes, all three models are ready to begin. A second worker automatically launches to meet the increased demand of the workload, and each of the two workers starts to run a model. After one of the models finishes, its worker is free to either run the downstream plot or the third model. The process continues until all the targets are complete. The workers shut down when the pipeline is done.</p>
+<p>Run the pipeline with a simple call to <a href="https://docs.ropensci.org/targets/reference/tar_make.html"><code>tar_make()</code></a>. Please note that real-life pipelines will have longer execution times, especially for the models.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<pre><code>#&gt; • start target data
+#&gt; • built target data [0.001 seconds]
+#&gt; • start target model1
+#&gt; • built target model1 [0 seconds]
+#&gt; • start target model2
+#&gt; • built target model2 [0 seconds]
+#&gt; • start target model3
+#&gt; • built target model3 [0 seconds]
+#&gt; • start target plot1
+#&gt; • built target plot1 [0 seconds]
+#&gt; • start target plot2
+#&gt; • built target plot2 [0.001 seconds]
+#&gt; • start target plot3
+#&gt; • built target plot3 [0 seconds]
+#&gt; • end pipeline [0.102 seconds]</code></pre>
+</div>
+<p>Let’s talk through what happens in the above call to <a href="https://docs.ropensci.org/targets/reference/tar_make.html"><code>tar_make()</code></a>. First, a new worker launches and starts to run the <code>data</code> target. After the <code>data</code> target completes, all three models are ready to begin. A second worker automatically launches to meet the increased demand of the workload, and each of the two workers starts to run a model. After one of the models finishes, its worker is free to either run the downstream plot or the third model. The process continues until all the targets are complete. The workers shut down when the pipeline is done.</p>
 </section>
 <section id="auto-scaling" class="level2" data-number="11.3">
 <h2 data-number="11.3" class="anchored" data-anchor-id="auto-scaling"><span class="header-section-number">11.3</span> Auto-scaling</h2>
@@ -411,26 +444,26 @@ Performance
 <h2 data-number="11.4" class="anchored" data-anchor-id="backends"><span class="header-section-number">11.4</span> Backends</h2>
 <p><a href="https://wlandau.github.io/crew/"><code>crew</code></a> is a platform for multiple computing platforms, not just local processes, but also traditional high-performance computing systems and cloud computing services. For example, to run each worker as a job on a <a href="https://en.wikipedia.org/wiki/Oracle_Grid_Engine">Sun Grid Engine</a> cluster, use <a href="https://wlandau.github.io/crew.cluster/reference/crew_controller_sge.html"><code>crew_controller_sge()</code></a> from the <a href="https://wlandau.github.io/crew.cluster/"><code>crew.cluster</code></a> package.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(crew.cluster)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">controller =</span> <span class="fu">crew_controller_sge</span>(</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">workers =</span> <span class="dv">3</span>,</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">script_lines =</span> <span class="st">"module load R"</span>,</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">sge_log_output =</span> <span class="st">"log_folder/"</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_source</span>()</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(<span class="at">name =</span> data, <span class="at">command =</span> <span class="fu">get_data</span>()),</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(<span class="at">name =</span> model1, <span class="at">command =</span> <span class="fu">run_model1</span>(data)),</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(<span class="at">name =</span> model2, <span class="at">command =</span> <span class="fu">run_model2</span>(data)),</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(<span class="at">name =</span> model3, <span class="at">command =</span> <span class="fu">run_model3</span>(data)),</span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(<span class="at">name =</span> plot1, <span class="at">command =</span> <span class="fu">plot_model</span>(model1)),</span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(<span class="at">name =</span> plot2, <span class="at">command =</span> <span class="fu">plot_model</span>(model2)),</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(<span class="at">name =</span> plot3, <span class="at">command =</span> <span class="fu">plot_model</span>(model3))</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(crew.cluster)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">controller =</span> <span class="fu">crew_controller_sge</span>(</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">workers =</span> <span class="dv">3</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">script_lines =</span> <span class="st">"module load R"</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">sge_log_output =</span> <span class="st">"log_folder/"</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_source</span>()</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(<span class="at">name =</span> data, <span class="at">command =</span> <span class="fu">get_data</span>()),</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(<span class="at">name =</span> model1, <span class="at">command =</span> <span class="fu">run_model1</span>(data)),</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(<span class="at">name =</span> model2, <span class="at">command =</span> <span class="fu">run_model2</span>(data)),</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(<span class="at">name =</span> model3, <span class="at">command =</span> <span class="fu">run_model3</span>(data)),</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(<span class="at">name =</span> plot1, <span class="at">command =</span> <span class="fu">plot_model</span>(model1)),</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(<span class="at">name =</span> plot2, <span class="at">command =</span> <span class="fu">plot_model</span>(model2)),</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(<span class="at">name =</span> plot3, <span class="at">command =</span> <span class="fu">plot_model</span>(model3))</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>If <a href="https://wlandau.github.io/crew.cluster/"><code>crew.cluster</code></a> and other official packages do not meet your needs, then you can write your own launcher plugin tailored to your own specific computing environment. <a href="https://wlandau.github.io/crew/"><code>crew</code></a> makes this process straightforward, and the vignette at <a href="https://wlandau.github.io/crew/articles/launcher_plugins.html" class="uri">https://wlandau.github.io/crew/articles/launcher_plugins.html</a> walks through the details step by step.</p>
 </section>
@@ -438,47 +471,51 @@ Performance
 <h2 data-number="11.5" class="anchored" data-anchor-id="heterogeneous-workers"><span class="header-section-number">11.5</span> Heterogeneous workers</h2>
 <p>Different targets may have different computing requirements, from memory to GPUs and beyond. You can send different targets to different kinds of workers using <a href="https://wlandau.github.io/crew/articles/controller_groups.html"><code>crew</code> controller groups</a>. In the <code>_targets.R</code> file below, we create a local process controller alongside a <a href="https://en.wikipedia.org/wiki/Oracle_Grid_Engine">Sun Grid Engine</a> controller a memory requirement and a GPU. We combine them in a <a href="https://wlandau.github.io/crew/articles/controller_groups.html"><code>crew</code> controller group</a> which we supply to the <code>controller</code> argument of <a href="https://docs.ropensci.org/targets/reference/tar_option_set.html"><code>tar_option_set</code></a>. Next, we use <a href="https://docs.ropensci.org/targets/reference/tar_resources.html"><code>tar_resources()</code></a> and <a href="https://docs.ropensci.org/targets/reference/tar_resources_crew.html"><code>tar_resources_crew()</code></a> to tell <code>model2</code> to run on <a href="https://en.wikipedia.org/wiki/Oracle_Grid_Engine">Sun Grid Engine</a> and all other targets to run on local processes. The <code>deployment = "main"</code> argument tells the plots to avoid worker processes altogether and run on the main central R process.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(crew)</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(crew.cluster)</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>controller_local <span class="ot">&lt;-</span> <span class="fu">crew_controller_local</span>(</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">name =</span> <span class="st">"my_local_controller"</span>,</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">workers =</span> <span class="dv">2</span>,</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">seconds_idle =</span> <span class="dv">10</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>controller_sge <span class="ot">&lt;-</span> <span class="fu">crew_controller_sge</span>(</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">name =</span> <span class="st">"my_sge_controller"</span>,</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">workers =</span> <span class="dv">3</span>,</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">seconds_idle =</span> <span class="dv">15</span>,</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">script_lines =</span> <span class="st">"module load R"</span>,</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">sge_log_output =</span> <span class="st">"log_folder/"</span>,</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">sge_memory_gigabytes_required =</span> <span class="dv">64</span>,</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">sge_gpu =</span> <span class="dv">1</span></span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(</span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">controller =</span> <span class="fu">crew_controller_group</span>(controller_local, controller_sge),</span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">resources =</span> <span class="fu">tar_resources</span>(</span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">crew =</span> <span class="fu">tar_resources_crew</span>(<span class="at">controller =</span> <span class="st">"my_local_controller"</span>)</span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_source</span>()</span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(<span class="at">name =</span> data, <span class="at">command =</span> <span class="fu">get_data</span>()),</span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(<span class="at">name =</span> model1, <span class="at">command =</span> <span class="fu">run_model1</span>(data)),</span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
-<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> model2,</span>
-<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">command =</span> <span class="fu">run_model2</span>(data),</span>
-<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">resources =</span> <span class="fu">tar_resources</span>(</span>
-<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>      <span class="at">crew =</span> <span class="fu">tar_resources_crew</span>(<span class="at">controller =</span> <span class="st">"my_sge_controller"</span>)</span>
-<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(<span class="at">name =</span> model3, <span class="fu">run_model3</span>(data)),</span>
-<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(<span class="at">name =</span> plot1, <span class="at">command =</span> <span class="fu">plot_model</span>(model1), <span class="at">deployment =</span> <span class="st">"main"</span>),</span>
-<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(<span class="at">name =</span> plot2, <span class="at">command =</span> <span class="fu">plot_model</span>(model2), <span class="at">deployment =</span> <span class="st">"main"</span>),</span>
-<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(<span class="at">name =</span> plot3, <span class="at">command =</span> <span class="fu">plot_model</span>(model3), <span class="at">deployment =</span> <span class="st">"main"</span>)</span>
-<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(crew)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(crew.cluster)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>controller_local <span class="ot">&lt;-</span> <span class="fu">crew_controller_local</span>(</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">name =</span> <span class="st">"my_local_controller"</span>,</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">workers =</span> <span class="dv">2</span>,</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">seconds_idle =</span> <span class="dv">10</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>controller_sge <span class="ot">&lt;-</span> <span class="fu">crew_controller_sge</span>(</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">name =</span> <span class="st">"my_sge_controller"</span>,</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">workers =</span> <span class="dv">3</span>,</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">seconds_idle =</span> <span class="dv">15</span>,</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">script_lines =</span> <span class="st">"module load R"</span>,</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">sge_log_output =</span> <span class="st">"log_folder/"</span>,</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">sge_memory_gigabytes_required =</span> <span class="dv">64</span>,</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">sge_gpu =</span> <span class="dv">1</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">controller =</span> <span class="fu">crew_controller_group</span>(controller_local, controller_sge),</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">resources =</span> <span class="fu">tar_resources</span>(</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">crew =</span> <span class="fu">tar_resources_crew</span>(<span class="at">controller =</span> <span class="st">"my_local_controller"</span>)</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_source</span>()</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(<span class="at">name =</span> data, <span class="at">command =</span> <span class="fu">get_data</span>()),</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(<span class="at">name =</span> model1, <span class="at">command =</span> <span class="fu">run_model1</span>(data)),</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> model2,</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">command =</span> <span class="fu">run_model2</span>(data),</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">resources =</span> <span class="fu">tar_resources</span>(</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>      <span class="at">crew =</span> <span class="fu">tar_resources_crew</span>(<span class="at">controller =</span> <span class="st">"my_sge_controller"</span>)</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(<span class="at">name =</span> model3, <span class="fu">run_model3</span>(data)),</span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(<span class="at">name =</span> plot1, <span class="at">command =</span> <span class="fu">plot_model</span>(model1), <span class="at">deployment =</span> <span class="st">"main"</span>),</span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(<span class="at">name =</span> plot2, <span class="at">command =</span> <span class="fu">plot_model</span>(model2), <span class="at">deployment =</span> <span class="st">"main"</span>),</span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(<span class="at">name =</span> plot3, <span class="at">command =</span> <span class="fu">plot_model</span>(model3), <span class="at">deployment =</span> <span class="st">"main"</span>)</span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section>
+<section id="thanks" class="level2" data-number="11.6">
+<h2 data-number="11.6" class="anchored" data-anchor-id="thanks"><span class="header-section-number">11.6</span> Thanks</h2>
+<p>The <a href="https://books.ropensci.org/crew/"><code>crew</code></a> package is an extension of <a href="https://github.com/shikokuchuo/mirai"><code>mirai</code></a>, a sleek and sophisticated task scheduler that efficiently processes intense workloads. <a href="https://books.ropensci.org/crew/"><code>crew</code></a> is only possible because of the amazing work by <a href="https://github.com/shikokuchuo">Charlie Gao</a> in packages <a href="https://github.com/shikokuchuo/mirai"><code>mirai</code></a> and <a href="https://github.com/shikokuchuo/nanonext"><code>nanonext</code></a>.</p>
 
 
 </section>

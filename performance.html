@@ -282,14 +282,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./hpc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">High-performance computing (the old way)</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./drake.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">What about <code>drake</code>?</span></span></a>
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">What about <code>drake</code>?</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./markdown.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Target Markdown</span></span></a>
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Target Markdown</span></span></a>
   </div>
 </li>
       </ul>
@@ -353,7 +359,7 @@ Summary
 <li>Choose <a href="https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats">efficient data storage formats</a> for large targets.</li>
 <li>For high-memory pipelines, consider <code>memory = "transient"</code> and <code>garbage_collection = TRUE</code> in <code>tar_option_set()</code> or <code>tar_target()</code>. <code>tar_make()</code>, <code>tar_make_clustermq()</code>, and <code>tar_make_future()</code> also support a <code>garbage_collection</code> argument that applies to the controller process.</li>
 <li>To reduce the latency and cost of <a href="https://books.ropensci.org/targets/data.html#cloud-storage">cloud storage</a> in cases where the bucket is trustworthy, set <code>cue = tar_cue(file = FALSE)</code> in <code>tar_target()</code> and/or <code>tar_option_set()</code></li>
-<li>If you are careful to leave the <a href="#hpc">data store and file targets</a> alone until 2 seconds after the pipeline finishes, <code>tar_option_set(trust_object_timestamps = TRUE)</code> and <code>format = "file_fast</code> in <code>tar_target()</code> can speed up the pipeline by avoiding superfluous hash computations. (Requires <code>targets</code> &gt;= 1.1.0.)</li>
+<li>If you are careful to leave the <a href="hpc.html">data store and file targets</a> alone until 2 seconds after the pipeline finishes, <code>tar_option_set(trust_object_timestamps = TRUE)</code> and <code>format = "file_fast</code> in <code>tar_target()</code> can speed up the pipeline by avoiding superfluous hash computations. (Requires <code>targets</code> &gt;= 1.1.0.)</li>
 <li>For highly parallel pipelines, consider <code>storage = "worker"</code> and <code>retrieval = "worker"</code> in <code>tar_option_set()</code> or <code>tar_target()</code>.</li>
 <li>To avoid wasting computational resources, consider setting <code>deployment = "main"</code> in <code>tar_target()</code> for light targets that do not need to run on parallel workers.</li>
 <li>For high-overhead pipelines with thousands of targets, consider grouping same amount of work into a smaller number of targets.</li>
@@ -444,11 +450,11 @@ About hashes and timestamps
 </section>
 <section id="parallel-workers-and-data" class="level2" data-number="12.6">
 <h2 data-number="12.6" class="anchored" data-anchor-id="parallel-workers-and-data"><span class="header-section-number">12.6</span> Parallel workers and data</h2>
-<p>By default, the main controlling R process stores and retrieves the data. So in large parallel data pipelines, <code>tar_make_clustermq()</code> and <code>tar_make_future()</code> may <a href="https://en.wikipedia.org/wiki/Bottleneck_(software)">bottleneck</a> at the data management phase. Solution: if all <a href="#hpc">parallel workers</a> have access to the <a href="data.html">local data store</a>, you can make those workers store and retrieve the data instead of putting it all on the main controlling R process. In <code>tar_target()</code> or <code>tar_option_set()</code> in the <code>_targets.R</code> file, activate worker storage and retrieval:</p>
+<p>By default, the main controlling R process stores and retrieves the data. So in large parallel data pipelines, <code>tar_make_clustermq()</code> and <code>tar_make_future()</code> may <a href="https://en.wikipedia.org/wiki/Bottleneck_(software)">bottleneck</a> at the data management phase. Solution: if all <a href="hpc.html">parallel workers</a> have access to the <a href="data.html">local data store</a>, you can make those workers store and retrieve the data instead of putting it all on the main controlling R process. In <code>tar_target()</code> or <code>tar_option_set()</code> in the <code>_targets.R</code> file, activate worker storage and retrieval:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">storage =</span> <span class="st">"worker"</span>, <span class="at">retrieval =</span> <span class="st">"worker"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>If the <a href="#hpc">workers</a> do not have access to the <a href="data.html">local data store</a>, you can still set <code>storage = "worker"</code> and <code>retrieval = "worker"</code> if you use <a href="https://books.ropensci.org/targets/data.html#cloud-storage">cloud storage</a> to store and retrieve your data.</p>
+<p>If the <a href="hpc.html">workers</a> do not have access to the <a href="data.html">local data store</a>, you can still set <code>storage = "worker"</code> and <code>retrieval = "worker"</code> if you use <a href="https://books.ropensci.org/targets/data.html#cloud-storage">cloud storage</a> to store and retrieve your data.</p>
 </section>
 <section id="local-targets" class="level2" data-number="12.7">
 <h2 data-number="12.7" class="anchored" data-anchor-id="local-targets"><span class="header-section-number">12.7</span> Local targets</h2>
@@ -524,7 +530,7 @@ About batching
 <span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>px <span class="ot">&lt;-</span> <span class="fu">tar_make</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><img src="./man/figures/tar_watch.png" class="img-fluid"> <code>tar_watch_ui()</code> and <code>tar_watch_server()</code> make this functionality available to other apps through a Shiny module.</p>
-<p>Unfortunately, none of these options can tell you if any <a href="#hpc">parallel workers</a> or external processes are <em>actually</em> still alive. You can monitor local processes with a utility like <code>top</code> or <code>htop</code>, and traditional HPC scheduler like SLURM or SGE support their own polling utilities such as <code>squeue</code> and <code>qstat</code>. <code>tar_process()</code> and <code>tar_pid()</code> get the process ID of the main R process that last attempted to run the pipeline.</p>
+<p>Unfortunately, none of these options can tell you if any <a href="hpc.html">parallel workers</a> or external processes are <em>actually</em> still alive. You can monitor local processes with a utility like <code>top</code> or <code>htop</code>, and traditional HPC scheduler like SLURM or SGE support their own polling utilities such as <code>squeue</code> and <code>qstat</code>. <code>tar_process()</code> and <code>tar_pid()</code> get the process ID of the main R process that last attempted to run the pipeline.</p>
 </section>
 <section id="profiling" class="level2" data-number="12.10">
 <h2 data-number="12.10" class="anchored" data-anchor-id="profiling"><span class="header-section-number">12.10</span> Profiling</h2>
