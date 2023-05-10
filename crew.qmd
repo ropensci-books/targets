@@ -31,7 +31,7 @@ To efficiently process a large and complex pipeline, [`tar_make()`](https://docs
 ## How it works
 
 1. Write your pipeline as usual, but set the `controller` argument of [`tar_option_set`](https://docs.ropensci.org/targets/reference/tar_option_set.html) to the [`crew`](https://books.ropensci.org/crew/) controller of your choice.
-2. Run the pipeline with a simple [`tar_make()`](https://docs.ropensci.org/targets/reference/tar_make.html) (not [`tar_make_clustermq()`](https://docs.ropensci.org/targets/reference/tar_make_clustermq.html) or [`tar_make_future()`](https://docs.ropensci.org/targets/reference/tar_make_future.html)).
+2. Run the pipeline with a simple [`tar_make()`](https://docs.ropensci.org/targets/reference/tar_make.html).
 
 The [`crew`](https://books.ropensci.org/crew/) controller from (1) allows [`tar_make()`](https://docs.ropensci.org/targets/reference/tar_make.html) to launch external R processes called "workers" which can each run one or more targets. By delegating long-running targets to these workers, the local R session is free to focus on other tasks, and the pipeline finishes faster.
 
