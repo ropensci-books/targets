@@ -144,9 +144,9 @@ tar_crew()
 #> 10 my_controller     10        0   0           0
 ```
 
-The first worker did most of the work, and the second worker ran only 3 targets. Both the second and third workers launched and self-terminated more often than they ran targets. In fact, the third worker did not run any targets at all. None of the other workers actually launched. For this pipeline, it would be better to not use `crew` at all, or set `deployment = "main"` in `tar_target()` for the targets that will complete instantly.
+The first worker did most of the work, and the second worker ran only 3 targets. Both the second and third workers launched and self-terminated more often than they ran targets. In fact, the third worker did not run any targets at all. None of the other workers actually launched. For this pipeline, it would be better to not use `crew` at all, or set `deployment = "main"` in `tar_target()` for the targets that will complete instantly. And if 2 workers were truly busy instead of just 1, it would be reasonable to set `workers = 2` and pick a much higher value of `seconds_idle`
 
-However, suppose the targets in the pipeline take longer to run:
+But now, suppose the targets in the pipeline take longer to run:
 
 ```{r, eval = FALSE}
 # _targets.R file:
