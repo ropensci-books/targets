@@ -99,7 +99,7 @@ tar_make()
 tar_make(callr_arguments = list(spinner = FALSE))
 ```
 
-Let's talk through what happens in the above call to [`tar_make()`](https://docs.ropensci.org/targets/reference/tar_make.html). First, a new worker launches and sends the `data` target to the `crew` queue.^[When you see "start target data", this does not necessarily mean that the R command `get_data()` is actually running. All it means is the target is ready to run and was pushed to the `crew` queue. If the `crew` controller already has a large backlog of unresolved tasks, it may take a long time for the task to actually begin running.] After the `data` target completes, all three models are ready to begin. A second worker automatically launches to meet the increased demand of the workload, and each of the two workers starts to run a model. After one of the models finishes, its worker is free to either run the downstream plot or the third model. The process continues until all the targets are complete. The workers shut down when the pipeline is done.
+Let's talk through what happens in the above call to [`tar_make()`](https://docs.ropensci.org/targets/reference/tar_make.html). First, a new worker launches and sends the `data` target to the `crew` queue. After the `data` target completes, all three models are ready to begin. A second worker automatically launches to meet the increased demand of the workload, and each of the two workers starts to run a model. After one of the models finishes, its worker is free to either run the downstream plot or the third model. The process continues until all the targets are complete. The workers shut down when the pipeline is done.
 
 ## Configuration and auto-scaling
 
