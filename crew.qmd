@@ -15,30 +15,14 @@ library(targets)
 ```
 
 :::{.callout-note}
-## Preview
-
-This chapter covers new high-performance computing capabilities which will eventually supersede [`tar_make_clustermq()`](https://docs.ropensci.org/targets/reference/tar_make_clustermq.html) and [`tar_make_future()`](https://docs.ropensci.org/targets/reference/tar_make_future.html). Please see [this appendix](#hpc) for the original high-performance computing chapter that discusses [`tar_make_clustermq()`](https://docs.ropensci.org/targets/reference/tar_make_clustermq.html) and [`tar_make_future()`](https://docs.ropensci.org/targets/reference/tar_make_future.html).
-:::
-
-
-:::{.callout-note}
 ## Package versions
 
-To use `targets` with `crew` as described in this chapter, it is recommended to use the following versions of R packages:
-
-* `nanonext` version `0.8.3.9010` or higher
-* `mirai` version `0.8.7.9013` or higher
-* `crew` version `0.2.0` or higher
-* `targets` version `1.1.3` or higher.
-
-If the latest CRAN releases are older, then you can install the development versions from R-universe. And if you work for an institution with a centrally validated/qualified R installation which does not let users install packages, consider creating a local [`renv`](https://rstudio.github.io/renv/articles/renv.html) package library for your project.
+For best results, please use `targets` version `1.2.0` or higher and `crew` version `0.3.0` or higher. If you cannot install packages globally, consider creating a local [`renv`](https://rstudio.github.io/renv/articles/renv.html) package library for your project.
 
 ```{r, eval = FALSE}
 renv::init()
-install.packages("nanonext", repos = "https://shikokuchuo.r-universe.dev")
-install.packages("mirai", repos = "https://shikokuchuo.r-universe.dev")
-install.packages("crew", type = "source")
-install.packages("targets", type = "source")
+renv::install("crew")
+renv::install("targets")
 renv::snapshot()
 ```
 :::
