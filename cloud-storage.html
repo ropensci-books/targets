@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>The {targets} R package user manual - 9&nbsp; Data</title>
+<title>The {targets} R package user manual - 10&nbsp; Cloud storage</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -64,8 +64,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./cloud-storage.html" rel="next">
-<link href="./projects.html" rel="prev">
+<link href="./literate-programming.html" rel="next">
+<link href="./data.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -108,7 +108,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./data.html">Data and files</a></li><li class="breadcrumb-item"><a href="./data.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Data</span></a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./data.html">Data and files</a></li><li class="breadcrumb-item"><a href="./cloud-storage.html"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Cloud storage</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -214,13 +214,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./data.html" class="sidebar-item-text sidebar-link active">
+  <a href="./data.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Data</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./cloud-storage.html" class="sidebar-item-text sidebar-link">
+  <a href="./cloud-storage.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Cloud storage</span></span></a>
   </div>
 </li>
@@ -317,10 +317,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#local-data-store" id="toc-local-data-store" class="nav-link active" data-scroll-target="#local-data-store"><span class="header-section-number">9.1</span> Local data store</a></li>
-  <li><a href="#external-files" id="toc-external-files" class="nav-link" data-scroll-target="#external-files"><span class="header-section-number">9.2</span> External files</a></li>
-  <li><a href="#memory" id="toc-memory" class="nav-link" data-scroll-target="#memory"><span class="header-section-number">9.3</span> Memory</a></li>
-  <li><a href="#cleaning-up-local-internal-data-files" id="toc-cleaning-up-local-internal-data-files" class="nav-link" data-scroll-target="#cleaning-up-local-internal-data-files"><span class="header-section-number">9.4</span> Cleaning up local internal data files</a></li>
+  <li><a href="#cost" id="toc-cost" class="nav-link active" data-scroll-target="#cost"><span class="header-section-number">10.0.1</span> Cost</a></li>
+  <li><a href="#aws-setup" id="toc-aws-setup" class="nav-link" data-scroll-target="#aws-setup"><span class="header-section-number">10.0.2</span> AWS setup</a></li>
+  <li><a href="#gcp-setup" id="toc-gcp-setup" class="nav-link" data-scroll-target="#gcp-setup"><span class="header-section-number">10.0.3</span> GCP setup</a></li>
+  <li><a href="#usage" id="toc-usage" class="nav-link" data-scroll-target="#usage"><span class="header-section-number">10.0.4</span> Usage</a></li>
+  <li><a href="#data-version-control" id="toc-data-version-control" class="nav-link" data-scroll-target="#data-version-control"><span class="header-section-number">10.0.5</span> Data version control</a></li>
   </ul>
 </nav>
     </div>
@@ -329,7 +330,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="data" class="quarto-section-identifier"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Data</span></span></h1>
+<h1 class="title"><span id="cloud-storage" class="quarto-section-identifier"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Cloud storage</span></span></h1>
 </div>
 
 
@@ -344,113 +345,119 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
-<p>This chapter describes how the <code>targets</code> package stores data, manages memory, allows you to customize the data processing model.</p>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Performance
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>See the <a href="performance.html">performance chapter</a> for options, settings, and other choices to make storage and memory more efficient for large data workflows.</p>
-</div>
-</div>
-<section id="local-data-store" class="level2" data-number="9.1">
-<h2 data-number="9.1" class="anchored" data-anchor-id="local-data-store"><span class="header-section-number">9.1</span> Local data store</h2>
-<p><code>tar_make()</code> creates a special data folder called <code>_targets/</code> at the root of your project.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_tree</span>(<span class="st">"_targets"</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>_targets</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>├── meta</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>│   ├── crew</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>│   ├── meta</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>│   ├── process</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>│   └── progress</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>├── objects</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>│   ├── target1</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>│   ├── target2</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>│   ├── dynamic_branch_c7bcb4bd</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>│   ├── dynamic_branch_285fb6a9</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>│   └── dynamic_branch_874ca381</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>├── scratch <span class="co"># tar_make() deletes this folder after it finishes.</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>└── user <span class="co"># gittargets users can put custom files here for data version control.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>The two most important parts are:</p>
-<ol type="1">
-<li><code>_targets/meta/meta</code>: a text file with critical metadata.</li>
-<li><code>_targets/objects/</code>: a folder with the output of each target.</li>
-</ol>
-<p>Consider this pipeline:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> target1,</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">command =</span> <span class="dv">11</span> <span class="sc">+</span> <span class="dv">46</span>,</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">format =</span> <span class="st">"rds"</span>,</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">repository =</span> <span class="st">"local"</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p><code>tar_make()</code> does the following:</p>
-<ol type="1">
-<li>Run the command of <code>target1</code> and observe a return value of <code>57</code>.</li>
-<li>Save the value <code>57</code> to <code>_targets/objects/target1</code> using <a href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/saveRDS.html">saveRDS()</a>.</li>
-<li>Append a line to <code>_targets/meta/meta</code> containing the hash, time stamp, file size, warnings, errors, and execution time of <code>target1</code>.</li>
-<li>Append a line to <code>_targets/meta/progress</code> to indicate that <code>target1</code> finished.</li>
-</ol>
-<p>Remarks:</p>
-<ul>
-<li>To read the value of <code>target1</code> back into R, <code>tar_read(target1)</code> is much better than <code>readRDS("_targets/objects/target1")</code>.</li>
-<li>The <code>format</code> argument of <code>tar_target()</code> controls how <code>tar_make()</code> saves the return value. The default is <code>"rds"</code>, and there are more efficient formats such as <code>"qs"</code> and <code>"feather"</code>. Some of these formats require external packages. See <a href="https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats" class="uri">https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats</a> for details.</li>
-<li>For efficiency, <code>tar_make()</code> does not write to <code>_targets/meta/meta</code> or <code>_targets/meta/progress</code> every single time a target completes. Instead, it waits and gathers a backlog of text lines in memory, then writes whole batches of lines at a time. This behavior risks losing metadata in the event of a crash, but it minimizes costly interactions with the file system. The <code>seconds_meta</code> argument controls how often <code>tar_make()</code> writes metadata. <code>seconds_reporter</code> does the same for messages printed to the R console.</li>
-</ul>
+<p>Cloud data can lighten the burden of local storage, make the pipeline portable, and facilitate data version control. Using arguments <code>repository</code> and <code>resources</code> of <code>tar_target()</code> (and <code>tar_option_set()</code>), you can send the return value to the cloud instead of a local file in <code>_targets/objects/</code>. The <code>repository</code> argument identifies the cloud service of choice: <code>"aws"</code> for Amazon Web Service (AWS) Simple Storage Service (S3), and <code>"gcp"</code> for Google Cloud Platform (GCP) Google Cloud Storage (GCS). Each platform requires different steps to configure, but there usage in <code>targets</code> is almost exactly the same.</p>
+<section id="cost" class="level3" data-number="10.0.1">
+<h3 data-number="10.0.1" class="anchored" data-anchor-id="cost"><span class="header-section-number">10.0.1</span> Cost</h3>
+<p>Cloud services cost money. The more resources you use, the more you owe. Resources not only include the data you store, but also the HTTP requests that <code>tar_make()</code> uses to check if a target exists and is up to date. So cost increases with the number of cloud targets and the frequency that you run them. Please proactively monitor usage in the AWS or GCP web console and rethink your strategy if usage is too high. If you trust the storage bucket to safely keep your data, and if you know you will never call <code>tar_delete()</code> or modify that data manually, then you can avoid some of these costs with <code>cue = tar_cue(file = FALSE)</code> in <code>tar_target()</code> and/or <code>tar_option_set()</code>. Alternatively, you might consider running the pipeline locally and then sycning the data store to a storage bucket only at infrequent strategic milestones.</p>
 </section>
-<section id="external-files" class="level2" data-number="9.2">
-<h2 data-number="9.2" class="anchored" data-anchor-id="external-files"><span class="header-section-number">9.2</span> External files</h2>
-<p>If your pipeline loads a preexisting data file or creates files outside the data store, it is good practice to watch them for changes. That way, <code>tar_make()</code> will automatically rerun the appropriate targets if these files change. To watch one of more files, create a target that</p>
+<section id="aws-setup" class="level3" data-number="10.0.2">
+<h3 data-number="10.0.2" class="anchored" data-anchor-id="aws-setup"><span class="header-section-number">10.0.2</span> AWS setup</h3>
 <ol type="1">
-<li>Has <code>format = "file"</code> in <code>tar_target()</code>, and</li>
-<li>Returns a character vector of local files and/or directories.</li>
+<li>Sign up for a free tier account at <a href="https://aws.amazon.com/free" class="uri">https://aws.amazon.com/free</a>.</li>
+<li>Follow <a href="https://docs.aws.amazon.com/AmazonS3/latest/gsg/GetStartedWithS3.html">these instructions</a> to practice using Simple Storage Service (S3) through the web console at <a href="https://console.aws.amazon.com/s3/" class="uri">https://console.aws.amazon.com/s3/</a>.</li>
+<li>Install the <code>paws</code> R package with <code>install.packages("paws")</code>.</li>
+<li>Follow the credentials section of the <a href="https://github.com/paws-r/paws/blob/main/README.md"><code>paws</code> README</a> to connect <code>paws</code> to your AWS account. You will set <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.htm">special environment variables</a> in your user-level <a href="https://usethis.r-lib.org/reference/edit.html"><code>.Renviron</code> file</a>. Example:</li>
 </ol>
-<p>The example sketch of a pipeline below follows this pattern.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>create_output <span class="ot">&lt;-</span> <span class="cf">function</span>(file) {</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(file)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  output <span class="ot">&lt;-</span> <span class="fu">head</span>(data)</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write.csv</span>(output, <span class="st">"output.csv"</span>)</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"output.csv"</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(<span class="at">name =</span> input, <span class="at">command =</span> <span class="st">"data.csv"</span>, <span class="at">format =</span> <span class="st">"file"</span>),</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(<span class="at">name =</span> output, <span class="at">command =</span> <span class="fu">create_output</span>(input), <span class="at">format =</span> <span class="st">"file"</span>)</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example .Renviron file</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>AWS_ACCESS_KEY_ID<span class="ot">=</span>AKIAIOSFODNN7EXAMPLE</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>AWS_SECRET_ACCESS_KEY<span class="ot">=</span>wJalrXUtnFEMI<span class="sc">/</span>K7MDENG<span class="sc">/</span>bPxRfiCYEXAMPLEKEY</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>AWS_REGION<span class="ot">=</span>us<span class="sc">-</span>east<span class="dv">-1</span> <span class="co"># The paws package and thus targets &gt;= 0.8.1.9000 use this.</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>AWS_DEFAULT_REGION<span class="ot">=</span>us<span class="sc">-</span>east<span class="dv">-1</span> <span class="co"># For back compatibility with targets &lt;= 0.8.1.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>We assume a file called <code>data.csv</code> exists prior to running the pipeline. When <code>tar_make()</code> runs the first time, target <code>input</code> runs and returns the value <code>"data.csv"</code>. Because <code>format</code> is <code>"file"</code>, no extra file is saved to <code>_targets/meta/objects/</code>. Instead, <code>"data.csv"</code> gets hashed, and the hash is stored in the metadata. Then, target <code>output</code> runs, creates the file <code>"output.csv"</code>, and that file gets processed the same way.</p>
-<p>Target <code>output</code> depends on target <code>input</code> because the command of target <code>output</code> mentions the symbol <code>input</code>. (Verify with <code>tar_visnetwork()</code>.) That way, <code>output</code> does not run until <code>input</code> is finished, and <code>output</code> reruns if the hash of <code>input</code> changes. It is good practice to write target symbols instead of literal input paths to ensure the proper dependency relationships. In this case, if <code>output</code> were written with the literal input path as <code>tar_target(name = output, command = create_output("data.csv"), format = "file")</code>, then the dependency relationship would break, and <code>output</code> would not rerun if <code>input</code> changed.</p>
-<p>The mechanism of <code>format = "file"</code> applies equally to input files and output files. In fact, a target can track both input and output files at the same time. This is part of how <a href="https://docs.ropensci.org/tarchetypes/reference/tar_render.html"><code>tar_render()</code></a> works. As discussed in the <a href="literate-programming.html">R Markdown chapter</a>, <a href="https://docs.ropensci.org/tarchetypes/reference/tar_render.html"><code>tar_render()</code></a> takes an R Markdown source file as input, write a rendered report file as output, and returns a character vector with the paths to both files.</p>
+<ol start="5" type="1">
+<li>Restart your R session and create an <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingBucket.html">S3 buckets</a> to store target data. You can do this either in the AWS S3 web console or the following code.</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(paws)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>s3 <span class="ot">&lt;-</span> <span class="fu">s3</span>()</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>s3<span class="sc">$</span><span class="fu">create_bucket</span>(<span class="at">Bucket =</span> <span class="st">"my-test-bucket-25edb4956460647d"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </section>
-<section id="memory" class="level2" data-number="9.3">
-<h2 data-number="9.3" class="anchored" data-anchor-id="memory"><span class="header-section-number">9.3</span> Memory</h2>
-<p>A typical target has dependencies upstream. In order to run properly, it needs the return values of those dependencies to exist in the random access memory (RAM). By default, <code>tar_make()</code> reads those dependency targets from the data store, and it keeps in memory those targets and any targets that run. For big data workflows where not all data can fit into RAM, it is wiser to set <code>memory = "transient"</code> and <code>garbage_collection = TRUE</code> in <code>tar_target()</code> (and <code>tar_option_set()</code>). That way, the target return value is removed from memory at the earliest opportunity. The next time the target value is needed, it is reread from storage again, and then removed from memory as soon as possible. Reading a big dataset from storage can take time, which may slow down some pipelines, but it may be worth the extra time to make sure memory usage stays within reasonable limits. It is also worth considering <code>format = "file"</code> in <code>tar_target()</code> so the file is hashed but not loaded into memory and downstream targets can read only small subsets of the data in the file. See the <a href="performance.html">performance chapter</a> for more details.</p>
+<section id="gcp-setup" class="level3" data-number="10.0.3">
+<h3 data-number="10.0.3" class="anchored" data-anchor-id="gcp-setup"><span class="header-section-number">10.0.3</span> GCP setup</h3>
+<ol type="1">
+<li>Activate a Google Cloud Platform account at <a href="https://cloud.google.com/" class="uri">https://cloud.google.com/</a>.</li>
+<li>Follow the instructions at <a href="https://code.markedmondson.me/googleCloudRunner/articles/setup-gcp.html" class="uri">https://code.markedmondson.me/googleCloudRunner/articles/setup-gcp.html</a> to set up your GCP account to use locally with R. The video is friendly and helpful.</li>
+<li>In your <code>.Renviron</code> file, set the <code>GCS_AUTH_FILE</code> environment variable to the same value as <code>GCE_AUTH_FILE</code> from step (2).</li>
+<li>Create a Google Cloud Storage (GCS) bucket to store target data. You can do this either with the GCP GCS web dashboard or the following code.</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>googleCloudStorageR<span class="sc">::</span><span class="fu">gcs_create_bucket</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">bucket =</span> <span class="st">"my-test-bucket-25edb4956460647d"</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">projectId =</span> <span class="fu">Sys.getenv</span>(<span class="st">"GCE_DEFAULT_PROJECT_ID"</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ol start="5" type="1">
+<li>Verify that your Google Cloud account and R installation of <code>GoogleCloudStorageR</code> are working properly. <code>targets</code> uses the <code>GoogleCloudStorageR</code> package internally, and you can make sure it is working by <a href="https://code.markedmondson.me/googleCloudStorageR/articles/googleCloudStorageR.html#uploading-objects---simple-uploads">testing a simple upload</a>.</li>
+</ol>
 </section>
-<section id="cleaning-up-local-internal-data-files" class="level2" data-number="9.4">
-<h2 data-number="9.4" class="anchored" data-anchor-id="cleaning-up-local-internal-data-files"><span class="header-section-number">9.4</span> Cleaning up local internal data files</h2>
-<p>There are <a href="https://docs.ropensci.org/targets/reference/index.html#section-clean">multiple functions</a> to remove or clean up target storage. Most of these functions delete internal files or records from the data store and delete objects from cloud buckets. They do not delete local external files (i.e.&nbsp;<code>tar_target(..., format = "file", repository = "local")</code>) because some of those files could be local input data that exists prior to <code>tar_make()</code>.</p>
-<ul>
-<li><a href="https://docs.ropensci.org/targets/reference/tar_destroy.html"><code>tar_destroy()</code></a> is by far the most commonly used cleaning function. It removes the <code>_targets/</code> folder (or optionally a subfolder in <code>_targets/</code>) and all the cloud targets mentioned in the metadata. Use it if you intend to start the pipeline from scratch without any trace of a previous run.</li>
-<li><a href="https://docs.ropensci.org/targets/reference/tar_prune.html"><code>tar_prune()</code></a> deletes the data and metadata of all the targets no longer present in your current target script file (default: <code>_targets.R</code>). This is useful if you recently worked through multiple changes to your project and are now trying to discard irrelevant data while keeping the results that still matter.</li>
-<li><a href="https://docs.ropensci.org/targets/reference/tar_delete.html"><code>tar_delete()</code></a> is more selective than <a href="https://docs.ropensci.org/targets/reference/tar_destroy.html"><code>tar_destroy()</code></a> and <a href="https://docs.ropensci.org/targets/reference/tar_prune.html"><code>tar_prune()</code></a>. It removes the individual data files of a given set of targets from <code>_targets/objects/</code> and cloud buckets while leaving the metadata in <code>_targets/meta/meta</code> alone. If you have a small number of data-heavy targets you need to discard to conserve storage, this function can help.</li>
-<li><a href="https://docs.ropensci.org/targets/reference/tar_invalidate.html"><code>tar_invalidate()</code></a> is the complement of <a href="https://docs.ropensci.org/targets/reference/tar_delete.html"><code>tar_delete()</code></a>: for the selected targets, it deletes the metadata in <code>_targets/meta/meta</code> and does not delete the return values. After invalidation, you will still be able to locate the data files with <a href="https://docs.ropensci.org/targets/reference/tar_path.html"><code>tar_path()</code></a> and manually salvage them in an emergency. However, <a href="https://docs.ropensci.org/targets/reference/tar_load.html"><code>tar_load()</code></a> and <a href="https://docs.ropensci.org/targets/reference/tar_read.html"><code>tar_read()</code></a> will not be able to read the data into R, and subsequent calls to <a href="https://docs.ropensci.org/targets/reference/tar_make.html"><code>tar_make()</code></a> will attempt to rebuild those targets.</li>
-<li><a href="https://docs.ropensci.org/targets/reference/tar_meta_delete.html"><code>tar_meta_delete()</code></a> removes all the files in <code>_targets/meta/</code> that <code>targets</code> created, not just <code>_targets/meta/meta</code>, but also <code>_targets/meta/progress</code>, <code>_targets/meta/process</code>, and <code>_targets/meta/crew</code>. It also deletes the copies of these files in cloud buckets. See the <a href="@cloud-storage">cloud storage</a> chapter for details.</li>
-</ul>
+<section id="usage" class="level3" data-number="10.0.4">
+<h3 data-number="10.0.4" class="anchored" data-anchor-id="usage"><span class="header-section-number">10.0.4</span> Usage</h3>
+<p>The following is an example pipeline that sends targets to an AWS S3 bucket. Usage in GCP is almost exactly the same.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Example _targets.R file:</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">resources =</span> <span class="fu">tar_resources</span>(</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">aws =</span> <span class="fu">tar_resources_aws</span>(</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">bucket =</span> <span class="st">"my-test-bucket-25edb4956460647d"</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">prefix =</span> <span class="st">"my_project_name"</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>write_mean <span class="ot">&lt;-</span> <span class="cf">function</span>(data) {</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  tmp <span class="ot">&lt;-</span> <span class="fu">tempfile</span>()</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">writeLines</span>(<span class="fu">as.character</span>(<span class="fu">mean</span>(data)), tmp)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  tmp</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    data,</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rnorm</span>(<span class="dv">5</span>),</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">format =</span> <span class="st">"qs"</span>, <span class="co"># Set format = "aws_qs" in targets &lt;= 0.10.0.</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">repository =</span> <span class="st">"aws"</span> <span class="co"># Set to "gcp" for Google Cloud Platform.</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>  ), </span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    mean_file,</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">write_mean</span>(data),</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">format =</span> <span class="st">"file"</span>, <span class="co"># Set format = "aws_file" in targets &lt;= 0.10.0.</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">repository =</span> <span class="st">"aws"</span> <span class="co"># Set to "gcp" for Google Cloud Platform.</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>When you run the pipeline above with <a href="https://docs.ropensci.org/targets/reference/tar_make.html"><code>tar_make()</code></a>, your local R session computes <code>rnorm(5)</code>, saves it to a temporary <a href="https://github.com/traversc/qs"><code>qs</code></a> file on disk, and then uploads it to a file called <code>_targets/objects/data</code> on your S3 bucket. Likewise for <code>mean_file</code>, but because the format is <code>"file"</code> and the repository is <code>"aws"</code>, you are responsible for supplying the path to the file that gets uploaded to <code>_targets/objects/mean_file</code>.</p>
+<p><code>format = "file"</code> works differently for cloud storage than local storage. Here, it is assumed that the command of the target writes a single file, and then <code>targets</code> uploads this file to the cloud and deletes the local copy. At that point, the copy in the cloud is tracked for changes, and the local copy does not exist. Later on, <code>tar_read()</code> and <code>tar_load()</code> can download the file and restore it to its original local path.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target data</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● run target mean_file</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● end pipeline</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>And of course, your targets stay up to date if you make no changes.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✓ skip target data</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✓ skip target mean_file</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✓ skip pipeline</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>If you log into <a href="https://s3.console.aws.amazon.com/s3" class="uri">https://s3.console.aws.amazon.com/s3</a>, you should see objects <code>_targets/objects/data</code> and <code>_targets/objects/mean_file</code> in your bucket. To download this data locally, use <code>tar_read()</code> and <code>tar_load()</code> like before. These functions download the data from the bucket and load it into R.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(data)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] -0.74654607 -0.59593497 -1.57229983  0.40915323  0.02579023</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="data-version-control" class="level3" data-number="10.0.5">
+<h3 data-number="10.0.5" class="anchored" data-anchor-id="data-version-control"><span class="header-section-number">10.0.5</span> Data version control</h3>
+<p>Amazon and Google support versioned buckets. If your bucket has versioning turned on, then every version of every target will be stored,<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, and the target metadata will contain the version ID (verify with <code>tar_meta(your_target, path)$path</code>). That way, if you roll back <code>_targets/meta/meta</code> to a prior version, then <code>tar_read(your_target)</code> will read a prior target. And if you roll back the metadata and the code together, then your pipeline will journey back in time while stay up to date (old code synced with old data). Rolling back is possible if you use Git/GitHub and commit your R code files and <code>_targets/meta/meta</code> to the repository. An alternative cloudless versioning solution is <a href="https://docs.ropensci.org/gittargets/"><code>gittargets</code></a>, a package that snapshots the local data store and syncs with an existing code repository.</p>
 
 
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>GCP has safety capabilities such as discarding all but the newest <code>n</code> versions.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
 </section>
 
 </main> <!-- /main -->
@@ -689,13 +696,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./projects.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Projects</span></span>
+      <a href="./data.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Data</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./cloud-storage.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Cloud storage</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./literate-programming.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Literate programming</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

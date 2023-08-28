@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>The {targets} R package user manual - 10&nbsp; Literate programming</title>
+<title>The {targets} R package user manual - 11&nbsp; Literate programming</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -65,7 +65,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
 <link href="./crew.html" rel="next">
-<link href="./data.html" rel="prev">
+<link href="./cloud-storage.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -108,7 +108,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./data.html">Data and files</a></li><li class="breadcrumb-item"><a href="./literate-programming.html"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Literate programming</span></a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./data.html">Data and files</a></li><li class="breadcrumb-item"><a href="./literate-programming.html"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Literate programming</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -220,8 +220,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./cloud-storage.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Cloud storage</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./literate-programming.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Literate programming</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Literate programming</span></span></a>
   </div>
 </li>
       </ul>
@@ -238,13 +244,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./crew.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Distributed computing</span></span></a>
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Distributed computing</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./performance.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Performance</span></span></a>
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Performance</span></span></a>
   </div>
 </li>
       </ul>
@@ -261,13 +267,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./dynamic.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Dynamic branching</span></span></a>
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Dynamic branching</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./static.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Static branching</span></span></a>
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Static branching</span></span></a>
   </div>
 </li>
       </ul>
@@ -311,12 +317,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#scope" id="toc-scope" class="nav-link active" data-scroll-target="#scope"><span class="header-section-number">10.1</span> Scope</a></li>
-  <li><a href="#r-markdown-targets" id="toc-r-markdown-targets" class="nav-link" data-scroll-target="#r-markdown-targets"><span class="header-section-number">10.2</span> R Markdown targets</a></li>
-  <li><a href="#quarto-targets" id="toc-quarto-targets" class="nav-link" data-scroll-target="#quarto-targets"><span class="header-section-number">10.3</span> Quarto targets</a></li>
-  <li><a href="#parameterized-documents" id="toc-parameterized-documents" class="nav-link" data-scroll-target="#parameterized-documents"><span class="header-section-number">10.4</span> Parameterized documents</a></li>
-  <li><a href="#single-parameter-set" id="toc-single-parameter-set" class="nav-link" data-scroll-target="#single-parameter-set"><span class="header-section-number">10.5</span> Single parameter set</a></li>
-  <li><a href="#multiple-parameter-sets" id="toc-multiple-parameter-sets" class="nav-link" data-scroll-target="#multiple-parameter-sets"><span class="header-section-number">10.6</span> Multiple parameter sets</a></li>
+  <li><a href="#scope" id="toc-scope" class="nav-link active" data-scroll-target="#scope"><span class="header-section-number">11.1</span> Scope</a></li>
+  <li><a href="#r-markdown-targets" id="toc-r-markdown-targets" class="nav-link" data-scroll-target="#r-markdown-targets"><span class="header-section-number">11.2</span> R Markdown targets</a></li>
+  <li><a href="#quarto-targets" id="toc-quarto-targets" class="nav-link" data-scroll-target="#quarto-targets"><span class="header-section-number">11.3</span> Quarto targets</a></li>
+  <li><a href="#parameterized-documents" id="toc-parameterized-documents" class="nav-link" data-scroll-target="#parameterized-documents"><span class="header-section-number">11.4</span> Parameterized documents</a></li>
+  <li><a href="#single-parameter-set" id="toc-single-parameter-set" class="nav-link" data-scroll-target="#single-parameter-set"><span class="header-section-number">11.5</span> Single parameter set</a></li>
+  <li><a href="#multiple-parameter-sets" id="toc-multiple-parameter-sets" class="nav-link" data-scroll-target="#multiple-parameter-sets"><span class="header-section-number">11.6</span> Multiple parameter sets</a></li>
   </ul>
 </nav>
     </div>
@@ -325,7 +331,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="literate-programming" class="quarto-section-identifier"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Literate programming</span></span></h1>
+<h1 class="title"><span id="literate-programming" class="quarto-section-identifier"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Literate programming</span></span></h1>
 </div>
 
 
@@ -341,8 +347,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 <p>Literate programming is the practice of mixing code and descriptive writing in order to execute and explain a data analysis simultaneously in the same document. The <code>targets</code> package supports literate programming through tight integration with <a href="https://quarto.org/">Quarto</a>, <a href="https://rmarkdown.rstudio.com/">R Markdown</a>, and <a href="https://yihui.org/knitr/"><code>knitr</code></a>. It is recommended to learn one of these three tools before proceeding.</p>
-<section id="scope" class="level2" data-number="10.1">
-<h2 data-number="10.1" class="anchored" data-anchor-id="scope"><span class="header-section-number">10.1</span> Scope</h2>
+<section id="scope" class="level2" data-number="11.1">
+<h2 data-number="11.1" class="anchored" data-anchor-id="scope"><span class="header-section-number">11.1</span> Scope</h2>
 <p>There are two kinds of literate programming in <code>targets</code>:</p>
 <ol type="1">
 <li>A literate programming source document (or Quarto project) that renders inside an individual target. Here, you define a special kind of target that runs a lightweight R Markdown report which depends on upstream targets.</li>
@@ -350,8 +356,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ol>
 <p>We recommend (1) in order to fully embrace pipelines as a paradigm, and that is where this chapter will focus. However, (2) is still supported, and we include it <a href="#markdown">in an appendix</a>.</p>
 </section>
-<section id="r-markdown-targets" class="level2" data-number="10.2">
-<h2 data-number="10.2" class="anchored" data-anchor-id="r-markdown-targets"><span class="header-section-number">10.2</span> R Markdown targets</h2>
+<section id="r-markdown-targets" class="level2" data-number="11.2">
+<h2 data-number="11.2" class="anchored" data-anchor-id="r-markdown-targets"><span class="header-section-number">11.2</span> R Markdown targets</h2>
 <p>Here, literate programming serves to display, summarize, and annotate results from upstream in the <code>targets</code> pipeline. The document(s) have little to no computation of their own, and they make heavy use of <code>tar_read()</code> and <code>tar_load()</code> to leverage output from other targets.</p>
 <p>As an example, let us extend the <a href="walkthrough.html">walkthrough example</a> chapter with the following <a href="https://rmarkdown.rstudio.com/">R Markdown</a> source file <code>report.Rmd</code>.</p>
 <p><img src="./man/figures/knitr-source.png" class="img-fluid"></p>
@@ -399,16 +405,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p><img src="./man/figures/knitr-graph.png" class="img-fluid"></p>
 </section>
-<section id="quarto-targets" class="level2" data-number="10.3">
-<h2 data-number="10.3" class="anchored" data-anchor-id="quarto-targets"><span class="header-section-number">10.3</span> Quarto targets</h2>
+<section id="quarto-targets" class="level2" data-number="11.3">
+<h2 data-number="11.3" class="anchored" data-anchor-id="quarto-targets"><span class="header-section-number">11.3</span> Quarto targets</h2>
 <p><code>tarchetypes</code> &gt;= 0.6.0.9000 supports a <code>tar_quarto()</code> function, which is like <code>tar_render()</code>, but for Quarto. For an individual source document, <code>tar_quarto()</code> works exactly the same way as <code>tar_render()</code>. However, <code>tar_quarto()</code> is more powerful: you can supply the path to an entire Quarto project, such as a book, blog, or website. <code>tar_quarto()</code> looks for target dependencies in all the source documents (e.g.&nbsp;listed in <code>_quarto.yml</code>), and it tracks the important files in the project for changes (run <code>tar_quarto_files()</code> to see which ones).</p>
 </section>
-<section id="parameterized-documents" class="level2" data-number="10.4">
-<h2 data-number="10.4" class="anchored" data-anchor-id="parameterized-documents"><span class="header-section-number">10.4</span> Parameterized documents</h2>
+<section id="parameterized-documents" class="level2" data-number="11.4">
+<h2 data-number="11.4" class="anchored" data-anchor-id="parameterized-documents"><span class="header-section-number">11.4</span> Parameterized documents</h2>
 <p><a href="https://docs.ropensci.org/tarchetypes"><code>tarchetypes</code></a> functions make it straightforward to use <a href="https://rmarkdown.rstudio.com/developer_parameterized_reports.html">parameterized R Markdown</a> and <a href="https://quarto.org/docs/computations/parameters.html">parameterized Quarto</a> in a <code>targets</code> pipeline. The next two subsections walk through the major use cases.</p>
 </section>
-<section id="single-parameter-set" class="level2" data-number="10.5">
-<h2 data-number="10.5" class="anchored" data-anchor-id="single-parameter-set"><span class="header-section-number">10.5</span> Single parameter set</h2>
+<section id="single-parameter-set" class="level2" data-number="11.5">
+<h2 data-number="11.5" class="anchored" data-anchor-id="single-parameter-set"><span class="header-section-number">11.5</span> Single parameter set</h2>
 <p>In this scenario, the pipeline renders your parameterized report one time using a single set of parameters. These parameters can be upstream targets, global objects, or fixed values. Simply pass a <code>params</code> argument to <a href="https://docs.ropensci.org/tarchetypes/reference/tar_render.html"><code>tar_render()</code></a> or an <code>execute_params</code> argument to <a href="https://docs.ropensci.org/tarchetypes/reference/tar_quarto.html"><code>tar_quarto()</code></a>. Example:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
@@ -428,8 +434,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><img src="./man/figures/param-qmd.png" class="img-fluid"></p>
 <p>See <a href="https://docs.ropensci.org/tarchetypes/reference/tar_quarto.html#examples"><code>tar_quarto()</code> examples</a> and <a href="https://docs.ropensci.org/tarchetypes/reference/tar_render.html#examples"><code>tar_render()</code> examples</a> for more.</p>
 </section>
-<section id="multiple-parameter-sets" class="level2" data-number="10.6">
-<h2 data-number="10.6" class="anchored" data-anchor-id="multiple-parameter-sets"><span class="header-section-number">10.6</span> Multiple parameter sets</h2>
+<section id="multiple-parameter-sets" class="level2" data-number="11.6">
+<h2 data-number="11.6" class="anchored" data-anchor-id="multiple-parameter-sets"><span class="header-section-number">11.6</span> Multiple parameter sets</h2>
 <p>In this scenario, you still have a single report, but you render it multiple times over a grid of parameters. This time, use <a href="https://docs.ropensci.org/tarchetypes/reference/tar_quarto_rep.html"><code>tar_quarto_rep()</code></a> or <a href="https://docs.ropensci.org/tarchetypes/reference/tar_render_rep.html"><code>tar_render_rep()</code></a>. Each of these functions takes as input a grid of parameters with one column per parameter and one row per parameter set, where each parameter set is used to render an instance of the document. In other words, the number of rows in the parameter grid is the number of output documents you will produce. Below is an example <code>_targets.R</code> file using <code>tar_render_rep()</code>. Usage with <code>tar_quarto_rep()</code> is the same<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
@@ -718,13 +724,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./data.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Data</span></span>
+      <a href="./cloud-storage.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Cloud storage</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="./crew.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Distributed computing</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Distributed computing</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
