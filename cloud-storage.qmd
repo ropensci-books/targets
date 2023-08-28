@@ -5,7 +5,7 @@ execute:
 
 # Cloud storage {#cloud-storage}
 
-Cloud data can lighten the burden of local storage, make the pipeline portable, and facilitate data version control. Using arguments `repository` and `resources` of `tar_target()` (and `tar_option_set()`), you can send the return value to the cloud instead of a local file in `_targets/objects/`. The `repository` argument identifies the cloud service of choice: `"aws"` for Amazon Web Service (AWS) Simple Storage Service (S3), and `"gcp"` for Google Cloud Platform (GCP) Google Cloud Storage (GCS). Each platform requires different steps to configure, but their usage in `targets` is almost exactly the same.
+Cloud data can lighten the burden of local storage, make the pipeline portable, and facilitate data version control. Using arguments `repository` and `resources` of `tar_target()` (and `tar_option_set()`), you can send the return value to the cloud instead of a local file in `_targets/objects/`. The `repository` argument identifies the cloud service of choice: `"aws"` for Amazon Web Service (AWS) Simple Storage Service (S3), and `"gcp"` for Google Cloud Platform (GCP) Google Cloud Storage (GCS). Each platform requires different steps to configure, but there usage in `targets` is almost exactly the same.
 
 ### Cost
 
@@ -54,7 +54,10 @@ The following is an example pipeline that sends targets to an AWS S3 bucket. Usa
 library(targets)
 tar_option_set(
   resources = tar_resources(
-    aws = tar_resources_aws(bucket = "my-test-bucket-25edb4956460647d")
+    aws = tar_resources_aws(
+      bucket = "my-test-bucket-25edb4956460647d",
+      prefix = "my_project_name"
+    )
   )
 )
 write_mean <- function(data) {
@@ -80,8 +83,7 @@ list(
 
 When you run the pipeline above with [`tar_make()`](https://docs.ropensci.org/targets/reference/tar_make.html), your local R session computes `rnorm(5)`, saves it to a temporary [`qs`](https://github.com/traversc/qs) file on disk, and then uploads it to a file called `_targets/objects/data` on your S3 bucket. Likewise for `mean_file`, but because the format is `"file"` and the repository is `"aws"`, you are responsible for supplying the path to the file that gets uploaded to `_targets/objects/mean_file`.
 
-`format = "file"` works differently for cloud storage than local storage. Here, it is assumed that the command of the target writes a single file, and then `targets` uploads this file to the cloud and deletes the local copy. At that point, the copy in the cloud is tracked for changes, and the local copy does not exist.
-
+`format = "file"` works differently for cloud storage than local storage. Here, it is assumed that the command of the target writes a single file, and then `targets` uploads this file to the cloud and deletes the local copy. At that point, the copy in the cloud is tracked for changes, and the local copy does not exist. Later on, `tar_read()` and `tar_load()` can download the file and restore it to its original local path.
 
 ```{r, eval = FALSE}
 tar_make()
@@ -104,25 +106,6 @@ If you log into <https://s3.console.aws.amazon.com/s3>, you should see objects `
 ```{r, eval = FALSE}
 tar_read(data)
 #> [1] -0.74654607 -0.59593497 -1.57229983  0.40915323  0.02579023
-```
-
-The `"file"` format behaves differently on the cloud. `tar_read()` and `tar_load()` download the object to a local path (where the target saved it locally before it was uploaded) and return the path so you can process it yourself.^[Non-"file" AWS formats also download files, but they are temporary and immediately discarded after the data is read into memory.]
-
-```{r, eval = FALSE}
-tar_load(mean_file)
-mean_file
-#> [1] "_targets/scratch/mean_fileff086e70876d"
-```
-
-```{r, eval = FALSE}
-readLines(mean_file)
-#> [1] "-0.495967480886693"
-```
-
-When you are done with these temporary files and the pipeline is no longer running, you can safely remove everything in `_targets/scratch/`.
-
-```{r, eval = FALSE}
-unlink("_targets/scratch/", recursive = TRUE) # tar_destroy(destroy = "scratch")
 ```
 
 ### Data version control
