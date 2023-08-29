@@ -5,54 +5,85 @@ execute:
 
 # Cloud storage {#cloud-storage}
 
-Cloud data can lighten the burden of local storage, make the pipeline portable, and facilitate data version control. Using arguments `repository` and `resources` of `tar_target()` (and `tar_option_set()`), you can send the return value to the cloud instead of a local file in `_targets/objects/`. The `repository` argument identifies the cloud service of choice: `"aws"` for Amazon Web Service (AWS) Simple Storage Service (S3), and `"gcp"` for Google Cloud Platform (GCP) Google Cloud Storage (GCS). Each platform requires different steps to configure, but there usage in `targets` is almost exactly the same.
+:::{.callout-warning}
+## Cost
 
-### Cost
+[Amazon S3](https://aws.amazon.com/s3/) or [Google Cloud Storage](https://cloud.google.com/storage/) are paid services. Amazon and Google not only charge for data, but also for operations that query or modify that data. Read <https://aws.amazon.com/s3/pricing/> and <https://cloud.google.com/storage/pricing> for details.
+:::
 
-Cloud services cost money. The more resources you use, the more you owe. Resources not only include the data you store, but also the HTTP requests that `tar_make()` uses to check if a target exists and is up to date. So cost increases with the number of cloud targets and the frequency that you run them. Please proactively monitor usage in the AWS or GCP web console and rethink your strategy if usage is too high. If you trust the storage bucket to safely keep your data, and if you know you will never call `tar_delete()` or modify that data manually, then you can avoid some of these costs with `cue = tar_cue(file = FALSE)` in `tar_target()` and/or `tar_option_set()`. Alternatively, you might consider running the pipeline locally and then sycning the data store to a storage bucket only at infrequent strategic milestones.
+:::{.callout-tip}
+## Package version
+
+This chapter requires `targets` version 1.2.2.9002 or higher. Please visit the [installation instructions](https://docs.ropensci.org/targets/#installation).
+:::
+
+`targets` can store [data and metadata](#data) on the cloud, either with [Amazon Web Service (AWS) Simple Storage Service (S3)](https://aws.amazon.com/s3/) or [Google Cloud Platform (GCP) Google Cloud Storage (GCS)](https://cloud.google.com/storage/).
+
+## Benefits
+
+### Store less data locally
+
+1. Use `tar_option_set()` and `tar_target()` to opt into cloud storage and configure options.
+1. `tar_make()` uploads target data to a cloud bucket *instead of* the local [`_targets/objects/`](#data) folder. Likewise for [file targets](https://books.ropensci.org/targets/data.html#external-files).
+1. Every `seconds_meta` seconds, `tar_make()` uploads metadata and still keeps local copies in [`_targets/meta/`](#data) folder.^[Metadata snapshots are synchronous, so a long target with `deployment = "main"` may block the main R process and delay uploads.]
+
+### Inspect the results on a different computer
+
+1. `tar_meta_download()` downloads the latest metadata from the bucket to the local [`_targets/meta/`](#data) folder.
+1. Helpers like `tar_read()` read local metadata and access target data in the bucket.
+
+### Track history
+
+1. [Turn on versioning](https://docs.aws.amazon.com/AmazonS3/latest/userguide/manage-versioning-examples.html) in your [bucket](https://aws.amazon.com/s3/).
+1. `tar_make()` records the versions of the target data in `_targets/meta/meta`.
+1. Commit `_targets/meta/meta` to the same [version-controlled repository](https://github.com) as your R code.
+1. Roll back to a [prior commit](https://git-scm.com/docs/git-commit) to roll back the [local metadata](#data) and give `targets` access to prior versions of the target data.
+
+## Setup
 
 ### AWS setup
 
+Skip these steps if you already have an [AWS](https://aws.amazon.com) account and [bucket](https://aws.amazon.com/s3/).
+
 1. Sign up for a free tier account at <https://aws.amazon.com/free>. 
-2. Follow [these instructions](https://docs.aws.amazon.com/AmazonS3/latest/gsg/GetStartedWithS3.html) to practice using Simple Storage Service (S3) through the web console at <https://console.aws.amazon.com/s3/>. 
-3. Install the `paws` R package with `install.packages("paws")`.
-4. Follow the credentials section of the [`paws` README](https://github.com/paws-r/paws/blob/main/README.md) to connect `paws` to your AWS account. You will set [special environment variables](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.htm) in your user-level [`.Renviron` file](https://usethis.r-lib.org/reference/edit.html). Example:
-```{r, eval = FALSE}
-# Example .Renviron file
-AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE
-AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
-AWS_REGION=us-east-1 # The paws package and thus targets >= 0.8.1.9000 use this.
-AWS_DEFAULT_REGION=us-east-1 # For back compatibility with targets <= 0.8.1.
-```
-5. Restart your R session and create an [S3 buckets](https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingBucket.html) to store target data. You can do this either in the AWS S3 web console or the following code.
-```{r, eval = FALSE}
-library(paws)
-s3 <- s3()
-s3$create_bucket(Bucket = "my-test-bucket-25edb4956460647d")
-```
+1. Read the [Simple Storage Service (S3) instructions](https://docs.aws.amazon.com/AmazonS3/latest/gsg/GetStartedWithS3.html) and practice in the [web console](https://console.aws.amazon.com/s3/). 
+1. Install the `paws.storage` R package: `install.packages("paws.storage")`.
+1. Follow the [`paws` documentation](https://www.paws-r-sdk.com/#credentials) to set your [AWS security credentials](https://docs.aws.amazon.com/IAM/latest/UserGuide/security-creds.html).
+1. Create an [S3 bucket](https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingBucket.html), either in the [web console](https://console.aws.amazon.com/s3/) or with `paws.storage::s3()$create_bucket()`.
 
 ### GCP setup
 
-1. Activate a Google Cloud Platform account at <https://cloud.google.com/>.
-2. Follow the instructions at <https://code.markedmondson.me/googleCloudRunner/articles/setup-gcp.html> to set up your GCP account to use locally with R. The video is friendly and helpful.
-3. In your `.Renviron` file, set the `GCS_AUTH_FILE` environment variable to the same value as `GCE_AUTH_FILE` from step (2).
-4. Create a Google Cloud Storage (GCS) bucket to store target data. You can do this either with the GCP GCS web dashboard or the following code.
-```{r, eval = FALSE}
-googleCloudStorageR::gcs_create_bucket(
-  bucket = "my-test-bucket-25edb4956460647d",
-  projectId = Sys.getenv("GCE_DEFAULT_PROJECT_ID")
-)
-```
-5. Verify that your Google Cloud account and R installation of `GoogleCloudStorageR` are working properly. `targets` uses the `GoogleCloudStorageR` package internally, and you can make sure it is working by [testing a simple upload](https://code.markedmondson.me/googleCloudStorageR/articles/googleCloudStorageR.html#uploading-objects---simple-uploads).
+Skip these steps if you already have an [GCP](https://cloud.google.com) account and [bucket](https://cloud.google.com/storage/).
 
-### Usage
+1. Activate a Google Cloud Platform account at <https://cloud.google.com>.
+1. Install the `googleCloudStorageR` R package: `install.packages("googleCloudStorageR")`.
+1. Follow the [`googleCloudStorageR` setup instructions](https://code.markedmondson.me/googleCloudStorageR/articles/googleCloudStorageR.html) to authenticate into Google Cloud and enable required APIs.
+1. Create a [Google Cloud Storage (GCS)](https://cloud.google.com/storage/) bucket either in the [web console](https://cloud.google.com/storage/) or `googleCloudStorageR::gcs_create_bucket()`. 
 
-The following is an example pipeline that sends targets to an AWS S3 bucket. Usage in GCP is almost exactly the same.
+### Pipeline setup
 
-```{r, eval = FALSE}
+Use `tar_option_set()` to opt into cloud storage and declare options. For AWS:
+
+1. `repository = "aws"`
+1. `resources = tar_resources(aws = tar_resources_aws(bucket = "YOUR_BUCKET", prefix = "YOUR/PREFIX"))`
+
+Details:
+
+* The process is analogous for GCP.
+* The `prefix` controls where the data lives in the bucket, and it should not conflict with other projects. 
+* Arguments `repository` and `resources` of `tar_target()` override their counterparts in `tar_option_set()`.
+* In `tar_option_set()`, `repository` controls target data, and `repository_meta` controls metadata. However, `repository_meta` just defaults to `repository`, so there is usually no need to set it manually.
+
+## Example
+
+Consider a pipeline with two simple targets.
+
+```{r, eval = FALSE, echo = TRUE}
 # Example _targets.R file:
 library(targets)
+
 tar_option_set(
+  repository = "aws",
   resources = tar_resources(
     aws = tar_resources_aws(
       bucket = "my-test-bucket-25edb4956460647d",
@@ -60,54 +91,51 @@ tar_option_set(
     )
   )
 )
-write_mean <- function(data) {
-  tmp <- tempfile()
-  writeLines(as.character(mean(data)), tmp)
-  tmp
+
+write_file <- function(data) {
+  saveRDS(data, "file.rds")
+  "file.rds"
 }
+
 list(
-  tar_target(
-    data,
-    rnorm(5),
-    format = "qs", # Set format = "aws_qs" in targets <= 0.10.0.
-    repository = "aws" # Set to "gcp" for Google Cloud Platform.
-  ), 
-  tar_target(
-    mean_file,
-    write_mean(data),
-    format = "file", # Set format = "aws_file" in targets <= 0.10.0.
-    repository = "aws" # Set to "gcp" for Google Cloud Platform.
-  )
+  tar_target(data, rnorm(5), format = "qs"), 
+  tar_target(file, write_file(data), format = "file")
 )
 ```
 
-When you run the pipeline above with [`tar_make()`](https://docs.ropensci.org/targets/reference/tar_make.html), your local R session computes `rnorm(5)`, saves it to a temporary [`qs`](https://github.com/traversc/qs) file on disk, and then uploads it to a file called `_targets/objects/data` on your S3 bucket. Likewise for `mean_file`, but because the format is `"file"` and the repository is `"aws"`, you are responsible for supplying the path to the file that gets uploaded to `_targets/objects/mean_file`.
+As usual, `tar_make()` runs the correct targets in the correct order. Both data files now live in bucket `my-test-bucket-25edb4956460647d` at S3 key paths which begin with [prefix](https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-prefixes.html) `my_project_name`. Neither `_targets/objects/data` nor `file.rds` exist locally because `repository` is `"aws"`.
 
-`format = "file"` works differently for cloud storage than local storage. Here, it is assumed that the command of the target writes a single file, and then `targets` uploads this file to the cloud and deletes the local copy. At that point, the copy in the cloud is tracked for changes, and the local copy does not exist. Later on, `tar_read()` and `tar_load()` can download the file and restore it to its original local path.
-
-```{r, eval = FALSE}
+```{r, eval = FALSE, echo = TRUE}
 tar_make()
-#> ● run target data
-#> ● run target mean_file
-#> ● end pipeline
+#> ▶ start target data
+#> ● built target data [0 seconds]
+#> ▶ start target file
+#> ● built target file [0.002 seconds]
+#> ▶ end pipeline [1.713 seconds]
 ```
 
-And of course, your targets stay up to date if you make no changes.
+At this point, if you switch to a different computer, download your metadata with `tar_meta_download()`. Then, your results will be up to date.
 
-```{r, eval = FALSE}
+```{r, eval = FALSE, echo = TRUE}
 tar_make()
-#> ✓ skip target data
-#> ✓ skip target mean_file
-#> ✓ skip pipeline
+#> ✔ skip target data
+#> ✔ skip target file
+#> ✔ skip pipeline [1.653 seconds]
 ```
 
-If you log into <https://s3.console.aws.amazon.com/s3>, you should see objects `_targets/objects/data` and `_targets/objects/mean_file` in your bucket. To download this data locally, use `tar_read()` and `tar_load()` like before. These functions download the data from the bucket and load it into R.
+`tar_read()` read local metadata and cloud target data.
 
-```{r, eval = FALSE}
+```{r, eval = FALSE, echo = TRUE}
 tar_read(data)
 #> [1] -0.74654607 -0.59593497 -1.57229983  0.40915323  0.02579023
 ```
 
-### Data version control
+For a file target, `tar_read()` downloads the file to its original location and returns the path.
 
-Amazon and Google support versioned buckets. If your bucket has versioning turned on, then every version of every target will be stored,^[GCP has safety capabilities such as discarding all but the newest `n` versions.], and the target metadata will contain the version ID (verify with `tar_meta(your_target, path)$path`). That way, if you roll back `_targets/meta/meta` to a prior version, then `tar_read(your_target)` will read a prior target. And if you roll back the metadata and the code together, then your pipeline will journey back in time while stay up to date (old code synced with old data). Rolling back is possible if you use Git/GitHub and commit your R code files and `_targets/meta/meta` to the repository. An alternative cloudless versioning solution is [`gittargets`](https://docs.ropensci.org/gittargets/), a package that snapshots the local data store and syncs with an existing code repository.
+```{r, eval = FALSE, echo = TRUE}
+path <- tar_read(file)
+path
+#> [1] "file.rds"
+readRDS(path)
+#> [1] -0.74654607 -0.59593497 -1.57229983  0.40915323  0.02579023
+```
