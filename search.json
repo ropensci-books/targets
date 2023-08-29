@@ -396,7 +396,7 @@
     "href": "cloud-storage.html#benefits",
     "title": "10  Cloud storage",
     "section": "10.1 Benefits",
-    "text": "10.1 Benefits\n\n10.1.1 Store less data locally\n\nUse tar_option_set() and tar_target() to opt into cloud storage and configure options.\ntar_make() uploads target data to a cloud bucket instead of the local _targets/objects/ folder. Likewise for file targets.\nEvery seconds_meta seconds, tar_make() uploads metadata and still keeps local copies in _targets/meta/ folder.1\n\n\n\n10.1.2 Inspect the results on a different computer\n\ntar_meta_download() downloads the latest metadata from the bucket to the local _targets/meta/ folder.\nHelpers like tar_read() read local metadata and access target data in the bucket.\n\n\n\n10.1.3 Track history\n\nTurn on versioning in your bucket.\ntar_make() records the versions of the target data in _targets/meta/meta.\nCommit _targets/meta/meta to the same version-controlled repository as your R code.\nRoll back to a prior commit to roll back the local metadata and give targets access to prior versions of the target data."
+    "text": "10.1 Benefits\n\n10.1.1 Store less data locally\n\nUse tar_option_set() and tar_target() to opt into cloud storage and configure options.\ntar_make() uploads target data to a cloud bucket instead of the local _targets/objects/ folder. Likewise for file targets.\nEvery seconds_meta seconds, tar_make() uploads metadata and still keeps local copies in _targets/meta/ folder.1\n\n\n\n10.1.2 Inspect the results on a different computer\n\ntar_meta_download() downloads the latest metadata from the bucket to the local _targets/meta/ folder.2\nHelpers like tar_read() read local metadata and access target data in the bucket.\n\n\n\n10.1.3 Track history\n\nTurn on versioning in your bucket.\ntar_make() records the versions of the target data in _targets/meta/meta.\nCommit _targets/meta/meta to the same version-controlled repository as your R code.\nRoll back to a prior commit to roll back the local metadata and give targets access to prior versions of the target data."
   },
   {
     "objectID": "cloud-storage.html#setup",
@@ -417,7 +417,7 @@
     "href": "cloud-storage.html#footnotes",
     "title": "10  Cloud storage",
     "section": "",
-    "text": "Metadata snapshots are synchronous, so a long target with deployment = \"main\" may block the main R process and delay uploads.↩︎"
+    "text": "Metadata snapshots are synchronous, so a long target with deployment = \"main\" may block the main R process and delay uploads.↩︎\nFunctions tar_meta_upload(), tar_meta_sync(), and tar_meta_delete() also manage cloud metadata.↩︎"
   },
   {
     "objectID": "literate-programming.html#scope",
