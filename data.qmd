@@ -14,17 +14,21 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = TRUE)
 library(targets)
 ```
 
-This chapter describes how the `targets` package stores local data and manages R objects in memory.
-
 :::{.callout-tip}
 ## Performance
 
 See the [performance chapter](#performance) for options, settings, and other choices to make storage and memory more efficient for large data workflows.
 :::
 
+During a pipeline, `targets` manages R objects in memory and writes them to files on disk. It also stores target-level metadata in a compact central text file.
+
+## Memory
+
+`targets` uses random access memory (RAM) while the pipeline is running. Each target loads its upstream dependencies into memory and returns an R object in memory. After a target finishes running or acts as a dependency, `tar_make()` can either keep the object in memory or discard it. In `tar_target()` or `tar_option_set()`, set `memory = "transient"` to release the target from the environment whenever possible, and set `garbage_collection = TRUE` to run garbage collection with `gc()` just before the target runs. Alternatively, set `memory = "persistent"` to keep the object in memory and reduce costly interactions with the file system. The trade-off between memory and file I/O depends on your computing platform. See the [performance chapter](#performance) for more details.
+
 ## Local data store
 
-`tar_make()` creates a special data folder called `_targets/` at the root of your project.
+In addition to memory, the pipeline writes data to files on disk. `tar_make()` creates a special data folder called `_targets/` at the root of your project.
 
 ```{r, eval = FALSE}
 fs::dir_tree("_targets")
@@ -79,37 +83,65 @@ Remarks:
 
 ## External files
 
-If your pipeline loads a preexisting data file or creates files outside the data store, it is good practice to watch them for changes. That way, `tar_make()` will automatically rerun the appropriate targets if these files change. To watch one of more files, create a target that
+Some pipelines work with custom user-supplied files outside `_targets/`. In `targets`, the user is still responsible for reading and writing these files. However, the pipeline can track them, detect changes, and decide whether to rerun or skip the targets that the files depend on.
 
-1. Has `format = "file"` in `tar_target()`, and
-2. Returns a character vector of local files and/or directories.
+In a file target,
 
-The example sketch of a pipeline below follows this pattern.
+1. `tar_target()` has `format = "file"`.
+2. The command returns a character vector of file paths.
+
+Consider this pipeline: 
 
 ```{r, eval = FALSE, echo = TRUE}
 # _targets.R
 library(targets)
+
 create_output <- function(file) {
   data <- read.csv(file)
   output <- head(data)
   write.csv(output, "output.csv")
   "output.csv"
 }
+
 list(
   tar_target(name = input, command = "data.csv", format = "file"),
   tar_target(name = output, command = create_output(input), format = "file")
 )
 ```
 
-We assume a file called `data.csv` exists prior to running the pipeline. When `tar_make()` runs the first time, target `input` runs and returns the value `"data.csv"`. Because `format` is `"file"`, no extra file is saved to `_targets/meta/objects/`. Instead, `"data.csv"` gets hashed, and the hash is stored in the metadata. Then, target `output` runs, creates the file `"output.csv"`, and that file gets processed the same way.
+In the dependency graph, `output` depends on `input` because the command of `output` mentions the symbol `input`.
 
-Target `output` depends on target `input` because the command of target `output` mentions the symbol `input`. (Verify with `tar_visnetwork()`.) That way, `output` does not run until `input` is finished, and `output` reruns if the hash of `input` changes. It is good practice to write target symbols instead of literal input paths to ensure the proper dependency relationships. In this case, if `output` were written with the literal input path as `tar_target(name = output, command = create_output("data.csv"), format = "file")`, then the dependency relationship would break, and `output` would not rerun if `input` changed.
+```{r, eval = TRUE, echo = FALSE}
+tar_script({
+  library(targets)
+  create_output <- function(file) {
+    data <- read.csv(file)
+    output <- head(data)
+    write.csv(output, "output.csv")
+    "output.csv"
+  }
+  list(
+    tar_target(name = input, command = "data.csv", format = "file"),
+    tar_target(name = output, command = create_output(input), format = "file")
+  )
+})
+```
 
-The mechanism of `format = "file"` applies equally to input files and output files. In fact, a target can track both input and output files at the same time. This is part of how [`tar_render()`](https://docs.ropensci.org/tarchetypes/reference/tar_render.html) works. As discussed in the [R Markdown chapter](#literate-programming), [`tar_render()`](https://docs.ropensci.org/tarchetypes/reference/tar_render.html) takes an R Markdown source file as input, write a rendered report file as output, and returns a character vector with the paths to both files.
+```{r, eval = FALSE, echo = TRUE}
+tar_visnetwork()
+```
 
-## Memory
+```{r, eval = TRUE, echo = FALSE}
+tar_visnetwork()
+```
 
-A typical target has dependencies upstream. In order to run properly, it needs the return values of those dependencies to exist in the random access memory (RAM). By default, `tar_make()` reads those dependency targets from the data store, and it keeps in memory those targets and any targets that run. For big data workflows where not all data can fit into RAM, it is wiser to set `memory = "transient"` and `garbage_collection = TRUE` in `tar_target()` (and `tar_option_set()`). That way, the target return value is removed from memory at the earliest opportunity. The next time the target value is needed, it is reread from storage again, and then removed from memory as soon as possible. Reading a big dataset from storage can take time, which may slow down some pipelines, but it may be worth the extra time to make sure memory usage stays within reasonable limits. It is also worth considering `format = "file"` in `tar_target()` so the file is hashed but not loaded into memory and downstream targets can read only small subsets of the data in the file. See the [performance chapter](#performance) for more details.
+Before the pipeline first runs, `data.csv` exists, but `output.csv` does not. During `tar_make()`, the `input` target tracks `data.csv`, and the `output` target creates and tracks `output.csv`. If `data.csv` changes before the next `tar_make()`, then both `input` and `output` rerun. If something outside the pipeline changes `output.csv`, then `output` reruns.
+
+Remarks:
+
+* A file target can have both input and output files.
+* A file target can include directory paths as well as individual file paths.
+* `format = "file_fast"` is just like `format = "file"`, except that it uses file modification time stamps to check if a file is up to date. If the time stamp of the file agrees with the time stamp in the metadata, the file is considered up to date. Otherwise, targets recomputes the hash of the file to make a final determination.
 
 ## Cleaning up local internal data files
 
