@@ -386,14 +386,14 @@ Package version
 <h3 data-number="10.1.1" class="anchored" data-anchor-id="store-less-data-locally"><span class="header-section-number">10.1.1</span> Store less data locally</h3>
 <ol type="1">
 <li>Use <code>tar_option_set()</code> and <code>tar_target()</code> to opt into cloud storage and configure options.</li>
-<li><code>tar_make()</code> uploads target data to a cloud bucket <em>instead of</em> the local <a href="data.html"><code>_targets/objects/</code></a> folder. Likewise for <a href="https://books.ropensci.org/targets/data.html#external-files">file targets</a>.</li>
-<li>Every <code>seconds_meta</code> seconds, <code>tar_make()</code> uploads metadata and still keeps local copies in <a href="data.html"><code>_targets/meta/</code></a> folder.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></li>
+<li><code>tar_make()</code> uploads target data to a cloud bucket <em>instead of</em> the local <a href="data.html"><code>_targets/objects/</code></a> folder. Likewise for <a href="https://books.ropensci.org/targets/data.html#external-files">file targets</a>.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></li>
+<li>Every <code>seconds_meta</code> seconds, <code>tar_make()</code> uploads metadata and still keeps local copies in <a href="data.html"><code>_targets/meta/</code></a> folder.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></li>
 </ol>
 </section>
 <section id="inspect-the-results-on-a-different-computer" class="level3" data-number="10.1.2">
 <h3 data-number="10.1.2" class="anchored" data-anchor-id="inspect-the-results-on-a-different-computer"><span class="header-section-number">10.1.2</span> Inspect the results on a different computer</h3>
 <ol type="1">
-<li><code>tar_meta_download()</code> downloads the latest metadata from the bucket to the local <a href="data.html"><code>_targets/meta/</code></a> folder.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></li>
+<li><code>tar_meta_download()</code> downloads the latest metadata from the bucket to the local <a href="data.html"><code>_targets/meta/</code></a> folder.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></li>
 <li>Helpers like <code>tar_read()</code> read local metadata and access target data in the bucket.</li>
 </ol>
 </section>
@@ -508,8 +508,9 @@ Package version
 <section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn1"><p>Metadata snapshots are synchronous, so a long target with <code>deployment = "main"</code> may block the main R process and delay uploads.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>Functions <code>tar_meta_upload()</code>, <code>tar_meta_sync()</code>, and <code>tar_meta_delete()</code> also manage cloud metadata.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>For cloud targets, <code>format = "file_fast"</code> has no purpose, and it automatically switches to <code>format = "file"</code>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Metadata snapshots are synchronous, so a long target with <code>deployment = "main"</code> may block the main R process and delay uploads.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>Functions <code>tar_meta_upload()</code>, <code>tar_meta_sync()</code>, and <code>tar_meta_delete()</code> also manage cloud metadata.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
 
