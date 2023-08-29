@@ -381,7 +381,7 @@ Performance
 <p>The two most important parts are:</p>
 <ol type="1">
 <li><code>_targets/meta/meta</code>: a text file with critical metadata.</li>
-<li><code>_targets/objects/</code>: a folder with the output of each target.</li>
+<li><code>_targets/objects/</code>: a folder with the output data of each target.</li>
 </ol>
 <p>Consider this pipeline:</p>
 <div class="cell">
@@ -406,7 +406,7 @@ Performance
 <ul>
 <li>To read the value of <code>target1</code> back into R, <code>tar_read(target1)</code> is much better than <code>readRDS("_targets/objects/target1")</code>.</li>
 <li>The <code>format</code> argument of <code>tar_target()</code> controls how <code>tar_make()</code> saves the return value. The default is <code>"rds"</code>, and there are more efficient formats such as <code>"qs"</code> and <code>"feather"</code>. Some of these formats require external packages. See <a href="https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats" class="uri">https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats</a> for details.</li>
-<li>For efficiency, <code>tar_make()</code> does not write to <code>_targets/meta/meta</code> or <code>_targets/meta/progress</code> every single time a target completes. Instead, it waits and gathers a backlog of text lines in memory, then writes whole batches of lines at a time. This behavior risks losing metadata in the event of a crash, but it minimizes costly interactions with the file system. The <code>seconds_meta</code> argument controls how often <code>tar_make()</code> writes metadata. <code>seconds_reporter</code> does the same for messages printed to the R console.</li>
+<li>For efficiency, <code>tar_make()</code> does not write to <code>_targets/meta/meta</code> or <code>_targets/meta/progress</code> every single time a target completes. Instead, it waits and gathers a backlog of text lines in memory, then writes whole batches of lines at a time. This behavior risks losing metadata in the event of a crash, but it reduces costly interactions with the file system. The <code>seconds_meta</code> argument controls how often <code>tar_make()</code> writes metadata. <code>seconds_reporter</code> does the same for messages printed to the R console.</li>
 </ul>
 </section>
 <section id="external-files" class="level2" data-number="9.2">
