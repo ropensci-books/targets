@@ -70,7 +70,7 @@ Use `tar_option_set()` to opt into cloud storage and declare options. For AWS:
 Details:
 
 * The process is analogous for GCP.
-* The `prefix` controls where the data lives in the bucket, and it should not conflict with other projects. 
+* The `prefix` is just like `tar_config_get("store")`, but for the cloud. It controls where the data objects live in the bucket, and it should not conflict with other projects. 
 * Arguments `repository` and `resources` of `tar_target()` override their counterparts in `tar_option_set()`.
 * In `tar_option_set()`, `repository` controls target data, and `repository_meta` controls metadata. However, `repository_meta` just defaults to `repository`, so there is usually no need to set it manually.
 
