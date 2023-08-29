@@ -24,7 +24,7 @@ This chapter requires `targets` version 1.2.2.9002 or higher. Please visit the [
 ### Store less data locally
 
 1. Use `tar_option_set()` and `tar_target()` to opt into cloud storage and configure options.
-1. `tar_make()` uploads target data to a cloud bucket *instead of* the local [`_targets/objects/`](#data) folder. Likewise for [file targets](https://books.ropensci.org/targets/data.html#external-files).
+1. `tar_make()` uploads target data to a cloud bucket *instead of* the local [`_targets/objects/`](#data) folder. Likewise for [file targets](https://books.ropensci.org/targets/data.html#external-files).^[For cloud targets, `format = "file_fast"` has no purpose, and it automatically switches to `format = "file"`.]
 1. Every `seconds_meta` seconds, `tar_make()` uploads metadata and still keeps local copies in [`_targets/meta/`](#data) folder.^[Metadata snapshots are synchronous, so a long target with `deployment = "main"` may block the main R process and delay uploads.]
 
 ### Inspect the results on a different computer
