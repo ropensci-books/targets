@@ -48,7 +48,7 @@ The two most important parts are:
 
 
 1. `_targets/meta/meta`: a text file with critical metadata.
-2. `_targets/objects/`: a folder with the output of each target.
+2. `_targets/objects/`: a folder with the output data of each target.
 
 Consider this pipeline:
 
@@ -75,7 +75,7 @@ Remarks:
 
 * To read the value of `target1` back into R, `tar_read(target1)` is much better than `readRDS("_targets/objects/target1")`.
 * The `format` argument of `tar_target()` controls how `tar_make()` saves the return value. The default is `"rds"`, and there are more efficient formats such as `"qs"` and `"feather"`. Some of these formats require external packages. See <https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats> for details.
-* For efficiency, `tar_make()` does not write to `_targets/meta/meta` or `_targets/meta/progress` every single time a target completes. Instead, it waits and gathers a backlog of text lines in memory, then writes whole batches of lines at a time. This behavior risks losing metadata in the event of a crash, but it minimizes costly interactions with the file system. The `seconds_meta` argument controls how often `tar_make()` writes metadata. `seconds_reporter` does the same for messages printed to the R console.
+* For efficiency, `tar_make()` does not write to `_targets/meta/meta` or `_targets/meta/progress` every single time a target completes. Instead, it waits and gathers a backlog of text lines in memory, then writes whole batches of lines at a time. This behavior risks losing metadata in the event of a crash, but it reduces costly interactions with the file system. The `seconds_meta` argument controls how often `tar_make()` writes metadata. `seconds_reporter` does the same for messages printed to the R console.
 
 ## External files
 
