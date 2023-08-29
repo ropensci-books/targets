@@ -45,13 +45,13 @@ _targets
 │   ├── dynamic_branch_285fb6a9
 │   └── dynamic_branch_874ca381
 ├── scratch # tar_make() deletes this folder after it finishes.
-└── user # gittargets users can put custom files here for data version control.
+└── user # for gittargets user data
 ```
 
 The two most important parts are:
 
 
-1. `_targets/meta/meta`: a text file with critical metadata.
+1. `_targets/meta/meta`: a text file with key target-level metadata.
 2. `_targets/objects/`: a folder with the output data of each target.
 
 Consider this pipeline:
@@ -83,7 +83,7 @@ Remarks:
 
 ## External files
 
-Some pipelines work with custom user-supplied files outside `_targets/`. In `targets`, the user is still responsible for reading and writing these files. However, the pipeline can track them, detect changes, and decide whether to rerun or skip the targets that the files depend on.
+Some pipelines work with custom external files outside `_targets/`. The user is still responsible for reading and writing these files. However, the pipeline can track them, detect changes, and decide whether to rerun or skip the targets that the files depend on. Simply create a file target.
 
 In a file target,
 
@@ -143,12 +143,12 @@ Remarks:
 * A file target can include directory paths as well as individual file paths.
 * `format = "file_fast"` is just like `format = "file"`, except that it uses file modification time stamps to check if a file is up to date. If the time stamp of the file agrees with the time stamp in the metadata, the file is considered up to date. Otherwise, targets recomputes the hash of the file to make a final determination.
 
-## Cleaning up local internal data files
+## Clean up local files
 
-There are [multiple functions](https://docs.ropensci.org/targets/reference/index.html#section-clean) to remove or clean up target storage. Most of these functions delete internal files or records from the data store and delete objects from cloud buckets. They do not delete local external files (i.e. `tar_target(..., format = "file", repository = "local")`) because some of those files could be local input data that exists prior to `tar_make()`.
+There are [multiple functions](https://docs.ropensci.org/targets/reference/index.html#section-clean) to remove or clean up local target storage. Some of them also delete cloud data if your pipeline uses an AWS or GCP bucket (see the [next chapter](#cloud-storage)).
 
-* [`tar_destroy()`](https://docs.ropensci.org/targets/reference/tar_destroy.html) is by far the most commonly used cleaning function. It removes the `_targets/` folder (or optionally a subfolder in `_targets/`) and all the cloud targets mentioned in the metadata. Use it if you intend to start the pipeline from scratch without any trace of a previous run.
-* [`tar_prune()`](https://docs.ropensci.org/targets/reference/tar_prune.html) deletes the data and metadata of all the targets no longer present in your current target script file (default: `_targets.R`). This is useful if you recently worked through multiple changes to your project and are now trying to discard irrelevant data while keeping the results that still matter.
-* [`tar_delete()`](https://docs.ropensci.org/targets/reference/tar_delete.html) is more selective than [`tar_destroy()`](https://docs.ropensci.org/targets/reference/tar_destroy.html) and [`tar_prune()`](https://docs.ropensci.org/targets/reference/tar_prune.html). It removes the individual data files of a given set of targets from `_targets/objects/` and cloud buckets while leaving the metadata in `_targets/meta/meta` alone. If you have a small number of data-heavy targets you need to discard to conserve storage, this function can help.
-* [`tar_invalidate()`](https://docs.ropensci.org/targets/reference/tar_invalidate.html) is the complement of [`tar_delete()`](https://docs.ropensci.org/targets/reference/tar_delete.html): for the selected targets, it deletes the metadata in `_targets/meta/meta` and does not delete the return values. After invalidation, you will still be able to locate the data files with [`tar_path()`](https://docs.ropensci.org/targets/reference/tar_path.html) and manually salvage them in an emergency. However, [`tar_load()`](https://docs.ropensci.org/targets/reference/tar_load.html) and [`tar_read()`](https://docs.ropensci.org/targets/reference/tar_read.html) will not be able to read the data into R, and subsequent calls to [`tar_make()`](https://docs.ropensci.org/targets/reference/tar_make.html) will attempt to rebuild those targets.
-* [`tar_meta_delete()`](https://docs.ropensci.org/targets/reference/tar_meta_delete.html) removes all the files in `_targets/meta/` that `targets` created, not just `_targets/meta/meta`, but also `_targets/meta/progress`, `_targets/meta/process`, and `_targets/meta/crew`. It also deletes the copies of these files in cloud buckets. See the [cloud storage](@cloud-storage) chapter for details.
+* [`tar_destroy()`](https://docs.ropensci.org/targets/reference/tar_destroy.html) removes `_targets/` data store and any cloud data from the pipeline.
+* [`tar_prune()`](https://docs.ropensci.org/targets/reference/tar_prune.html) deletes  data and metadata irrelevant to the current pipeline in `_targets.R`.
+* [`tar_delete()`](https://docs.ropensci.org/targets/reference/tar_delete.html) deletes specific data files from `_targets/objects/` and the cloud. It does not modify metadata.
+* [`tar_invalidate()`](https://docs.ropensci.org/targets/reference/tar_invalidate.html) removes metadata from specific targets but keeps their data files in `_targets/objects/`.
+* [`tar_meta_delete()`](https://docs.ropensci.org/targets/reference/tar_meta_delete.html) removes `_targets/meta/` files and their copies on the cloud.
