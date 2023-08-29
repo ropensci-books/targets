@@ -360,8 +360,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 data-number="7.2" class="anchored" data-anchor-id="package-management-with-renv"><span class="header-section-number">7.2</span> Package management with <code>renv</code></h2>
 <p><code>targets</code> and <code>renv</code> work extremely well together as an overall reproducibility solution for data analysis pipelines. <code>targets</code> makes sure your results are up to date, and <code>renv</code> keeps track of the packages you use.</p>
 <p>If you use <a href="https://rstudio.github.io/renv/"><code>renv</code></a>, then overhead from project initialization could slow down pipelines and <a href="hpc.html">workers</a>. If you experience slowness, please make sure your <a href="https://rstudio.github.io/renv/"><code>renv</code></a> library is on a fast file system. (For example, slow network drives can severely reduce performance.) In addition, you can disable the slowest initialization checks. After confirming at <a href="https://rstudio.github.io/renv/reference/config.html" class="uri">https://rstudio.github.io/renv/reference/config.html</a> that you can safely disable these checks, you can write the following lines in your user-level <code>.Renviron</code> file:</p>
-<pre><code>RENV_CONFIG_RSPM_ENABLED=false
-RENV_CONFIG_SANDBOX_ENABLED=false
+<pre><code>RENV_CONFIG_SANDBOX_ENABLED=false
 RENV_CONFIG_SYNCHRONIZED_CHECK=false</code></pre>
 <p>If you disable the synchronization check, remember to call <code>renv::status()</code> periodically to check the health of your <code>renv</code> project library.</p>
 </section>
