@@ -24,7 +24,7 @@ During a pipeline, `targets` manages R objects in memory and writes them to file
 
 ## Memory
 
-`targets` uses random access memory (RAM) while the pipeline is running. Each target loads its upstream dependencies into memory and returns an R object in memory. After a target finishes running or acts as a dependency, `tar_make()` can either keep the object in memory or discard it. In `tar_target()` or `tar_option_set()`, set `memory = "transient"` to release the target from the environment whenever possible, and set `garbage_collection = TRUE` to run garbage collection with `gc()` just before the target runs. Alternatively, set `memory = "persistent"` to keep the object in memory and reduce costly interactions with the file system. The trade-off between memory and file I/O depends on your computing platform. See the [performance chapter](#performance) for more details.
+`targets` uses random access memory (RAM) while the pipeline is running. Each target loads its upstream dependencies into memory and returns an R object in memory. After a target runs or loads, `tar_make()` either keeps the object in memory or discards it, depending on the settings in `tar_target()` and `tar_option_set()`. Set `memory = "transient"` to release the target whenever possible, and set `garbage_collection = TRUE` to run garbage collection with `gc()` just before the target runs. Alternatively, set `memory = "persistent"` to keep the object in memory and reduce costly interactions with the file system. The trade-off between memory and file I/O depends on your computing platform. See the [performance chapter](#performance) for more details.
 
 ## Local data store
 
