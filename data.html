@@ -95,6 +95,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<script src="site_libs/htmlwidgets-1.6.2/htmlwidgets.js"></script>
+<link href="site_libs/vis-9.1.0/vis-network.min.css" rel="stylesheet">
+<script src="site_libs/vis-9.1.0/vis-network.min.js"></script>
+<script src="site_libs/visNetwork-binding-2.1.2/visNetwork.js"></script>
 
 
 </head>
@@ -317,9 +321,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#local-data-store" id="toc-local-data-store" class="nav-link active" data-scroll-target="#local-data-store"><span class="header-section-number">9.1</span> Local data store</a></li>
-  <li><a href="#external-files" id="toc-external-files" class="nav-link" data-scroll-target="#external-files"><span class="header-section-number">9.2</span> External files</a></li>
-  <li><a href="#memory" id="toc-memory" class="nav-link" data-scroll-target="#memory"><span class="header-section-number">9.3</span> Memory</a></li>
+  <li><a href="#memory" id="toc-memory" class="nav-link active" data-scroll-target="#memory"><span class="header-section-number">9.1</span> Memory</a></li>
+  <li><a href="#local-data-store" id="toc-local-data-store" class="nav-link" data-scroll-target="#local-data-store"><span class="header-section-number">9.2</span> Local data store</a></li>
+  <li><a href="#external-files" id="toc-external-files" class="nav-link" data-scroll-target="#external-files"><span class="header-section-number">9.3</span> External files</a></li>
   <li><a href="#cleaning-up-local-internal-data-files" id="toc-cleaning-up-local-internal-data-files" class="nav-link" data-scroll-target="#cleaning-up-local-internal-data-files"><span class="header-section-number">9.4</span> Cleaning up local internal data files</a></li>
   </ul>
 </nav>
@@ -344,7 +348,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
-<p>This chapter describes how the <code>targets</code> package stores local data and manages R objects in memory.</p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -358,9 +361,14 @@ Performance
 <p>See the <a href="performance.html">performance chapter</a> for options, settings, and other choices to make storage and memory more efficient for large data workflows.</p>
 </div>
 </div>
-<section id="local-data-store" class="level2" data-number="9.1">
-<h2 data-number="9.1" class="anchored" data-anchor-id="local-data-store"><span class="header-section-number">9.1</span> Local data store</h2>
-<p><code>tar_make()</code> creates a special data folder called <code>_targets/</code> at the root of your project.</p>
+<p>During a pipeline, <code>targets</code> manages R objects in memory and writes them to files on disk. It also stores target-level metadata in a compact central text file.</p>
+<section id="memory" class="level2" data-number="9.1">
+<h2 data-number="9.1" class="anchored" data-anchor-id="memory"><span class="header-section-number">9.1</span> Memory</h2>
+<p><code>targets</code> uses random access memory (RAM) while the pipeline is running. Each target loads its upstream dependencies into memory and returns an R object in memory. After a target finishes running or acts as a dependency, <code>tar_make()</code> can either keep the object in memory or discard it. In <code>tar_target()</code> or <code>tar_option_set()</code>, set <code>memory = "transient"</code> to release the target from the environment whenever possible, and set <code>garbage_collection = TRUE</code> to run garbage collection with <code>gc()</code> just before the target runs. Alternatively, set <code>memory = "persistent"</code> to keep the object in memory and reduce costly interactions with the file system. The trade-off between memory and file I/O depends on your computing platform. See the <a href="performance.html">performance chapter</a> for more details.</p>
+</section>
+<section id="local-data-store" class="level2" data-number="9.2">
+<h2 data-number="9.2" class="anchored" data-anchor-id="local-data-store"><span class="header-section-number">9.2</span> Local data store</h2>
+<p>In addition to memory, the pipeline writes data to files on disk. <code>tar_make()</code> creates a special data folder called <code>_targets/</code> at the root of your project.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>fs<span class="sc">::</span><span class="fu">dir_tree</span>(<span class="st">"_targets"</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>_targets</span>
@@ -409,35 +417,48 @@ Performance
 <li>For efficiency, <code>tar_make()</code> does not write to <code>_targets/meta/meta</code> or <code>_targets/meta/progress</code> every single time a target completes. Instead, it waits and gathers a backlog of text lines in memory, then writes whole batches of lines at a time. This behavior risks losing metadata in the event of a crash, but it reduces costly interactions with the file system. The <code>seconds_meta</code> argument controls how often <code>tar_make()</code> writes metadata. <code>seconds_reporter</code> does the same for messages printed to the R console.</li>
 </ul>
 </section>
-<section id="external-files" class="level2" data-number="9.2">
-<h2 data-number="9.2" class="anchored" data-anchor-id="external-files"><span class="header-section-number">9.2</span> External files</h2>
-<p>If your pipeline loads a preexisting data file or creates files outside the data store, it is good practice to watch them for changes. That way, <code>tar_make()</code> will automatically rerun the appropriate targets if these files change. To watch one of more files, create a target that</p>
+<section id="external-files" class="level2" data-number="9.3">
+<h2 data-number="9.3" class="anchored" data-anchor-id="external-files"><span class="header-section-number">9.3</span> External files</h2>
+<p>Some pipelines work with custom user-supplied files outside <code>_targets/</code>. In <code>targets</code>, the user is still responsible for reading and writing these files. However, the pipeline can track them, detect changes, and decide whether to rerun or skip the targets that the files depend on.</p>
+<p>In a file target,</p>
 <ol type="1">
-<li>Has <code>format = "file"</code> in <code>tar_target()</code>, and</li>
-<li>Returns a character vector of local files and/or directories.</li>
+<li><code>tar_target()</code> has <code>format = "file"</code>.</li>
+<li>The command returns a character vector of file paths.</li>
 </ol>
-<p>The example sketch of a pipeline below follows this pattern.</p>
+<p>Consider this pipeline:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>create_output <span class="ot">&lt;-</span> <span class="cf">function</span>(file) {</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(file)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  output <span class="ot">&lt;-</span> <span class="fu">head</span>(data)</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write.csv</span>(output, <span class="st">"output.csv"</span>)</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"output.csv"</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(<span class="at">name =</span> input, <span class="at">command =</span> <span class="st">"data.csv"</span>, <span class="at">format =</span> <span class="st">"file"</span>),</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(<span class="at">name =</span> output, <span class="at">command =</span> <span class="fu">create_output</span>(input), <span class="at">format =</span> <span class="st">"file"</span>)</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>create_output <span class="ot">&lt;-</span> <span class="cf">function</span>(file) {</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(file)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  output <span class="ot">&lt;-</span> <span class="fu">head</span>(data)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write.csv</span>(output, <span class="st">"output.csv"</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"output.csv"</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(<span class="at">name =</span> input, <span class="at">command =</span> <span class="st">"data.csv"</span>, <span class="at">format =</span> <span class="st">"file"</span>),</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(<span class="at">name =</span> output, <span class="at">command =</span> <span class="fu">create_output</span>(input), <span class="at">format =</span> <span class="st">"file"</span>)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>We assume a file called <code>data.csv</code> exists prior to running the pipeline. When <code>tar_make()</code> runs the first time, target <code>input</code> runs and returns the value <code>"data.csv"</code>. Because <code>format</code> is <code>"file"</code>, no extra file is saved to <code>_targets/meta/objects/</code>. Instead, <code>"data.csv"</code> gets hashed, and the hash is stored in the metadata. Then, target <code>output</code> runs, creates the file <code>"output.csv"</code>, and that file gets processed the same way.</p>
-<p>Target <code>output</code> depends on target <code>input</code> because the command of target <code>output</code> mentions the symbol <code>input</code>. (Verify with <code>tar_visnetwork()</code>.) That way, <code>output</code> does not run until <code>input</code> is finished, and <code>output</code> reruns if the hash of <code>input</code> changes. It is good practice to write target symbols instead of literal input paths to ensure the proper dependency relationships. In this case, if <code>output</code> were written with the literal input path as <code>tar_target(name = output, command = create_output("data.csv"), format = "file")</code>, then the dependency relationship would break, and <code>output</code> would not rerun if <code>input</code> changed.</p>
-<p>The mechanism of <code>format = "file"</code> applies equally to input files and output files. In fact, a target can track both input and output files at the same time. This is part of how <a href="https://docs.ropensci.org/tarchetypes/reference/tar_render.html"><code>tar_render()</code></a> works. As discussed in the <a href="literate-programming.html">R Markdown chapter</a>, <a href="https://docs.ropensci.org/tarchetypes/reference/tar_render.html"><code>tar_render()</code></a> takes an R Markdown source file as input, write a rendered report file as output, and returns a character vector with the paths to both files.</p>
-</section>
-<section id="memory" class="level2" data-number="9.3">
-<h2 data-number="9.3" class="anchored" data-anchor-id="memory"><span class="header-section-number">9.3</span> Memory</h2>
-<p>A typical target has dependencies upstream. In order to run properly, it needs the return values of those dependencies to exist in the random access memory (RAM). By default, <code>tar_make()</code> reads those dependency targets from the data store, and it keeps in memory those targets and any targets that run. For big data workflows where not all data can fit into RAM, it is wiser to set <code>memory = "transient"</code> and <code>garbage_collection = TRUE</code> in <code>tar_target()</code> (and <code>tar_option_set()</code>). That way, the target return value is removed from memory at the earliest opportunity. The next time the target value is needed, it is reread from storage again, and then removed from memory as soon as possible. Reading a big dataset from storage can take time, which may slow down some pipelines, but it may be worth the extra time to make sure memory usage stays within reasonable limits. It is also worth considering <code>format = "file"</code> in <code>tar_target()</code> so the file is hashed but not loaded into memory and downstream targets can read only small subsets of the data in the file. See the <a href="performance.html">performance chapter</a> for more details.</p>
+<p>In the dependency graph, <code>output</code> depends on <code>input</code> because the command of <code>output</code> mentions the symbol <code>input</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_visnetwork</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div class="visNetwork html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-ca359c38ad200508ee15" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-ca359c38ad200508ee15">{"x":{"nodes":{"name":["input","output","create_output"],"type":["stem","stem","function"],"status":["outdated","outdated","outdated"],"seconds":[null,null,null],"bytes":[null,null,null],"branches":[null,null,null],"label":["input","output","create_output"],"color":["#78B7C5","#78B7C5","#78B7C5"],"id":["input","output","create_output"],"level":[1,2,1],"shape":["dot","dot","triangle"]},"edges":{"from":["create_output","input"],"to":["output","output"],"arrows":["to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"interaction":{"zoomSpeed":1},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Outdated","Stem","Function"],"color":["#78B7C5","#899DA4","#899DA4"],"shape":["dot","dot","triangle"]},"nodesToDataframe":true},"tooltipStay":300,"tooltipStyle":"position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;border: 1px solid #808074;box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<p>Before the pipeline first runs, <code>data.csv</code> exists, but <code>output.csv</code> does not. During <code>tar_make()</code>, the <code>input</code> target tracks <code>data.csv</code>, and the <code>output</code> target creates and tracks <code>output.csv</code>. If <code>data.csv</code> changes before the next <code>tar_make()</code>, then both <code>input</code> and <code>output</code> rerun. If something outside the pipeline changes <code>output.csv</code>, then <code>output</code> reruns.</p>
+<p>Remarks:</p>
+<ul>
+<li>A file target can have both input and output files.</li>
+<li>A file target can include directory paths as well as individual file paths.</li>
+<li><code>format = "file_fast"</code> is just like <code>format = "file"</code>, except that it uses file modification time stamps to check if a file is up to date. If the time stamp of the file agrees with the time stamp in the metadata, the file is considered up to date. Otherwise, targets recomputes the hash of the file to make a final determination.</li>
+</ul>
 </section>
 <section id="cleaning-up-local-internal-data-files" class="level2" data-number="9.4">
 <h2 data-number="9.4" class="anchored" data-anchor-id="cleaning-up-local-internal-data-files"><span class="header-section-number">9.4</span> Cleaning up local internal data files</h2>
