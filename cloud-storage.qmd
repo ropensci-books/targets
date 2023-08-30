@@ -66,13 +66,15 @@ Use `tar_option_set()` to opt into cloud storage and declare options. For AWS:
 
 1. `repository = "aws"`
 1. `resources = tar_resources(aws = tar_resources_aws(bucket = "YOUR_BUCKET", prefix = "YOUR/PREFIX"))`
+1. Optional: `cue = tar_cue(file = FALSE)` for efficiency (see below).
 
 Details:
 
 * The process is analogous for GCP.
 * The `prefix` is just like `tar_config_get("store")`, but for the cloud. It controls where the data objects live in the bucket, and it should not conflict with other projects. 
-* Arguments `repository` and `resources` of `tar_target()` override their counterparts in `tar_option_set()`.
+* Arguments `repository`, `resources`, and `cue` of `tar_target()` override their counterparts in `tar_option_set()`.
 * In `tar_option_set()`, `repository` controls target data, and `repository_meta` controls metadata. However, `repository_meta` just defaults to `repository`, so there is usually no need to set it manually.
+* `cue = tar_cue(file = FALSE)` tells `targets` to not query the bucket when  checking if a cloud target is up to date. It increases speed and reduces cost, but it does not check if the bucket is corrupted. Only set this if you trust the data in the bucket.
 
 ## Example
 
@@ -89,7 +91,8 @@ tar_option_set(
       bucket = "my-test-bucket-25edb4956460647d",
       prefix = "my_project_name"
     )
-  )
+  ),
+  cue = tar_cue(file = FALSE) # For speed if you trust the bucket.
 )
 
 write_file <- function(data) {
