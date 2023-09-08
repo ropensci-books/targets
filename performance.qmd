@@ -14,29 +14,51 @@ library(targets)
 
 # Performance {#performance}
 
-If your `targets` pipeline runs slowly or consumes too many resources, you can make adjustments to improve efficiency. In addition, `targets` has tools to monitor the runtime progress of a pipeline.
+This chapter explains simple options and settings to improve the efficiency of your `targets` pipelines. It also explains how to monitor the progress of a pipeline currently running.
 
-:::{.callout-note}
+::: {.callout-note collapse="true"}
 
-## Summary
+## Summary: efficiency
 
-* Choose fast persistent storage for the [data store](#data).
+* Set `seconds_meta_append`, `seconds_meta_upload`, and `seconds_reporter` to be kind to the local file system and R console.
 * Choose [efficient data storage formats](https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats) for large targets.
-* For high-memory pipelines, consider `memory = "transient"` and `garbage_collection = TRUE` in `tar_option_set()` or `tar_target()`. `tar_make()`, `tar_make_clustermq()`, and `tar_make_future()` also support a `garbage_collection` argument that applies to the controller process.
-* To reduce the latency and cost of [cloud storage](https://books.ropensci.org/targets/data.html#cloud-storage) in cases where the bucket is trustworthy, set `cue = tar_cue(file = FALSE)` in `tar_target()` and/or `tar_option_set()` 
-* If you are careful to leave the [data store and file targets](#hpc) alone until 2 seconds after the pipeline finishes, `tar_option_set(trust_object_timestamps = TRUE)` and `format = "file_fast` in `tar_target()` can speed up the pipeline by avoiding superfluous hash computations. (Requires `targets` >= 1.1.0.)
-* For highly parallel pipelines, consider `storage = "worker"` and `retrieval = "worker"` in `tar_option_set()` or `tar_target()`.
-* To avoid wasting computational resources, consider setting `deployment = "main"` in `tar_target()` for light targets that do not need to run on parallel workers.
-* For high-overhead pipelines with thousands of targets, consider grouping same amount of work into a smaller number of targets.
-* `targets` has functions to monitor the progress of the pipeline.
-* Profiling with the [`proffer`](https://r-prof.github.io/proffer/) package can help discover [bottlenecks](https://en.wikipedia.org/wiki/Bottleneck_(software)).
+* Consider `memory = "transient"` and `garbage_collection = TRUE` for high-memory tasks.
+* Consider `cue = tar_cue(file = FALSE)` for [cloud storage](https://books.ropensci.org/targets/data.html#cloud-storage).
+* Set `trust_object_timestamps = TRUE` and `format = "file_fast` and the leave [data](#data) alone during `tar_make()`.
+* Parallelize data management with `storage = "worker"` and `retrieval = "worker"`.
+* Consider `deployment = "main"` for quick targets that do not need [parallel workers](#crew).
+* If each task runs quickly, batch each group of tasks into a target to minimize overhead.
+
 :::
 
-## Data location
+::: {.callout-note collapse="true"}
 
-The [data store](#data) is a folder on a computer, usually at the root of your project, and `targets` makes innumerable quick modifications over the course of a pipeline. For best performance, the [data store](#data) should live on high-performant storage hardware on your local computer. Any slowdown due to disk issues or latency due to a slow network will severely impact the performance of your pipeline.^[ [Mounted network drives](https://support.microsoft.com/en-us/windows/map-a-network-drive-in-windows-29ce55d1-34e3-a7e2-4801-131475f9557d) are the particularly egregious. In addition, the files in the [data store](#data) are important and must be available for subsequent runs of the pipeline, so `tempdir()` is not suitable.]
+## Summary: monitoring
 
-## Efficient storage formats
+* `targets` has functions like `tar_progress()` and `tar_watch()` to monitor the progress of the pipeline.
+* Profiling with the [`proffer`](https://r-prof.github.io/proffer/) package can help discover [bottlenecks](https://en.wikipedia.org/wiki/Bottleneck_(software)).
+
+:::
+
+## Metadata and progress data
+
+By default, `tar_make()` writes to the R console and [local metadata files](#data) up to hundreds of times per second. And if you opt into [cloud](#cloud storage), it uploads [local metadata files](#data) to the [cloud](#cloud storage) every few seconds. All this can slow down the pipeline and negatively impact the performance of shared file systems.
+
+Please help `targets` be kind to your file system, R console, and [cloud API rate limit](#cloud storage). The following arguments are available in `tar_make()` and `tar_config_set()`:
+
+* `seconds_meta_append`: how often to write to the [local metadata files](#data). The default is 0 seconds, but we recommend about 15.
+* `seconds_meta_upload`: how often to upload the [local metadata files](#data) to the cloud. The default of 15 seconds should be okay.
+* `seconds_reporter`: how often to print progress messages to the R console. The default is 0, but we recommend 0.5.
+
+::: {.callout-caution collapse="true"}
+
+## Caution: delayed metadata and progress messages
+
+If `seconds_meta_append` is 15, then `tar_make()` waits at least 15 seconds before updating the [local metadata files](#data). It spends at least 15 seconds collecting a backlog new metadata, and then it writes all that metadata in bulk. `seconds_reporter` does the same thing with R console progress messages. Be warned: a long-running local target may block the R session and make the actual delay much longer. So when a target completes, `tar_make()` may not notify you immediately, and the target may not be up to date in the metadata until long after it actually finishes. So please be patient and allow the pipeline to continue until the end.
+
+:::
+
+## Data
 
 The default [data storage format](https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats) is [RDS](https://rdrr.io/r/base/readRDS.html), which can be slow and bulky for large data. For large data pipelines, consider [alternative formats](https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats) to more efficiently store and manage your data. Set the storage format using `tar_option_set()` or `tar_target()`:
 
@@ -44,91 +66,81 @@ The default [data storage format](https://docs.ropensci.org/targets/reference/ta
 tar_option_set(format = "qs")
 ```
 
+::: {.callout-tip collapse="true"}
+
+## Tips about data formats
+
 Some formats such as `"qs"` work on all kinds of data, whereas others like `"feather"` works only on data frames. Most non-default formats store the data faster and in smaller files than the default `"rds"` format, but they require extra packages to be installed. For example, `format = "qs"` requires the `qs` package, and `format = "feather"` requires the `arrow` package.
 
 For extremely large datasets that cannot fit into memory, consider `format = "file"` to treat the data as a file on disk. Downstream targets are free to load only the subsets of the data they need.
 
+:::
+
 ## Memory
 
-By default, the pipeline retains targets in memory while it is running. In large data workloads, this could consume too much [computer memory](http://adv-r.had.co.nz/memory.html) and overwhelm the worker processes there the targets run. The solution is simple: in `tar_option_set()` or `tar_target()` in the `_targets.R` file, activate transient memory and garbage collection:
+By default, `tar_make()` keeps all target data in memory while it is running. To free superfluous data and consume less memory, activate transient memory and garbage collection:
 
 ```{r, eval = FALSE}
 tar_option_set(memory = "transient", garbage_collection = TRUE)
-```
-
-And for pipelines that store and retrieve data on the local R process, you can activate garbage collection in the local controller process. (Requires `targets` >= 1.1.0.)
-
-```{r, eval = FALSE}
 tar_make(garbage_collection = TRUE)
 ```
 
 ::: {.callout-tip collapse="true"}
 ## About memory and garbage collection
 
-`memory = "transient"` tells `targets` to remove data from the R environment as soon as possible. However, the computer memory itself is not freed until garbage collection is run. Alternatively,  can invoke garbage collection manually using `gc()`.^[To learn more about memory and garbage colleciton in R, see <http://adv-r.had.co.nz/memory.html>.] For both transient memory and garbage collection, the cleanup phase happens once per target.
+`memory = "transient"` tells `targets` to remove data from the R environment as soon as it is no longer needed. However, the computer memory itself is not freed until garbage collection is run, and even then, R may not decrease the size of its heap. You can run garbage collection yourself with the `gc()` function in R.
 
-As with everything performance-related, there is a cost. With transient memory and garbage collection, the pipeline reads data from storage far more often. These data reads take additional time, and if you use [cloud storage](https://books.ropensci.org/targets/data.html#cloud-storage), they could incur additional monetary charges. In addition, garbage collection is usually a slow operation, and repeated garbage collections could slow down a pipeline with thousands of targets. Please think about the tradeoffs for your specific use case.
+Transient memory and garbage collection have tradeoffs: the pipeline reads data from storage far more often, and these data reads take additional time. In addition, garbage collection is usually a slow operation, and repeated garbage collections could slow down a pipeline with thousands of targets.
 
-And as mentioned previously, `format = "file"` and `format = "file_fast"` treat a target as a file path, and the data in the file is not automatically loaded into memory. This may be useful for larger-than-memory files. Downstream targets are free to load only strategic subsets of the data file.
+`tar_target()` storage formats `"file"` and `"file_fast"` are less convenient, but they let you take more control of how R uses memory. 
+
 :::
 
 ## Cloud storage latency
 
-`targets` provides optional [cloud storage](https://books.ropensci.org/targets/data.html#cloud-storage) through the `repository` and `resources` arguments of `tar_target()` and `tar_option_set()`. By default, to check if a target is up to date on the cloud, the local R process downloads the metadata of the target object in the bucket. For a large number of cloud targets, this can create high latency and unwanted monetary costs due to interactions with the web API of Amazon or Google. If you trust the bucket to safely keep your data, and if you know you will never call `tar_delete()` or modify that data manually, then you can avoid these costs with `cue = tar_cue(file = FALSE)` in `tar_target()` and/or `tar_option_set()`.
+`targets` supports optional [cloud storage](https://books.ropensci.org/targets/data.html#cloud-storage). To check if a cloud target is up to date, `tar_make()` polls the AWS or GPI API, which may cause time and money. For dramatically faster/cheaper workloads, set `cue = tar_cue(file = FALSE)` in `tar_target()` and/or `tar_option_set()` for cloud targets. Be warned though: if you manually delete or corrupt the data in the cloud bucket, `targets` will not notice.
 
 ## Hashes
 
-`targets` uses hash computations to check if each target is up to date, and hashes can be slow. To enable timestamps to speed up the processing of [local data store files](#data) in `_targets/objects/`, set `trust_object_timestamps` to `TRUE` in `tar_option_set()` (already the default). To enable timestamps to speed up the processing of large or numerous [external files](#data), set `format = "file_fast"` instead of `format = "file"` in `tar_option_set()`. (Requires `targets` >= 1.1.0.)
+`targets` uses hashes to check each target. These hashes are slow, and time stamps can speed up checks on [local data files](#data) in `_targets/objects/`. `tar_option_set(trust_object_timestamps = TRUE)` (already the default) opts into fast time stamps, and `tar_option_set(trust_object_timestamps = FALSE)` opts out. For similarly fast processing of [external file targets](#data), set `format = "file_fast"` instead of `format = "file"`.
 
 ::: {.callout-important}
 ## Dangers of timestamps
 
-**Where timestamps are used, do not manually change those files while the pipeline is running. `_targets/objects/` in particular should never be modified by hand. And if you have on file system with low-precision time stamps (EXT3, FAT, XFS) wait at least 2 seconds after the pipeline finishes.**
+**If you use `trust_object_timestamps = TRUE` or `format = "file_fast"`, do not manually edit those files while the pipeline is running. `_targets/objects/` in particular should never be modified by hand. And if you have on file system with low-precision time stamps (EXT3, FAT, XFS) wait at least 2 seconds after the pipeline finishes.**
 :::
 
 ::: {.callout-tip collapse="true"}
-## About hashes and timestamps
+## Details about hashes and timestamps
 
 A hash is a fixed-length fingerprint of an object or file. Except in rare cases, different files have different hashes, and two files with the same hash have the same contents. `targets` uses hashes to check if files have changed, which helps decide whether to rerun or skip each target. Unfortunately, hashes are expensive to compute, so a large number of targets or a large data file could slow down your pipeline.
 
 File modification timestamps offer a workaround. Operating systems keep track of when each file was last modified, and R functions `file.mtime()` and `file.info()` can look up these timestamps much faster than hashes can be computed. When you tell `targets` to use timestamps, the package compares the current timestamp to the old timestamp from when the pipeline last ran. If the timestamps agree, then `targets` assumes the file is up to date and does not bother to recompute the hash. Otherwise, if the timestamps disagree, then `targets` recomputes the hash to find out if the contents of the file have really changed. When used safely, this behavior speeds up `tar_make()`, `tar_outdated()`, `tar_visnetwork()`, etc. by avoiding superfluous hash computations when targets are up to date.
+
 :::
 
 ## Parallel workers and data
 
-By default, the main controlling R process stores and retrieves the data. So in large parallel data pipelines, `tar_make_clustermq()` and `tar_make_future()` may [bottleneck](https://en.wikipedia.org/wiki/Bottleneck_(software)) at the data management phase. Solution: if all [parallel workers](#hpc) have access to the [local data store](#data), you can make those workers store and retrieve the data instead of putting it all on the main controlling R process. In `tar_target()` or `tar_option_set()` in the `_targets.R` file, activate worker storage and retrieval:
+If you run `tar_make()` [with a `crew` controller](#crew), then parallel processes will run your targets, but the main R process still manages all the [data](#data) by default. To delegate [data](#data) management to the parallel [`crew`](#crew) workers, set the `storage` and `retrieval` settings in `tar_target()` or `tar_option_set()`:
 
 ```{r, eval = FALSE}
 tar_option_set(storage = "worker", retrieval = "worker")
 ```
 
-If the [workers](#hpc) do not have access to the [local data store](#data), you can still set `storage = "worker"` and `retrieval = "worker"` if you use [cloud storage](https://books.ropensci.org/targets/data.html#cloud-storage) to store and retrieve your data.
+But be sure those workers have access to the data. They must either find the [local data](#data), or the targets must use [cloud storage](#cloud-storage).
 
 ## Local targets
 
-In `tar_make_clustermq()`, the [persistent workers](https://books.ropensci.org/targets/hpc.html#persistent-workers) launch as soon as a target needs them, and they keep running until no more targets need them anymore. In addition, `tar_make_future()` submits a new job for every target that needs one. Both behaviors could waste computational resources. For targets that run quickly and cheaply, consider setting `deployment = "main"` in `tar_target()`:
+In [distributed computing](#crew) with `targets`, not every target needs to run on a remote worker. For targets that run quickly and cheaply, consider setting `deployment = "main"` in `tar_target()` to run them on the main local process:
 
 ```{r, eval = FALSE}
 tar_target(dataset, get_dataset(), deployment = "main")
 tar_target(summary, compute_summary_statistics(), deployment = "main")
 ```
 
-`deployment = "main"` says to run the target on the main controlling process instead of a parallel worker. If the target is upstream, then `deployment = "main"` avoids launching [persistent workers](https://books.ropensci.org/targets/hpc.html#persistent-workers) too early. If the target is downstream, `deployment = "main"` allows [persistent workers](https://books.ropensci.org/targets/hpc.html#persistent-workers) to safely shut down earlier. In the case of [transient workers](https://books.ropensci.org/targets/hpc.html#transient-workers), `deployment = "main"` avoids the overhead and cost of submitting an unnecessary job or background process.
-
-For targets that really do need parallel workers, make sure `deployment = "worker"` (default).
-
-```{r, eval = FALSE}
-tar_target(model, run_machine_learning_model(dataset), deployment = "worker")
-```
-
-The `deployment` argument of `tar_option_set()` controls the default `deployment` argument of subsequent calls to `tar_target()`.
-
 ## Many targets
 
-A pipeline with too many targets will begin to slow down. You may notice a minor slowdown at about 1000 targets and a more significant one at around 5000 or 10000 targets. This happens because each target needs to check its data, decide whether it needs to rerun, load its upstream dependencies from memory if applicable, and store its data after running. The overhead of these actions adds up. 
-
-To reduce overhead, consider dividing up the work into a smaller number of targets. Each target is a cached operation, and not all steps of the pipeline needs to be cached at a perfect level of granularity.
-See the sections on [what a target should do](https://books.ropensci.org/targets/targets.html#what-a-target-should-do) and [how much a target should do](https://books.ropensci.org/targets/targets.html#how-much-a-target-should-do). 
+Each target incurs overhead, and it is not good practice to create thousands of targets which each run quickly. Instead, consider grouping the same amount of work into a smaller number of targets. See the sections on [what a target should do](https://books.ropensci.org/targets/targets.html#what-a-target-should-do) and [how much a target should do](https://books.ropensci.org/targets/targets.html#how-much-a-target-should-do). 
 
 ::: {.callout-tip collapse="true"}
 ## About batching
@@ -142,7 +154,11 @@ Even the most efficient `targets` pipelines can take time to complete because th
 
 1. `tar_poll()` continuously refreshes a text summary of runtime progress in the R console. Run it in a new R session at the project root directory. (Only supported in `targets` version 0.3.1.9000 and higher.)
 1. `tar_visnetwork()`, `tar_progress_summary()`, `tar_progress_branches()`, and `tar_progress()` show runtime information at a single moment in time.
-1. `tar_watch()` launches an Shiny app that automatically refreshes the graph every few seconds. Try it out in the example below.
+1. `tar_watch()` launches an Shiny app that automatically refreshes the graph every few seconds.
+
+::: {.callout-tip collapse="true"}
+
+## Example: monitoring the pipeline with `tar_watch()`
 
 ```{r, eval = FALSE}
 # Define an example target script file with a slow pipeline.
@@ -178,13 +194,12 @@ px <- tar_make()
 ![](./man/figures/tar_watch.png)
 `tar_watch_ui()` and `tar_watch_server()` make this functionality available to other apps through a Shiny module.
 
-Unfortunately, none of these options can tell you if any [parallel workers](#hpc) or external processes are *actually* still alive. You can monitor local processes with a utility like `top` or `htop`, and traditional HPC scheduler like SLURM or SGE support their own polling utilities such as `squeue` and `qstat`. `tar_process()` and `tar_pid()` get the process ID of the main R process that last attempted to run the pipeline.
+:::
 
 ## Profiling
 
-The first sections of the chapter describe quick tips and tricks to improve the performance of a pipeline. If these workarounds fail, then before putting more effort into optimization, it is best to empirically confirm why the code is slow in the first place. "Profiling" is the act of scanning a running instance of a program, and it can detect [computational bottlenecks](https://en.wikipedia.org/wiki/Bottleneck_(software)). Follow these steps to profile a `targets` pipeline.
+Profiling tools like [`proffer`](https://r-prof.github.io/proffer/) figure out specific places where code runs slowly. It is important to identify these bottlenecks before you try to optimize. Steps:
 
 1. Install the [`proffer`](https://r-prof.github.io/proffer/) R package and its dependencies.
 1. Run `proffer::pprof(tar_make(callr_function = NULL))` on your project.
-1. When a web browser pops up with `pprof`, select the flame graph and screenshot it.
-1. Post the flame graph, along with any code and data you can share, to the [`targets` package issue tracker](https://github.com/ropensci/targets/issues). The maintainer will have a look and try to make the package faster for your use case if speedups are possible.
+1. Examine the flame graph to figure out which R functions are taking the most time.
