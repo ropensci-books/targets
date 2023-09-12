@@ -1,0 +1,224 @@
+---
+execute:
+  freeze: auto
+---
+
+# Pseudo-random number generation {#random}
+
+```{r, message = FALSE, warning = FALSE, echo = FALSE}
+knitr::opts_knit$set(root.dir = fs::dir_create(tempfile()))
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = TRUE)
+```
+
+```{r, message = FALSE, warning = FALSE, echo = FALSE, eval = TRUE}
+library(targets)
+```
+
+This chapter explains the behaviors, limitations, and trade-offs of `targets` with respect to pseudo-random number generation. It assumes basic  familiarity with pseudo-random numbers, especially base R functions like `sample()` and `set.seed()`.
+
+## Overview
+
+A `targets` pipeline may run stochastic methods, and `targets` tries to ensure that the results are repeatable and correct. There are two major statistical challenges:
+
+1. **Reproducibility**: different runs of the same pipeline should produce the same results, even if a target runs a stochastic function like `rnorm()`.
+1. **Independence**: pseudo-random numbers should behave like independent random samples. Pseudo-random number sequences in different targets should overlap as little as possible.
+
+## Reproducibility
+
+Each target runs with its own deterministic seed. The target seed is a function of:
+
+1. Its name, and
+2. The pipeline-level seed from `tar_option_get("seed")`.
+
+Consider the following simple pipeline.
+
+```{r, eval = FALSE, echo = TRUE}
+# _targets.R file:
+library(targets)
+tar_option_set(seed = 3)
+list(
+  tar_target(name = target_1, command = runif(n = 1)),
+  tar_target(name = target_2, command = runif(n = 1)),
+  tar_target(name = target_3, command = runif(n = 1))
+)
+```
+
+```{r, eval = TRUE, echo = FALSE}
+tar_script({
+  library(targets)
+  tar_option_set(seed = 3)
+  list(
+    tar_target(name = target_1, command = runif(n = 1)),
+    tar_target(name = target_2, command = runif(n = 1)),
+    tar_target(name = target_3, command = runif(n = 1))
+  )
+})
+```
+
+The seed of the `target_1` target is:
+
+```{r}
+expected_seed <- digest::digest2int("target_1", seed = 3)
+
+expected_seed
+```
+
+And the target runs the equivalent of:
+
+```{r}
+withr::with_seed(seed = expected_seed, code = runif(n = 1))
+```
+
+We can run the pipeline with `tar_make()`, view the seed with `tar_meta()`, and view the result with `tar_read()`.^[`tar_make()` does not interfere with the pseudo-random number generator state of the calling R process.]
+
+```{r}
+tar_make()
+
+tar_meta(names = any_of("target_1"), fields = any_of("seed"))
+
+tar_read(target_1)
+```
+
+The `seed` argument of `tar_option_set()` offers flexibility:
+
+1. If you set `seed` to a different integer, you will get a different (but still reproducible) set of stochastic results.
+1. If you set `seed` to `NA`, then `targets` will not set a seed at all. Different runs of the pipeline will produce results, and those results will not be reproducible.
+
+For (2), each target will always appear outdated in `tar_make()` and `tar_outdated()`. To force a target to be up to date, set `cue = tar_cue(seed = FALSE)` in `tar_target()` or `tar_option_set()`.
+
+## Independence
+
+Within a pipeline, different targets are guaranteed to have different names. Barring the vanishingly small chance of hash collisions from `digest::digest2int()`, that means they should also have different seeds.
+
+```{r}
+tar_meta(targets_only = TRUE, fields = any_of("seed"))
+```
+
+Thus, different targets should have independent sequences of pseudo-random numbers in most workflows.
+
+```{r}
+tar_read(target_1)
+tar_read(target_2)
+tar_read(target_3)
+```
+
+However, different random number generator sequences may still overlap, even if they have different seeds.^[The risk is highest for long sequences, i.e. if each target generates many random numbers.] For details, read the "Random number generation" section of the `parallel` package vignette: `vignette("parallel", package = "parallel")`. The authors propose a safeguard using widely-spaced L'Ecuyer streams. However, because `parallel::nextRNGStream()` generates each stream sequentially and recursively, their solution is unfortunately not feasible for `targets`.
+
+## Measuring independence
+
+With the default random number generator, duplicate pseudo-random numbers occur just over 0.01% of the time.
+
+```{r}
+set.seed(seed = 0)
+percent_duplicates <- 100 * mean(duplicated(runif(1e6)))
+
+percent_duplicates
+```
+
+You can measure statistical independence in an existing pipeline by applying this test to the seeds of your actual targets. Please keep in mind, however, that it may be computationally expensive if there are many seeds.
+
+```{r}
+seeds <- tar_meta(targets_only = TRUE)$seed
+seeds
+
+draws <- purrr::map(seeds, \(seed) withr::with_seed(seed, runif(1e6)))
+str(draws)
+
+100 * mean(duplicated(unlist(draws)))
+```
+
+## `tarchetypes`
+
+Many target factories in the [`tarchetypes`](https://docs.ropensci.org/tarchetypes/) package support [batched replication](https://docs.ropensci.org/tarchetypes/reference/index.html#dynamic-batched-replication): 
+
+* `tar_rep()`
+* `tar_map_rep()`
+* `tar_map2_count()`
+* `tar_map2_size()`
+* `tar_quarto_rep()`
+* `tar_render_rep()`
+
+In batched replication, each target is a batch that runs multiple replications of a stochastic task. If you change the number of batches or number of replications per batch, the target name changes, which changes the seed of each target. To make pipelines more resilient, `tar_rep()` and friends set their own unique deterministic `digest::digest2int()` seeds based on:
+
+1. `tar_option_get("seed")`.
+2. The parent name of the [dynamnic target](#dynamic)
+3. The index of each replicate in the sequence.
+
+If you return data frames or lists, those seeds are available in the `tar_seed` element of the output. Each replicate gets its own seed, and the default seeds from `tar_meta()` no longer apply.
+
+```{r, eval = FALSE, echo = TRUE}
+# _targets.R file:
+library(targets)
+library(tarchetypes)
+tar_option_set(seed = 3)
+list(
+  tar_rep(
+    name = tasks,
+    command = runif(n = 1),
+    batches = 2,
+    reps = 3
+  )
+)
+```
+
+```{r, eval = TRUE, echo = FALSE}
+tar_script({
+  library(targets)
+  library(tarchetypes)
+  tar_option_set(packages = "tibble")
+  list(
+    tar_rep(
+      name = tasks,
+      command = tibble(result = runif(n = 1)),
+      batches = 2,
+      reps = 3
+    )
+  )
+})
+```
+
+```{r}
+tar_make()
+
+tar_read(tasks)
+```
+
+If you change the batching structure, the `tar_rep` and `tar_batch` columns will change, but the results and the seeds will stay the same.
+
+```{r, eval = FALSE, echo = TRUE}
+# _targets.R file:
+library(targets)
+library(tarchetypes)
+tar_option_set(seed = 3)
+list(
+  tar_rep(
+    name = tasks,
+    command = runif(n = 1),
+    batches = 3, # previously 2
+    reps = 2     # previously 3
+  )
+)
+```
+
+```{r, eval = TRUE, echo = FALSE}
+tar_script({
+  library(targets)
+  library(tarchetypes)
+  tar_option_set(packages = "tibble")
+  list(
+    tar_rep(
+      name = tasks,
+      command = tibble(result = runif(n = 1)),
+      batches = 3,
+      reps = 2
+    )
+  )
+})
+```
+
+```{r}
+tar_make()
+
+tar_read(tasks)
+```
+
