@@ -124,11 +124,12 @@ str(draws)
 100 * mean(duplicated(unlist(draws)))
 ```
 
-About 0.0337% of draws were duplicated. That seems fairly low, but given the parallel number generation concerns cited in `vignette("parallel", package = "parallel")`, is it higher than it should be? To answer this question, we can compare with a linear sequence of equally many draws.
+The above percent duplicated seems fairly low, but given the parallel number generation concerns cited in `vignette("parallel", package = "parallel")`, is it higher than it should be? To answer this question, we can compare with a linear sequence of equally many draws.
 
 ```{r}
 set.seed(seeds[1])
-draws <- runif(3 * 1e6) # Very important to have the same number of draws.
+# Very important to use the same number of total draws as the previous test:
+draws <- runif(3 * 1e6)
 100 * mean(duplicated(draws))
 ```
 
