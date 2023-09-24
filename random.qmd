@@ -102,7 +102,7 @@ tar_read(target_2)
 tar_read(target_3)
 ```
 
-However, different random number generator sequences may still overlap, even if they have different seeds. The risk is higher for long sequences, i.e. if each target generates many random numbers. For details, read the "Random number generation" section of the `parallel` package vignette: `vignette("parallel", package = "parallel")`. The authors propose a safeguard using widely-spaced L'Ecuyer streams. However, because `parallel::nextRNGStream()` generates each stream sequentially and recursively, their solution is unfortunately not feasible for `targets`.
+However, different random number generator sequences may still overlap, even if they have different seeds.^[The risk is higher for long sequences, i.e. if each target generates many random numbers.] For details, read the "Random number generation" section of the `parallel` package vignette: `vignette("parallel", package = "parallel")`. The authors propose a safeguard using widely-spaced L'Ecuyer streams. However, because `parallel::nextRNGStream()` generates each stream sequentially and recursively, their solution is unfortunately not feasible for `targets`.
 
 ## Measuring independence
 
@@ -112,7 +112,7 @@ You can *roughly* measure statistical independence in an existing pipeline:
 2. Generate a long sequence of random numbers of each seed.
 3. Measure the percentage of duplicated draws.
 
-High values of (3) indicate poor random number generation which could bias the results. However, please note that this is only a rough test and by no means foolproof. If each target generates more than a million draws, then the test may be too optimistic.^[You could always increase the number of draws for each seed, but it could be computationally expensive. You may wish to convert to single precision numbers with `as.single()`.]
+High values of (3) indicate poor random number generation which could bias the results.^[However, please note that this is only a rough test and by no means foolproof. If each target generates more than a million draws, then the test may be too optimistic.You could always increase the number of draws for each seed, but it could be computationally expensive. You may wish to convert to single precision numbers with `as.single()`.]
 
 ```{r}
 seeds <- tar_meta(targets_only = TRUE)$seed
