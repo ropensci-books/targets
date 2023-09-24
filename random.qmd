@@ -102,7 +102,7 @@ tar_read(target_2)
 tar_read(target_3)
 ```
 
-However, different random number generator sequences may still overlap, even if they have different seeds.^[The risk is higher for long sequences, i.e. if each target generates many random numbers.] For details, read the "Random number generation" section of the `parallel` package vignette: `vignette("parallel", package = "parallel")`. The authors propose a safeguard using widely-spaced L'Ecuyer streams. However, because `parallel::nextRNGStream()` generates each stream sequentially and recursively, their solution is unfortunately not feasible for `targets`.
+However, different random number generator sequences may still overlap, even if they have different seeds.^[The risk is higher for long sequences, i.e. if each target generates many random numbers.] For details, read the "Random number generation" section of the `parallel` package vignette: `vignette("parallel", package = "parallel")`. The authors propose a safeguard using widely-spaced L'Ecuyer streams. However, because `parallel::nextRNGStream()` generates each stream recursively, their solution is unfortunately not feasible for `targets`.
 
 ## Measuring independence
 
@@ -133,7 +133,7 @@ draws <- runif(3 * 1e6)
 100 * mean(duplicated(draws))
 ```
 
-Alternatively, we could measure duplication in a comparable sequence of recurively-generated L'Ecuyer streams, as explained in `vignette("parallel", package = "parallel")`.
+Alternatively, we could measure duplication in a comparable sequence of recurively-generated L'Ecuyer streams, c.f. `vignette("parallel", package = "parallel")`.
 
 ```{r}
 RNGkind("L'Ecuyer-CMRG")
