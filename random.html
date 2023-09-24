@@ -394,12 +394,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ▶ start target target_1</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● built target target_1 [0.001 seconds]</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● built target target_1 [0 seconds]</span></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ▶ start target target_2</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● built target target_2 [0.001 seconds]</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● built target target_2 [0 seconds]</span></span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ▶ start target target_3</span></span>
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● built target target_3 [0 seconds]</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ▶ end pipeline [0.089 seconds]</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ▶ end pipeline [0.081 seconds]</span></span>
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_meta</span>(<span class="at">names =</span> <span class="fu">any_of</span>(<span class="st">"target_1"</span>), <span class="at">fields =</span> <span class="fu">any_of</span>(<span class="st">"seed"</span>))</span>
 <span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 1 × 2</span></span>
@@ -438,17 +438,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(target_3)</span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.3112612</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>However, different random number generator sequences may still overlap, even if they have different seeds. The risk is higher for long sequences, i.e.&nbsp;if each target generates many random numbers. For details, read the “Random number generation” section of the <code>parallel</code> package vignette: <code>vignette("parallel", package = "parallel")</code>. The authors propose a safeguard using widely-spaced L’Ecuyer streams. However, because <code>parallel::nextRNGStream()</code> generates each stream sequentially and recursively, their solution is unfortunately not feasible for <code>targets</code>.</p>
+<p>However, different random number generator sequences may still overlap, even if they have different seeds.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> For details, read the “Random number generation” section of the <code>parallel</code> package vignette: <code>vignette("parallel", package = "parallel")</code>. The authors propose a safeguard using widely-spaced L’Ecuyer streams. However, because <code>parallel::nextRNGStream()</code> generates each stream recursively, their solution is unfortunately not feasible for <code>targets</code>.</p>
 </section>
 <section id="measuring-independence" class="level2" data-number="9.4">
 <h2 data-number="9.4" class="anchored" data-anchor-id="measuring-independence"><span class="header-section-number">9.4</span> Measuring independence</h2>
-<p>You can <em>roughly</em> measure the statistical independence in an existing pipeline:</p>
+<p>You can <em>roughly</em> measure statistical independence in an existing pipeline:</p>
 <ol type="1">
 <li>Read the recorded seeds of all the targets.</li>
 <li>Generate a long sequence of random numbers of each seed.</li>
 <li>Measure the percentage of duplicated draws.</li>
 </ol>
-<p>High values of (3) indicate poor random number generation which could bias the results. However, please note that this is only a rough test and by no means foolproof. If each target generates more than a million draws, then the test may be too optimistic.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<p>High values of (3) indicate poor random number generation which could bias the results.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>seeds <span class="ot">&lt;-</span> <span class="fu">tar_meta</span>(<span class="at">targets_only =</span> <span class="cn">TRUE</span>)<span class="sc">$</span>seed</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>seeds</span>
@@ -464,14 +464,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="dv">100</span> <span class="sc">*</span> <span class="fu">mean</span>(<span class="fu">duplicated</span>(<span class="fu">unlist</span>(draws)))</span>
 <span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.03383333</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>About 0.0337% of draws were duplicated. That seems fairly low, but given the parallel number generation concerns cited in <code>vignette("parallel", package = "parallel")</code>, is it higher than it should be? To answer this question, we can compare with a linear sequence of equally many draws.</p>
+<p>The above percent duplicated seems fairly low, but given the parallel number generation concerns cited in <code>vignette("parallel", package = "parallel")</code>, is it higher than it should be? To answer this question, we can compare with a linear sequence of equally many draws.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(seeds[<span class="dv">1</span>])</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>draws <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">3</span> <span class="sc">*</span> <span class="fl">1e6</span>) <span class="co"># Very important to have the same number of draws.</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="dv">100</span> <span class="sc">*</span> <span class="fu">mean</span>(<span class="fu">duplicated</span>(draws))</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.0351</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Very important to use the same number of total draws as the previous test:</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>draws <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">3</span> <span class="sc">*</span> <span class="fl">1e6</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="dv">100</span> <span class="sc">*</span> <span class="fu">mean</span>(<span class="fu">duplicated</span>(draws))</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.0351</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Alternatively, we could measure duplication in a comparable sequence of recurively-generated L’Ecuyer streams, as explained in <code>vignette("parallel", package = "parallel")</code>.</p>
+<p>Alternatively, we could measure duplication in a comparable sequence of recurively-generated L’Ecuyer streams, c.f. <code>vignette("parallel", package = "parallel")</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">RNGkind</span>(<span class="st">"L'Ecuyer-CMRG"</span>)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>draws <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
@@ -520,13 +521,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ▶ start target tasks_batch</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● built target tasks_batch [0.001 seconds]</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● built target tasks_batch [0 seconds]</span></span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ▶ start branch tasks_a2e43716</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● built branch tasks_a2e43716 [0.016 seconds]</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● built branch tasks_a2e43716 [0.015 seconds]</span></span>
 <span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ▶ start branch tasks_769ac890</span></span>
 <span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● built branch tasks_769ac890 [0.004 seconds]</span></span>
 <span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● built pattern tasks</span></span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ▶ end pipeline [0.116 seconds]</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ▶ end pipeline [0.105 seconds]</span></span>
 <span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(tasks)</span>
 <span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 4</span></span>
@@ -557,15 +558,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ▶ start target tasks_batch</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● built target tasks_batch [0.001 seconds]</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● built target tasks_batch [0 seconds]</span></span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ▶ start branch tasks_a2e43716</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● built branch tasks_a2e43716 [0.016 seconds]</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● built branch tasks_a2e43716 [0.013 seconds]</span></span>
 <span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ▶ start branch tasks_769ac890</span></span>
 <span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● built branch tasks_769ac890 [0.003 seconds]</span></span>
 <span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ▶ start branch tasks_3c92aa1b</span></span>
 <span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● built branch tasks_3c92aa1b [0.003 seconds]</span></span>
 <span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● built pattern tasks</span></span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ▶ end pipeline [0.127 seconds]</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ▶ end pipeline [0.11 seconds]</span></span>
 <span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(tasks)</span>
 <span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 4</span></span>
@@ -585,7 +586,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <hr>
 <ol>
 <li id="fn1"><p><code>tar_make()</code> does not interfere with the pseudo-random number generator state of the calling R process.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>You could always increase the number of draws for each seed, but it could be computationally expensive. You may wish to convert to single precision numbers with <code>as.single()</code>.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>The risk is higher for long sequences, i.e.&nbsp;if each target generates many random numbers.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>However, please note that this is only a rough test and by no means foolproof. If each target generates more than a million draws, then the test may be too optimistic.You could always increase the number of draws for each seed, but it could be computationally expensive. You may wish to convert to single precision numbers with <code>as.single()</code>.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
 
