@@ -106,16 +106,13 @@ However, different random number generator sequences may still overlap, even if 
 
 ## Measuring independence
 
-With the default random number generator, duplicate pseudo-random numbers occur just over 0.01% of the time.
+You can *roughly* measure the statistical independence of an existing pipeline:
 
-```{r}
-set.seed(seed = 0)
-percent_duplicates <- 100 * mean(duplicated(runif(1e6)))
+1. Read the recorded seeds of all the targets.
+2. Generate a long sequence of random numbers of each seed.
+3. Measure the percentage of duplicated draws.
 
-percent_duplicates
-```
-
-You can measure statistical independence in an existing pipeline by applying this test to the seeds of your actual targets. Please keep in mind, however, that it may be computationally expensive if there are many seeds.
+High values of (3) indicate poor random number generation which could bias the results. However, please note that this is only a rough test and by no means foolproof. If each target generates more than a million draws, then the test may be too optimistic.^[You could always increase the number of draws for each seed, but it could be computationally expensive. You may wish to convert to single precision numbers with `as.single()`.]
 
 ```{r}
 seeds <- tar_meta(targets_only = TRUE)$seed
@@ -124,6 +121,28 @@ seeds
 draws <- purrr::map(seeds, \(seed) withr::with_seed(seed, runif(1e6)))
 str(draws)
 
+100 * mean(duplicated(unlist(draws)))
+```
+
+About 0.0337% of draws were duplicated. That seems fairly low, but given the parallel number generation concerns cited in `vignette("parallel", package = "parallel")`, is it higher than it should be? To answer this question, we can compare with a linear sequence of equally many draws.
+
+```{r}
+set.seed(seeds[1])
+draws <- runif(3 * 1e6) # Very important to have the same number of draws.
+100 * mean(duplicated(draws))
+```
+
+Alternatively, we could measure duplication in a comparable sequence of recurively-generated L'Ecuyer streams, as explained in `vignette("parallel", package = "parallel")`.
+
+```{r}
+RNGkind("L'Ecuyer-CMRG")
+draws <- list()
+lecuyer_seed <- .Random.seed
+for (index in seq_along(seeds)) {
+  lecuyer_seed <- parallel::nextRNGStream(lecuyer_seed)
+  .Random.seed <- lecuyer_seed
+  draws[[index]] <- runif(1e6)
+}
 100 * mean(duplicated(unlist(draws)))
 ```
 
