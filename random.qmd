@@ -94,57 +94,12 @@ Within a pipeline, different targets are guaranteed to have different names. Bar
 tar_meta(targets_only = TRUE, fields = any_of("seed"))
 ```
 
-Thus, different targets should have independent sequences of pseudo-random numbers in most workflows.
+Thus, different targets should have non-identical sequences of pseudo-random numbers.^[However, there is a small chance that different random number generator sequences may overlap, even if they have different seeds. It is unclear how much of a risk this is in practice. For details, read the "Random number generation" section of the `parallel` package vignette: `vignette("parallel", package = "parallel")`. The authors propose a safeguard using widely-spaced L'Ecuyer streams. However, because `parallel::nextRNGStream()` generates each stream recursively, their solution is unfortunately not feasible for `targets`. There is an issue thread at <https://github.com/ropensci/targets/issues/1139>, and extra safeguards against overlap may be adopted if they turn out to be possible. Also see [L'Ecuyer et al. (2017)](https://www.sciencedirect.com/science/article/pii/S0378475416300829).]
 
 ```{r}
 tar_read(target_1)
 tar_read(target_2)
 tar_read(target_3)
-```
-
-However, different random number generator sequences may still overlap, even if they have different seeds.^[The risk is higher for long sequences, i.e. if each target generates many random numbers.] For details, read the "Random number generation" section of the `parallel` package vignette: `vignette("parallel", package = "parallel")`. The authors propose a safeguard using widely-spaced L'Ecuyer streams. However, because `parallel::nextRNGStream()` generates each stream recursively, their solution is unfortunately not feasible for `targets`.
-
-## Measuring independence
-
-You can *roughly* measure statistical independence in an existing pipeline:
-
-1. Read the recorded seeds of all the targets.
-2. Generate a long sequence of random numbers of each seed.
-3. Measure the percentage of duplicated draws.
-
-High values of (3) indicate poor random number generation which could bias the results.^[However, please note that this is only a rough test and by no means foolproof. If each target generates more than a million draws, then the test may be too optimistic.You could always increase the number of draws for each seed, but it could be computationally expensive. You may wish to convert to single precision numbers with `as.single()`.]
-
-```{r}
-seeds <- tar_meta(targets_only = TRUE)$seed
-seeds
-
-draws <- purrr::map(seeds, \(seed) withr::with_seed(seed, runif(1e6)))
-str(draws)
-
-100 * mean(duplicated(unlist(draws)))
-```
-
-The above percent duplicated seems fairly low, but given the parallel number generation concerns cited in `vignette("parallel", package = "parallel")`, is it higher than it should be? To answer this question, we can compare with a linear sequence of equally many draws.
-
-```{r}
-set.seed(seeds[1])
-# Very important to use the same number of total draws as the previous test:
-draws <- runif(3 * 1e6)
-100 * mean(duplicated(draws))
-```
-
-Alternatively, we could measure duplication in a comparable sequence of recurively-generated L'Ecuyer streams, c.f. `vignette("parallel", package = "parallel")`.
-
-```{r}
-RNGkind("L'Ecuyer-CMRG")
-draws <- list()
-lecuyer_seed <- .Random.seed
-for (index in seq_along(seeds)) {
-  lecuyer_seed <- parallel::nextRNGStream(lecuyer_seed)
-  .Random.seed <- lecuyer_seed
-  draws[[index]] <- runif(1e6)
-}
-100 * mean(duplicated(unlist(draws)))
 ```
 
 ## `tarchetypes`
