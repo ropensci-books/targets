@@ -94,13 +94,15 @@ Within a pipeline, different targets are guaranteed to have different names. Bar
 tar_meta(targets_only = TRUE, fields = any_of("seed"))
 ```
 
-Thus, different targets should have non-identical sequences of pseudo-random numbers.^[However, there is a small chance that different random number generator sequences may overlap, even if they have different seeds. It is unclear how much of a risk this is in practice. For details, read the "Random number generation" section of the `parallel` package vignette: `vignette("parallel", package = "parallel")`. The authors propose a safeguard using widely-spaced L'Ecuyer streams. However, because `parallel::nextRNGStream()` generates each stream recursively, their solution is unfortunately not feasible for `targets`. There is an issue thread at <https://github.com/ropensci/targets/issues/1139>, and extra safeguards against overlap may be adopted if they turn out to be possible. Also see [L'Ecuyer et al. (2017)](https://www.sciencedirect.com/science/article/pii/S0378475416300829).]
+Thus, different targets should have non-identical sequences of pseudo-random numbers.
 
 ```{r}
 tar_read(target_1)
 tar_read(target_2)
 tar_read(target_3)
 ```
+
+In theory, these parallel random number generator streams could overlap and produce incorrectly correlated results. However, we expect the risk to be small in practice.^[For more details, please see the "Random number generation" section of the `parallel` package vignette: `vignette("parallel", package = "parallel")`. The authors propose a safeguard using widely-spaced L'Ecuyer streams. However, because `parallel::nextRNGStream()` generates each stream recursively, their solution is unfortunately not feasible for `targets`. There is an issue thread at <https://github.com/ropensci/targets/issues/1139>, and `targets` may adopt extra safeguards if they become feasible. Also see [L'Ecuyer et al. (2017)](https://www.sciencedirect.com/science/article/pii/S0378475416300829).]
 
 ## `tarchetypes`
 
