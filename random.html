@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>The {targets} R package user manual - 9&nbsp; Pseudo-random numbers</title>
+<title>The {targets} R package user manual - 9&nbsp; Package version</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -108,7 +108,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./functions.html">Concepts and best practices</a></li><li class="breadcrumb-item"><a href="./random.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Pseudo-random numbers</span></a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./functions.html">Concepts and best practices</a></li><li class="breadcrumb-item"><a href="./random.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Package version</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -204,7 +204,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./random.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Pseudo-random numbers</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Package version</span></span></a>
   </div>
 </li>
       </ul>
@@ -323,10 +323,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview"><span class="header-section-number">9.1</span> Overview</a></li>
-  <li><a href="#reproducibility" id="toc-reproducibility" class="nav-link" data-scroll-target="#reproducibility"><span class="header-section-number">9.2</span> Reproducibility</a></li>
-  <li><a href="#independence" id="toc-independence" class="nav-link" data-scroll-target="#independence"><span class="header-section-number">9.3</span> Independence</a></li>
-  <li><a href="#tarchetypes" id="toc-tarchetypes" class="nav-link" data-scroll-target="#tarchetypes"><span class="header-section-number">9.4</span> <code>tarchetypes</code></a></li>
+  <li><a href="#random" id="toc-random" class="nav-link active" data-scroll-target="#random"><span class="header-section-number">10</span> Pseudo-random numbers</a>
+  <ul class="collapse">
+  <li><a href="#overview" id="toc-overview" class="nav-link" data-scroll-target="#overview"><span class="header-section-number">10.1</span> Overview</a></li>
+  <li><a href="#reproducibility" id="toc-reproducibility" class="nav-link" data-scroll-target="#reproducibility"><span class="header-section-number">10.2</span> Reproducibility</a></li>
+  <li><a href="#independence" id="toc-independence" class="nav-link" data-scroll-target="#independence"><span class="header-section-number">10.3</span> Independence</a></li>
+  <li><a href="#tarchetypes" id="toc-tarchetypes" class="nav-link" data-scroll-target="#tarchetypes"><span class="header-section-number">10.4</span> <code>tarchetypes</code></a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -335,7 +338,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="random" class="quarto-section-identifier"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Pseudo-random numbers</span></span></h1>
+<h1 class="title"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Package version</span></h1>
 </div>
 
 
@@ -350,17 +353,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This chapter was written for <code>targets</code> version <code>1.3.2.9001</code> and higher, which implements <code>tar_seed_create()</code> and additional safeguards for stastical independence of pseudo-random numbers.</p>
+</div>
+</div>
+<section id="random" class="level1" data-number="10">
+<h1 data-number="10"><span class="header-section-number">10</span> Pseudo-random numbers</h1>
 <p>This chapter explains the behaviors, limitations, and trade-offs of <code>targets</code> with respect to pseudo-random number generation. It assumes basic familiarity with pseudo-random numbers, especially base R functions like <code>sample()</code> and <code>set.seed()</code>.</p>
-<section id="overview" class="level2" data-number="9.1">
-<h2 data-number="9.1" class="anchored" data-anchor-id="overview"><span class="header-section-number">9.1</span> Overview</h2>
+<section id="overview" class="level2" data-number="10.1">
+<h2 data-number="10.1" class="anchored" data-anchor-id="overview"><span class="header-section-number">10.1</span> Overview</h2>
 <p>A <code>targets</code> pipeline may run stochastic methods, and <code>targets</code> tries to ensure that the results are repeatable and correct. There are two major statistical challenges:</p>
 <ol type="1">
 <li><strong>Reproducibility</strong>: different runs of the same pipeline should produce the same results, even if a target runs a stochastic function like <code>rnorm()</code>.</li>
 <li><strong>Independence</strong>: pseudo-random numbers should behave like independent random samples. Pseudo-random number sequences in different targets should overlap as little as possible.</li>
 </ol>
 </section>
-<section id="reproducibility" class="level2" data-number="9.2">
-<h2 data-number="9.2" class="anchored" data-anchor-id="reproducibility"><span class="header-section-number">9.2</span> Reproducibility</h2>
+<section id="reproducibility" class="level2" data-number="10.2">
+<h2 data-number="10.2" class="anchored" data-anchor-id="reproducibility"><span class="header-section-number">10.2</span> Reproducibility</h2>
 <p>Each target runs with its own deterministic seed. The target seed is a function of:</p>
 <ol type="1">
 <li>Its name, and</li>
@@ -379,15 +397,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>The seed of the <code>target_1</code> target is:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>expected_seed <span class="ot">&lt;-</span> digest<span class="sc">::</span><span class="fu">digest2int</span>(<span class="st">"target_1"</span>, <span class="at">seed =</span> <span class="dv">3</span>)</span>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>expected_seed <span class="ot">&lt;-</span> <span class="fu">tar_seed_create</span>(<span class="st">"target_1"</span>, <span class="at">global_seed =</span> <span class="dv">3</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>expected_seed</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 435051379</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] -431869848</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>And the target runs the equivalent of:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>withr<span class="sc">::</span><span class="fu">with_seed</span>(<span class="at">seed =</span> expected_seed, <span class="at">code =</span> <span class="fu">runif</span>(<span class="at">n =</span> <span class="dv">1</span>))</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.4875083</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.392889</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We can run the pipeline with <code>tar_make()</code>, view the seed with <code>tar_meta()</code>, and view the result with <code>tar_read()</code>.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
 <div class="cell">
@@ -398,16 +416,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● built target target_2 [0 seconds]</span></span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ▶ start target target_3</span></span>
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● built target target_3 [0 seconds]</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ▶ end pipeline [0.08 seconds]</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ▶ end pipeline [0.091 seconds]</span></span>
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_meta</span>(<span class="at">names =</span> <span class="fu">any_of</span>(<span class="st">"target_1"</span>), <span class="at">fields =</span> <span class="fu">any_of</span>(<span class="st">"seed"</span>))</span>
 <span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 1 × 2</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   name          seed</span></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;        &lt;int&gt;</span></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 target_1 435051379</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   name           seed</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;         &lt;int&gt;</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 target_1 -431869848</span></span>
 <span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(target_1)</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.4875083</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.392889</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The <code>seed</code> argument of <code>tar_option_set()</code> offers flexibility:</p>
 <ol type="1">
@@ -416,31 +434,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ol>
 <p>For (2), each target will always appear outdated in <code>tar_make()</code> and <code>tar_outdated()</code>. To force a target to be up to date, set <code>cue = tar_cue(seed = FALSE)</code> in <code>tar_target()</code> or <code>tar_option_set()</code>.</p>
 </section>
-<section id="independence" class="level2" data-number="9.3">
-<h2 data-number="9.3" class="anchored" data-anchor-id="independence"><span class="header-section-number">9.3</span> Independence</h2>
-<p>Within a pipeline, different targets are guaranteed to have different names. Barring the vanishingly small chance of hash collisions from <code>digest::digest2int()</code>, that means they should also have different seeds.</p>
+<section id="independence" class="level2" data-number="10.3">
+<h2 data-number="10.3" class="anchored" data-anchor-id="independence"><span class="header-section-number">10.3</span> Independence</h2>
+<p>Within a pipeline, different targets are guaranteed to have different names. Barring the vanishingly small chance of hash collisions in <code>tar_seed_create()</code>, that means they should also have different seeds.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_meta</span>(<span class="at">targets_only =</span> <span class="cn">TRUE</span>, <span class="at">fields =</span> <span class="fu">any_of</span>(<span class="st">"seed"</span>))</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 2</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   name            seed</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;          &lt;int&gt;</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 target_1   435051379</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 target_2 -1350859121</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 target_3   -94954427</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   name           seed</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;         &lt;int&gt;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 target_1 -431869848</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 target_2 1397631575</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 target_3 -468682279</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Thus, different targets should have non-identical sequences of pseudo-random numbers.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(target_1)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.4875083</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.392889</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(target_2)</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.2780416</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.6407141</span></span>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(target_3)</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.3112612</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.6024746</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>In theory, these parallel random number generator streams could overlap and produce incorrectly correlated results. However, we expect the risk to be small in practice.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<p>In theory, these parallel random number generator streams could overlap and produce statistically correlated results. However, the risk is extremely small in practice. See the “RNG overlap” section of <a href="https://docs.ropensci.org/targets/reference/tar_seed_create.html" class="uri">https://docs.ropensci.org/targets/reference/tar_seed_create.html</a> for details, references, and justification.</p>
 </section>
-<section id="tarchetypes" class="level2" data-number="9.4">
-<h2 data-number="9.4" class="anchored" data-anchor-id="tarchetypes"><span class="header-section-number">9.4</span> <code>tarchetypes</code></h2>
+<section id="tarchetypes" class="level2" data-number="10.4">
+<h2 data-number="10.4" class="anchored" data-anchor-id="tarchetypes"><span class="header-section-number">10.4</span> <code>tarchetypes</code></h2>
 <p>Many target factories in the <a href="https://docs.ropensci.org/tarchetypes/"><code>tarchetypes</code></a> package support <a href="https://docs.ropensci.org/tarchetypes/reference/index.html#dynamic-batched-replication">batched replication</a>:</p>
 <ul>
 <li><code>tar_rep()</code></li>
@@ -450,7 +468,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><code>tar_quarto_rep()</code></li>
 <li><code>tar_render_rep()</code></li>
 </ul>
-<p>In batched replication, each target is a batch that runs multiple replications of a stochastic task. If you change the number of batches or number of replications per batch, the target name changes, which changes the seed of each target. To make pipelines more resilient, <code>tar_rep()</code> and friends set their own unique deterministic <code>digest::digest2int()</code> seeds based on:</p>
+<p>In batched replication, each target is a batch that runs multiple replications of a stochastic task. If you change the number of batches or number of replications per batch, the target name changes, which changes the seed of each target. To make pipelines more resilient, <code>tar_rep()</code> and friends set their own unique deterministic seeds from <code>tar_seed_create()</code> based on:</p>
 <ol type="1">
 <li><code>tar_option_get("seed")</code>.</li>
 <li>The parent name of the <a href="dynamic.html">dynamnic target</a></li>
@@ -474,13 +492,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ▶ start target tasks_batch</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● built target tasks_batch [0.001 seconds]</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● built target tasks_batch [0 seconds]</span></span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ▶ start branch tasks_a2e43716</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● built branch tasks_a2e43716 [0.015 seconds]</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● built branch tasks_a2e43716 [0.017 seconds]</span></span>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ▶ start branch tasks_769ac890</span></span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● built branch tasks_769ac890 [0.004 seconds]</span></span>
 <span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● built pattern tasks</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ▶ end pipeline [0.106 seconds]</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ▶ end pipeline [0.12 seconds]</span></span>
 <span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(tasks)</span>
 <span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 4</span></span>
@@ -511,15 +529,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ▶ start target tasks_batch</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● built target tasks_batch [0.001 seconds]</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● built target tasks_batch [0 seconds]</span></span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ▶ start branch tasks_a2e43716</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● built branch tasks_a2e43716 [0.014 seconds]</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● built branch tasks_a2e43716 [0.017 seconds]</span></span>
 <span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ▶ start branch tasks_769ac890</span></span>
 <span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● built branch tasks_769ac890 [0.003 seconds]</span></span>
 <span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ▶ start branch tasks_3c92aa1b</span></span>
 <span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● built branch tasks_3c92aa1b [0.003 seconds]</span></span>
 <span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● built pattern tasks</span></span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ▶ end pipeline [0.119 seconds]</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ▶ end pipeline [0.127 seconds]</span></span>
 <span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(tasks)</span>
 <span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 4</span></span>
@@ -535,11 +553,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 </section>
+</section>
 <section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
 <hr>
 <ol>
 <li id="fn1"><p><code>tar_make()</code> does not interfere with the pseudo-random number generator state of the calling R process.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>For more details, please see the “Random number generation” section of the <code>parallel</code> package vignette: <code>vignette("parallel", package = "parallel")</code>. The authors propose a safeguard using widely-spaced L’Ecuyer streams. However, because <code>parallel::nextRNGStream()</code> generates each stream recursively, their solution is unfortunately not feasible for <code>targets</code>. There is an issue thread at <a href="https://github.com/ropensci/targets/issues/1139" class="uri">https://github.com/ropensci/targets/issues/1139</a>, and <code>targets</code> may adopt extra safeguards if they become feasible. Also see <a href="https://www.sciencedirect.com/science/article/pii/S0378475416300829">L’Ecuyer et al.&nbsp;(2017)</a>.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
 
