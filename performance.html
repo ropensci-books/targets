@@ -323,16 +323,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#metadata-and-progress-data" id="toc-metadata-and-progress-data" class="nav-link active" data-scroll-target="#metadata-and-progress-data"><span class="header-section-number">14.1</span> Metadata and progress data</a></li>
-  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data"><span class="header-section-number">14.2</span> Data</a></li>
-  <li><a href="#memory" id="toc-memory" class="nav-link" data-scroll-target="#memory"><span class="header-section-number">14.3</span> Memory</a></li>
-  <li><a href="#cloud-storage-latency" id="toc-cloud-storage-latency" class="nav-link" data-scroll-target="#cloud-storage-latency"><span class="header-section-number">14.4</span> Cloud storage latency</a></li>
-  <li><a href="#hashes" id="toc-hashes" class="nav-link" data-scroll-target="#hashes"><span class="header-section-number">14.5</span> Hashes</a></li>
-  <li><a href="#parallel-workers-and-data" id="toc-parallel-workers-and-data" class="nav-link" data-scroll-target="#parallel-workers-and-data"><span class="header-section-number">14.6</span> Parallel workers and data</a></li>
-  <li><a href="#local-targets" id="toc-local-targets" class="nav-link" data-scroll-target="#local-targets"><span class="header-section-number">14.7</span> Local targets</a></li>
-  <li><a href="#many-targets" id="toc-many-targets" class="nav-link" data-scroll-target="#many-targets"><span class="header-section-number">14.8</span> Many targets</a></li>
-  <li><a href="#monitoring-the-pipeline" id="toc-monitoring-the-pipeline" class="nav-link" data-scroll-target="#monitoring-the-pipeline"><span class="header-section-number">14.9</span> Monitoring the pipeline</a></li>
-  <li><a href="#profiling" id="toc-profiling" class="nav-link" data-scroll-target="#profiling"><span class="header-section-number">14.10</span> Profiling</a></li>
+  <li><a href="#basic-efficiency" id="toc-basic-efficiency" class="nav-link active" data-scroll-target="#basic-efficiency"><span class="header-section-number">14.1</span> Basic efficiency</a>
+  <ul class="collapse">
+  <li><a href="#storage" id="toc-storage" class="nav-link" data-scroll-target="#storage"><span class="header-section-number">14.1.1</span> Storage</a></li>
+  <li><a href="#memory" id="toc-memory" class="nav-link" data-scroll-target="#memory"><span class="header-section-number">14.1.2</span> Memory</a></li>
+  </ul></li>
+  <li><a href="#overhead" id="toc-overhead" class="nav-link" data-scroll-target="#overhead"><span class="header-section-number">14.2</span> Overhead</a></li>
+  <li><a href="#parallel-processing" id="toc-parallel-processing" class="nav-link" data-scroll-target="#parallel-processing"><span class="header-section-number">14.3</span> Parallel processing</a>
+  <ul class="collapse">
+  <li><a href="#distributed-computing" id="toc-distributed-computing" class="nav-link" data-scroll-target="#distributed-computing"><span class="header-section-number">14.3.1</span> Distributed computing</a></li>
+  <li><a href="#worker-storage" id="toc-worker-storage" class="nav-link" data-scroll-target="#worker-storage"><span class="header-section-number">14.3.2</span> Worker storage</a></li>
+  <li><a href="#local-targets" id="toc-local-targets" class="nav-link" data-scroll-target="#local-targets"><span class="header-section-number">14.3.3</span> Local targets</a></li>
+  </ul></li>
+  <li><a href="#esoteric-optimizations" id="toc-esoteric-optimizations" class="nav-link" data-scroll-target="#esoteric-optimizations"><span class="header-section-number">14.4</span> Esoteric optimizations</a>
+  <ul class="collapse">
+  <li><a href="#metadata" id="toc-metadata" class="nav-link" data-scroll-target="#metadata"><span class="header-section-number">14.4.1</span> Metadata</a></li>
+  <li><a href="#timestamps" id="toc-timestamps" class="nav-link" data-scroll-target="#timestamps"><span class="header-section-number">14.4.2</span> Timestamps</a></li>
+  </ul></li>
+  <li><a href="#monitoring-the-pipeline" id="toc-monitoring-the-pipeline" class="nav-link" data-scroll-target="#monitoring-the-pipeline"><span class="header-section-number">14.5</span> Monitoring the pipeline</a></li>
+  <li><a href="#profiling" id="toc-profiling" class="nav-link" data-scroll-target="#profiling"><span class="header-section-number">14.6</span> Profiling</a></li>
   </ul>
 </nav>
     </div>
@@ -356,7 +365,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
-<p>This chapter explains simple options and settings to improve the efficiency of your <code>targets</code> pipelines. It also explains how to monitor the progress of a pipeline currently running.</p>
+<p>This chapter explains simple options and settings to improve the efficiency of your <code>targets</code> pipelines. It also explains how to monitor the progress of a pipeline currently running.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -369,15 +378,22 @@ Summary: efficiency
 </div>
 <div id="callout-1" class="callout-1-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
+<p>Basic efficiency:</p>
 <ul>
-<li>Set <code>seconds_meta_append</code>, <code>seconds_meta_upload</code>, and <code>seconds_reporter</code> to be kind to the local file system and R console.</li>
-<li>Choose <a href="https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats">efficient data storage formats</a> for large targets.</li>
-<li>Consider <code>memory = "transient"</code> and <code>garbage_collection = TRUE</code> for high-memory tasks.</li>
-<li>Consider <code>cue = tar_cue(file = FALSE)</code> for <a href="https://books.ropensci.org/targets/data.html#cloud-storage">cloud storage</a>.</li>
-<li>Set <code>trust_object_timestamps = TRUE</code> and <code>format = "file_fast</code> and the leave <a href="#data">data</a> alone during <code>tar_make()</code>.</li>
-<li>Parallelize data management with <code>storage = "worker"</code> and <code>retrieval = "worker"</code>.</li>
-<li>Consider <code>deployment = "main"</code> for quick targets that do not need <a href="crew.html">parallel workers</a>.</li>
-<li>If each task runs quickly, batch each group of tasks into a target to minimize overhead.</li>
+<li>Storage: choose <a href="https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats">efficient data storage formats</a> for targets with large data output.</li>
+<li>Memory: consider <code>memory = "transient"</code> and <code>garbage_collection = TRUE</code> for high-memory tasks.</li>
+<li>Overhead: if each task runs quickly, batch the workload into smaller numbers of targets to reduce overhead.</li>
+</ul>
+<p>Parallel processing:</p>
+<ul>
+<li>Distributed computing: consider <a href="crew.html">distributed computing with <code>crew</code></a>.</li>
+<li>Worker storage: parallelize the data processing with <code>storage = "worker"</code> and <code>retrieval = "worker"</code>.</li>
+<li>Local targets: consider <code>deployment = "main"</code> for quick targets that do not need <a href="crew.html">parallel workers</a>.</li>
+</ul>
+<p>Esoteric optimizations:</p>
+<ul>
+<li>Metadata: set <code>seconds_meta_append</code>, <code>seconds_meta_upload</code>, and <code>seconds_reporter</code> to be kind to the local file system and R console.</li>
+<li>Timestamps: Set <code>trust_object_timestamps = TRUE</code> and <code>format = "file_fast</code> and the leave <a href="data.html">data</a> alone during <code>tar_make()</code>.</li>
 </ul>
 </div>
 </div>
@@ -401,40 +417,17 @@ Summary: monitoring
 </div>
 </div>
 </div>
-<section id="metadata-and-progress-data" class="level2" data-number="14.1">
-<h2 data-number="14.1" class="anchored" data-anchor-id="metadata-and-progress-data"><span class="header-section-number">14.1</span> Metadata and progress data</h2>
-<p>By default, <code>tar_make()</code> writes to the R console and <a href="#data">local metadata files</a> up to hundreds of times per second. And if you opt into <a href="#cloud%20storage">cloud</a>, it uploads <a href="#data">local metadata files</a> to the <a href="#cloud%20storage">cloud</a> every few seconds. All this can slow down the pipeline and negatively impact the performance of shared file systems.</p>
-<p>Please help <code>targets</code> be kind to your file system, R console, and <a href="#cloud%20storage">cloud API rate limit</a>. The following arguments are available in <code>tar_make()</code> and <code>tar_config_set()</code>:</p>
-<ul>
-<li><code>seconds_meta_append</code>: how often to write to the <a href="#data">local metadata files</a>. The default is 0 seconds, but we recommend about 15.</li>
-<li><code>seconds_meta_upload</code>: how often to upload the <a href="#data">local metadata files</a> to the cloud. The default of 15 seconds should be okay.</li>
-<li><code>seconds_reporter</code>: how often to print progress messages to the R console. The default is 0, but we recommend 0.5.</li>
-</ul>
-<div class="callout callout-style-default callout-caution callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Caution: delayed metadata and progress messages
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-3" class="callout-3-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>If <code>seconds_meta_append</code> is 15, then <code>tar_make()</code> waits at least 15 seconds before updating the <a href="#data">local metadata files</a>. It spends at least 15 seconds collecting a backlog new metadata, and then it writes all that metadata in bulk. <code>seconds_reporter</code> does the same thing with R console progress messages. Be warned: a long-running local target may block the R session and make the actual delay much longer. So when a target completes, <code>tar_make()</code> may not notify you immediately, and the target may not be up to date in the metadata until long after it actually finishes. So please be patient and allow the pipeline to continue until the end.</p>
-</div>
-</div>
-</div>
-</section>
-<section id="data" class="level2" data-number="14.2">
-<h2 data-number="14.2" class="anchored" data-anchor-id="data"><span class="header-section-number">14.2</span> Data</h2>
+<section id="basic-efficiency" class="level2" data-number="14.1">
+<h2 data-number="14.1" class="anchored" data-anchor-id="basic-efficiency"><span class="header-section-number">14.1</span> Basic efficiency</h2>
+<p>These basic tips help most pipelines run efficiently.</p>
+<section id="storage" class="level3" data-number="14.1.1">
+<h3 data-number="14.1.1" class="anchored" data-anchor-id="storage"><span class="header-section-number">14.1.1</span> Storage</h3>
 <p>The default <a href="https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats">data storage format</a> is <a href="https://rdrr.io/r/base/readRDS.html">RDS</a>, which can be slow and bulky for large data. For large data pipelines, consider <a href="https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats">alternative formats</a> to more efficiently store and manage your data. Set the storage format using <code>tar_option_set()</code> or <code>tar_target()</code>:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">format =</span> <span class="st">"qs"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -443,7 +436,7 @@ Tips about data formats
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>Some formats such as <code>"qs"</code> work on all kinds of data, whereas others like <code>"feather"</code> works only on data frames. Most non-default formats store the data faster and in smaller files than the default <code>"rds"</code> format, but they require extra packages to be installed. For example, <code>format = "qs"</code> requires the <code>qs</code> package, and <code>format = "feather"</code> requires the <code>arrow</code> package.</p>
 <p>For extremely large datasets that cannot fit into memory, consider <code>format = "file"</code> to treat the data as a file on disk. Downstream targets are free to load only the subsets of the data they need.</p>
@@ -451,15 +444,15 @@ Tips about data formats
 </div>
 </div>
 </section>
-<section id="memory" class="level2" data-number="14.3">
-<h2 data-number="14.3" class="anchored" data-anchor-id="memory"><span class="header-section-number">14.3</span> Memory</h2>
+<section id="memory" class="level3" data-number="14.1.2">
+<h3 data-number="14.1.2" class="anchored" data-anchor-id="memory"><span class="header-section-number">14.1.2</span> Memory</h3>
 <p>By default, <code>tar_make()</code> keeps all target data in memory while it is running. To free superfluous data and consume less memory, activate transient memory and garbage collection:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">memory =</span> <span class="st">"transient"</span>, <span class="at">garbage_collection =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>(<span class="at">garbage_collection =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -468,7 +461,7 @@ About memory and garbage collection
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p><code>memory = "transient"</code> tells <code>targets</code> to remove data from the R environment as soon as it is no longer needed. However, the computer memory itself is not freed until garbage collection is run, and even then, R may not decrease the size of its heap. You can run garbage collection yourself with the <code>gc()</code> function in R.</p>
 <p>Transient memory and garbage collection have tradeoffs: the pipeline reads data from storage far more often, and these data reads take additional time. In addition, garbage collection is usually a slow operation, and repeated garbage collections could slow down a pipeline with thousands of targets.</p>
@@ -477,13 +470,83 @@ About memory and garbage collection
 </div>
 </div>
 </section>
-<section id="cloud-storage-latency" class="level2" data-number="14.4">
-<h2 data-number="14.4" class="anchored" data-anchor-id="cloud-storage-latency"><span class="header-section-number">14.4</span> Cloud storage latency</h2>
-<p><code>targets</code> supports optional <a href="https://books.ropensci.org/targets/data.html#cloud-storage">cloud storage</a>. To check if a cloud target is up to date, <code>tar_make()</code> polls the AWS or GPI API, which may cause time and money. For dramatically faster/cheaper workloads, set <code>cue = tar_cue(file = FALSE)</code> in <code>tar_target()</code> and/or <code>tar_option_set()</code> for cloud targets. Be warned though: if you manually delete or corrupt the data in the cloud bucket, <code>targets</code> will not notice.</p>
 </section>
-<section id="hashes" class="level2" data-number="14.5">
-<h2 data-number="14.5" class="anchored" data-anchor-id="hashes"><span class="header-section-number">14.5</span> Hashes</h2>
-<p><code>targets</code> uses hashes to check each target. These hashes are slow, and time stamps can speed up checks on <a href="#data">local data files</a> in <code>_targets/objects/</code>. <code>tar_option_set(trust_object_timestamps = TRUE)</code> (already the default) opts into fast time stamps, and <code>tar_option_set(trust_object_timestamps = FALSE)</code> opts out. For similarly fast processing of <a href="#data">external file targets</a>, set <code>format = "file_fast"</code> instead of <code>format = "file"</code>.</p>
+<section id="overhead" class="level2" data-number="14.2">
+<h2 data-number="14.2" class="anchored" data-anchor-id="overhead"><span class="header-section-number">14.2</span> Overhead</h2>
+<p>Each target incurs overhead, and it is not good practice to create thousands of targets which each run quickly. Instead, consider grouping the same amount of work into a smaller number of targets. See the sections on <a href="https://books.ropensci.org/targets/targets.html#what-a-target-should-do">what a target should do</a> and <a href="https://books.ropensci.org/targets/targets.html#how-much-a-target-should-do">how much a target should do</a>.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+About batching
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Simulation studies and other iterative stochastic pipelines may need to run thousands of independent random replications. For these pipelines, consider <a href="https://books.ropensci.org/targets/dynamic.html#performance-and-batching">batching</a> to reduce the number of targets while preserving the number of replications. In <a href="https://books.ropensci.org/targets/dynamic.html#performance-and-batching">batching</a>, each batch is a <a href="https://books.ropensci.org/targets/dynamic.html">dynamic branch</a> target that performs a subset of the replications. For 1000 replications, you might want 40 batches of 25 replications each, 10 batches with 100 replications each, or a different balance depending on the use case. Functions <code>tarchetypes::tar_rep()</code>, <code>tarchetypes::tar_map_rep()</code>, and <a href="https://wlandau.github.io/stantargets/articles/mcmc_rep.html"><code>stantargets::tar_stan_mcmc_rep_summary()</code></a> are examples of <a href="https://wlandau.github.io/targetopia/contributing.html#target-factories">target factories</a> that set up the batching structure without needing to understand <a href="https://books.ropensci.org/targets/dynamic.html">dynamic branching</a>.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="parallel-processing" class="level2" data-number="14.3">
+<h2 data-number="14.3" class="anchored" data-anchor-id="parallel-processing"><span class="header-section-number">14.3</span> Parallel processing</h2>
+<p>These tips add parallel processing to your pipeline and help you use it effectively.</p>
+<section id="distributed-computing" class="level3" data-number="14.3.1">
+<h3 data-number="14.3.1" class="anchored" data-anchor-id="distributed-computing"><span class="header-section-number">14.3.1</span> Distributed computing</h3>
+<p>Consider distributed computing with <a href="https://wlandau.github.io/crew/"><code>crew</code></a>, as explained at <a href="https://books.ropensci.org/targets/crew.html" class="uri">https://books.ropensci.org/targets/crew.html</a>. The <code>targets</code> package knows how to run independent tasks in parallel and wait for tasks that depend on upstream dependencies. <a href="https://wlandau.github.io/crew/"><code>crew</code></a> supports backends such as <a href="https://wlandau.github.io/crew.cluster/"><code>crew.cluster</code></a> for traditional clusters and <a href="https://wlandau.github.io/crew.aws.batch/"><code>crew.aws.batch</code></a> for AWS Batch.</p>
+</section>
+<section id="worker-storage" class="level3" data-number="14.3.2">
+<h3 data-number="14.3.2" class="anchored" data-anchor-id="worker-storage"><span class="header-section-number">14.3.2</span> Worker storage</h3>
+<p>If you run <code>tar_make()</code> <a href="crew.html">with a <code>crew</code> controller</a>, then parallel processes will run your targets, but the main R process still manages all the <a href="data.html">data</a> by default. To delegate <a href="data.html">data</a> management to the parallel <a href="crew.html"><code>crew</code></a> workers, set the <code>storage</code> and <code>retrieval</code> settings in <code>tar_target()</code> or <code>tar_option_set()</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">storage =</span> <span class="st">"worker"</span>, <span class="at">retrieval =</span> <span class="st">"worker"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>But be sure those workers have access to the data. They must either find the <a href="data.html">local data</a>, or the targets must use <a href="cloud-storage.html">cloud storage</a>.</p>
+</section>
+<section id="local-targets" class="level3" data-number="14.3.3">
+<h3 data-number="14.3.3" class="anchored" data-anchor-id="local-targets"><span class="header-section-number">14.3.3</span> Local targets</h3>
+<p>In <a href="crew.html">distributed computing</a> with <code>targets</code>, not every target needs to run on a remote worker. For targets that run quickly and cheaply, consider setting <code>deployment = "main"</code> in <code>tar_target()</code> to run them on the main local process:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_target</span>(dataset, <span class="fu">get_dataset</span>(), <span class="at">deployment =</span> <span class="st">"main"</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_target</span>(summary, <span class="fu">compute_summary_statistics</span>(), <span class="at">deployment =</span> <span class="st">"main"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="esoteric-optimizations" class="level2" data-number="14.4">
+<h2 data-number="14.4" class="anchored" data-anchor-id="esoteric-optimizations"><span class="header-section-number">14.4</span> Esoteric optimizations</h2>
+<p>These next tips are advanced and obscure, but they may still help.</p>
+<section id="metadata" class="level3" data-number="14.4.1">
+<h3 data-number="14.4.1" class="anchored" data-anchor-id="metadata"><span class="header-section-number">14.4.1</span> Metadata</h3>
+<p>By default, <code>tar_make()</code> writes to the R console and <a href="data.html">local metadata files</a> up to hundreds of times per second. And if you opt into <a href="#cloud%20storage">cloud</a>, it uploads <a href="data.html">local metadata files</a> to the <a href="#cloud%20storage">cloud</a> every few seconds. All this can slow down the pipeline and negatively impact the performance of shared file systems.</p>
+<p>Please help <code>targets</code> be kind to your file system, R console, and <a href="#cloud%20storage">cloud API rate limit</a>. The following arguments are available in <code>tar_make()</code> and <code>tar_config_set()</code>:</p>
+<ul>
+<li><code>seconds_meta_append</code>: how often to write to the <a href="data.html">local metadata files</a>. The default is 0 seconds, but we recommend about 15.</li>
+<li><code>seconds_meta_upload</code>: how often to upload the <a href="data.html">local metadata files</a> to the cloud. The default of 15 seconds should be okay.</li>
+<li><code>seconds_reporter</code>: how often to print progress messages to the R console. The default is 0, but we recommend 0.5.</li>
+</ul>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Caution: delayed metadata and progress messages
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>If <code>seconds_meta_append</code> is 15, then <code>tar_make()</code> waits at least 15 seconds before updating the <a href="data.html">local metadata files</a>. It spends at least 15 seconds collecting a backlog new metadata, and then it writes all that metadata in bulk. <code>seconds_reporter</code> does the same thing with R console progress messages. Be warned: a long-running local target may block the R session and make the actual delay much longer. So when a target completes, <code>tar_make()</code> may not notify you immediately, and the target may not be up to date in the metadata until long after it actually finishes. So please be patient and allow the pipeline to continue until the end.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="timestamps" class="level3" data-number="14.4.2">
+<h3 data-number="14.4.2" class="anchored" data-anchor-id="timestamps"><span class="header-section-number">14.4.2</span> Timestamps</h3>
+<p>Another esoteric tip: <code>targets</code> uses hashes to check each target. These hashes are slow, and time stamps can speed up checks on <a href="data.html">local data files</a> in <code>_targets/objects/</code>. <code>tar_option_set(trust_object_timestamps = TRUE)</code> (already the default) opts into fast time stamps, and <code>tar_option_set(trust_object_timestamps = FALSE)</code> opts out. For similarly fast processing of <a href="data.html">external file targets</a>, set <code>format = "file_fast"</code> instead of <code>format = "file"</code>.</p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -498,7 +561,7 @@ Dangers of timestamps
 </div>
 </div>
 <div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -507,7 +570,7 @@ Details about hashes and timestamps
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>A hash is a fixed-length fingerprint of an object or file. Except in rare cases, different files have different hashes, and two files with the same hash have the same contents. <code>targets</code> uses hashes to check if files have changed, which helps decide whether to rerun or skip each target. Unfortunately, hashes are expensive to compute, so a large number of targets or a large data file could slow down your pipeline.</p>
 <p>File modification timestamps offer a workaround. Operating systems keep track of when each file was last modified, and R functions <code>file.mtime()</code> and <code>file.info()</code> can look up these timestamps much faster than hashes can be computed. When you tell <code>targets</code> to use timestamps, the package compares the current timestamp to the old timestamp from when the pipeline last ran. If the timestamps agree, then <code>targets</code> assumes the file is up to date and does not bother to recompute the hash. Otherwise, if the timestamps disagree, then <code>targets</code> recomputes the hash to find out if the contents of the file have really changed. When used safely, this behavior speeds up <code>tar_make()</code>, <code>tar_outdated()</code>, <code>tar_visnetwork()</code>, etc. by avoiding superfluous hash computations when targets are up to date.</p>
@@ -515,44 +578,9 @@ Details about hashes and timestamps
 </div>
 </div>
 </section>
-<section id="parallel-workers-and-data" class="level2" data-number="14.6">
-<h2 data-number="14.6" class="anchored" data-anchor-id="parallel-workers-and-data"><span class="header-section-number">14.6</span> Parallel workers and data</h2>
-<p>If you run <code>tar_make()</code> <a href="crew.html">with a <code>crew</code> controller</a>, then parallel processes will run your targets, but the main R process still manages all the <a href="#data">data</a> by default. To delegate <a href="#data">data</a> management to the parallel <a href="crew.html"><code>crew</code></a> workers, set the <code>storage</code> and <code>retrieval</code> settings in <code>tar_target()</code> or <code>tar_option_set()</code>:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">storage =</span> <span class="st">"worker"</span>, <span class="at">retrieval =</span> <span class="st">"worker"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>But be sure those workers have access to the data. They must either find the <a href="#data">local data</a>, or the targets must use <a href="cloud-storage.html">cloud storage</a>.</p>
 </section>
-<section id="local-targets" class="level2" data-number="14.7">
-<h2 data-number="14.7" class="anchored" data-anchor-id="local-targets"><span class="header-section-number">14.7</span> Local targets</h2>
-<p>In <a href="crew.html">distributed computing</a> with <code>targets</code>, not every target needs to run on a remote worker. For targets that run quickly and cheaply, consider setting <code>deployment = "main"</code> in <code>tar_target()</code> to run them on the main local process:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_target</span>(dataset, <span class="fu">get_dataset</span>(), <span class="at">deployment =</span> <span class="st">"main"</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_target</span>(summary, <span class="fu">compute_summary_statistics</span>(), <span class="at">deployment =</span> <span class="st">"main"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="many-targets" class="level2" data-number="14.8">
-<h2 data-number="14.8" class="anchored" data-anchor-id="many-targets"><span class="header-section-number">14.8</span> Many targets</h2>
-<p>Each target incurs overhead, and it is not good practice to create thousands of targets which each run quickly. Instead, consider grouping the same amount of work into a smaller number of targets. See the sections on <a href="https://books.ropensci.org/targets/targets.html#what-a-target-should-do">what a target should do</a> and <a href="https://books.ropensci.org/targets/targets.html#how-much-a-target-should-do">how much a target should do</a>.</p>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-About batching
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-8" class="callout-8-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Simulation studies and other iterative stochastic pipelines may need to run thousands of independent random replications. For these pipelines, consider <a href="https://books.ropensci.org/targets/dynamic.html#performance-and-batching">batching</a> to reduce the number of targets while preserving the number of replications. In <a href="https://books.ropensci.org/targets/dynamic.html#performance-and-batching">batching</a>, each batch is a <a href="https://books.ropensci.org/targets/dynamic.html">dynamic branch</a> target that performs a subset of the replications. For 1000 replications, you might want 40 batches of 25 replications each, 10 batches with 100 replications each, or a different balance depending on the use case. Functions <code>tarchetypes::tar_rep()</code>, <code>tarchetypes::tar_map_rep()</code>, and <a href="https://wlandau.github.io/stantargets/articles/mcmc_rep.html"><code>stantargets::tar_stan_mcmc_rep_summary()</code></a> are examples of <a href="https://wlandau.github.io/targetopia/contributing.html#target-factories">target factories</a> that set up the batching structure without needing to understand <a href="https://books.ropensci.org/targets/dynamic.html">dynamic branching</a>.</p>
-</div>
-</div>
-</div>
-</section>
-<section id="monitoring-the-pipeline" class="level2" data-number="14.9">
-<h2 data-number="14.9" class="anchored" data-anchor-id="monitoring-the-pipeline"><span class="header-section-number">14.9</span> Monitoring the pipeline</h2>
+<section id="monitoring-the-pipeline" class="level2" data-number="14.5">
+<h2 data-number="14.5" class="anchored" data-anchor-id="monitoring-the-pipeline"><span class="header-section-number">14.5</span> Monitoring the pipeline</h2>
 <p>Even the most efficient <code>targets</code> pipelines can take time to complete because the user-defined tasks themselves are slow. There are convenient ways to monitor the progress of a running pipeline:</p>
 <ol type="1">
 <li><code>tar_poll()</code> continuously refreshes a text summary of runtime progress in the R console. Run it in a new R session at the project root directory. (Only supported in <code>targets</code> version 0.3.1.9000 and higher.)</li>
@@ -606,8 +634,8 @@ Example: monitoring the pipeline with <code>tar_watch()</code>
 </div>
 </div>
 </section>
-<section id="profiling" class="level2" data-number="14.10">
-<h2 data-number="14.10" class="anchored" data-anchor-id="profiling"><span class="header-section-number">14.10</span> Profiling</h2>
+<section id="profiling" class="level2" data-number="14.6">
+<h2 data-number="14.6" class="anchored" data-anchor-id="profiling"><span class="header-section-number">14.6</span> Profiling</h2>
 <p>Profiling tools like <a href="https://r-prof.github.io/proffer/"><code>proffer</code></a> figure out specific places where code runs slowly. It is important to identify these bottlenecks before you try to optimize. Steps:</p>
 <ol type="1">
 <li>Install the <a href="https://r-prof.github.io/proffer/"><code>proffer</code></a> R package and its dependencies.</li>
@@ -616,6 +644,12 @@ Example: monitoring the pipeline with <code>tar_watch()</code>
 </ol>
 
 
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p><code>cue = tar_cue(file = FALSE)</code> is no longer recommended for <a href="https://books.ropensci.org/targets/data.html#cloud-storage">cloud storage</a>. This unwise shortcut is no longer necessary, as of <a href="https://github.com/ropensci/targets/pull/1181" class="uri">https://github.com/ropensci/targets/pull/1181</a> (<code>targets</code> version &gt;= 1.3.2.9003).<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
 </section>
 
 </main> <!-- /main -->
