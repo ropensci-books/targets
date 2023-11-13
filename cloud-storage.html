@@ -438,19 +438,17 @@ Package version
 </section>
 <section id="pipeline-setup" class="level3" data-number="11.2.3">
 <h3 data-number="11.2.3" class="anchored" data-anchor-id="pipeline-setup"><span class="header-section-number">11.2.3</span> Pipeline setup</h3>
-<p>Use <code>tar_option_set()</code> to opt into cloud storage and declare options. For AWS:</p>
+<p>Use <code>tar_option_set()</code> to opt into cloud storage and declare options. For AWS:<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p>
 <ol type="1">
 <li><code>repository = "aws"</code></li>
 <li><code>resources = tar_resources(aws = tar_resources_aws(bucket = "YOUR_BUCKET", prefix = "YOUR/PREFIX"))</code></li>
-<li>Optional: <code>cue = tar_cue(file = FALSE)</code> for efficiency (see below).</li>
 </ol>
 <p>Details:</p>
 <ul>
 <li>The process is analogous for GCP.</li>
 <li>The <code>prefix</code> is just like <code>tar_config_get("store")</code>, but for the cloud. It controls where the data objects live in the bucket, and it should not conflict with other projects.</li>
 <li>Arguments <code>repository</code>, <code>resources</code>, and <code>cue</code> of <code>tar_target()</code> override their counterparts in <code>tar_option_set()</code>.</li>
-<li>In <code>tar_option_set()</code>, <code>repository</code> controls target data, and <code>repository_meta</code> controls metadata. However, <code>repository_meta</code> just defaults to <code>repository</code>, so there is usually no need to set it manually.</li>
-<li><code>cue = tar_cue(file = FALSE)</code> tells <code>targets</code> to not query the bucket when checking if a cloud target is up to date. It increases speed and reduces cost, but it does not check if the bucket is corrupted. Only set this if you trust the data in the bucket.</li>
+<li>In <code>tar_option_set()</code>, <code>repository</code> controls the target data, and <code>repository_meta</code> controls the metadata. However, <code>repository_meta</code> just defaults to <code>repository</code>. To continuously upload the metadata, it usually suffices to set e.g.&nbsp;<code>repository = "aws"</code> in <code>tar_option_set()</code>.</li>
 </ul>
 </section>
 </section>
@@ -468,19 +466,18 @@ Package version
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">bucket =</span> <span class="st">"my-test-bucket-25edb4956460647d"</span>,</span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">prefix =</span> <span class="st">"my_project_name"</span></span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">cue =</span> <span class="fu">tar_cue</span>(<span class="at">file =</span> <span class="cn">FALSE</span>) <span class="co"># For speed if you trust the bucket.</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>write_file <span class="ot">&lt;-</span> <span class="cf">function</span>(data) {</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">saveRDS</span>(data, <span class="st">"file.rds"</span>)</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="st">"file.rds"</span></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data, <span class="fu">rnorm</span>(<span class="dv">5</span>), <span class="at">format =</span> <span class="st">"qs"</span>), </span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(file, <span class="fu">write_file</span>(data), <span class="at">format =</span> <span class="st">"file"</span>)</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>write_file <span class="ot">&lt;-</span> <span class="cf">function</span>(data) {</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">saveRDS</span>(data, <span class="st">"file.rds"</span>)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="st">"file.rds"</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data, <span class="fu">rnorm</span>(<span class="dv">5</span>), <span class="at">format =</span> <span class="st">"qs"</span>), </span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(file, <span class="fu">write_file</span>(data), <span class="at">format =</span> <span class="st">"file"</span>)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>As usual, <code>tar_make()</code> runs the correct targets in the correct order. Both data files now live in bucket <code>my-test-bucket-25edb4956460647d</code> at S3 key paths which begin with <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-prefixes.html">prefix</a> <code>my_project_name</code>. Neither <code>_targets/objects/data</code> nor <code>file.rds</code> exist locally because <code>repository</code> is <code>"aws"</code>.</p>
 <div class="cell">
@@ -520,6 +517,7 @@ Package version
 <li id="fn1"><p>For cloud targets, <code>format = "file_fast"</code> has no purpose, and it automatically switches to <code>format = "file"</code>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn2"><p>Metadata snapshots are synchronous, so a long target with <code>deployment = "main"</code> may block the main R process and delay uploads.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn3"><p>Functions <code>tar_meta_upload()</code>, <code>tar_meta_sync()</code>, and <code>tar_meta_delete()</code> also manage cloud metadata.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p><code>cue = tar_cue(file = FALSE)</code> is no longer recommended for <a href="https://books.ropensci.org/targets/data.html#cloud-storage">cloud storage</a>. This unwise shortcut is no longer necessary, as of <a href="https://github.com/ropensci/targets/pull/1181" class="uri">https://github.com/ropensci/targets/pull/1181</a> (<code>targets</code> version &gt;= 1.3.2.9003).<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
 
