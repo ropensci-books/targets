@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>The {targets} R package user manual - 4&nbsp; Debugging</title>
+<title>The {targets} R package user manual - 4&nbsp; Debugging pipelines</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -108,7 +108,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./walkthrough.html">How to use {targets}</a></li><li class="breadcrumb-item"><a href="./debugging.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Debugging</span></a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./walkthrough.html">How to use {targets}</a></li><li class="breadcrumb-item"><a href="./debugging.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Debugging pipelines</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -163,7 +163,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./debugging.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Debugging</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Debugging pipelines</span></span></a>
   </div>
 </li>
       </ul>
@@ -324,10 +324,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#debugging-in-targets-is-different" id="toc-debugging-in-targets-is-different" class="nav-link active" data-scroll-target="#debugging-in-targets-is-different"><span class="header-section-number">4.1</span> Debugging in <code>targets</code> is different</a></li>
-  <li><a href="#example" id="toc-example" class="nav-link" data-scroll-target="#example"><span class="header-section-number">4.2</span> Example</a></li>
+  <li><a href="#debugging-example" id="toc-debugging-example" class="nav-link" data-scroll-target="#debugging-example"><span class="header-section-number">4.2</span> Debugging example</a></li>
   <li><a href="#finish-the-pipeline-anyway" id="toc-finish-the-pipeline-anyway" class="nav-link" data-scroll-target="#finish-the-pipeline-anyway"><span class="header-section-number">4.3</span> Finish the pipeline anyway</a></li>
   <li><a href="#error-messages" id="toc-error-messages" class="nav-link" data-scroll-target="#error-messages"><span class="header-section-number">4.4</span> Error messages</a></li>
-  <li><a href="#functions" id="toc-functions" class="nav-link" data-scroll-target="#functions"><span class="header-section-number">4.5</span> Functions</a></li>
+  <li><a href="#debugging-in-functions" id="toc-debugging-in-functions" class="nav-link" data-scroll-target="#debugging-in-functions"><span class="header-section-number">4.5</span> Debugging in functions</a></li>
   <li><a href="#system-issues" id="toc-system-issues" class="nav-link" data-scroll-target="#system-issues"><span class="header-section-number">4.6</span> System issues</a></li>
   <li><a href="#pause-the-pipeline-with-browser" id="toc-pause-the-pipeline-with-browser" class="nav-link" data-scroll-target="#pause-the-pipeline-with-browser"><span class="header-section-number">4.7</span> Pause the pipeline with <code>browser()</code></a></li>
   <li><a href="#pause-the-pipeline-with-the-debug-option" id="toc-pause-the-pipeline-with-the-debug-option" class="nav-link" data-scroll-target="#pause-the-pipeline-with-the-debug-option"><span class="header-section-number">4.8</span> Pause the pipeline with the <code>debug</code> option</a></li>
@@ -340,7 +340,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span id="debugging" class="quarto-section-identifier"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Debugging</span></span></h1>
+<h1 class="title"><span id="debugging" class="quarto-section-identifier"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Debugging pipelines</span></span></h1>
 </div>
 
 
@@ -368,8 +368,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <p>Although these layers are essential for reproducibility and scale, you will need to cut through them in order to diagnose and solve issues in pipelines. This chapter explains how.</p>
 </section>
-<section id="example" class="level2" data-number="4.2">
-<h2 data-number="4.2" class="anchored" data-anchor-id="example"><span class="header-section-number">4.2</span> Example</h2>
+<section id="debugging-example" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="debugging-example"><span class="header-section-number">4.2</span> Debugging example</h2>
 <p>The following pipeline simulates a repeated measures dataset and analyzes it with generalized least squares.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
@@ -474,8 +474,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>It looks like missing values in the data are responsible for the error in the <code>model</code> target. Maybe this clue alone is enough to repair the code.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> If not, read on.</p>
 </section>
-<section id="functions" class="level2" data-number="4.5">
-<h2 data-number="4.5" class="anchored" data-anchor-id="functions"><span class="header-section-number">4.5</span> Functions</h2>
+<section id="debugging-in-functions" class="level2" data-number="4.5">
+<h2 data-number="4.5" class="anchored" data-anchor-id="debugging-in-functions"><span class="header-section-number">4.5</span> Debugging in functions</h2>
 <p>Most errors are come from custom user-defined functions like <code>simulate_data()</code> and <code>analyze_data()</code>. See if you can reproduce the error in the R console.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
