@@ -12,7 +12,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = TRUE)
 library(targets)
 ```
 
-# Debugging {#debugging}
+# Debugging pipelines {#debugging}
 
 This chapter explains how to debug `targets` pipelines. The repository at <https://github.com/wlandau/targets-debug> has example R code. To practice the debugging techniques explained below, [download the code](https://github.com/wlandau/targets-debug/archive/refs/heads/main.zip) and step through the interactive R scripts `demo_small.R`, `demo_browser.R`, and `demo_workspace.R`. To ask for help using `targets`, please read the [help chapter](#help).
 
@@ -28,7 +28,7 @@ R code is easiest to debug when it is interactive. In the R console or [RStudio 
 
 Although these layers are essential for reproducibility and scale, you will need to cut through them in order to diagnose and solve issues in pipelines. This chapter explains how.
 
-## Example
+## Debugging example
 
 The following pipeline simulates a repeated measures dataset and analyzes it with generalized least squares.
 
@@ -145,7 +145,7 @@ It looks like missing values in the data are responsible for the error in the `m
 
 [^missing]: You can fix the bug by either removing the missing values from the dataset or by setting `na.action = na.omit` in `gls()`.
 
-## Functions
+## Debugging in functions
 
 Most errors are come from custom user-defined functions like `simulate_data()` and `analyze_data()`. See if you can reproduce the error in the R console.
 
