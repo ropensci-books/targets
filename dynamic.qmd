@@ -204,26 +204,218 @@ tar_pattern(
 
 ## Iteration
 
-The `iteration` argument of `tar_target()` determines how to split non-dynamic targets and how to aggregate dynamic ones. Consider the following subset of the spirograph pipeline. Below, `iteration` is equal to `"vector"` by default.
+The `iteration` argument of `tar_target()` determines how to split non-dynamic targets and how to aggregate dynamic ones. There are two major types of iteration: `"vector"` (default) and `"list"`. There is also `iteration = "group"`, which this chapter covers in the later section on branching over row groups.
+
+### Vector iteration
+
+Vector iteration uses the `vctrs` package to intelligently split and combine dynamic branches based on the underlying type of the object. Branches of vectors are automatically vectors, branches of data frames are automatically data frames, aggregates of vectors are automatically vectors, and aggregates of data frames are automatically data frames. This consistency makes most data processing tasks extremely smooth.
+
+Consider the following pipeline:
 
 ```{r, eval = FALSE}
+library(targets)
+library(tibble)
+
 list(
-  tar_target(fixed_radius, sample.int(n = 10, size = 2)),
-  tar_target(cycling_radius, sample.int(n = 10, size = 2)),
   tar_target(
-    points,
-    spirograph_points(fixed_radius, cycling_radius),
-    pattern = map(fixed_radius, cycling_radius)
+    name = cycling_radius,
+    command = c(1, 2),
+    iteration = "vector"
   ),
-  tar_target(combined_plot, plot_spirographs(points))
+  tar_target(
+    name = points_template,
+    command = tibble(x = c(1, 2), y = c(1, 2), fixed_radius = c(1, 2)),
+    iteration = "vector"
+  ),
+  tar_target(
+    name = points_branches,
+    command = add_column(points_template, cycling_radius = cycling_radius),
+    pattern = map(cycling_radius, points_template),
+    iteration = "vector"
+  ),
+  tar_target(
+    name = combined_points,
+    command = points_branches
+  )
 )
 ```
 
-For non-dynamic targets `fixed_radius` and `cycling_radius`, `iteration = "vector"` means that downstream dynamic targets branch over slices from `vctrs::vec_slice()`. In other words, the first branch of `points` is `spirograph_points(vec_slice(fixed_radius, 1), vec_slice(cycling_radius, 1))`, and second branch of `points` is `spirograph_points(vec_slice(fixed_radius, 2), vec_slice(cycling_radius, 2))`. Since `fixed_radius` is a numeric vector, `vec_slice(fixed_radius, 1)` is a vector of length 1. (But if `fixed_radius` were a data frame, then `vec_slice(fixed_radius, 1)` would be a one-row data frame). If `iteration` were equal to `"list"` for `fixed_radius` and `cycling_radius`, then the first and second branches would instead be `spirograph_points(fixed_radius[[1]], cycling_radius[[1]])` and `spirograph_points(fixed_radius[[2]])`, respectively.
+```{r, echo = FALSE, eval = TRUE}
+library(targets)
+tar_script({
+  library(targets)
+  library(tibble)
+  list(
+    tar_target(
+      name = cycling_radius,
+      command = c(3, 4),
+      iteration = "vector"
+    ),
+    tar_target(
+      name = points_template,
+      command = tibble(x = c(1, 2), y = c(1, 2), fixed_radius = c(1, 2)),
+      iteration = "vector"
+    ),
+    tar_target(
+      name = points_branches,
+      command = add_column(points_template, cycling_radius = cycling_radius),
+      pattern = map(cycling_radius, points_template),
+      iteration = "vector"
+    ),
+    tar_target(
+      name = combined_points,
+      command = points_branches
+    )
+  )
+})
+```
 
-For dynamic target `points`, `iteration = "vector"` means all the branches are aggregated with `vctrs::vec_c()`. Since each branch of `points` is a data frame, aggregation is equivalent to `dplyr::bind_rows()` in this case. That is why, as previously shown, `tar_read(points)` returns a monolithic data frame. `points` becomes a monolithic data frame also when non-dynamic target `combined_plot` runs its command `plot_spirographs(points)`. In other words, `plot_spirographs(points)` is equivalent to `plot_spirographs(vec_c(points_940d58fc, points_bf28fe5a))`, where `points_940d58fc` and `points_bf28fe5a` are the individual branches of `points`.^[`points_940d58fc` and `points_bf28fe5a` are targets in their own right and can be inspected with `tar_read(points_940d58fc)` and `tar_read(points_bf28fe5a)`]. If `iteration` were equal to `"list"` for `points`, then `plot_spirographs(points)` in `combined_plot` would be equivalent to `plot_spirographs(list(points_940d58fc, points_bf28fe5a))`.
+```{r, eval = TRUE}
+tar_visnetwork()
+```
 
-`iteration = "group"` is for dynamic branching across `dplyr::group_by()` row groups of a data frame, and it is covered in the next section.
+```{r, eval = TRUE}
+tar_make()
+```
+
+We observe the following:
+
+```{r, eval = TRUE}
+tar_read(points_branches)
+
+tar_read(points_branches, branches = 2)
+
+tar_read(combined_points)
+```
+
+`iteration = "vector"` produces convenient `tibble`s because:
+
+1. `vctrs::vec_slice()` intelligently splits the non-dynamic targets for branching.
+2. `vctrs::vec_c()` implicitly combines branches when you reference a dynamic target as a whole.
+
+So the pipeline is equivalent to:
+
+```{r, eval = FALSE}
+# cycling_radius target:
+cycling_radius <- c(3, 4)
+
+# points_template target:
+points_template <- tibble(x = c(1, 2), y = c(1, 2), fixed_radius = c(1, 2))
+
+# points_branches target:
+points_branches <- lapply(
+  X = seq_len(2),
+  FUN = function(index) {
+    # effect of iteration = "vector" in cycling_radius:
+    branch_cycling_radius <- vctrs::vec_slice(cycling_radius, index)
+    # effect of iteration = "vector" in points_template:
+    branch_points_template <- vctrs::vec_slice(points_template, index)
+    # command of points_branches target:
+    add_column(branch_points_template, cycling_radius = branch_cycling_radius)
+  }
+)
+
+# combined_points target:
+points_branches$.name_spec = "{outer}_{inner}"
+combined_points <- do.call( # effect of iteration = "vector" in points_branches
+  what = vctrs::vec_c,
+  args = points_branches
+)
+```
+
+### List iteration
+
+`iteration = "vector"` does not know how to split or aggregate every data type. For example, `vctrs` cannot combine `ggplot2` objects into a vector. `iteration = "list"` is a simple workaround that treats everything as a list during splitting and aggregation. Let's demonstrate on a simple pipeline:
+
+```{r, eval = FALSE}
+library(targets)
+library(tibble)
+
+list(
+  tar_target(
+    name = radius_origin,
+    command = c(1, 2),
+    iteration = "list"
+  ),
+  tar_target(
+    name = radius_branches,
+    command = radius_origin + 5,
+    pattern = map(radius_origin),
+    iteration = "list"
+  ),
+  tar_target(
+    name = radius_combined,
+    command = radius_branches
+  )
+)
+```
+
+```{r, echo = FALSE, eval = TRUE}
+library(targets)
+tar_script({
+  library(targets)
+  library(tibble)
+  list(
+    tar_target(
+      name = radius_origin,
+      command = c(1, 2),
+      iteration = "list"
+    ),
+    tar_target(
+      name = radius_branches,
+      command = radius_origin + 5,
+      pattern = map(radius_origin),
+      iteration = "list"
+    ),
+    tar_target(
+      name = radius_combined,
+      command = radius_branches
+    )
+  )
+})
+```
+
+```{r, eval = TRUE}
+tar_visnetwork()
+```
+
+```{r, eval = TRUE}
+tar_make()
+```
+
+We observe the following:
+
+```{r, eval = TRUE}
+tar_read(radius_branches)
+
+tar_read(radius_branches, branches = 2)
+
+tar_read(radius_combined)
+```
+
+As we see above, `iteration = "list"` uses `[[` to split non-dynamic targets and `list()` to combine dynamic branches. Except for the special branch names above, our example pipeline is equivalent to:
+
+```{r, eval = TRUE}
+# radius_origin target:
+radius_origin <- c(1, 2)
+
+# radius_branches target:
+radius_branches <- lapply(
+  X = seq_len(2),
+  FUN = function(index) {
+    # effect of iteration = "list" in radius_origin:
+    branch_radius_origin <- radius_origin[[index]]
+    # command of radius_branches:
+    branch_radius_origin + 5
+  }
+)
+
+# command of radius_combined:
+radius_combined <- do.call( # effect of iteration = "list" in radius_branches
+  what = list,
+  args = radius_branches
+)
+```
 
 ## Branching over row groups
 
