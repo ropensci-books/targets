@@ -419,7 +419,9 @@ radius_combined <- do.call( # effect of iteration = "list" in radius_branches
 
 ## Branching over row groups
 
-To branch over `dplyr::group_by()` row groups of a data frame, use `iteration = "group"` together with `tar_group()`. To demonstrate, consider the following alternative version of the spirograph pipeline. Below, we start with a monolithic data frame with all the spirographs together, and then we branch over the row groups of that data frame to create one visual for each dynamic branch.
+To dynamically branch over `dplyr::group_by()` row groups of a non-dynamic data frame, use `iteration = "group"` together with `tar_group()`. The target with `iteration = "group"` must not already be a dynamic target. (In other words, it is invalid to set `iteration = "group"` and `pattern = map(...)` for the same target.)
+
+To demonstrate group iteration, consider the following alternative version of the spirograph pipeline. Below, we start with a monolithic data frame with all the spirographs together, and then we branch over the row groups of that data frame to create one visual for each dynamic branch.
 
 ```{r, echo = FALSE, eval = TRUE}
 tar_script({
