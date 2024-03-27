@@ -15,24 +15,24 @@ library(targets)
 library(dplyr)
 ```
 
-:::{.callout-tip}
-## Performance
+::: callout-tip
+## Performance {#performance}
 
 Branched pipelines can be computationally demanding. See the [performance chapter](#performance) for options, settings, and other choices to optimize and monitor large pipelines.
 :::
 
 ## Branching
 
-Sometimes, a pipeline contains more targets than a user can comfortably type by hand. For projects with hundreds of targets, branching can make the code in `_targets.R` shorter and more concise. 
+Sometimes, a pipeline contains more targets than a user can comfortably type by hand. For projects with hundreds of targets, branching can make the code in `_targets.R` shorter and more concise.
 
 `targets` supports two types of branching: dynamic branching and [static branching](#static). Some projects are better suited to dynamic branching, while others benefit more from [static branching](#static) or a combination of both. Here is a short list of tradeoffs.
 
-Dynamic | Static
----|---
-Pipeline creates new targets at runtime. | All targets defined in advance.
-Cryptic target names. | Friendly target names.
-Scales to hundreds of branches. | Does not scale as easily for `tar_visnetwork()` etc.
-No metaprogramming required. | Familiarity with metaprogramming is helpful.
+| Dynamic                                  | Static                                               |
+|------------------------------------|------------------------------------|
+| Pipeline creates new targets at runtime. | All targets defined in advance.                      |
+| Cryptic target names.                    | Friendly target names.                               |
+| Scales to hundreds of branches.          | Does not scale as easily for `tar_visnetwork()` etc. |
+| No metaprogramming required.             | Familiarity with metaprogramming is helpful.         |
 
 ## About dynamic branching
 
@@ -42,8 +42,9 @@ To use dynamic branching, set the `pattern` argument of `tar_target()`. The patt
 
 ## Example
 
-To illustrate, consider the example pipeline below. It uses dynamic branching to generate random [spirographs](https://en.wikipedia.org/wiki/Spirograph) using code borrowed from [W. Joel Schneider](wjschne)'s [`spiro`](https://wjschne.github.io/spiro/index.html) package.^[The pipeline uses code borrowed from the [`spiro`](https://wjschne.github.io/spiro/index.html) package. The code in the `spirograph_points()` function is adapted from <https://github.com/wjschne/spiro/blob/87f73ec37ceb0a7a9d09856ada8ae28d587a2ebd/R/spirograph.R>
-under the CC0 1.0 Universal license: <https://github.com/wjschne/spiro/blob/87f73ec37ceb0a7a9d09856ada8ae28d587a2ebd/LICENSE.md>]. A spirograph is a type of two-dimensional algebraic curve determined (in part) by parameters `fixed_radius` and `cycling_radius`. Targets `fixed_radius` and `cycling_radius` draw random parameter values, and the dynamic target `points` generates a spirograph dataset for each set of parameters (one spirograph per dynamic branch). Target `single_plot` plots each spirograph separately, and `combine_plot` plots all the spirographs together.
+To illustrate, consider the example pipeline below. It uses dynamic branching to generate random [spirographs](https://en.wikipedia.org/wiki/Spirograph) using code borrowed from [W. Joel Schneider](https://github.com/wjschne)'s [`spiro`](https://wjschne.github.io/spiro/index.html) package.[^dynamic-1]. A spirograph is a type of two-dimensional algebraic curve determined (in part) by parameters `fixed_radius` and `cycling_radius`. Targets `fixed_radius` and `cycling_radius` draw random parameter values, and the dynamic target `points` generates a spirograph dataset for each set of parameters (one spirograph per dynamic branch). Target `single_plot` plots each spirograph separately, and `combine_plot` plots all the spirographs together.
+
+[^dynamic-1]: The pipeline uses code borrowed from the [`spiro`](https://wjschne.github.io/spiro/index.html) package. The code in the `spirograph_points()` function is adapted from <https://github.com/wjschne/spiro/blob/87f73ec37ceb0a7a9d09856ada8ae28d587a2ebd/R/spirograph.R> under the CC0 1.0 Universal license: <https://github.com/wjschne/spiro/blob/87f73ec37ceb0a7a9d09856ada8ae28d587a2ebd/LICENSE.md>
 
 ```{r, echo = FALSE, eval = TRUE}
 library(targets)
@@ -167,10 +168,11 @@ Use the `branches` argument of `tar_read()` to read an individual branch or subs
 tar_read(single_plot, branches = 1)
 ```
 
-
 ## Provenance
 
-Recall our dynamic target `points` with branches for spirograph datasets. Each branch has columns `fixed_radius` and `cycling_radius` so we know which parameter set each spirograph used. It is good practice to proactively append this metadata to each branch, e.g. in `spirograph_points()`. That way, if a branch errors out, it is easy to track down the upstream data that caused it.^[See also <https://books.ropensci.org/targets/debugging.html#workspaces>.]
+Recall our dynamic target `points` with branches for spirograph datasets. Each branch has columns `fixed_radius` and `cycling_radius` so we know which parameter set each spirograph used. It is good practice to proactively append this metadata to each branch, e.g. in `spirograph_points()`. That way, if a branch errors out, it is easy to track down the upstream data that caused it.[^dynamic-2]
+
+[^dynamic-2]: See also <https://books.ropensci.org/targets/debugging.html#workspaces>.
 
 ```{r}
 tar_read(points, branches = 1) # first branch
@@ -184,12 +186,12 @@ tar_read(points, branches = 2) # second branch
 
 `targets` supports many more types of dynamic branching patterns.
 
-* `map()`: one branch per tuple of elements.
-* `cross()`: one branch per *combination* of elements.
-* `slice()`: select individual pieces to branch over. For example, `pattern = slice(x, index = c(3, 4))` branches over the third and fourth slices (or branches) of target `x`.
-* `head()`: branch over the first few elements.
-* `tail()`: branch over the last few elements.
-* `sample()`: branch over a random subset of elements.
+-   `map()`: one branch per tuple of elements.
+-   `cross()`: one branch per *combination* of elements.
+-   `slice()`: select individual pieces to branch over. For example, `pattern = slice(x, index = c(3, 4))` branches over the third and fourth slices (or branches) of target `x`.
+-   `head()`: branch over the first few elements.
+-   `tail()`: branch over the last few elements.
+-   `sample()`: branch over a random subset of elements.
 
 Patterns are composable. For example, `pattern = cross(other_parameter, map(fixed_radius, cycling_radius))` is conceptually equivalent to `tidyr::crossing(other_parameter, tidyr::nesting(fixed_radius, cycling_radius))`. You can test and experiment with branching structures using [`tar_pattern()`](https://docs.ropensci.org/targets/reference/tar_pattern.html). In the output below, suffixes `_1`, `_2`, and `_3`, denote both dynamic branches and the slices of upstream data they branch over.
 
@@ -290,8 +292,8 @@ tar_read(combined_points)
 
 `iteration = "vector"` produces convenient `tibble`s because:
 
-1. `vctrs::vec_slice()` intelligently splits the non-dynamic targets for branching.
-2. `vctrs::vec_c()` implicitly combines branches when you reference a dynamic target as a whole.
+1.  `vctrs::vec_slice()` intelligently splits the non-dynamic targets for branching.
+2.  `vctrs::vec_c()` implicitly combines branches when you reference a dynamic target as a whole.
 
 So the pipeline is equivalent to:
 
@@ -521,7 +523,6 @@ list(
 )
 ```
 
-
 ```{r}
 tar_make()
 ```
@@ -553,7 +554,6 @@ list(
 ```
 
 For similar functions that branch across row groups, visit <https://docs.ropensci.org/tarchetypes/reference/index.html#dynamic-grouped-data-frames>.
-
 
 ## Branching over files
 
@@ -587,9 +587,9 @@ Dynamic branching makes it easy to create many targets. Unfortunately, if the nu
 
 Batching is particularly useful to reduce overhead. In batching, each dynamic branch performs multiple computations instead of just one. The `tarchetypes` package supports several general-purpose functions that do batching automatically: most notably `tar_rep()` and `tar_map_rep()` for simulation studies and `tar_group_count()`, `tar_group_size()`, and `tar_group_select()` for batching over the rows of a data frame.
 
-The packages in the [R Targetopia](https://wlandau.github.io/targetopia.html) support batching for specific use cases. For example, in [`stantargets`](https://wlandau.github.io/stantargets/), [`tar_stan_mcmc_rep_summary()`](https://wlandau.github.io/stantargets/articles/mcmc_rep.html) dynamically branches over batches of simulated datasets for Stan models.
+The packages in the [R Targetopia](https://wlandau.github.io/targetopia/) support batching for specific use cases. For example, in [`stantargets`](https://docs.ropensci.org/stantargets/index.html), [`tar_stan_mcmc_rep_summary()`](https://docs.ropensci.org/stantargets/reference/tar_stan_mcmc_rep_summary.html) dynamically branches over batches of simulated datasets for Stan models.
 
-The [`targets-stan`](https://github.com/ropensci/targets-stan) repository has an example of custom batching implemented from scratch. The goal of the pipeline is to validate a Bayesian model by simulating thousands of dataset, analyzing each with a Bayesian model, and assessing the overall accuracy of the inference. Rather than define a target for each dataset in model, the pipeline breaks up the work into batches, where each batch has multiple datasets or multiple analyses. Here is a version of the pipeline with 40 batches and 25 simulation reps per batch (1000 reps total in a pipeline of 82 targets).
+The [`targets-stan`](https://github.com/wlandau/targets-stan) repository has an example of custom batching implemented from scratch. The goal of the pipeline is to validate a Bayesian model by simulating thousands of dataset, analyzing each with a Bayesian model, and assessing the overall accuracy of the inference. Rather than define a target for each dataset in model, the pipeline breaks up the work into batches, where each batch has multiple datasets or multiple analyses. Here is a version of the pipeline with 40 batches and 25 simulation reps per batch (1000 reps total in a pipeline of 82 targets).
 
 ```{r, eval = FALSE}
 # _targets.R
