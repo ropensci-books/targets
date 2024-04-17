@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.552">
+<meta name="generator" content="quarto-1.4.553">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -581,7 +581,7 @@ Caution: delayed metadata and progress messages
 </section>
 <section id="timestamps" class="level3" data-number="14.4.2">
 <h3 data-number="14.4.2" class="anchored" data-anchor-id="timestamps"><span class="header-section-number">14.4.2</span> Timestamps</h3>
-<p>Another esoteric tip: <code>targets</code> uses hashes to check each target. These hashes are slow, and time stamps can speed up checks on <a href="data.html">local data files</a> in <code>_targets/objects/</code>. <code>tar_option_set(trust_object_timestamps = TRUE)</code> (already the default) opts into fast time stamps, and <code>tar_option_set(trust_object_timestamps = FALSE)</code> opts out. For similarly fast processing of <a href="data.html">external file targets</a>, set <code>format = "file_fast"</code> instead of <code>format = "file"</code>.</p>
+<p>Another esoteric tip: targets uses hashes to check each target. Because these hashes are slow, by default targets uses time stamps to speed up checks on <a href="data.html">local data files</a> in <code>_targets/objects/</code>. The default setting of <code>tar_option_set(trust_object_timestamps = TRUE)</code> opts into fast time stamps, and you can set <code>tar_option_set(trust_object_timestamps = FALSE)</code> to opt out. For similarly fast processing of <a href="data.html">external file targets</a>, set <code>format = "file_fast"</code> instead of <code>format = "file"</code>.</p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
