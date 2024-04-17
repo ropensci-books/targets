@@ -151,7 +151,7 @@ If `seconds_meta_append` is 15, then `tar_make()` waits at least 15 seconds befo
 
 ### Timestamps
 
-Another esoteric tip: `targets` uses hashes to check each target. These hashes are slow, and time stamps can speed up checks on [local data files](#data) in `_targets/objects/`. `tar_option_set(trust_object_timestamps = TRUE)` (already the default) opts into fast time stamps, and `tar_option_set(trust_object_timestamps = FALSE)` opts out. For similarly fast processing of [external file targets](#data), set `format = "file_fast"` instead of `format = "file"`.
+Another esoteric tip: targets uses hashes to check each target. Because these hashes are slow, by default targets uses time stamps to speed up checks on [local data files](#data) in `_targets/objects/`. The default setting of `tar_option_set(trust_object_timestamps = TRUE)` opts into fast time stamps, and you can set `tar_option_set(trust_object_timestamps = FALSE)` to opt out. For similarly fast processing of [external file targets](#data), set `format = "file_fast"` instead of `format = "file"`.
 
 ::: {.callout-important}
 ### Dangers of timestamps
