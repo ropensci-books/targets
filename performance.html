@@ -371,7 +371,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#esoteric-optimizations" id="toc-esoteric-optimizations" class="nav-link" data-scroll-target="#esoteric-optimizations"><span class="header-section-number">14.4</span> Esoteric optimizations</a>
   <ul class="collapse">
   <li><a href="#metadata" id="toc-metadata" class="nav-link" data-scroll-target="#metadata"><span class="header-section-number">14.4.1</span> Metadata</a></li>
-  <li><a href="#timestamps" id="toc-timestamps" class="nav-link" data-scroll-target="#timestamps"><span class="header-section-number">14.4.2</span> Timestamps</a></li>
+  <li><a href="#time-stamps" id="toc-time-stamps" class="nav-link" data-scroll-target="#time-stamps"><span class="header-section-number">14.4.2</span> Time stamps</a></li>
   </ul></li>
   <li><a href="#monitoring-the-pipeline" id="toc-monitoring-the-pipeline" class="nav-link" data-scroll-target="#monitoring-the-pipeline"><span class="header-section-number">14.5</span> Monitoring the pipeline</a></li>
   <li><a href="#profiling" id="toc-profiling" class="nav-link" data-scroll-target="#profiling"><span class="header-section-number">14.6</span> Profiling</a></li>
@@ -428,7 +428,7 @@ Summary: efficiency
 <p>Esoteric optimizations:</p>
 <ul>
 <li>Metadata: set <code>seconds_meta_append</code>, <code>seconds_meta_upload</code>, and <code>seconds_reporter</code> to be kind to the local file system and R console.</li>
-<li>Timestamps: Set <code>trust_object_timestamps = TRUE</code> and <code>format = "file_fast</code> and the leave <a href="data.html">data</a> alone during <code>tar_make()</code>.</li>
+<li>Timestamps: Set <code>trust_timestamps = TRUE</code> to avoid recomputing hashes of targets that are already up to date.</li>
 </ul>
 </div>
 </div>
@@ -579,39 +579,9 @@ Caution: delayed metadata and progress messages
 </div>
 </div>
 </section>
-<section id="timestamps" class="level3" data-number="14.4.2">
-<h3 data-number="14.4.2" class="anchored" data-anchor-id="timestamps"><span class="header-section-number">14.4.2</span> Timestamps</h3>
-<p>Another esoteric tip: targets uses hashes to check each target. Because these hashes are slow, by default targets uses time stamps to speed up checks on <a href="data.html">local data files</a> in <code>_targets/objects/</code>. The default setting of <code>tar_option_set(trust_object_timestamps = TRUE)</code> opts into fast time stamps, and you can set <code>tar_option_set(trust_object_timestamps = FALSE)</code> to opt out. For similarly fast processing of <a href="data.html">external file targets</a>, set <code>format = "file_fast"</code> instead of <code>format = "file"</code>.</p>
-<div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Dangers of timestamps
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>If you use <code>trust_object_timestamps = TRUE</code> or <code>format = "file_fast"</code>, do not manually edit those files while the pipeline is running. <code>_targets/objects/</code> in particular should never be modified by hand. And if you have on file system with low-precision time stamps (EXT3, FAT, XFS) wait at least 2 seconds after the pipeline finishes.</strong></p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Details about hashes and timestamps
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-8" class="callout-8-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>A hash is a fixed-length fingerprint of an object or file. Except in rare cases, different files have different hashes, and two files with the same hash have the same contents. <code>targets</code> uses hashes to check if files have changed, which helps decide whether to rerun or skip each target. Unfortunately, hashes are expensive to compute, so a large number of targets or a large data file could slow down your pipeline.</p>
-<p>File modification timestamps offer a workaround. Operating systems keep track of when each file was last modified, and R functions <code>file.mtime()</code> and <code>file.info()</code> can look up these timestamps much faster than hashes can be computed. When you tell <code>targets</code> to use timestamps, the package compares the current timestamp to the old timestamp from when the pipeline last ran. If the timestamps agree, then <code>targets</code> assumes the file is up to date and does not bother to recompute the hash. Otherwise, if the timestamps disagree, then <code>targets</code> recomputes the hash to find out if the contents of the file have really changed. When used safely, this behavior speeds up <code>tar_make()</code>, <code>tar_outdated()</code>, <code>tar_visnetwork()</code>, etc. by avoiding superfluous hash computations when targets are up to date.</p>
-</div>
-</div>
-</div>
+<section id="time-stamps" class="level3" data-number="14.4.2">
+<h3 data-number="14.4.2" class="anchored" data-anchor-id="time-stamps"><span class="header-section-number">14.4.2</span> Time stamps</h3>
+<p><code>targets</code> computes a <a href="https://en.wikipedia.org/wiki/Hash_function">hash</a> to check if each target is up to date. However, because a <a href="https://en.wikipedia.org/wiki/Hash_function">hash</a> can be a slow operation, <code>targets</code> tries to avoid recomputing hashes when feasible. The shortcut uses file modification time stamps: if the time stamp has not changed since last <code>tar_make()</code>, then the hash should be the same as last time, so <code>targets</code> should not need to recompute it. By default, <code>targets</code> only performs this shortcut on sufficiently modern file systems with trustworthy high-precision time stamps, but you can override this with the <code>trust_timestamps</code> argument of <code>tar_option_set()</code>.</p>
 </section>
 </section>
 <section id="monitoring-the-pipeline" class="level2" data-number="14.5">
@@ -623,7 +593,7 @@ Details about hashes and timestamps
 <li><code>tar_watch()</code> launches an Shiny app that automatically refreshes the graph every few seconds.</li>
 </ol>
 <div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -632,7 +602,7 @@ Example: monitoring the pipeline with <code>tar_watch()</code>
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define an example target script file with a slow pipeline.</span></span>
