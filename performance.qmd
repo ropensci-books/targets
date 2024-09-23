@@ -35,7 +35,7 @@ Parallel processing:
 Esoteric optimizations:
 
 * Metadata: set `seconds_meta_append`, `seconds_meta_upload`, and `seconds_reporter` to be kind to the local file system and R console.
-* Timestamps: Set `trust_object_timestamps = TRUE` and `format = "file_fast` and the leave [data](#data) alone during `tar_make()`.
+* Timestamps: Set `trust_timestamps = TRUE` to avoid recomputing hashes of targets that are already up to date.
 
 :::
 
@@ -149,24 +149,9 @@ If `seconds_meta_append` is 15, then `tar_make()` waits at least 15 seconds befo
 
 :::
 
-### Timestamps
+### Time stamps
 
-Another esoteric tip: targets uses hashes to check each target. Because these hashes are slow, by default targets uses time stamps to speed up checks on [local data files](#data) in `_targets/objects/`. The default setting of `tar_option_set(trust_object_timestamps = TRUE)` opts into fast time stamps, and you can set `tar_option_set(trust_object_timestamps = FALSE)` to opt out. For similarly fast processing of [external file targets](#data), set `format = "file_fast"` instead of `format = "file"`.
-
-::: {.callout-important}
-### Dangers of timestamps
-
-**If you use `trust_object_timestamps = TRUE` or `format = "file_fast"`, do not manually edit those files while the pipeline is running. `_targets/objects/` in particular should never be modified by hand. And if you have on file system with low-precision time stamps (EXT3, FAT, XFS) wait at least 2 seconds after the pipeline finishes.**
-:::
-
-::: {.callout-tip collapse="true"}
-### Details about hashes and timestamps
-
-A hash is a fixed-length fingerprint of an object or file. Except in rare cases, different files have different hashes, and two files with the same hash have the same contents. `targets` uses hashes to check if files have changed, which helps decide whether to rerun or skip each target. Unfortunately, hashes are expensive to compute, so a large number of targets or a large data file could slow down your pipeline.
-
-File modification timestamps offer a workaround. Operating systems keep track of when each file was last modified, and R functions `file.mtime()` and `file.info()` can look up these timestamps much faster than hashes can be computed. When you tell `targets` to use timestamps, the package compares the current timestamp to the old timestamp from when the pipeline last ran. If the timestamps agree, then `targets` assumes the file is up to date and does not bother to recompute the hash. Otherwise, if the timestamps disagree, then `targets` recomputes the hash to find out if the contents of the file have really changed. When used safely, this behavior speeds up `tar_make()`, `tar_outdated()`, `tar_visnetwork()`, etc. by avoiding superfluous hash computations when targets are up to date.
-
-:::
+`targets` computes a [hash](https://en.wikipedia.org/wiki/Hash_function) to check if each target is up to date. However, because a [hash](https://en.wikipedia.org/wiki/Hash_function) can be a slow operation, `targets` tries to avoid recomputing hashes when feasible. The shortcut uses file modification time stamps: if the time stamp has not changed since last `tar_make()`, then the hash should be the same as last time, so `targets` should not need to recompute it. By default, `targets` only performs this shortcut on sufficiently modern file systems with trustworthy high-precision time stamps, but you can override this with the `trust_timestamps` argument of `tar_option_set()`.
 
 ## Monitoring the pipeline
 
