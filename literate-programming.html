@@ -406,12 +406,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><img src="./man/figures/knitr-ide.png" class="img-fluid"></p>
 <p>With the <code>tar_render()</code> function in <a href="https://github.com/ropensci/tarchetypes"><code>tarchetypes</code></a>, we can go a step further and include <code>report.Rmd</code> as a <em>target</em> in the pipeline. This new targets re-renders <code>report.Rmd</code> whenever <code>fit</code> or <code>hist</code> changes, which means <code>tar_make()</code> brings the output file <code>report.html</code> up to date.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>target <span class="ot">&lt;-</span> <span class="fu">tar_render</span>(report, <span class="st">"report.Rmd"</span>) <span class="co"># Just defines a target object.</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>target<span class="sc">$</span>command<span class="sc">$</span>expr[[<span class="dv">1</span>]]</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; tarchetypes::tar_render_run(path = "report.Rmd", args = list(input = "report.Rmd", </span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     knit_root_dir = getwd(), quiet = TRUE), deps = list(fit, </span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     hist))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>target <span class="ot">&lt;-</span> <span class="fu">tar_render</span>(report, <span class="st">"report.Rmd"</span>) <span class="co"># Just defines a target object.</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>target<span class="sc">$</span>command<span class="sc">$</span>expr[[<span class="dv">1</span>]]</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; tarchetypes::tar_render_run(path = "report.Rmd", args = list(input = "report.Rmd", </span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     knit_root_dir = getwd(), quiet = TRUE), deps = list(fit, </span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     hist))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><code>tar_render()</code> is like <code>tar_target()</code>, except that you supply the file path to the R Markdown report instead of an R command. Here it is at the bottom of the example <code>_targets.R</code> file below:</p>
 <div class="cell">
