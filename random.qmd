@@ -18,6 +18,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = TRUE)
 
 ```{r, message = FALSE, warning = FALSE, echo = FALSE, eval = TRUE}
 library(targets)
+library(tarchetypes)
 ```
 
 This chapter explains the behaviors, limitations, and trade-offs of `targets` with respect to pseudo-random number generation. It assumes basic  familiarity with pseudo-random numbers, especially base R functions like `sample()` and `set.seed()`.
@@ -41,6 +42,7 @@ Consider the following simple pipeline.
 ```{r, eval = FALSE, echo = TRUE}
 # _targets.R file:
 library(targets)
+library(tarchetypes)
 tar_option_set(seed = 3)
 list(
   tar_target(name = target_1, command = runif(n = 1)),
@@ -52,6 +54,7 @@ list(
 ```{r, eval = TRUE, echo = FALSE}
 tar_script({
   library(targets)
+  library(tarchetypes)
   tar_option_set(seed = 3)
   list(
     tar_target(name = target_1, command = runif(n = 1)),

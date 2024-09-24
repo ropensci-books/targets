@@ -10,6 +10,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = TRUE)
 
 ```{r, message = FALSE, warning = FALSE, echo = FALSE}
 library(targets)
+library(tarchetypes)
 ```
 
 # Packages {#packages}
@@ -63,6 +64,7 @@ To track the contents of packages `package1` and `package2`, you must
 ```{r, eval = FALSE}
 # _targets.R
 library(targets)
+library(tarchetypes)
 tar_option_set(
   packages = c("package1", "package2", ...), # `...` is for other packages.
   imports = c("package1", "package2")

@@ -12,6 +12,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = TRUE)
 
 ```{r, message = FALSE, warning = FALSE, echo = FALSE, eval = TRUE}
 library(targets)
+library(tarchetypes)
 ```
 
 :::{.callout-note}
@@ -68,6 +69,7 @@ tar_script({
 ```{r, eval = FALSE}
 # _targets.R
 library(targets)
+library(tarchetypes)
 library(crew)
 tar_option_set(
   controller = crew_controller_local(workers = 2)
@@ -120,6 +122,7 @@ Fortunately, it is straightforward to explore auto-scaling and configuration iss
 # _targets.R file
 
 library(targets)
+library(tarchetypes)
 controller <- crew::crew_controller_local(
   name = "my_controller",
   workers = 10,
@@ -158,6 +161,7 @@ But now, suppose the targets in the pipeline take longer to run:
 ```{r, eval = FALSE}
 # _targets.R file:
 library(targets)
+library(tarchetypes)
 controller <- crew::crew_controller_local(
   name = "my_controller",
   workers = 10,
@@ -196,6 +200,7 @@ tar_crew()
 ```{r, eval = FALSE}
 # _targets.R
 library(targets)
+library(tarchetypes)
 library(crew.cluster)
 tar_option_set(
   controller = crew_controller_sge(
@@ -225,6 +230,7 @@ Different targets may have different computing requirements, from memory to GPUs
 ```{r, eval = FALSE}
 # _targets.R
 library(targets)
+library(tarchetypes)
 library(crew)
 library(crew.cluster)
 controller_local <- crew_controller_local(

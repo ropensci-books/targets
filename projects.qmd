@@ -10,6 +10,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = TRUE)
 
 ```{r, message = FALSE, warning = FALSE, echo = FALSE}
 library(targets)
+library(tarchetypes)
 ```
 
 # Projects {#projects}
@@ -94,9 +95,8 @@ All projects share the same functions defined in the scripts in `R/`, and each p
 ```{r, eval = FALSE}
 # script_a.R
 library(targets)
-source("R/functions_data.R")
-source("R/functions_analysis.R")
-source("R/functions_visualization.R")
+library(tarchetypes)
+tar_source()
 tar_option_set(packages = "tidyverse")
 list(
   tar_target(target_abc, f(..)),
@@ -109,9 +109,8 @@ Likewise, `script_b.R` defines the targets for project B.
 ```{r, eval = FALSE}
 # script_b.R
 library(targets)
-source("R/functions_data.R")
-source("R/functions_analysis.R")
-source("R/functions_visualization.R")
+library(tarchetypes)
+tar_source()
 tar_option_set(packages = "tidyverse")
 list(
   tar_target(target_123, f(...)),
@@ -199,9 +198,8 @@ For some workflows, the output of one project serves as the input to another pro
 ```{r, eval = FALSE}
 # script_b.R
 library(targets)
-source("R/functions_data.R")
-source("R/functions_analysis.R")
-source("R/functions_visualization.R")
+library(tarchetypes)
+tar_source()
 tar_option_set(packages = "tidyverse")
 
 object_from_project_a <- tar_read(target_from_project_a, store = "store_a")
@@ -218,9 +216,8 @@ This approach is the most convenient and versatile, but it can be inefficient if
 ```{r, eval = FALSE}
 # script_b.R
 library(targets)
-source("R/functions_data.R")
-source("R/functions_analysis.R")
-source("R/functions_visualization.R")
+library(tarchetypes)
+tar_source()
 tar_option_set(packages = "tidyverse")
 list(
   tar_target(file_from_project_a, "store_a/objects/target_name", format = "file"),

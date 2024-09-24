@@ -12,6 +12,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = TRUE)
 
 ```{r, message = FALSE, warning = FALSE, echo = FALSE}
 library(targets)
+library(tarchetypes)
 library(dplyr)
 ```
 
@@ -47,9 +48,11 @@ under the CC0 1.0 Universal license: <https://github.com/wjschne/spiro/blob/87f7
 
 ```{r, echo = FALSE, eval = TRUE}
 library(targets)
+library(tarchetypes)
 tar_script({
   library(ggplot2)
   library(targets)
+  library(tarchetypes)
   library(tibble)
   
   # From https://github.com/wjschne/spiro/blob/87f73ec37ceb0a7a9d09856ada8ae28d587a2ebd/R/spirograph.R
@@ -96,6 +99,7 @@ tar_script({
 # _targets.R
 library(ggplot2)
 library(targets)
+library(tarchetypes)
 library(tibble)
 
 # From https://github.com/wjschne/spiro/blob/87f73ec37ceb0a7a9d09856ada8ae28d587a2ebd/R/spirograph.R
@@ -214,6 +218,7 @@ Consider the following pipeline:
 
 ```{r, eval = FALSE}
 library(targets)
+library(tarchetypes)
 library(tibble)
 
 list(
@@ -242,8 +247,10 @@ list(
 
 ```{r, echo = FALSE, eval = TRUE}
 library(targets)
+library(tarchetypes)
 tar_script({
   library(targets)
+  library(tarchetypes)
   library(tibble)
   list(
     tar_target(
@@ -329,6 +336,7 @@ combined_points <- do.call( # effect of iteration = "vector" in points_branches
 
 ```{r, eval = FALSE}
 library(targets)
+library(tarchetypes)
 library(tibble)
 
 list(
@@ -352,8 +360,10 @@ list(
 
 ```{r, echo = FALSE, eval = TRUE}
 library(targets)
+library(tarchetypes)
 tar_script({
   library(targets)
+  library(tarchetypes)
   library(tibble)
   list(
     tar_target(
@@ -429,6 +439,7 @@ tar_script({
   suppressPackageStartupMessages(library(dplyr))
   library(ggplot2)
   library(targets)
+  library(tarchetypes)
   library(tibble)
   
   # From https://github.com/wjschne/spiro/blob/87f73ec37ceb0a7a9d09856ada8ae28d587a2ebd/R/spirograph.R
@@ -478,6 +489,7 @@ tar_script({
 library(dplyr)
 library(ggplot2)
 library(targets)
+library(tarchetypes)
 library(tibble)
 
 # From https://github.com/wjschne/spiro/blob/87f73ec37ceb0a7a9d09856ada8ae28d587a2ebd/R/spirograph.R
@@ -562,6 +574,7 @@ Dynamic branching over files is tricky. A target with `format = "file"` treats t
 ```{r, eval = FALSE}
 # _targets.R
 library(targets)
+library(tarchetypes)
 list(
   tar_target(paths, c("spirograph_dataset_1.csv", "spirograph_dataset_1.csv")),
   tar_target(files, paths, format = "file", pattern = map(paths)),
@@ -594,6 +607,7 @@ The [`targets-stan`](https://github.com/wlandau/targets-stan) repository has an 
 ```{r, eval = FALSE}
 # _targets.R
 library(targets)
+library(tarchetypes)
 list(
   tar_target(model_file, compile_model("stan/model.stan"), format = "file"),
   tar_target(index_batch, seq_len(40)),

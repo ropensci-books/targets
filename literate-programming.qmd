@@ -52,6 +52,7 @@ writeLines(lines, "report.Rmd")
 ```
 
 ```{r, eval = TRUE}
+library(targets)
 library(tarchetypes)
 target <- tar_render(report, "report.Rmd") # Just defines a target object.
 target$command$expr[[1]]

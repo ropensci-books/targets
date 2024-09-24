@@ -61,11 +61,13 @@ First, load `targets` to activate the specialized `knitr` engine for Target Mark
 ````
 `r ''````{r}
 library(targets)
+library(tarchetypes)
 ```
 ````
 
 ```{r, eval = TRUE, echo = FALSE, results = "hide"}
 library(targets)
+library(tarchetypes)
 ```
 
 Non-interactive Target Markdown writes scripts to a special `_targets_r/` directory to define individual targets and global objects. In order to keep your target definitions up to date, it is recommended to remove `_targets_r/` at the beginning of the R Markdown document(s) in order to clear out superfluous targets and globals from a previous version. `tar_unscript()` is a convenient way to do this.

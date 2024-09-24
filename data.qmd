@@ -12,6 +12,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = TRUE)
 
 ```{r, message = FALSE, warning = FALSE, echo = FALSE, eval = TRUE}
 library(targets)
+library(tarchetypes)
 ```
 
 :::{.callout-tip}
@@ -58,6 +59,7 @@ Consider this pipeline:
 
 ```{r, eval = FALSE, echo = TRUE}
 library(targets)
+library(tarchetypes)
 list(
   tar_target(
     name = target1,
@@ -95,6 +97,7 @@ Consider this pipeline:
 ```{r, eval = FALSE, echo = TRUE}
 # _targets.R
 library(targets)
+library(tarchetypes)
 
 create_output <- function(file) {
   data <- read.csv(file)
@@ -114,6 +117,7 @@ In the dependency graph, `output` depends on `input` because the command of `out
 ```{r, eval = TRUE, echo = FALSE}
 tar_script({
   library(targets)
+  library(tarchetypes)
   create_output <- function(file) {
     data <- read.csv(file)
     output <- head(data)

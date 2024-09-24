@@ -10,6 +10,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = TRUE)
 
 ```{r, message = FALSE, warning = FALSE, echo = FALSE}
 library(targets)
+library(tarchetypes)
 ```
 
 # Targets {#targets}
@@ -59,6 +60,7 @@ Consider the following pipeline.
 ```{r, eval = FALSE}
 # _targets.R file
 library(targets)
+library(tarchetypes)
 
 global_object <- 3
 
@@ -167,6 +169,7 @@ As a workaround, you can write custom functions to create temporary instances of
 ```{r, eval = FALSE}
 # _targets.R
 library(targets)
+library(tarchetypes)
 
 get_from_database <- function(table, ...) {
   con <- DBI::dbConnect(...)

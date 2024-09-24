@@ -10,6 +10,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = TRUE)
 
 ```{r, message = FALSE, warning = FALSE, echo = FALSE}
 library(targets)
+library(tarchetypes)
 ```
 
 # Performance {#performance}
@@ -168,6 +169,7 @@ Even the most efficient `targets` pipelines can take time to complete because th
 ```{r, eval = FALSE}
 # Define an example target script file with a slow pipeline.
 library(targets)
+library(tarchetypes)
 tar_script({
   sleep_run <- function(...) {
     Sys.sleep(10)

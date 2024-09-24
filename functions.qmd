@@ -12,6 +12,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = TRUE)
 
 ```{r, message = FALSE, warning = FALSE, echo = FALSE, eval = TRUE}
 library(targets)
+library(tarchetypes)
 ```
 
 [`targets`](https://github.com/ropensci/targets) expects users to adopt a function-oriented style of programming. User-defined R functions are essential to express the complexities of data generation, analysis, and reporting. This chapter explains what makes functions useful and how to leverage them in your pipelines. It is based on the example from the [walkthrough chapter](#walkthrough).
@@ -134,7 +135,8 @@ Without those functions, our pipeline in the [walkthrough chapter](#walkthrough)
 ```{r, eval = FALSE}
 # _targets.R
 library(targets)
-source("R/functions.R")
+library(tarchetypes)
+tar_source()
 tar_option_set(packages = c("tibble", "readr", "dplyr", "ggplot2"))
 list(
   tar_target(file, "data.csv", format = "file"),
@@ -163,7 +165,8 @@ But if we write our functions in `R/functions.R` and `source()` them into the ta
 ```{r, eval = FALSE}
 # _targets.R
 library(targets)
-source("R/functions.R")
+library(tarchetypes)
+tar_source()
 tar_option_set(packages = c("tibble", "readr", "dplyr", "ggplot2"))
 list(
   tar_target(file, "data.csv", format = "file"),

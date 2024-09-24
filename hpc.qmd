@@ -12,6 +12,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = TRUE)
 
 ```{r, message = FALSE, warning = FALSE, echo = FALSE, eval = TRUE}
 library(targets)
+library(tarchetypes)
 ```
 
 :::{.callout-tip}
@@ -42,6 +43,7 @@ tar_script({
 ```{r, eval = FALSE}
 # _targets.R
 library(targets)
+library(tarchetypes)
 list(
   tar_target(data, get_data()),
   tar_target(fast_fit, fit_small_model(data)),

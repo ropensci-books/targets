@@ -10,6 +10,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = TRUE)
 
 ```{r, message = FALSE, warning = FALSE, echo = FALSE}
 library(targets)
+library(tarchetypes)
 ```
 
 # Debugging pipelines {#debugging}
@@ -35,6 +36,7 @@ The following pipeline simulates a repeated measures dataset and analyzes it wit
 ```{r, eval = FALSE}
 # _targets.R
 library(targets)
+library(tarchetypes)
 tar_option_set(
   packages = c("broom", "broom.mixed", "dplyr", "nlme", "tibble", "tidyr")
 )
@@ -88,6 +90,7 @@ Even if you hit an error, you can still finish the successful parts of the pipel
 ```{r, eval = FALSE}
 # _targets.R
 library(targets)
+library(tarchetypes)
 tar_option_set(
   packages = c("broom", "broom.mixed", "dplyr", "nlme", "tibble", "tidyr"),
   error = "null" # produce a result even if the target errored out.
@@ -152,6 +155,7 @@ Most errors are come from custom user-defined functions like `simulate_data()` a
 ```{r, eval = FALSE}
 # R console
 library(targets)
+library(tarchetypes)
 
 # Restart your R session.
 rstudioapi::restartSession()
@@ -214,6 +218,7 @@ In addition, try running your code with `callr` outside the pipeline:
 callr::r(
   func = function() {
     library(targets)
+    library(tarchetypes)
     tar_load_globals()
     dataset <- simulate_data(100)
     analyze_data(dataset)
@@ -231,6 +236,7 @@ options(clustermq.scheduler = "multiprocess")
 clustermq::Q(
   function(arg) {
     library(targets)
+    library(tarchetypes)
     tar_load_globals()
     dataset <- simulate_data(100)
     analyze_data(dataset)
@@ -247,6 +253,7 @@ future::plan(future::multisession)
 f <- future::future(
   expr = {
     library(targets)
+    library(tarchetypes)
     tar_load_globals()
     dataset <- simulate_data(100)
     analyze_data(dataset)
@@ -288,6 +295,7 @@ analyze_data <- function(data) {
 ```{r, eval = FALSE}
 # R console
 library(targets)
+library(tarchetypes)
 
 # Restart your R session.
 rstudioapi::restartSession()
