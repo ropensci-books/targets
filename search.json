@@ -911,7 +911,7 @@
     "href": "crew.html#example",
     "title": "13  Distributed computing",
     "section": "13.2 Example",
-    "text": "13.2 Example\nThe following _targets.R file uses a local process controller with 2 workers. That means up to 2 workers can be running at any given time, and each worker is an separate R process on the same computer as the local R process.\n\n# _targets.R\nlibrary(targets)\nlibrary(tarchetypes)\nlibrary(crew)\ntar_option_set(\n  controller = crew_controller_local(workers = 2)\n)\ntar_source()\nlist(\n  tar_target(name = data, command = get_data()),\n  tar_target(name = model1, command = run_model1(data)),\n  tar_target(name = model2, command = run_model2(data)),\n  tar_target(name = model3, command = run_model3(data)),\n  tar_target(name = plot1, command = plot_model(model1)),\n  tar_target(name = plot2, command = plot_model(model2)),\n  tar_target(name = plot3, command = plot_model(model3))\n)\n\n\n# R console\ntar_visnetwork(targets_only = TRUE)\n\n\n\n\n\nRun the pipeline with a simple call to tar_make(). Please note that real-life pipelines will have longer execution times, especially for the models.\n\n# R console\ntar_make()\n\n\n#&gt; ▶ dispatched target data\n#&gt; ● completed target data [0 seconds, 48 bytes]\n#&gt; ▶ dispatched target model1\n#&gt; ● completed target model1 [0 seconds, 48 bytes]\n#&gt; ▶ dispatched target model2\n#&gt; ● completed target model2 [0 seconds, 48 bytes]\n#&gt; ▶ dispatched target model3\n#&gt; ● completed target model3 [0 seconds, 48 bytes]\n#&gt; ▶ dispatched target plot1\n#&gt; ● completed target plot1 [0 seconds, 48 bytes]\n#&gt; ▶ dispatched target plot2\n#&gt; ● completed target plot2 [0 seconds, 48 bytes]\n#&gt; ▶ dispatched target plot3\n#&gt; ● completed target plot3 [0 seconds, 48 bytes]\n#&gt; ▶ ended pipeline [0.078 seconds]\n\nLet’s talk through what happens in the above call to tar_make(). First, a new worker launches and sends the data target to the crew queue. After the data target completes, all three models are ready to begin. A second worker automatically launches to meet the increased demand of the workload, and each of the two workers starts to run a model. After one of the models finishes, its worker is free to either run the downstream plot or the third model. The process continues until all the targets are complete. The workers shut down when the pipeline is done.",
+    "text": "13.2 Example\nThe following _targets.R file uses a local process controller with 2 workers. That means up to 2 workers can be running at any given time, and each worker is an separate R process on the same computer as the local R process.\n\n# _targets.R\nlibrary(targets)\nlibrary(tarchetypes)\nlibrary(crew)\ntar_option_set(\n  controller = crew_controller_local(workers = 2)\n)\ntar_source()\nlist(\n  tar_target(name = data, command = get_data()),\n  tar_target(name = model1, command = run_model1(data)),\n  tar_target(name = model2, command = run_model2(data)),\n  tar_target(name = model3, command = run_model3(data)),\n  tar_target(name = plot1, command = plot_model(model1)),\n  tar_target(name = plot2, command = plot_model(model2)),\n  tar_target(name = plot3, command = plot_model(model3))\n)\n\n\n# R console\ntar_visnetwork(targets_only = TRUE)\n\n\n\n\n\nRun the pipeline with a simple call to tar_make(). Please note that real-life pipelines will have longer execution times, especially for the models.\n\n# R console\ntar_make()\n\n\n#&gt; ▶ dispatched target data\n#&gt; ● completed target data [0.001 seconds, 48 bytes]\n#&gt; ▶ dispatched target model1\n#&gt; ● completed target model1 [0 seconds, 48 bytes]\n#&gt; ▶ dispatched target model2\n#&gt; ● completed target model2 [0 seconds, 48 bytes]\n#&gt; ▶ dispatched target model3\n#&gt; ● completed target model3 [0 seconds, 48 bytes]\n#&gt; ▶ dispatched target plot1\n#&gt; ● completed target plot1 [0.001 seconds, 48 bytes]\n#&gt; ▶ dispatched target plot2\n#&gt; ● completed target plot2 [0 seconds, 48 bytes]\n#&gt; ▶ dispatched target plot3\n#&gt; ● completed target plot3 [0 seconds, 48 bytes]\n#&gt; ▶ ended pipeline [0.085 seconds]\n\nLet’s talk through what happens in the above call to tar_make(). First, a new worker launches and sends the data target to the crew queue. After the data target completes, all three models are ready to begin. A second worker automatically launches to meet the increased demand of the workload, and each of the two workers starts to run a model. After one of the models finishes, its worker is free to either run the downstream plot or the third model. The process continues until all the targets are complete. The workers shut down when the pipeline is done.",
     "crumbs": [
       "Heavy workloads",
       "<span class='chapter-number'>13</span>  <span class='chapter-title'>Distributed computing</span>"
@@ -951,11 +951,22 @@
     ]
   },
   {
+    "objectID": "crew.html#resource-usage",
+    "href": "crew.html#resource-usage",
+    "title": "13  Distributed computing",
+    "section": "13.6 Resource usage",
+    "text": "13.6 Resource usage\nThe autometric package can monitor the CPU and memory consumption of the various processes in a targets pipeline, both local processes and parallel workers. Please read https://wlandau.github.io/crew/articles/logging.html for details and examples.",
+    "crumbs": [
+      "Heavy workloads",
+      "<span class='chapter-number'>13</span>  <span class='chapter-title'>Distributed computing</span>"
+    ]
+  },
+  {
     "objectID": "crew.html#thanks",
     "href": "crew.html#thanks",
     "title": "13  Distributed computing",
-    "section": "13.6 Thanks",
-    "text": "13.6 Thanks\nThe crew package is an extension of mirai, a sleek and sophisticated task scheduler that efficiently processes intense workloads. crew is only possible because of the amazing work by Charlie Gao in packages mirai and nanonext.",
+    "section": "13.7 Thanks",
+    "text": "13.7 Thanks\nThe crew package is an extension of mirai, a sleek and sophisticated task scheduler that efficiently processes intense workloads. crew is only possible because of the amazing work by Charlie Gao in packages mirai and nanonext.",
     "crumbs": [
       "Heavy workloads",
       "<span class='chapter-number'>13</span>  <span class='chapter-title'>Distributed computing</span>"
@@ -1028,11 +1039,11 @@
     ]
   },
   {
-    "objectID": "performance.html#monitoring-the-pipeline",
-    "href": "performance.html#monitoring-the-pipeline",
+    "objectID": "performance.html#monitoring-progress",
+    "href": "performance.html#monitoring-progress",
     "title": "14  Performance",
-    "section": "14.5 Monitoring the pipeline",
-    "text": "14.5 Monitoring the pipeline\nEven the most efficient targets pipelines can take time to complete because the user-defined tasks themselves are slow. There are convenient ways to monitor the progress of a running pipeline:\n\ntar_poll() continuously refreshes a text summary of runtime progress in the R console. Run it in a new R session at the project root directory. (Only supported in targets version 0.3.1.9000 and higher.)\ntar_visnetwork(), tar_progress_summary(), tar_progress_branches(), and tar_progress() show runtime information at a single moment in time.\ntar_watch() launches an Shiny app that automatically refreshes the graph every few seconds.\n\n\n\n\n\n\n\nExample: monitoring the pipeline with tar_watch()\n\n\n\n\n\n\n# Define an example target script file with a slow pipeline.\nlibrary(targets)\nlibrary(tarchetypes)\ntar_script({\n  sleep_run &lt;- function(...) {\n    Sys.sleep(10)\n  }\n  list(\n    tar_target(settings, sleep_run()),\n    tar_target(data1, sleep_run(settings)),\n    tar_target(data2, sleep_run(settings)),\n    tar_target(data3, sleep_run(settings)),\n    tar_target(model1, sleep_run(data1)),\n    tar_target(model2, sleep_run(data2)),\n    tar_target(model3, sleep_run(data3)),\n    tar_target(figure1, sleep_run(model1)),\n    tar_target(figure2, sleep_run(model2)),\n    tar_target(figure3, sleep_run(model3)),\n    tar_target(conclusions, sleep_run(c(figure1, figure2, figure3)))\n  )\n})\n\n# Launch the app in a background process.\n# You may need to refresh the browser if the app is slow to start.\n# The graph automatically refreshes every 10 seconds\ntar_watch(seconds = 10, outdated = FALSE, targets_only = TRUE)\n\n# Now run the pipeline and watch the graph change.\npx &lt;- tar_make()\n\n tar_watch_ui() and tar_watch_server() make this functionality available to other apps through a Shiny module.",
+    "section": "14.5 Monitoring progress",
+    "text": "14.5 Monitoring progress\nEven the most efficient targets pipelines can take time to complete because the user-defined tasks themselves are slow. There are convenient ways to monitor the progress of a running pipeline:\n\ntar_poll() continuously refreshes a text summary of runtime progress in the R console. Run it in a new R session at the project root directory. (Only supported in targets version 0.3.1.9000 and higher.)\ntar_visnetwork(), tar_progress_summary(), tar_progress_branches(), and tar_progress() show runtime information at a single moment in time.\ntar_watch() launches an Shiny app that automatically refreshes the graph every few seconds.\n\n\n\n\n\n\n\nExample: monitoring the pipeline with tar_watch()\n\n\n\n\n\n\n# Define an example target script file with a slow pipeline.\nlibrary(targets)\nlibrary(tarchetypes)\ntar_script({\n  sleep_run &lt;- function(...) {\n    Sys.sleep(10)\n  }\n  list(\n    tar_target(settings, sleep_run()),\n    tar_target(data1, sleep_run(settings)),\n    tar_target(data2, sleep_run(settings)),\n    tar_target(data3, sleep_run(settings)),\n    tar_target(model1, sleep_run(data1)),\n    tar_target(model2, sleep_run(data2)),\n    tar_target(model3, sleep_run(data3)),\n    tar_target(figure1, sleep_run(model1)),\n    tar_target(figure2, sleep_run(model2)),\n    tar_target(figure3, sleep_run(model3)),\n    tar_target(conclusions, sleep_run(c(figure1, figure2, figure3)))\n  )\n})\n\n# Launch the app in a background process.\n# You may need to refresh the browser if the app is slow to start.\n# The graph automatically refreshes every 10 seconds\ntar_watch(seconds = 10, outdated = FALSE, targets_only = TRUE)\n\n# Now run the pipeline and watch the graph change.\npx &lt;- tar_make()\n\n tar_watch_ui() and tar_watch_server() make this functionality available to other apps through a Shiny module.",
     "crumbs": [
       "Heavy workloads",
       "<span class='chapter-number'>14</span>  <span class='chapter-title'>Performance</span>"
@@ -1044,6 +1055,17 @@
     "title": "14  Performance",
     "section": "14.6 Profiling",
     "text": "14.6 Profiling\nProfiling tools like proffer figure out specific places where code runs slowly. It is important to identify these bottlenecks before you try to optimize. Steps:\n\nInstall the proffer R package and its dependencies.\nRun proffer::pprof(tar_make(callr_function = NULL)) on your project.\nExamine the flame graph to figure out which R functions are taking the most time.",
+    "crumbs": [
+      "Heavy workloads",
+      "<span class='chapter-number'>14</span>  <span class='chapter-title'>Performance</span>"
+    ]
+  },
+  {
+    "objectID": "performance.html#resource-usage",
+    "href": "performance.html#resource-usage",
+    "title": "14  Performance",
+    "section": "14.7 Resource usage",
+    "text": "14.7 Resource usage\nThe autometric package can monitor the CPU and memory consumption of the various processes in a targets pipeline. This is mainly useful for high-performance computing workloads with parallel workers. Please read https://wlandau.github.io/crew/articles/logging.html for details and examples.",
     "crumbs": [
       "Heavy workloads",
       "<span class='chapter-number'>14</span>  <span class='chapter-title'>Performance</span>"

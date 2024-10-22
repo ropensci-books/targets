@@ -373,8 +373,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#metadata" id="toc-metadata" class="nav-link" data-scroll-target="#metadata"><span class="header-section-number">14.4.1</span> Metadata</a></li>
   <li><a href="#time-stamps" id="toc-time-stamps" class="nav-link" data-scroll-target="#time-stamps"><span class="header-section-number">14.4.2</span> Time stamps</a></li>
   </ul></li>
-  <li><a href="#monitoring-the-pipeline" id="toc-monitoring-the-pipeline" class="nav-link" data-scroll-target="#monitoring-the-pipeline"><span class="header-section-number">14.5</span> Monitoring the pipeline</a></li>
+  <li><a href="#monitoring-progress" id="toc-monitoring-progress" class="nav-link" data-scroll-target="#monitoring-progress"><span class="header-section-number">14.5</span> Monitoring progress</a></li>
   <li><a href="#profiling" id="toc-profiling" class="nav-link" data-scroll-target="#profiling"><span class="header-section-number">14.6</span> Profiling</a></li>
+  <li><a href="#resource-usage" id="toc-resource-usage" class="nav-link" data-scroll-target="#resource-usage"><span class="header-section-number">14.7</span> Resource usage</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/ropensci-books/targets/edit/main/performance.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
@@ -593,8 +594,8 @@ Caution: delayed metadata and progress messages
 <p><code>targets</code> computes a <a href="https://en.wikipedia.org/wiki/Hash_function">hash</a> to check if each target is up to date. However, because a <a href="https://en.wikipedia.org/wiki/Hash_function">hash</a> can be a slow operation, <code>targets</code> tries to avoid recomputing hashes when feasible. The shortcut uses file modification time stamps: if the time stamp has not changed since last <code>tar_make()</code>, then the hash should be the same as last time, so <code>targets</code> should not need to recompute it. By default, <code>targets</code> only performs this shortcut on sufficiently modern file systems with trustworthy high-precision time stamps, but you can override this with the <code>trust_timestamps</code> argument of <code>tar_option_set()</code>.</p>
 </section>
 </section>
-<section id="monitoring-the-pipeline" class="level2" data-number="14.5">
-<h2 data-number="14.5" class="anchored" data-anchor-id="monitoring-the-pipeline"><span class="header-section-number">14.5</span> Monitoring the pipeline</h2>
+<section id="monitoring-progress" class="level2" data-number="14.5">
+<h2 data-number="14.5" class="anchored" data-anchor-id="monitoring-progress"><span class="header-section-number">14.5</span> Monitoring progress</h2>
 <p>Even the most efficient <code>targets</code> pipelines can take time to complete because the user-defined tasks themselves are slow. There are convenient ways to monitor the progress of a running pipeline:</p>
 <ol type="1">
 <li><code>tar_poll()</code> continuously refreshes a text summary of runtime progress in the R console. Run it in a new R session at the project root directory. (Only supported in <code>targets</code> version 0.3.1.9000 and higher.)</li>
@@ -657,6 +658,10 @@ Example: monitoring the pipeline with <code>tar_watch()</code>
 <li>Run <code>proffer::pprof(tar_make(callr_function = NULL))</code> on your project.</li>
 <li>Examine the flame graph to figure out which R functions are taking the most time.</li>
 </ol>
+</section>
+<section id="resource-usage" class="level2" data-number="14.7">
+<h2 data-number="14.7" class="anchored" data-anchor-id="resource-usage"><span class="header-section-number">14.7</span> Resource usage</h2>
+<p>The <a href="https://wlandau.github.io/autometric"><code>autometric</code></a> package can monitor the CPU and memory consumption of the various processes in a <code>targets</code> pipeline. This is mainly useful for high-performance computing workloads with <a href="crew.html">parallel workers</a>. Please read <a href="https://wlandau.github.io/crew/articles/logging.html" class="uri">https://wlandau.github.io/crew/articles/logging.html</a> for details and examples.</p>
 
 
 </section>
