@@ -416,7 +416,7 @@ Summary: efficiency
 <p>Basic efficiency:</p>
 <ul>
 <li>Storage: choose <a href="https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats">efficient data storage formats</a> for targets with large data output.</li>
-<li>Memory: consider <code>memory = "transient"</code> and <code>garbage_collection = TRUE</code> for high-memory tasks.</li>
+<li>Memory: consider <code>memory = "transient"</code> and the <code>garbage_collection</code> option for high-memory tasks.</li>
 <li>Overhead: if each task runs quickly, batch the workload into smaller numbers of targets to reduce overhead.</li>
 </ul>
 <p>Parallel processing:</p>
@@ -481,10 +481,19 @@ Tips about data formats
 </section>
 <section id="memory" class="level3" data-number="14.1.2">
 <h3 data-number="14.1.2" class="anchored" data-anchor-id="memory"><span class="header-section-number">14.1.2</span> Memory</h3>
-<p>By default, <code>tar_make()</code> keeps all target data in memory while it is running. To free superfluous data and consume less memory, activate transient memory and garbage collection:</p>
+<p>By default, <code>tar_make()</code> keeps all target data in memory while it is running. To free superfluous data and consume less memory, activate transient memory and garbage collection. In <code>targets</code> &gt;= 1.8.0.9003, the <code>garbage_collection</code> option can be a non-negative integer to control how often garbage collection happens (e.g.&nbsp;every 10th target):</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">memory =</span> <span class="st">"transient"</span>, <span class="at">garbage_collection =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>(<span class="at">garbage_collection =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">memory =</span> <span class="st">"transient"</span>, <span class="at">garbage_collection =</span> <span class="dv">10</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>These arguments are available to <code>tar_target()</code> as well, although <code>garbage_collection</code> is a <code>TRUE</code>/<code>FALSE</code> value indicating whether to run garbage collection to run just before that specific target runs.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_target</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">name =</span> example_data,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">command =</span> <span class="fu">get_data</span>(),</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">memory =</span> <span class="st">"transient"</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">garbage_collection =</span> <span class="cn">TRUE</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
@@ -500,7 +509,7 @@ About memory and garbage collection
 <div class="callout-body-container callout-body">
 <p><code>memory = "transient"</code> tells <code>targets</code> to remove data from the R environment as soon as it is no longer needed. However, the computer memory itself is not freed until garbage collection is run, and even then, R may not decrease the size of its heap. You can run garbage collection yourself with the <code>gc()</code> function in R.</p>
 <p>Transient memory and garbage collection have tradeoffs: the pipeline reads data from storage far more often, and these data reads take additional time. In addition, garbage collection is usually a slow operation, and repeated garbage collections could slow down a pipeline with thousands of targets.</p>
-<p><code>tar_target()</code> storage formats <code>"file"</code> and <code>"file_fast"</code> are less convenient, but they let you take more control of how R uses memory.</p>
+<p><code>garbage_collection = 100</code> tells <code>targets</code> to run <code>gc()</code> every 100th active target, both locally and on <a href="crew.html">each parallel worker</a>. The default value is 1000 if not specified directly.</p>
 </div>
 </div>
 </div>
@@ -537,7 +546,7 @@ About batching
 <h3 data-number="14.3.2" class="anchored" data-anchor-id="worker-storage"><span class="header-section-number">14.3.2</span> Worker storage</h3>
 <p>If you run <code>tar_make()</code> <a href="crew.html">with a <code>crew</code> controller</a>, then parallel processes will run your targets, but the main R process still manages all the <a href="data.html">data</a> by default. To delegate <a href="data.html">data</a> management to the parallel <a href="crew.html"><code>crew</code></a> workers, set the <code>storage</code> and <code>retrieval</code> settings in <code>tar_target()</code> or <code>tar_option_set()</code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">storage =</span> <span class="st">"worker"</span>, <span class="at">retrieval =</span> <span class="st">"worker"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">storage =</span> <span class="st">"worker"</span>, <span class="at">retrieval =</span> <span class="st">"worker"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>But be sure those workers have access to the data. They must either find the <a href="data.html">local data</a>, or the targets must use <a href="cloud-storage.html">cloud storage</a>.</p>
 </section>
@@ -545,8 +554,8 @@ About batching
 <h3 data-number="14.3.3" class="anchored" data-anchor-id="local-targets"><span class="header-section-number">14.3.3</span> Local targets</h3>
 <p>In <a href="crew.html">distributed computing</a> with <code>targets</code>, not every target needs to run on a remote worker. For targets that run quickly and cheaply, consider setting <code>deployment = "main"</code> in <code>tar_target()</code> to run them on the main local process:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_target</span>(dataset, <span class="fu">get_dataset</span>(), <span class="at">deployment =</span> <span class="st">"main"</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_target</span>(summary, <span class="fu">compute_summary_statistics</span>(), <span class="at">deployment =</span> <span class="st">"main"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_target</span>(dataset, <span class="fu">get_dataset</span>(), <span class="at">deployment =</span> <span class="st">"main"</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_target</span>(summary, <span class="fu">compute_summary_statistics</span>(), <span class="at">deployment =</span> <span class="st">"main"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
@@ -605,35 +614,35 @@ Example: monitoring the pipeline with <code>tar_watch()</code>
 <div id="callout-7" class="callout-7-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define an example target script file with a slow pipeline.</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_script</span>({</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  sleep_run <span class="ot">&lt;-</span> <span class="cf">function</span>(...) {</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Sys.sleep</span>(<span class="dv">10</span>)</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(settings, <span class="fu">sleep_run</span>()),</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(data1, <span class="fu">sleep_run</span>(settings)),</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(data2, <span class="fu">sleep_run</span>(settings)),</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(data3, <span class="fu">sleep_run</span>(settings)),</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(model1, <span class="fu">sleep_run</span>(data1)),</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(model2, <span class="fu">sleep_run</span>(data2)),</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(model3, <span class="fu">sleep_run</span>(data3)),</span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(figure1, <span class="fu">sleep_run</span>(model1)),</span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(figure2, <span class="fu">sleep_run</span>(model2)),</span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(figure3, <span class="fu">sleep_run</span>(model3)),</span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(conclusions, <span class="fu">sleep_run</span>(<span class="fu">c</span>(figure1, figure2, figure3)))</span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Launch the app in a background process.</span></span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="co"># You may need to refresh the browser if the app is slow to start.</span></span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="co"># The graph automatically refreshes every 10 seconds</span></span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_watch</span>(<span class="at">seconds =</span> <span class="dv">10</span>, <span class="at">outdated =</span> <span class="cn">FALSE</span>, <span class="at">targets_only =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Now run the pipeline and watch the graph change.</span></span>
-<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>px <span class="ot">&lt;-</span> <span class="fu">tar_make</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define an example target script file with a slow pipeline.</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_script</span>({</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  sleep_run <span class="ot">&lt;-</span> <span class="cf">function</span>(...) {</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Sys.sleep</span>(<span class="dv">10</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(settings, <span class="fu">sleep_run</span>()),</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(data1, <span class="fu">sleep_run</span>(settings)),</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(data2, <span class="fu">sleep_run</span>(settings)),</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(data3, <span class="fu">sleep_run</span>(settings)),</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(model1, <span class="fu">sleep_run</span>(data1)),</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(model2, <span class="fu">sleep_run</span>(data2)),</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(model3, <span class="fu">sleep_run</span>(data3)),</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(figure1, <span class="fu">sleep_run</span>(model1)),</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(figure2, <span class="fu">sleep_run</span>(model2)),</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(figure3, <span class="fu">sleep_run</span>(model3)),</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_target</span>(conclusions, <span class="fu">sleep_run</span>(<span class="fu">c</span>(figure1, figure2, figure3)))</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Launch the app in a background process.</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="co"># You may need to refresh the browser if the app is slow to start.</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="co"># The graph automatically refreshes every 10 seconds</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_watch</span>(<span class="at">seconds =</span> <span class="dv">10</span>, <span class="at">outdated =</span> <span class="cn">FALSE</span>, <span class="at">targets_only =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Now run the pipeline and watch the graph change.</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>px <span class="ot">&lt;-</span> <span class="fu">tar_make</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><img src="./man/figures/tar_watch.png" class="img-fluid"> <code>tar_watch_ui()</code> and <code>tar_watch_server()</code> make this functionality available to other apps through a Shiny module.</p>
 </div>
