@@ -165,7 +165,7 @@ If `seconds_meta_append` is 15, then `tar_make()` waits at least 15 seconds befo
 
 `targets` computes a [hash](https://en.wikipedia.org/wiki/Hash_function) to check if each target is up to date. However, because a [hash](https://en.wikipedia.org/wiki/Hash_function) can be a slow operation, `targets` tries to avoid recomputing hashes when feasible. The shortcut uses file modification time stamps: if the time stamp has not changed since last `tar_make()`, then the hash should be the same as last time, so `targets` should not need to recompute it. By default, `targets` only performs this shortcut on sufficiently modern file systems with trustworthy high-precision time stamps, but you can override this with the `trust_timestamps` argument of `tar_option_set()`.
 
-## Monitoring the pipeline
+## Monitoring progress
 
 Even the most efficient `targets` pipelines can take time to complete because the user-defined tasks themselves are slow. There are convenient ways to monitor the progress of a running pipeline:
 
@@ -221,3 +221,7 @@ Profiling tools like [`proffer`](https://r-prof.github.io/proffer/) figure out s
 1. Install the [`proffer`](https://r-prof.github.io/proffer/) R package and its dependencies.
 1. Run `proffer::pprof(tar_make(callr_function = NULL))` on your project.
 1. Examine the flame graph to figure out which R functions are taking the most time.
+
+## Resource usage
+
+The [`autometric`](https://wlandau.github.io/autometric) package can monitor the CPU and memory consumption of the various processes in a `targets` pipeline. This is mainly useful for high-performance computing workloads with [parallel workers](#crew). Please read <https://wlandau.github.io/crew/articles/logging.html> for details and examples.
