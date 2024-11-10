@@ -482,10 +482,12 @@ Tips about data formats
 </section>
 <section id="memory" class="level3" data-number="14.1.2">
 <h3 data-number="14.1.2" class="anchored" data-anchor-id="memory"><span class="header-section-number">14.1.2</span> Memory</h3>
-<p>By default, <code>tar_make()</code> keeps all target data in memory while it is running. To free superfluous data and consume less memory, activate transient memory and garbage collection. In <code>targets</code> &gt;= 1.8.0.9003, the <code>garbage_collection</code> option can be a non-negative integer to control how often garbage collection happens (e.g.&nbsp;every 10th target):</p>
+<p><code>targets</code> makes decisions about how long to keep target results in memory and when to run garbage collection. You can customize this behavior with the <code>memory</code> and <code>garbage_collection</code> arguments of <code>tar_option_set()</code>.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(<span class="at">memory =</span> <span class="st">"transient"</span>, <span class="at">garbage_collection =</span> <span class="dv">10</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">memory =</span> <span class="st">"transient"</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">garbage_collection =</span> <span class="dv">10</span> <span class="co"># Can be an integer in version &gt;= 1.8.9003</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>These arguments are available to <code>tar_target()</code> as well, although <code>garbage_collection</code> is a <code>TRUE</code>/<code>FALSE</code> value indicating whether to run garbage collection to run just before that specific target runs.</p>
 <div class="cell">
@@ -669,6 +671,7 @@ Example: monitoring the pipeline with <code>tar_watch()</code>
 <hr>
 <ol>
 <li id="fn1"><p><code>cue = tar_cue(file = FALSE)</code> is no longer recommended for <a href="https://books.ropensci.org/targets/data.html#cloud-storage">cloud storage</a>. This unwise shortcut is no longer necessary, as of <a href="https://github.com/ropensci/targets/pull/1181" class="uri">https://github.com/ropensci/targets/pull/1181</a> (<code>targets</code> version &gt;= 1.3.2.9003).<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>As of version 1.8.0.9011, the default behavior of <code>tar_make()</code> (encoded with <code>memory = "auto"</code>) is to release <a href="dynamic.html">dynamic</a> branches as soon as possible and keeps other targets in memory until the pipeline is finished. In addition, in <code>targets</code> &gt;= 1.8.0.9003, the <code>garbage_collection</code> option can be a non-negative integer to control how often garbage collection happens (e.g.&nbsp;every 10th target).<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
 
