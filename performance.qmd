@@ -73,11 +73,13 @@ For extremely large datasets that cannot fit into memory, consider `format = "fi
 
 ### Memory
 
-By default, `tar_make()` keeps all target data in memory while it is running. To free superfluous data and consume less memory, activate transient memory and garbage collection. In `targets` >= 1.8.0.9003, the `garbage_collection` option can be a non-negative integer to control how often garbage collection happens (e.g. every 10th target):
+`targets` makes decisions about how long to keep target results in memory and when to run garbage collection. You can customize this behavior with the `memory` and `garbage_collection` arguments of `tar_option_set()`.^[As of version 1.8.0.9011, the default behavior of `tar_make()` (encoded with `memory = "auto"`) is to release [dynamic](#dynamic) branches as soon as possible and keeps other targets in memory until the pipeline is finished. In addition, in `targets` >= 1.8.0.9003, the `garbage_collection` option can be a non-negative integer to control how often garbage collection happens (e.g. every 10th target).]
 
 ```{r, eval = FALSE}
-tar_option_set(memory = "transient", garbage_collection = 10)
-tar_make()
+tar_option_set(
+  memory = "transient",
+  garbage_collection = 10 # Can be an integer in version >= 1.8.9003
+)
 ```
 
 These arguments are available to `tar_target()` as well, although `garbage_collection` is a `TRUE`/`FALSE` value indicating whether to run garbage collection to run just before that specific target runs.
