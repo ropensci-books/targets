@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.57">
+<meta name="generator" content="quarto-1.6.40">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -71,10 +71,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-78faf54a06e50be45dc6d83ab59297a7.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -567,13 +567,7 @@ About batching
 <p>These next tips are advanced and obscure, but they may still help.</p>
 <section id="metadata" class="level3" data-number="14.4.1">
 <h3 data-number="14.4.1" class="anchored" data-anchor-id="metadata"><span class="header-section-number">14.4.1</span> Metadata</h3>
-<p>By default, <code>tar_make()</code> writes to the R console and <a href="data.html">local metadata files</a> up to hundreds of times per second. And if you opt into <a href="#cloud%20storage">cloud</a>, it uploads <a href="data.html">local metadata files</a> to the <a href="#cloud%20storage">cloud</a> every few seconds. All this can slow down the pipeline and negatively impact the performance of shared file systems.</p>
-<p>Please help <code>targets</code> be kind to your file system, R console, and <a href="#cloud%20storage">cloud API rate limit</a>. The following arguments are available in <code>tar_make()</code> and <code>tar_config_set()</code>:</p>
-<ul>
-<li><code>seconds_meta_append</code>: how often to write to the <a href="data.html">local metadata files</a>. The default is 0 seconds, but we recommend about 15.</li>
-<li><code>seconds_meta_upload</code>: how often to upload the <a href="data.html">local metadata files</a> to the cloud. The default of 15 seconds should be okay.</li>
-<li><code>seconds_reporter</code>: how often to print progress messages to the R console. The default is 0, but we recommend 0.5.</li>
-</ul>
+<p>By default, <code>tar_make()</code> writes to the R console and <a href="data.html">local metadata files</a> up to hundreds of times per second. And if you opt into <a href="#cloud%20storage">cloud</a>, it uploads <a href="data.html">local metadata files</a> to the <a href="#cloud%20storage">cloud</a> every few seconds. Frequent uploads to the cloud can slow down system performance, and you can set <code>seconds_meta_upload</code> to control how often to upload the <a href="data.html">local metadata files</a>. Arguments <code>seconds_meta_append</code> and <code>seconds_reporter</code> use memory to buffer writes to disk and the R console for metadata, but they risk temporarily losing information and showing incomplete information at a given moment, so they are not recommended except when the file system or R console are extremely sensitive or overburdened.</p>
 <div class="callout callout-style-default callout-caution callout-titled">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -758,8 +752,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   });
   clipboard.on('success', onCopySuccess);
   if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    // For code content inside modals, clipBoardJS needs to be initialized with a container option
-    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
     const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
       text: getTextToCopy,
       container: window.document.getElementById('quarto-embedded-source-code-modal')
@@ -870,7 +862,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {
