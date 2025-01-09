@@ -147,13 +147,7 @@ These next tips are advanced and obscure, but they may still help.
 
 ### Metadata
 
-By default, `tar_make()` writes to the R console and [local metadata files](#data) up to hundreds of times per second. And if you opt into [cloud](#cloud storage), it uploads [local metadata files](#data) to the [cloud](#cloud storage) every few seconds. All this can slow down the pipeline and negatively impact the performance of shared file systems.
-
-Please help `targets` be kind to your file system, R console, and [cloud API rate limit](#cloud storage). The following arguments are available in `tar_make()` and `tar_config_set()`:
-
-* `seconds_meta_append`: how often to write to the [local metadata files](#data). The default is 0 seconds, but we recommend about 15.
-* `seconds_meta_upload`: how often to upload the [local metadata files](#data) to the cloud. The default of 15 seconds should be okay.
-* `seconds_reporter`: how often to print progress messages to the R console. The default is 0, but we recommend 0.5.
+By default, `tar_make()` writes to the R console and [local metadata files](#data) up to hundreds of times per second. And if you opt into [cloud](#cloud storage), it uploads [local metadata files](#data) to the [cloud](#cloud storage) every few seconds. Frequent uploads to the cloud can slow down system performance, and you can set `seconds_meta_upload` to control how often to upload the [local metadata files](#data). Arguments `seconds_meta_append` and `seconds_reporter` use memory to buffer writes to disk and the R console for metadata, but they risk temporarily losing information and showing incomplete information at a given moment, so they are not recommended except when the file system or R console are extremely sensitive or overburdened.
 
 ::: {.callout-caution collapse="true"}
 
