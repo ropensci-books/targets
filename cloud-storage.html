@@ -434,9 +434,9 @@ Package version
 <section id="inspect-the-results-on-a-different-computer" class="level3" data-number="11.1.2">
 <h3 data-number="11.1.2" class="anchored" data-anchor-id="inspect-the-results-on-a-different-computer"><span class="header-section-number">11.1.2</span> Inspect the results on a different computer</h3>
 <ol type="1">
-<li><code>tar_meta_download()</code> downloads the latest metadata from the bucket to the local <a href="data.html"><code>_targets/meta/</code></a> folder.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> This allows you to interactively inspect the downloaded snapshot of the pipeline using <code>tar_visnetwork()</code>, <code>tar_progress()</code>, etc.</li>
+<li><code>tar_meta_download()</code> downloads the latest metadata from the bucket to the local <a href="data.html"><code>_targets/meta/</code></a> folder.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> This allows you to interactively inspect the downloaded snapshot of the pipeline using <code>tar_visnetwork()</code>, <code>tar_progress()</code>, etc.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></li>
 <li>Helpers like <code>tar_read()</code> read local metadata and access target data in the bucket.</li>
-<li>As of <code>targets</code> version <code>1.10.1.9002</code>, <code>tar_make()</code> uploads <a href="https://books.ropensci.org/targets/debugging.html#workspaces">debugging workspaces</a> to the cloud. <code>tar_workspace_download()</code> can download a workspace file so you can load it locally with <code>tar_workspace()</code>.</li>
+<li>As of <code>targets</code> version <code>1.10.1.9002</code>, <code>tar_make()</code> uploads <a href="https://books.ropensci.org/targets/debugging.html#workspaces">debugging workspaces</a> to the cloud. <code>tar_workspace_download()</code> can download a workspace file so you can load it locally with <code>tar_workspace()</code>.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a></li>
 </ol>
 </section>
 <section id="track-history" class="level3" data-number="11.1.3">
@@ -474,7 +474,7 @@ Package version
 </section>
 <section id="pipeline-setup" class="level3" data-number="11.2.3">
 <h3 data-number="11.2.3" class="anchored" data-anchor-id="pipeline-setup"><span class="header-section-number">11.2.3</span> Pipeline setup</h3>
-<p>Use <code>tar_option_set()</code> to opt into cloud storage and declare options. For AWS:<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p>
+<p>Use <code>tar_option_set()</code> to opt into cloud storage and declare options. For AWS:<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a></p>
 <ol type="1">
 <li><code>repository = "aws"</code></li>
 <li><code>resources = tar_resources(aws = tar_resources_aws(bucket = "YOUR_BUCKET", prefix = "YOUR/PREFIX"))</code></li>
@@ -554,7 +554,9 @@ Package version
 <li id="fn1"><p>For cloud targets, <code>format = "file_fast"</code> has no purpose, and it automatically switches to <code>format = "file"</code>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn2"><p>Metadata snapshots are synchronous, so a long target with <code>deployment = "main"</code> may block the main R process and delay uploads.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn3"><p>Functions <code>tar_meta_upload()</code>, <code>tar_meta_sync()</code>, and <code>tar_meta_delete()</code> also manage cloud metadata.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn4"><p><code>cue = tar_cue(file = FALSE)</code> is no longer recommended for <a href="https://books.ropensci.org/targets/data.html#cloud-storage">cloud storage</a>. This unwise shortcut is no longer necessary, as of <a href="https://github.com/ropensci/targets/pull/1181" class="uri">https://github.com/ropensci/targets/pull/1181</a> (<code>targets</code> version &gt;= 1.3.2.9003).<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>Requires that the <code>repository_meta</code> option (in <code>tar_option_get()</code>) is not equal to <code>"local"</code> in <code>_targets.R</code><a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>Requires that the <code>repository_meta</code> option (in <code>tar_option_get()</code>) is not equal to <code>"local"</code> in <code>_targets.R</code><a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p><code>cue = tar_cue(file = FALSE)</code> is no longer recommended for <a href="https://books.ropensci.org/targets/data.html#cloud-storage">cloud storage</a>. This unwise shortcut is no longer necessary, as of <a href="https://github.com/ropensci/targets/pull/1181" class="uri">https://github.com/ropensci/targets/pull/1181</a> (<code>targets</code> version &gt;= 1.3.2.9003).<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
 
