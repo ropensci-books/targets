@@ -74,7 +74,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-78faf54a06e50be45dc6d83ab59297a7.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-72c93205fb41c15e2e398b4f9a505ee2.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -434,8 +434,9 @@ Package version
 <section id="inspect-the-results-on-a-different-computer" class="level3" data-number="11.1.2">
 <h3 data-number="11.1.2" class="anchored" data-anchor-id="inspect-the-results-on-a-different-computer"><span class="header-section-number">11.1.2</span> Inspect the results on a different computer</h3>
 <ol type="1">
-<li><code>tar_meta_download()</code> downloads the latest metadata from the bucket to the local <a href="data.html"><code>_targets/meta/</code></a> folder.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></li>
+<li><code>tar_meta_download()</code> downloads the latest metadata from the bucket to the local <a href="data.html"><code>_targets/meta/</code></a> folder.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> This allows you to interactively inspect the downloaded snapshot of the pipeline using <code>tar_visnetwork()</code>, <code>tar_progress()</code>, etc.</li>
 <li>Helpers like <code>tar_read()</code> read local metadata and access target data in the bucket.</li>
+<li>As of <code>targets</code> version <code>1.10.1.9002</code>, <code>tar_make()</code> uploads <a href="https://books.ropensci.org/targets/debugging.html#workspaces">debugging workspaces</a> to the cloud. <code>tar_workspace_download()</code> can download a workspace file so you can load it locally with <code>tar_workspace()</code>.</li>
 </ol>
 </section>
 <section id="track-history" class="level3" data-number="11.1.3">
