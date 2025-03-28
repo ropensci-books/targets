@@ -271,7 +271,7 @@ Sometimes, you may still need to run the pipeline to find the problem. The follo
 
 1. Insert [`browser()`](https://adv-r.hadley.nz/debugging.html#browser) into the function that produces the error.
 1. Restart your R session to remove detritus from memory.[^detritus]
-1. Call `tar_make()` with `callr_function = NULL` and `as_job = FALSE` to run the pipeline in your interactive session without launching a new `callr::r()` process or an RStudio job.
+1. Call `tar_make()` with `callr_function = NULL`, `use_crew = FALSE`, and `as_job = FALSE` to run the whole pipeline in your interactive session without launching a new `callr::r()` process, parallel `crew` workers, or an RStudio job.
 1. Poke around until you find the bug.
 
 [^detritus]: With `callr_function = NULL`, a messy local R environment can accidentally change the functions and objects that a target depends on, which can invalidate those targets and erase hard-earned results that were previously correct. This is why `targets` uses `callr` in the first place, and it is why `callr_function = NULL` is for debugging only. If you do need `callr_function = NULL`, please restart your R session first.
@@ -300,8 +300,9 @@ library(tarchetypes)
 # Restart your R session.
 rstudioapi::restartSession()
 
-# Run the pipeline in your interactive R session (no callr process or RStudio job).
-tar_make(callr_function = NULL, as_job = FALSE)
+# Run the whole pipeline in your interactive R session
+# (no callr process, parallel workers, or RStudio job).
+tar_make(callr_function = NULL, use_crew = FALSE, as_job = FALSE)
 #> ✔ skip target dataset1
 #> • start target model
 #> Called from: analyze_data(dataset1)
@@ -511,7 +512,7 @@ Around 20 targets ran successfully, and target `analysis_58_b59aa384` hit an err
     * targets that do not already exist in the [metadata](#data).
     * targets that set their own [cues](https://docs.ropensci.org/targets/reference/tar_cue.html).
 1. Restart your R session to remove detritus from memory.
-1. Run `tar_make(callr_function = NULL, as_job = FALSE)`.
+1. Run `tar_make(callr_function = NULL, use_crew = FALSE, as_job = FALSE)`.
 
 ```{r, eval = FALSE}
 # _targets.R
@@ -534,8 +535,9 @@ library(targets)
 # Restart your R session.
 rstudioapi::restartSession()
 
-# Run the pipeline in your interactive R session (no callr process, no RStudio job)
-tar_make(callr_function = NULL, as_job = FALSE)
+# Run the pipeline in your interactive R session
+# (no callr process, no parallel crew workers, no RStudio job)
+tar_make(callr_function = NULL, use_crew = FALSE, as_job = FALSE)
 #>✔ skip target analysis_batch
 #>✔ skip branch analysis_58_550d992c
 #>✔ skip branch analysis_58_582bca0a
