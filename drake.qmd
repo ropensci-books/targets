@@ -53,8 +53,8 @@ Functions in `drake`| Counterparts in `targets`
 [`drake_get_session_info()`](https://docs.ropensci.org/drake/reference/drake_get_session_info.html) | Deemed superfluous and a potential bottleneck. Discarded for `targets`.
 [`read_drake_seed()`](https://docs.ropensci.org/drake/reference/read_drake_seed.html) | Superfluous because `targets` always uses the same global seed. [`tar_meta()`](https://docs.ropensci.org/targets/reference/tar_meta.html) shows all the target-level seeds.
 [`show_source()`](https://docs.ropensci.org/drake/reference/show_source.html) | Deemed superfluous. Discarded in `targets` to conserve storage space in `_targets/meta/meta`.
-[`drake_tempfile()`](https://docs.ropensci.org/drake/reference/drake_tempfile.html) | Superfluous in `targets` because there is no special `disk.frame` storage format. ([Dynamic file targets](https://books.ropensci.org/targets/files.html#external-output-files) are much better for managing `disk.frame`s.)
-[`file_store()`](https://docs.ropensci.org/drake/reference/file_store.html) | Superfluous in `targets` because [all files are dynamic files](https://books.ropensci.org/targets/files.html) and there is no longer a need to Base32-encode any file names.
+[`drake_tempfile()`](https://docs.ropensci.org/drake/reference/drake_tempfile.html) | Superfluous in `targets` because there is no special `disk.frame` storage format. ([File targets targets](https://books.ropensci.org/targets/files.html#external-output-files) are much better for managing `disk.frame`s.)
+[`file_store()`](https://docs.ropensci.org/drake/reference/file_store.html) | Superfluous in `targets` because [all files targets are tracked the same way](https://books.ropensci.org/targets/files.html) and there is no longer a need to Base32-encode any file names.
 
 Likewise, many `make()` arguments have equivalent arguments elsewhere.
 
