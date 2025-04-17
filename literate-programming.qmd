@@ -144,8 +144,8 @@ list(
   tar_render_rep(
     report,
     "report.Rmd",
-    params = tibble(
-      par = c("par_val_1", "par_val_2", "par_val_3", "par_val_4"),
+    execute_params = tibble(
+      your_param = c("par_val_1", "par_val_2", "par_val_3", "par_val_4"),
       output_file = c("f1.html", "f2.html", "f3.html", "f4.html")
     ),
     batches = 2
@@ -174,16 +174,17 @@ print(tar_read(x))
 ```{r, eval = FALSE}
 # R console
 tar_make()
-#> ● run target x
-#> ● run target report_params
-#> ● run branch report_9e7470a1
-#> ● run branch report_457829de
-#> ● end pipeline
+#> + x dispatched
+#> ✔ x completed [3ms, 62 B]
+#> + report_params dispatched
+#> ✔ report_params completed [2ms, 204 B]
+#> + report declared [2 branches]
+#> ✔ report completed [8.4s, 1.81 MB]                          
+#> ✔ ended pipeline [8.6s, 4 completed, 0 skipped] 
 ```
 
 The third output file `f3.html` is below, and the rest look similar.
 
 ![](./man/figures/dynamic-rmarkdown-params.png)
 
-For more information, see [these examples](https://docs.ropensci.org/tarchetypes/reference/tar_render_rep.html#examples).
-
+For more information, see [these examples](https://docs.ropensci.org/tarchetypes/reference/tar_quarto_rep.html#examples).

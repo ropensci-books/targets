@@ -35,8 +35,8 @@ jobs:
           path: |
             _book
             _freeze
-          key: book-render-${{ hashFiles('**/*qmd') }}
-          restore-keys: book-render-
+          key: render-${{ hashFiles('**/*qmd') }}
+          restore-keys: render-
 
       - name: Render
         run: quarto render

@@ -25,7 +25,7 @@ During a pipeline, `targets` manages R objects in memory and writes them to file
 
 ## Memory
 
-`targets` uses random access memory (RAM) while the pipeline is running. Each target loads its upstream dependencies into memory and returns an R object in memory. After a target runs or loads, `tar_make()` either keeps the object in memory or discards it, depending on the settings in `tar_target()` and `tar_option_set()`. Set `memory = "transient"` to release the target whenever possible, and set `garbage_collection = TRUE` to run garbage collection with `gc()` just before the target runs. Alternatively, set `memory = "persistent"` to keep the object in memory and reduce costly interactions with the file system. The trade-off between memory and file I/O depends on your computing platform. See the [performance chapter](#performance) for more details.
+In addition to persistent storage on disk, `targets` uses random access memory (RAM) while the pipeline is running. Each target loads its upstream dependencies into memory and returns an R object in memory. After a target runs or loads, `tar_make()` either keeps the object in memory or discards it, depending on the settings in `tar_target()` and `tar_option_set()`. Set `memory = "transient"` to release the target whenever possible. Alternatively, set `memory = "persistent"` to keep the object in memory and reduce costly interactions with the file system. The trade-off between memory and file I/O depends on your computing platform. See the [performance chapter](#performance) for more details.
 
 ## Local data store
 
@@ -145,7 +145,6 @@ Remarks:
 
 * A file target can have both input and output files.
 * A file target can include directory paths as well as individual file paths.
-* `format = "file_fast"` is just like `format = "file"`, except that it uses file modification time stamps to check if a file is up to date. If the time stamp of the file agrees with the time stamp in the metadata, the file is considered up to date. Otherwise, targets recomputes the hash of the file to make a final determination.
 
 ## Clean up local files
 

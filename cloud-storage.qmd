@@ -24,7 +24,7 @@ This chapter requires `targets` version 1.3.0 or higher. Please visit the [insta
 ### Store less data locally
 
 1. Use `tar_option_set()` and `tar_target()` to opt into cloud storage and configure options.
-1. `tar_make()` uploads target data to a cloud bucket *instead of* the local [`_targets/objects/`](#data) folder. Likewise for [file targets](https://books.ropensci.org/targets/data.html#external-files).^[For cloud targets, `format = "file_fast"` has no purpose, and it automatically switches to `format = "file"`.]
+1. `tar_make()` uploads regular target data to a cloud bucket *instead of* the local [`_targets/objects/`](#data) folder.
 1. If the `repository_meta` is not `"local"`, then every `seconds_meta` seconds, `tar_make()` uploads metadata and still keeps local copies in [`_targets/meta/`](#data) folder.^[Metadata snapshots are synchronous, so a long target with `deployment = "main"` may block the main R process and delay uploads.]
 
 ### Inspect the results on a different computer
@@ -108,24 +108,22 @@ list(
 )
 ```
 
-As usual, `tar_make()` runs the correct targets in the correct order. Both data files now live in bucket `my-test-bucket-25edb4956460647d` at S3 key paths which begin with [prefix](https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-prefixes.html) `my_project_name`. Neither `_targets/objects/data` nor `file.rds` exist locally because `repository` is `"aws"`.
+As usual, `tar_make()` runs the correct targets in the correct order. Both data files now live in bucket `my-test-bucket-25edb4956460647d` at S3 key paths which begin with [prefix](https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-prefixes.html) `my_project_name`. The file `file.rds` still exists locally because of `format = "file"`, but `_targets/objects/data` exists only in the cloud.
 
 ```{r, eval = FALSE, echo = TRUE}
 tar_make()
-#> ▶ start target data
-#> ● built target data [0 seconds]
-#> ▶ start target file
-#> ● built target file [0.002 seconds]
-#> ▶ end pipeline [1.713 seconds]
+#> + data dispatched
+#> ✔ data completed [0ms, 87 B]
+#> + file dispatched
+#> ✔ file completed [0ms, 87 B]
+#> ✔ ended pipeline [524ms, 2 completed, 0 skipped]
 ```
 
-At this point, if you switch to a different computer, download your metadata with `tar_meta_download()`. Then, your results will be up to date.
+`repository_meta = "aws"` lets you switch to a different computer and download your metadata with `tar_meta_download()`. At that point, your results will appear up to date from the new computer.
 
 ```{r, eval = FALSE, echo = TRUE}
 tar_make()
-#> ✔ skip target data
-#> ✔ skip target file
-#> ✔ skip pipeline [1.653 seconds]
+#> ✔ skipped pipeline [50ms, 2 skipped]
 ```
 
 `tar_read()` read local metadata and cloud target data.

@@ -24,7 +24,7 @@ Branched pipelines can be computationally demanding. See the [performance chapte
 
 ## Branching
 
-Sometimes, a pipeline contains more targets than a user can comfortably type by hand. For projects with hundreds of targets, branching can make the code in `_targets.R` shorter and more concise. 
+Sometimes, a pipeline contains more targets than a user can comfortably type by hand. For projects with hundreds of thousands of targets, branching can make the code in `_targets.R` shorter and more concise. 
 
 `targets` supports two types of branching: dynamic branching and [static branching](#static). Some projects are better suited to dynamic branching, while others benefit more from [static branching](#static) or a combination of both. Here is a short list of tradeoffs.
 
@@ -32,7 +32,7 @@ Dynamic | Static
 ---|---
 Pipeline creates new targets at runtime. | All targets defined in advance.
 Cryptic target names. | Friendly target names.
-Scales to hundreds of branches. | Does not scale as easily for `tar_visnetwork()` etc.
+Scales to hundreds of thousands of branches. | Does not scale as easily, especially with `tar_visnetwork()` graphs
 No metaprogramming required. | Familiarity with metaprogramming is helpful.
 
 ## About dynamic branching
@@ -596,7 +596,7 @@ list(
 
 ## Performance and batching
 
-Dynamic branching makes it easy to create many targets. Unfortunately, if the number of targets exceeds several thousand, overhead may build up and the package may slow down. Temporary workarounds can avoid overhead in specific cases: for example, the `shortcut` argument of `tar_make()`, and choosing a pattern like `slice()` or `head()` instead of a full `map()`. But to minimize overhead at scale, it is better to accomplish the same amount of work with a fewer number of targets. In other words, do more work inside each dynamic branch.
+Dynamic branching makes it easy to create many targets. Unfortunately, if the number of targets exceeds several hundred thousand, overhead may build up and the package may slow down. Temporary workarounds can avoid overhead in specific cases: for example, the `shortcut` argument of `tar_make()`, and choosing a pattern like `slice()` or `head()` instead of a full `map()`. But to minimize overhead at scale, it is better to accomplish the same amount of work with a fewer number of targets. In other words, do more work inside each dynamic branch.
 
 Batching is particularly useful to reduce overhead. In batching, each dynamic branch performs multiple computations instead of just one. The `tarchetypes` package supports several general-purpose functions that do batching automatically: most notably `tar_rep()` and `tar_map_rep()` for simulation studies and `tar_group_count()`, `tar_group_size()`, and `tar_group_select()` for batching over the rows of a data frame.
 

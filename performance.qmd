@@ -98,7 +98,7 @@ tar_target(
 
 `memory = "transient"` tells `targets` to remove data from the R environment as soon as it is no longer needed. However, the computer memory itself is not freed until garbage collection is run, and even then, R may not decrease the size of its heap. You can run garbage collection yourself with the `gc()` function in R.
 
-Transient memory and garbage collection have tradeoffs: the pipeline reads data from storage far more often, and these data reads take additional time. In addition, garbage collection is usually a slow operation, and repeated garbage collections could slow down a pipeline with thousands of targets.
+Transient memory and garbage collection have tradeoffs: the pipeline reads data from storage far more often, and these data reads take additional time. In addition, garbage collection is usually a slow operation, and repeated garbage collections could slow down even a small pipeline with a mere thousand targets.
 
 `garbage_collection = 100` tells `targets` to run `gc()` every 100th active target, both locally and on [each parallel worker](#crew). The default value is 1000 if not specified directly.
 
@@ -106,12 +106,12 @@ Transient memory and garbage collection have tradeoffs: the pipeline reads data 
 
 ## Overhead
 
-Each target incurs overhead, and it is not good practice to create thousands of targets which each run quickly. Instead, consider grouping the same amount of work into a smaller number of targets. See the sections on [what a target should do](https://books.ropensci.org/targets/targets.html#what-a-target-should-do) and [how much a target should do](https://books.ropensci.org/targets/targets.html#how-much-a-target-should-do). 
+Each target incurs overhead, and it is not good practice to create millions of targets which each run quickly. Instead, consider grouping the same amount of work into a smaller number of targets. See the sections on [what a target should do](https://books.ropensci.org/targets/targets.html#what-a-target-should-do) and [how much a target should do](https://books.ropensci.org/targets/targets.html#how-much-a-target-should-do). 
 
 ::: {.callout-tip collapse="true"}
 ### About batching
 
-Simulation studies and other iterative stochastic pipelines may need to run thousands of independent random replications. For these pipelines, consider [batching](https://books.ropensci.org/targets/dynamic.html#performance-and-batching) to reduce the number of targets while preserving the number of replications. In [batching](https://books.ropensci.org/targets/dynamic.html#performance-and-batching), each batch is a [dynamic branch](https://books.ropensci.org/targets/dynamic.html) target that performs a subset of the replications. For 1000 replications, you might want 40 batches of 25 replications each, 10 batches with 100 replications each, or a different balance depending on the use case. Functions `tarchetypes::tar_rep()`, `tarchetypes::tar_map_rep()`, and [`stantargets::tar_stan_mcmc_rep_summary()`](https://wlandau.github.io/stantargets/articles/mcmc_rep.html) are examples of [target factories](https://wlandau.github.io/targetopia/contributing.html#target-factories) that set up the batching structure without needing to understand [dynamic branching](https://books.ropensci.org/targets/dynamic.html).
+Simulation studies and other iterative stochastic pipelines may need to run hundreds of thousands of independent random replications. For these pipelines, consider [batching](https://books.ropensci.org/targets/dynamic.html#performance-and-batching) to reduce the number of targets while preserving the number of replications. In [batching](https://books.ropensci.org/targets/dynamic.html#performance-and-batching), each batch is a [dynamic branch](https://books.ropensci.org/targets/dynamic.html) target that performs a subset of the replications. For 1000 replications, you might want 40 batches of 25 replications each, 10 batches with 100 replications each, or a different balance depending on the use case. Functions `tarchetypes::tar_rep()`, `tarchetypes::tar_map_rep()`, and [`stantargets::tar_stan_mcmc_rep_summary()`](https://wlandau.github.io/stantargets/articles/mcmc_rep.html) are examples of [target factories](https://wlandau.github.io/targetopia/contributing.html#target-factories) that set up the batching structure without needing to understand [dynamic branching](https://books.ropensci.org/targets/dynamic.html).
 :::
 
 ## Parallel processing
@@ -140,26 +140,6 @@ In [distributed computing](#crew) with `targets`, not every target needs to run 
 tar_target(dataset, get_dataset(), deployment = "main")
 tar_target(summary, compute_summary_statistics(), deployment = "main")
 ```
-
-## Esoteric optimizations
-
-These next tips are advanced and obscure, but they may still help.
-
-### Metadata
-
-By default, `tar_make()` writes to the R console and [local metadata files](#data) up to hundreds of times per second. And if you opt into [cloud](#cloud storage), it uploads [local metadata files](#data) to the [cloud](#cloud storage) every few seconds. Frequent uploads to the cloud can slow down system performance, and you can set `seconds_meta_upload` to control how often to upload the [local metadata files](#data). Arguments `seconds_meta_append` and `seconds_reporter` use memory to buffer writes to disk and the R console for metadata, but they risk temporarily losing information and showing incomplete information at a given moment, so they are not recommended except when the file system or R console are extremely sensitive or overburdened.
-
-::: {.callout-caution collapse="true"}
-
-### Caution: delayed metadata and progress messages
-
-If `seconds_meta_append` is 15, then `tar_make()` waits at least 15 seconds before updating the [local metadata files](#data). It spends at least 15 seconds collecting a backlog new metadata, and then it writes all that metadata in bulk. `seconds_reporter` does the same thing with R console progress messages. Be warned: a long-running local target may block the R session and make the actual delay much longer. So when a target completes, `tar_make()` may not notify you immediately, and the target may not be up to date in the metadata until long after it actually finishes. So please be patient and allow the pipeline to continue until the end.
-
-:::
-
-### Time stamps
-
-`targets` computes a [hash](https://en.wikipedia.org/wiki/Hash_function) to check if each target is up to date. However, because a [hash](https://en.wikipedia.org/wiki/Hash_function) can be a slow operation, `targets` tries to avoid recomputing hashes when feasible. The shortcut uses file modification time stamps: if the time stamp has not changed since last `tar_make()`, then the hash should be the same as last time, so `targets` should not need to recompute it. By default, `targets` only performs this shortcut on sufficiently modern file systems with trustworthy high-precision time stamps, but you can override this with the `trust_timestamps` argument of `tar_option_set()`.
 
 ## Monitoring progress
 
@@ -212,11 +192,36 @@ px <- tar_make()
 
 ## Profiling
 
-Profiling tools like [`proffer`](https://r-prof.github.io/proffer/) figure out specific places where code runs slowly. It is important to identify these bottlenecks before you try to optimize. Steps:
+Profiling tools like [`profvis`](https://r-prof.github.io/proffer/) and [`proffer`](https://r-prof.github.io/proffer/) empirically identify the places where code runs slowly.
+It is important to identify these bottlenecks before you try to optimize.
+Visit <https://r-prof.github.io/proffer/#why-use-a-profiler> to see a motivating example of profiling in action.
 
-1. Install the [`proffer`](https://r-prof.github.io/proffer/) R package and its dependencies.
-1. Run `proffer::pprof(tar_make(callr_function = NULL))` on your project.
-1. Examine the flame graph to figure out which R functions are taking the most time.
+To profile your project with [`profvis`](https://r-prof.github.io/proffer/), run:
+
+```{r, eval = FALSE}
+results <- profvis::profvis(
+  targets::tar_make(
+    callr_function = NULL, # Do not run the pipline behind a callr::r() process.
+    use_crew = FALSE, # Disable parallel computing with crew (optional)
+    as_job = FALSE # Do not run the pipeline in a Posit Workbench / RStudio background job.
+  )
+)
+print(results, aggregate = TRUE) # aggregate = TRUE is crucial for interpretable flame graphs.
+```
+
+With [`proffer`](https://r-prof.github.io/proffer/), profiling is similar.
+
+```{r, eval = FALSE}
+proffer::pprof(
+  targets::tar_make(
+    callr_function = NULL, # Do not run the pipline behind a callr::r() process.
+    use_crew = FALSE, # Disable parallel computing with crew (optional)
+    as_job = FALSE # Do not run the pipeline in a Posit Workbench / RStudio background job.
+  )
+)
+```
+
+Poth packages render flame graphs that show where bottlenecks occur.
 
 ## Resource usage
 

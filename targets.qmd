@@ -160,7 +160,7 @@ The object should be compatible with the storage format you choose using the `fo
 
 ### Hashing
 
-Once a target is saved to disk, `targets` computes a [`digest`](https://eddelbuettel.github.io/digest/) hash to track changes to the data file(s). These hashes are used to decide whether each target is up to date or needs to rerun. In order for the hash to be useful, the data you return from a target must be an accurate reflection of the underlying content of the data. So please try to return the actual data instead of an object that wraps or points to the data. Otherwise, the package will make incorrect decisions regarding which targets can skip and which need to rerun.
+Once a target is saved to disk, `targets` computes a hash to track changes to the data file(s). These hashes are used to decide whether each target is up to date or needs to rerun. In order for the hash to be useful, the data you return from a target must be an accurate reflection of the underlying content of the data. So please try to return the actual data instead of an object that wraps or points to the data. Otherwise, the package will make incorrect decisions regarding which targets can skip and which need to rerun.
 
 ### Workaround
 

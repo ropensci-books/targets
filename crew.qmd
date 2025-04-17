@@ -114,86 +114,11 @@ As mentioned above, new workers launch automatically in response to increasing d
 2. `tasks_max`: maximum number of tasks a worker can run before shutting down.
 3. `seconds_wall`: soft wall time of a worker.
 
-On the other hand, it is not always helpful to eagerly down-scale workers. Because the workload can fluctuate rapidly, some workers may quit and relaunch so often that it creates noticeable overhead.
+On the other hand, it is not always helpful to eagerly down-scale workers.
+Because the workload can fluctuate rapidly, some workers may quit and relaunch so often that it creates noticeable overhead.
+`crew` and its [plugins](https://wlandau.github.io/crew/articles/plugins.html) try to set reasonable defaults, but you may need to adjust for optimal efficiency.
 
-Fortunately, it is straightforward to explore auto-scaling and configuration issues empirically. Simply run your existing configuration with `tar_make()` and then look at the output from `tar_crew()`. For example, consider the following pipeline with 1001 quick targets, 10 workers, and a maximum idle time of 3 seconds.
-
-```{r, eval = FALSE}
-# _targets.R file
-
-library(targets)
-library(tarchetypes)
-controller <- crew::crew_controller_local(
-  name = "my_controller",
-  workers = 10,
-  seconds_idle = 3
-)
-tar_option_set(controller = controller)
-list(
-  tar_target(x, seq_len(1000)),
-  tar_target(y, x, pattern = map(x))
-)
-```
-
-After running `tar_make()`, `tar_crew()` shows the following worker metadata:
-
-```{r, eval = FALSE}
-tar_crew()
-#> # A tibble: 10 × 5
-#>    controller    worker launches seconds targets
-#>    <chr>          <int>    <int>   <dbl>   <int>
-#>  1 my_controller      1        1   1.77      998
-#>  2 my_controller      2        4   0.076       3
-#>  3 my_controller      3        1   0           0
-#>  4 my_controller      4        0   0           0
-#>  5 my_controller      5        0   0           0
-#>  6 my_controller      6        0   0           0
-#>  7 my_controller      7        0   0           0
-#>  8 my_controller      8        0   0           0
-#>  9 my_controller      9        0   0           0
-#> 10 my_controller     10        0   0           0
-```
-
-The first worker did most of the work, and the second worker ran only 3 targets. Both the second and third workers launched and self-terminated more often than they ran targets. In fact, the third worker did not run any targets at all. None of the other workers actually launched. For this pipeline, it would be better to not use `crew` at all, or set `deployment = "main"` in `tar_target()` for the targets that will complete instantly. And if 2 workers were truly busy instead of just 1, it would be reasonable to set `workers = 2` and pick a much higher value of `seconds_idle`
-
-But now, suppose the targets in the pipeline take longer to run:
-
-```{r, eval = FALSE}
-# _targets.R file:
-library(targets)
-library(tarchetypes)
-controller <- crew::crew_controller_local(
-  name = "my_controller",
-  workers = 10,
-  seconds_idle = 3
-)
-tar_option_set(controller = controller)
-list(
-  tar_target(x, seq_len(1000)),
-  tar_target(y, Sys.sleep(1), pattern = map(x)) # Run for 1 second.
-)
-```
-
-The `tar_crew()` worker metadata is far more sensible: each worker launched once and accomplished a lot. And because `seconds_idle` was set to 3, we know each worker instance wasted no more than 3 seconds waiting for new targets to run. As long as resources allow, it is appropriate to have `workers = 10` and `seconds_idle = 3` for this pipeline: this configuration speeds up the pipeline while avoiding wasted resources.
-
-```{r, eval = FALSE}
-tar_crew()
-#> # A tibble: 10 × 5
-#>    controller    worker launches seconds targets
-#>    <chr>          <int>    <int>   <dbl>   <int>
-#>  1 my_controller      1        1   103.      104
-#>  2 my_controller      2        1   100.      100
-#>  3 my_controller      3        1   100.      100
-#>  4 my_controller      4        1   100.      100
-#>  5 my_controller      5        1   100.      100
-#>  6 my_controller      6        1   100.      100
-#>  7 my_controller      7        1    99.4      99
-#>  8 my_controller      8        1   100.      100
-#>  9 my_controller      9        1    99.4      99
-#> 10 my_controller     10        1    99.4      99
-```
-
-## Backends
+## Plugins
 
 [`crew`](https://wlandau.github.io/crew/) is a platform for multiple computing platforms, not just local processes, but also traditional high-performance computing systems and cloud computing services. For example, to run each worker as a job on a [Sun Grid Engine](https://en.wikipedia.org/wiki/Oracle_Grid_Engine) cluster, use [`crew_controller_sge()`](https://wlandau.github.io/crew.cluster/reference/crew_controller_sge.html) from the [`crew.cluster`](https://wlandau.github.io/crew.cluster/) package.
 
@@ -205,8 +130,10 @@ library(crew.cluster)
 tar_option_set(
   controller = crew_controller_sge(
     workers = 3,
-    script_lines = "module load R",
-    sge_log_output = "log_folder/"
+    options_cluster = crew_options_sge(
+      script_lines = "module load R",
+      log_output = "log_folder/"
+    )
   )
 )
 tar_source()
@@ -242,10 +169,12 @@ controller_sge <- crew_controller_sge(
   name = "my_sge_controller",
   workers = 3,
   seconds_idle = 15,
-  script_lines = "module load R",
-  sge_log_output = "log_folder/",
-  sge_memory_gigabytes_required = 64,
-  sge_gpu = 1
+  options_cluster = crew_options_sge(
+    script_lines = "module load R",
+    log_output = "log_folder/",
+    memory_gigabytes_required = 64,
+    gpu = 1
+  )
 )
 tar_option_set(
   controller = crew_controller_group(controller_local, controller_sge),
