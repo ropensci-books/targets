@@ -405,16 +405,16 @@ Package version
 <h3 data-number="11.1.1" class="anchored" data-anchor-id="store-less-data-locally"><span class="header-section-number">11.1.1</span> Store less data locally</h3>
 <ol type="1">
 <li>Use <code>tar_option_set()</code> and <code>tar_target()</code> to opt into cloud storage and configure options.</li>
-<li><code>tar_make()</code> uploads target data to a cloud bucket <em>instead of</em> the local <a href="data.html"><code>_targets/objects/</code></a> folder. Likewise for <a href="https://books.ropensci.org/targets/data.html#external-files">file targets</a>.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></li>
-<li>If the <code>repository_meta</code> is not <code>"local"</code>, then every <code>seconds_meta</code> seconds, <code>tar_make()</code> uploads metadata and still keeps local copies in <a href="data.html"><code>_targets/meta/</code></a> folder.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></li>
+<li><code>tar_make()</code> uploads regular target data to a cloud bucket <em>instead of</em> the local <a href="data.html"><code>_targets/objects/</code></a> folder.</li>
+<li>If the <code>repository_meta</code> is not <code>"local"</code>, then every <code>seconds_meta</code> seconds, <code>tar_make()</code> uploads metadata and still keeps local copies in <a href="data.html"><code>_targets/meta/</code></a> folder.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></li>
 </ol>
 </section>
 <section id="inspect-the-results-on-a-different-computer" class="level3" data-number="11.1.2">
 <h3 data-number="11.1.2" class="anchored" data-anchor-id="inspect-the-results-on-a-different-computer"><span class="header-section-number">11.1.2</span> Inspect the results on a different computer</h3>
 <ol type="1">
-<li><code>tar_meta_download()</code> downloads the latest metadata from the bucket to the local <a href="data.html"><code>_targets/meta/</code></a> folder.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> This allows you to interactively inspect the downloaded snapshot of the pipeline using <code>tar_visnetwork()</code>, <code>tar_progress()</code>, etc.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></li>
+<li><code>tar_meta_download()</code> downloads the latest metadata from the bucket to the local <a href="data.html"><code>_targets/meta/</code></a> folder.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> This allows you to interactively inspect the downloaded snapshot of the pipeline using <code>tar_visnetwork()</code>, <code>tar_progress()</code>, etc.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></li>
 <li>Helpers like <code>tar_read()</code> read local metadata and access target data in the bucket.</li>
-<li>As of <code>targets</code> version <code>1.10.1.9002</code>, <code>tar_make()</code> uploads <a href="https://books.ropensci.org/targets/debugging.html#workspaces">debugging workspaces</a> to the cloud. <code>tar_workspace_download()</code> can download a workspace file so you can load it locally with <code>tar_workspace()</code>.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a></li>
+<li>As of <code>targets</code> version <code>1.10.1.9002</code>, <code>tar_make()</code> uploads <a href="https://books.ropensci.org/targets/debugging.html#workspaces">debugging workspaces</a> to the cloud. <code>tar_workspace_download()</code> can download a workspace file so you can load it locally with <code>tar_workspace()</code>.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></li>
 </ol>
 </section>
 <section id="track-history" class="level3" data-number="11.1.3">
@@ -452,7 +452,7 @@ Package version
 </section>
 <section id="pipeline-setup" class="level3" data-number="11.2.3">
 <h3 data-number="11.2.3" class="anchored" data-anchor-id="pipeline-setup"><span class="header-section-number">11.2.3</span> Pipeline setup</h3>
-<p>Use <code>tar_option_set()</code> to opt into cloud storage and declare options. For AWS:<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a></p>
+<p>Use <code>tar_option_set()</code> to opt into cloud storage and declare options. For AWS:<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a></p>
 <ol type="1">
 <li><code>resources = tar_resources(aws = tar_resources_aws(bucket = "YOUR_BUCKET", prefix = "YOUR/PREFIX"))</code></li>
 <li><code>repository = "aws"</code></li>
@@ -497,21 +497,19 @@ Package version
 <span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(file, <span class="fu">write_file</span>(data), <span class="at">format =</span> <span class="st">"file"</span>)</span>
 <span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>As usual, <code>tar_make()</code> runs the correct targets in the correct order. Both data files now live in bucket <code>my-test-bucket-25edb4956460647d</code> at S3 key paths which begin with <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-prefixes.html">prefix</a> <code>my_project_name</code>. Neither <code>_targets/objects/data</code> nor <code>file.rds</code> exist locally because <code>repository</code> is <code>"aws"</code>.</p>
+<p>As usual, <code>tar_make()</code> runs the correct targets in the correct order. Both data files now live in bucket <code>my-test-bucket-25edb4956460647d</code> at S3 key paths which begin with <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-prefixes.html">prefix</a> <code>my_project_name</code>. The file <code>file.rds</code> still exists locally because of <code>format = "file"</code>, but <code>_targets/objects/data</code> exists only in the cloud.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ▶ start target data</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● built target data [0 seconds]</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ▶ start target file</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ● built target file [0.002 seconds]</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ▶ end pipeline [1.713 seconds]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; + data dispatched</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ data completed [0ms, 87 B]</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; + file dispatched</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ file completed [0ms, 87 B]</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ ended pipeline [524ms, 2 completed, 0 skipped]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>At this point, if you switch to a different computer, download your metadata with <code>tar_meta_download()</code>. Then, your results will be up to date.</p>
+<p><code>repository_meta = "aws"</code> lets you switch to a different computer and download your metadata with <code>tar_meta_download()</code>. At that point, your results will appear up to date from the new computer.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ skip target data</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ skip target file</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ skip pipeline [1.653 seconds]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ skipped pipeline [50ms, 2 skipped]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><code>tar_read()</code> read local metadata and cloud target data.</p>
 <div class="cell">
@@ -532,12 +530,11 @@ Package version
 <section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn1"><p>For cloud targets, <code>format = "file_fast"</code> has no purpose, and it automatically switches to <code>format = "file"</code>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>Metadata snapshots are synchronous, so a long target with <code>deployment = "main"</code> may block the main R process and delay uploads.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3"><p>Functions <code>tar_meta_upload()</code>, <code>tar_meta_sync()</code>, and <code>tar_meta_delete()</code> also manage cloud metadata.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>Metadata snapshots are synchronous, so a long target with <code>deployment = "main"</code> may block the main R process and delay uploads.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Functions <code>tar_meta_upload()</code>, <code>tar_meta_sync()</code>, and <code>tar_meta_delete()</code> also manage cloud metadata.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>Requires that the <code>repository_meta</code> option (in <code>tar_option_get()</code>) is not equal to <code>"local"</code> in <code>_targets.R</code><a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn4"><p>Requires that the <code>repository_meta</code> option (in <code>tar_option_get()</code>) is not equal to <code>"local"</code> in <code>_targets.R</code><a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn5"><p>Requires that the <code>repository_meta</code> option (in <code>tar_option_get()</code>) is not equal to <code>"local"</code> in <code>_targets.R</code><a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn6"><p><code>cue = tar_cue(file = FALSE)</code> is no longer recommended for <a href="https://books.ropensci.org/targets/data.html#cloud-storage">cloud storage</a>. This unwise shortcut is no longer necessary, as of <a href="https://github.com/ropensci/targets/pull/1181" class="uri">https://github.com/ropensci/targets/pull/1181</a> (<code>targets</code> version &gt;= 1.3.2.9003).<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p><code>cue = tar_cue(file = FALSE)</code> is no longer recommended for <a href="https://books.ropensci.org/targets/data.html#cloud-storage">cloud storage</a>. This unwise shortcut is no longer necessary, as of <a href="https://github.com/ropensci/targets/pull/1181" class="uri">https://github.com/ropensci/targets/pull/1181</a> (<code>targets</code> version &gt;= 1.3.2.9003).<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
 

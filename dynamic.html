@@ -392,7 +392,7 @@ Performance
 </div>
 <section id="branching" class="level2" data-number="15.1">
 <h2 data-number="15.1" class="anchored" data-anchor-id="branching"><span class="header-section-number">15.1</span> Branching</h2>
-<p>Sometimes, a pipeline contains more targets than a user can comfortably type by hand. For projects with hundreds of targets, branching can make the code in <code>_targets.R</code> shorter and more concise.</p>
+<p>Sometimes, a pipeline contains more targets than a user can comfortably type by hand. For projects with hundreds of thousands of targets, branching can make the code in <code>_targets.R</code> shorter and more concise.</p>
 <p><code>targets</code> supports two types of branching: dynamic branching and <a href="static.html">static branching</a>. Some projects are better suited to dynamic branching, while others benefit more from <a href="static.html">static branching</a> or a combination of both. Here is a short list of tradeoffs.</p>
 <table class="caption-top table">
 <colgroup>
@@ -415,8 +415,8 @@ Performance
 <td>Friendly target names.</td>
 </tr>
 <tr class="odd">
-<td>Scales to hundreds of branches.</td>
-<td>Does not scale as easily for <code>tar_visnetwork()</code> etc.</td>
+<td>Scales to hundreds of thousands of branches.</td>
+<td>Does not scale as easily, especially with <code>tar_visnetwork()</code> graphs</td>
 </tr>
 <tr class="even">
 <td>No metaprogramming required.</td>
@@ -481,7 +481,7 @@ Performance
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; + cycling_radius dispatched</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ cycling_radius completed [0ms, 50 B]</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ cycling_radius completed [1ms, 50 B]</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; + fixed_radius dispatched</span></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ fixed_radius completed [0ms, 49 B]</span></span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; + points declared [2 branches]</span></span>
@@ -490,7 +490,7 @@ Performance
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ combined_plot completed [19ms, 1.69 MB]</span></span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; + single_plot declared [2 branches]</span></span>
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ single_plot completed [21ms, 1.81 MB]</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ ended pipeline [582ms, 7 completed, 0 skipped]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ ended pipeline [580ms, 7 completed, 0 skipped]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The final plot shows all the spirographs together.</p>
 <div class="cell">
@@ -649,7 +649,7 @@ Performance
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_visnetwork</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="visNetwork html-widget html-fill-item" id="htmlwidget-8df843a680a1fcd62a0d" style="width:100%;height:464px;"></div>
-<script type="application/json" data-for="htmlwidget-8df843a680a1fcd62a0d">{"x":{"nodes":{"name":["combined_points","cycling_radius","points_branches","points_template"],"type":["stem","stem","pattern","stem"],"description":[null,null,null,null],"status":["outdated","outdated","outdated","outdated"],"seconds":[null,0,null,null],"bytes":[null,50,null,null],"branches":[null,null,null,null],"label":["combined_points","cycling_radius","points_branches","points_template"],"color":["#78B7C5","#78B7C5","#78B7C5","#78B7C5"],"id":["combined_points","cycling_radius","points_branches","points_template"],"level":[3,1,2,1],"shape":["dot","dot","square","dot"]},"edges":{"from":["points_branches","cycling_radius","points_template"],"to":["combined_points","points_branches","points_branches"],"color":["#78B7C5","#78B7C5","#78B7C5"],"arrows":["to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"interaction":{"zoomSpeed":1},"layout":{"hierarchical":{"enabled":true,"levelSeparation":150,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Outdated","Regular\ntarget","Dynamic\nbranches"],"color":["#78B7C5","#899DA4","#899DA4"],"shape":["dot","dot","square"]},"nodesToDataframe":true},"tooltipStay":300,"tooltipStyle":"position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;border: 1px solid #808074;box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);"},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-8df843a680a1fcd62a0d">{"x":{"nodes":{"name":["combined_points","cycling_radius","points_branches","points_template"],"type":["stem","stem","pattern","stem"],"description":[null,null,null,null],"status":["outdated","outdated","outdated","outdated"],"seconds":[null,0.001,null,null],"bytes":[null,50,null,null],"branches":[null,null,null,null],"label":["combined_points","cycling_radius","points_branches","points_template"],"color":["#78B7C5","#78B7C5","#78B7C5","#78B7C5"],"id":["combined_points","cycling_radius","points_branches","points_template"],"level":[3,1,2,1],"shape":["dot","dot","square","dot"]},"edges":{"from":["points_branches","cycling_radius","points_template"],"to":["combined_points","points_branches","points_branches"],"color":["#78B7C5","#78B7C5","#78B7C5"],"arrows":["to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"interaction":{"zoomSpeed":1},"layout":{"hierarchical":{"enabled":true,"levelSeparation":150,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":true,"hoverNearest":false,"degree":{"from":1,"to":1},"algorithm":"hierarchical","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Outdated","Regular\ntarget","Dynamic\nbranches"],"color":["#78B7C5","#899DA4","#899DA4"],"shape":["dot","dot","square"]},"nodesToDataframe":true},"tooltipStay":300,"tooltipStyle":"position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;border: 1px solid #808074;box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <div class="cell">
@@ -657,12 +657,12 @@ Performance
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; + cycling_radius dispatched</span></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ cycling_radius completed [1ms, 53 B]</span></span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; + points_template dispatched</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ points_template completed [3ms, 158 B]</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ points_template completed [2ms, 158 B]</span></span>
 <span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; + points_branches declared [2 branches]</span></span>
 <span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ points_branches completed [3ms, 336 B]</span></span>
 <span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; + combined_points dispatched</span></span>
 <span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ combined_points completed [0ms, 178 B]</span></span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ ended pipeline [168ms, 5 completed, 0 skipped]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ ended pipeline [163ms, 5 completed, 0 skipped]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We observe the following:</p>
 <div class="cell">
@@ -756,12 +756,12 @@ Performance
 <div class="cell">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; + radius_origin dispatched</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ radius_origin completed [1ms, 53 B]</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ radius_origin completed [0ms, 53 B]</span></span>
 <span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; + radius_branches declared [2 branches]</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ radius_branches completed [1ms, 100 B]</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ radius_branches completed [0ms, 100 B]</span></span>
 <span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; + radius_combined dispatched</span></span>
 <span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ radius_combined completed [0ms, 137 B]</span></span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ ended pipeline [148ms, 4 completed, 0 skipped]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ ended pipeline [150ms, 4 completed, 0 skipped]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We observe the following:</p>
 <div class="cell">
@@ -865,7 +865,7 @@ Performance
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ points completed [23ms, 309.26 kB]</span></span>
 <span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; + single_plot declared [2 branches]</span></span>
 <span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ single_plot completed [48ms, 1.81 MB]</span></span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ ended pipeline [430ms, 3 completed, 0 skipped]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ ended pipeline [429ms, 3 completed, 0 skipped]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(single_plot, <span class="at">branches =</span> <span class="dv">1</span>)</span>
@@ -926,7 +926,7 @@ Performance
 </section>
 <section id="performance-and-batching" class="level2" data-number="15.9">
 <h2 data-number="15.9" class="anchored" data-anchor-id="performance-and-batching"><span class="header-section-number">15.9</span> Performance and batching</h2>
-<p>Dynamic branching makes it easy to create many targets. Unfortunately, if the number of targets exceeds several thousand, overhead may build up and the package may slow down. Temporary workarounds can avoid overhead in specific cases: for example, the <code>shortcut</code> argument of <code>tar_make()</code>, and choosing a pattern like <code>slice()</code> or <code>head()</code> instead of a full <code>map()</code>. But to minimize overhead at scale, it is better to accomplish the same amount of work with a fewer number of targets. In other words, do more work inside each dynamic branch.</p>
+<p>Dynamic branching makes it easy to create many targets. Unfortunately, if the number of targets exceeds several hundred thousand, overhead may build up and the package may slow down. Temporary workarounds can avoid overhead in specific cases: for example, the <code>shortcut</code> argument of <code>tar_make()</code>, and choosing a pattern like <code>slice()</code> or <code>head()</code> instead of a full <code>map()</code>. But to minimize overhead at scale, it is better to accomplish the same amount of work with a fewer number of targets. In other words, do more work inside each dynamic branch.</p>
 <p>Batching is particularly useful to reduce overhead. In batching, each dynamic branch performs multiple computations instead of just one. The <code>tarchetypes</code> package supports several general-purpose functions that do batching automatically: most notably <code>tar_rep()</code> and <code>tar_map_rep()</code> for simulation studies and <code>tar_group_count()</code>, <code>tar_group_size()</code>, and <code>tar_group_select()</code> for batching over the rows of a data frame.</p>
 <p>The packages in the <a href="https://wlandau.github.io/targetopia/">R Targetopia</a> support batching for specific use cases. For example, in <a href="https://docs.ropensci.org/stantargets/index.html"><code>stantargets</code></a>, <a href="https://docs.ropensci.org/stantargets/reference/tar_stan_mcmc_rep_summary.html"><code>tar_stan_mcmc_rep_summary()</code></a> dynamically branches over batches of simulated datasets for Stan models.</p>
 <p>The <a href="https://github.com/wlandau/targets-stan"><code>targets-stan</code></a> repository has an example of custom batching implemented from scratch. The goal of the pipeline is to validate a Bayesian model by simulating thousands of dataset, analyzing each with a Bayesian model, and assessing the overall accuracy of the inference. Rather than define a target for each dataset in model, the pipeline breaks up the work into batches, where each batch has multiple datasets or multiple analyses. Here is a version of the pipeline with 40 batches and 25 simulation reps per batch (1000 reps total in a pipeline of 82 targets).</p>

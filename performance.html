@@ -346,14 +346,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#worker-storage" id="toc-worker-storage" class="nav-link" data-scroll-target="#worker-storage"><span class="header-section-number">14.3.2</span> Worker storage</a></li>
   <li><a href="#local-targets" id="toc-local-targets" class="nav-link" data-scroll-target="#local-targets"><span class="header-section-number">14.3.3</span> Local targets</a></li>
   </ul></li>
-  <li><a href="#esoteric-optimizations" id="toc-esoteric-optimizations" class="nav-link" data-scroll-target="#esoteric-optimizations"><span class="header-section-number">14.4</span> Esoteric optimizations</a>
-  <ul class="collapse">
-  <li><a href="#metadata" id="toc-metadata" class="nav-link" data-scroll-target="#metadata"><span class="header-section-number">14.4.1</span> Metadata</a></li>
-  <li><a href="#time-stamps" id="toc-time-stamps" class="nav-link" data-scroll-target="#time-stamps"><span class="header-section-number">14.4.2</span> Time stamps</a></li>
-  </ul></li>
-  <li><a href="#monitoring-progress" id="toc-monitoring-progress" class="nav-link" data-scroll-target="#monitoring-progress"><span class="header-section-number">14.5</span> Monitoring progress</a></li>
-  <li><a href="#profiling" id="toc-profiling" class="nav-link" data-scroll-target="#profiling"><span class="header-section-number">14.6</span> Profiling</a></li>
-  <li><a href="#resource-usage" id="toc-resource-usage" class="nav-link" data-scroll-target="#resource-usage"><span class="header-section-number">14.7</span> Resource usage</a></li>
+  <li><a href="#monitoring-progress" id="toc-monitoring-progress" class="nav-link" data-scroll-target="#monitoring-progress"><span class="header-section-number">14.4</span> Monitoring progress</a></li>
+  <li><a href="#profiling" id="toc-profiling" class="nav-link" data-scroll-target="#profiling"><span class="header-section-number">14.5</span> Profiling</a></li>
+  <li><a href="#resource-usage" id="toc-resource-usage" class="nav-link" data-scroll-target="#resource-usage"><span class="header-section-number">14.6</span> Resource usage</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/ropensci-books/targets/edit/main/performance.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
@@ -489,7 +484,7 @@ About memory and garbage collection
 <div id="callout-4" class="callout-4-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p><code>memory = "transient"</code> tells <code>targets</code> to remove data from the R environment as soon as it is no longer needed. However, the computer memory itself is not freed until garbage collection is run, and even then, R may not decrease the size of its heap. You can run garbage collection yourself with the <code>gc()</code> function in R.</p>
-<p>Transient memory and garbage collection have tradeoffs: the pipeline reads data from storage far more often, and these data reads take additional time. In addition, garbage collection is usually a slow operation, and repeated garbage collections could slow down a pipeline with thousands of targets.</p>
+<p>Transient memory and garbage collection have tradeoffs: the pipeline reads data from storage far more often, and these data reads take additional time. In addition, garbage collection is usually a slow operation, and repeated garbage collections could slow down even a small pipeline with a mere thousand targets.</p>
 <p><code>garbage_collection = 100</code> tells <code>targets</code> to run <code>gc()</code> every 100th active target, both locally and on <a href="crew.html">each parallel worker</a>. The default value is 1000 if not specified directly.</p>
 </div>
 </div>
@@ -498,7 +493,7 @@ About memory and garbage collection
 </section>
 <section id="overhead" class="level2" data-number="14.2">
 <h2 data-number="14.2" class="anchored" data-anchor-id="overhead"><span class="header-section-number">14.2</span> Overhead</h2>
-<p>Each target incurs overhead, and it is not good practice to create thousands of targets which each run quickly. Instead, consider grouping the same amount of work into a smaller number of targets. See the sections on <a href="https://books.ropensci.org/targets/targets.html#what-a-target-should-do">what a target should do</a> and <a href="https://books.ropensci.org/targets/targets.html#how-much-a-target-should-do">how much a target should do</a>.</p>
+<p>Each target incurs overhead, and it is not good practice to create millions of targets which each run quickly. Instead, consider grouping the same amount of work into a smaller number of targets. See the sections on <a href="https://books.ropensci.org/targets/targets.html#what-a-target-should-do">what a target should do</a> and <a href="https://books.ropensci.org/targets/targets.html#how-much-a-target-should-do">how much a target should do</a>.</p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -511,7 +506,7 @@ About batching
 </div>
 <div id="callout-5" class="callout-5-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>Simulation studies and other iterative stochastic pipelines may need to run thousands of independent random replications. For these pipelines, consider <a href="https://books.ropensci.org/targets/dynamic.html#performance-and-batching">batching</a> to reduce the number of targets while preserving the number of replications. In <a href="https://books.ropensci.org/targets/dynamic.html#performance-and-batching">batching</a>, each batch is a <a href="https://books.ropensci.org/targets/dynamic.html">dynamic branch</a> target that performs a subset of the replications. For 1000 replications, you might want 40 batches of 25 replications each, 10 batches with 100 replications each, or a different balance depending on the use case. Functions <code>tarchetypes::tar_rep()</code>, <code>tarchetypes::tar_map_rep()</code>, and <a href="https://wlandau.github.io/stantargets/articles/mcmc_rep.html"><code>stantargets::tar_stan_mcmc_rep_summary()</code></a> are examples of <a href="https://wlandau.github.io/targetopia/contributing.html#target-factories">target factories</a> that set up the batching structure without needing to understand <a href="https://books.ropensci.org/targets/dynamic.html">dynamic branching</a>.</p>
+<p>Simulation studies and other iterative stochastic pipelines may need to run hundreds of thousands of independent random replications. For these pipelines, consider <a href="https://books.ropensci.org/targets/dynamic.html#performance-and-batching">batching</a> to reduce the number of targets while preserving the number of replications. In <a href="https://books.ropensci.org/targets/dynamic.html#performance-and-batching">batching</a>, each batch is a <a href="https://books.ropensci.org/targets/dynamic.html">dynamic branch</a> target that performs a subset of the replications. For 1000 replications, you might want 40 batches of 25 replications each, 10 batches with 100 replications each, or a different balance depending on the use case. Functions <code>tarchetypes::tar_rep()</code>, <code>tarchetypes::tar_map_rep()</code>, and <a href="https://wlandau.github.io/stantargets/articles/mcmc_rep.html"><code>stantargets::tar_stan_mcmc_rep_summary()</code></a> are examples of <a href="https://wlandau.github.io/targetopia/contributing.html#target-factories">target factories</a> that set up the batching structure without needing to understand <a href="https://books.ropensci.org/targets/dynamic.html">dynamic branching</a>.</p>
 </div>
 </div>
 </div>
@@ -540,36 +535,8 @@ About batching
 </div>
 </section>
 </section>
-<section id="esoteric-optimizations" class="level2" data-number="14.4">
-<h2 data-number="14.4" class="anchored" data-anchor-id="esoteric-optimizations"><span class="header-section-number">14.4</span> Esoteric optimizations</h2>
-<p>These next tips are advanced and obscure, but they may still help.</p>
-<section id="metadata" class="level3" data-number="14.4.1">
-<h3 data-number="14.4.1" class="anchored" data-anchor-id="metadata"><span class="header-section-number">14.4.1</span> Metadata</h3>
-<p>By default, <code>tar_make()</code> writes to the R console and <a href="data.html">local metadata files</a> up to hundreds of times per second. And if you opt into <a href="#cloud%20storage">cloud</a>, it uploads <a href="data.html">local metadata files</a> to the <a href="#cloud%20storage">cloud</a> every few seconds. Frequent uploads to the cloud can slow down system performance, and you can set <code>seconds_meta_upload</code> to control how often to upload the <a href="data.html">local metadata files</a>. Arguments <code>seconds_meta_append</code> and <code>seconds_reporter</code> use memory to buffer writes to disk and the R console for metadata, but they risk temporarily losing information and showing incomplete information at a given moment, so they are not recommended except when the file system or R console are extremely sensitive or overburdened.</p>
-<div class="callout callout-style-default callout-caution callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Caution: delayed metadata and progress messages
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-6" class="callout-6-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>If <code>seconds_meta_append</code> is 15, then <code>tar_make()</code> waits at least 15 seconds before updating the <a href="data.html">local metadata files</a>. It spends at least 15 seconds collecting a backlog new metadata, and then it writes all that metadata in bulk. <code>seconds_reporter</code> does the same thing with R console progress messages. Be warned: a long-running local target may block the R session and make the actual delay much longer. So when a target completes, <code>tar_make()</code> may not notify you immediately, and the target may not be up to date in the metadata until long after it actually finishes. So please be patient and allow the pipeline to continue until the end.</p>
-</div>
-</div>
-</div>
-</section>
-<section id="time-stamps" class="level3" data-number="14.4.2">
-<h3 data-number="14.4.2" class="anchored" data-anchor-id="time-stamps"><span class="header-section-number">14.4.2</span> Time stamps</h3>
-<p><code>targets</code> computes a <a href="https://en.wikipedia.org/wiki/Hash_function">hash</a> to check if each target is up to date. However, because a <a href="https://en.wikipedia.org/wiki/Hash_function">hash</a> can be a slow operation, <code>targets</code> tries to avoid recomputing hashes when feasible. The shortcut uses file modification time stamps: if the time stamp has not changed since last <code>tar_make()</code>, then the hash should be the same as last time, so <code>targets</code> should not need to recompute it. By default, <code>targets</code> only performs this shortcut on sufficiently modern file systems with trustworthy high-precision time stamps, but you can override this with the <code>trust_timestamps</code> argument of <code>tar_option_set()</code>.</p>
-</section>
-</section>
-<section id="monitoring-progress" class="level2" data-number="14.5">
-<h2 data-number="14.5" class="anchored" data-anchor-id="monitoring-progress"><span class="header-section-number">14.5</span> Monitoring progress</h2>
+<section id="monitoring-progress" class="level2" data-number="14.4">
+<h2 data-number="14.4" class="anchored" data-anchor-id="monitoring-progress"><span class="header-section-number">14.4</span> Monitoring progress</h2>
 <p>Even the most efficient <code>targets</code> pipelines can take time to complete because the user-defined tasks themselves are slow. There are convenient ways to monitor the progress of a running pipeline:</p>
 <ol type="1">
 <li><code>tar_poll()</code> continuously refreshes a text summary of runtime progress in the R console. Run it in a new R session at the project root directory. (Only supported in <code>targets</code> version 0.3.1.9000 and higher.)</li>
@@ -577,7 +544,7 @@ Caution: delayed metadata and progress messages
 <li><code>tar_watch()</code> launches an Shiny app that automatically refreshes the graph every few seconds.</li>
 </ol>
 <div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -586,7 +553,7 @@ Example: monitoring the pipeline with <code>tar_watch()</code>
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define an example target script file with a slow pipeline.</span></span>
@@ -624,17 +591,34 @@ Example: monitoring the pipeline with <code>tar_watch()</code>
 </div>
 </div>
 </section>
-<section id="profiling" class="level2" data-number="14.6">
-<h2 data-number="14.6" class="anchored" data-anchor-id="profiling"><span class="header-section-number">14.6</span> Profiling</h2>
-<p>Profiling tools like <a href="https://r-prof.github.io/proffer/"><code>proffer</code></a> figure out specific places where code runs slowly. It is important to identify these bottlenecks before you try to optimize. Steps:</p>
-<ol type="1">
-<li>Install the <a href="https://r-prof.github.io/proffer/"><code>proffer</code></a> R package and its dependencies.</li>
-<li>Run <code>proffer::pprof(tar_make(callr_function = NULL))</code> on your project.</li>
-<li>Examine the flame graph to figure out which R functions are taking the most time.</li>
-</ol>
+<section id="profiling" class="level2" data-number="14.5">
+<h2 data-number="14.5" class="anchored" data-anchor-id="profiling"><span class="header-section-number">14.5</span> Profiling</h2>
+<p>Profiling tools like <a href="https://r-prof.github.io/proffer/"><code>profvis</code></a> and <a href="https://r-prof.github.io/proffer/"><code>proffer</code></a> empirically identify the places where code runs slowly. It is important to identify these bottlenecks before you try to optimize. Visit <a href="https://r-prof.github.io/proffer/#why-use-a-profiler" class="uri">https://r-prof.github.io/proffer/#why-use-a-profiler</a> to see a motivating example of profiling in action.</p>
+<p>To profile your project with <a href="https://r-prof.github.io/proffer/"><code>profvis</code></a>, run:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> profvis<span class="sc">::</span><span class="fu">profvis</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  targets<span class="sc">::</span><span class="fu">tar_make</span>(</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">callr_function =</span> <span class="cn">NULL</span>, <span class="co"># Do not run the pipline behind a callr::r() process.</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">use_crew =</span> <span class="cn">FALSE</span>, <span class="co"># Disable parallel computing with crew (optional)</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">as_job =</span> <span class="cn">FALSE</span> <span class="co"># Do not run the pipeline in a Posit Workbench / RStudio background job.</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(results, <span class="at">aggregate =</span> <span class="cn">TRUE</span>) <span class="co"># aggregate = TRUE is crucial for interpretable flame graphs.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>With <a href="https://r-prof.github.io/proffer/"><code>proffer</code></a>, profiling is similar.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>proffer<span class="sc">::</span><span class="fu">pprof</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  targets<span class="sc">::</span><span class="fu">tar_make</span>(</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">callr_function =</span> <span class="cn">NULL</span>, <span class="co"># Do not run the pipline behind a callr::r() process.</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">use_crew =</span> <span class="cn">FALSE</span>, <span class="co"># Disable parallel computing with crew (optional)</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">as_job =</span> <span class="cn">FALSE</span> <span class="co"># Do not run the pipeline in a Posit Workbench / RStudio background job.</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Poth packages render flame graphs that show where bottlenecks occur.</p>
 </section>
-<section id="resource-usage" class="level2" data-number="14.7">
-<h2 data-number="14.7" class="anchored" data-anchor-id="resource-usage"><span class="header-section-number">14.7</span> Resource usage</h2>
+<section id="resource-usage" class="level2" data-number="14.6">
+<h2 data-number="14.6" class="anchored" data-anchor-id="resource-usage"><span class="header-section-number">14.6</span> Resource usage</h2>
 <p>The <a href="https://wlandau.github.io/autometric"><code>autometric</code></a> package can monitor the CPU and memory consumption of the various processes in a <code>targets</code> pipeline. This is mainly useful for high-performance computing workloads with <a href="crew.html">parallel workers</a>. Please read <a href="https://wlandau.github.io/crew/articles/logging.html" class="uri">https://wlandau.github.io/crew/articles/logging.html</a> for details and examples.</p>
 
 
