@@ -1,4 +1,5 @@
 
+
 # The `targets` R package user manual
 
 [![ropensci](https://badges.ropensci.org/401_status.svg)](https://github.com/ropensci/software-review/issues/401)
@@ -14,11 +15,7 @@ of the main features of [`targets`](https://github.com/ropensci/targets)
 and advice about best practices. The goal is to introduce new users to
 [`targets`](https://github.com/ropensci/targets) and instill a thorough
 understanding of what it does, how it works, and when to use it. The
-manual is implemented as a typical
-[`bookdown`](https://github.com/rstudio/bookdown) project with a single
-`_bookdown.yml` file at the top level and one R Markdown source file for
-each chapter. End users are encouraged to read the rendered output at
-<https://books.ropensci.org/targets>.
+rendered manual is available at <https://books.ropensci.org/targets>.
 
 ## Code of conduct
 
@@ -30,7 +27,6 @@ Conduct](https://ropensci.org/code-of-conduct/).
 ``` r
 citation("targets")
 ```
-
 
     To cite targets in publications use:
 

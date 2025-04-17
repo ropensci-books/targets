@@ -130,7 +130,7 @@ All target script files have these requirements.
 1. Load the packages needed to define the pipeline, e.g. [`targets`](https://github.com/ropensci/targets) itself.^[target scripts created with `tar_script()` automatically insert a `library(targets)` line at the top by default.]
 1. Use `tar_option_set()` to declare the packages that the targets themselves need, as well as other settings such as the default [storage format](https://docs.ropensci.org/targets/reference/tar_target.html#storage-formats).
 1. Load your custom functions and small input objects into the R session: in our case, with `source("R/functions.R")`.
-1. Write the pipeline at the bottom of `_targets.R`. A pipeline is a list of target objects, which you can create with `tar_target()`. Each target is a step of the analysis. It looks and feels like a variable in R, but during `tar_make()`, it will reproducibly store a value in `_targets/objects/`.
+1. Write the pipeline at the bottom of `_targets.R`. A pipeline is a list of target objects, which you can create with `tar_target()`. Each target is a step of the analysis. It looks and feels like a variable in R, but during `tar_make()`, it will save the output as a file in `_targets/objects/`.
 
 :::{.callout-tip}
 ## Start small
