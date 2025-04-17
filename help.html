@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.6.42">
+<meta name="generator" content="quarto-1.6.43">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -37,7 +37,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-d4d76bf8491c20bad77d141916dc28e1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap-a34d670291f06f286357e447776a572a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
@@ -99,29 +99,7 @@ ul.task-list li input[type="checkbox"] {
       <a href="./">The {targets} R package user manual</a> 
         <div class="sidebar-tools-main">
     <a href="https://github.com/ropensci-books/targets/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
-    <div class="dropdown">
-      <a href="" title="Share" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Share"><i class="bi bi-share"></i></a>
-      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
-          <li>
-            <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=|url|">
-              <i class="bi bi-twitter pe-1"></i>
-            Twitter
-            </a>
-          </li>
-          <li>
-            <a class="dropdown-item sidebar-tools-main-item" href="https://www.facebook.com/sharer/sharer.php?u=|url|">
-              <i class="bi bi-facebook pe-1"></i>
-            Facebook
-            </a>
-          </li>
-          <li>
-            <a class="dropdown-item sidebar-tools-main-item" href="https://www.linkedin.com/sharing/share-offsite/?url=|url|">
-              <i class="bi bi-linkedin pe-1"></i>
-            LinkedIn
-            </a>
-          </li>
-      </ul>
-    </div>
+    <a href="https://www.linkedin.com/sharing/share-offsite/?url=|url|" title="LinkedIn" class="quarto-navigation-tool px-1" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
 </div>
     </div>
       </div>
@@ -332,9 +310,8 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#troubleshooting" id="toc-troubleshooting" class="nav-link" data-scroll-target="#troubleshooting"><span class="header-section-number">3.2</span> Troubleshooting</a>
   <ul class="collapse">
   <li><a href="#update-your-r-packages" id="toc-update-your-r-packages" class="nav-link" data-scroll-target="#update-your-r-packages"><span class="header-section-number">3.2.1</span> Update your R packages</a></li>
-  <li><a href="#attribute-the-error" id="toc-attribute-the-error" class="nav-link" data-scroll-target="#attribute-the-error"><span class="header-section-number">3.2.2</span> Attribute the error</a></li>
-  <li><a href="#set-expectations" id="toc-set-expectations" class="nav-link" data-scroll-target="#set-expectations"><span class="header-section-number">3.2.3</span> Set expectations</a></li>
-  <li><a href="#write-a-reprex" id="toc-write-a-reprex" class="nav-link" data-scroll-target="#write-a-reprex"><span class="header-section-number">3.2.4</span> Write a reprex</a></li>
+  <li><a href="#isolate-the-source-of-the-error" id="toc-isolate-the-source-of-the-error" class="nav-link" data-scroll-target="#isolate-the-source-of-the-error"><span class="header-section-number">3.2.2</span> Isolate the source of the error</a></li>
+  <li><a href="#write-a-reprex" id="toc-write-a-reprex" class="nav-link" data-scroll-target="#write-a-reprex"><span class="header-section-number">3.2.3</span> Write a reprex</a></li>
   </ul></li>
   <li><a href="#sec-contact" id="toc-sec-contact" class="nav-link" data-scroll-target="#sec-contact"><span class="header-section-number">3.3</span> Contact</a>
   <ul class="collapse">
@@ -367,7 +344,7 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>This chapter explains how to ask for help. Questions can range from <a href="https://github.com/ropensci/tarchetypes/discussions/90">detailed troubleshooting</a> to <a href="https://community.rstudio.com/t/working-with-targets-package-and-package-development/156505">general advice</a>. To ensure a constructive dialogue, please read this entire page before reaching out. Thank you for respecting the time and effort it takes to provide one-on-one support.</p>
+<p>Working with <code>targets</code> can be challenging, and sometimes you may need help from a human. However, offering that help can be just as challenging because every use case is different. If you make your questions easy to answer, you will get faster, more useful responses. This chapter shares guidance to help you ask effective questions. Please read this page in full before reaching out for support.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -378,17 +355,14 @@ Summary
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Before you post a question, please work through the steps explained in this chapter.</p>
+<p>Before you post a question, please read through all the sections of in this chapter.</p>
 <ul>
 <li>Follow the <a href="https://ropensci.org/code-of-conduct/">code of conduct</a>.</li>
 <li>Do not post sensitive or confidential information.</li>
 <li>Search existing posts.</li>
 <li>Update your R packages.</li>
-<li>If troubleshooting:
-<ul>
-<li>Attribute the error.</li>
+<li>Isolate the source of the error.</li>
 <li>Write a reprex.</li>
-</ul></li>
 </ul>
 </div>
 </div>
@@ -413,22 +387,30 @@ Summary
 </section>
 <section id="troubleshooting" class="level2" data-number="3.2">
 <h2 data-number="3.2" class="anchored" data-anchor-id="troubleshooting"><span class="header-section-number">3.2</span> Troubleshooting</h2>
-<p>It is okay to reach out if you are struggling to solve a specific problem in a specific project: an error message, a part of the code you are not sure how to write, or any experience with <code>targets</code> that is incorrect, unwelcome, unexpected, or confusing. However, please follow the guidelines below and take an active role in the troubleshooting process.</p>
+<p>If you are struggling with <code>targets</code>, please follow the steps below first. Even if you do not solve the problem on your own, your findings from troubleshooting will help you ask effective questions when you talk to a live human.</p>
 <section id="update-your-r-packages" class="level3" data-number="3.2.1">
 <h3 data-number="3.2.1" class="anchored" data-anchor-id="update-your-r-packages"><span class="header-section-number">3.2.1</span> Update your R packages</h3>
-<p>If the error is a bug in <code>targets</code> or <code>tarchetypes</code>, it is possible the bug has already been fixed in a newer version. Before posting, please try again with the latest CRAN release of <code>targets</code> (or <code>tarchetypes</code>), then again with the GitHub development version if needed. Please see <a href="https://docs.ropensci.org/targets/#installation" class="uri">https://docs.ropensci.org/targets/#installation</a> for installation instructions.</p>
+<p>If you encounter a bug in <code>targets</code> or <code>tarchetypes</code>, the bug may have already been fixed in a newer version. Before posting, please try again with the latest CRAN release of <code>targets</code> (or <code>tarchetypes</code>), then again with the GitHub development version if needed. Please see <a href="https://docs.ropensci.org/targets/#installation" class="uri">https://docs.ropensci.org/targets/#installation</a> for installation instructions.</p>
 </section>
-<section id="attribute-the-error" class="level3" data-number="3.2.2">
-<h3 data-number="3.2.2" class="anchored" data-anchor-id="attribute-the-error"><span class="header-section-number">3.2.2</span> Attribute the error</h3>
-<p>The <code>targets</code> package itself is not usually the cause of problems that arise in <code>targets</code> pipelines. Most issues come from the user-defined R code, R commands, and R functions that the pipeline calls, as well as other R packages on your system. It is often easiest to diagnose these problems by removing your code from the pipeline and running it without using <code>targets</code> at all. So before you post a question, please attempt to troubleshoot and figure out if <code>targets</code> is actually the source of the trouble, or if the error comes from another package or your own code. The tips in the <a href="debugging.html">debugging chapter</a> may help. If the culprit turns out to be a non-<code>targets</code> issue, then please ask your question in a non-<code>targets</code> forum and write the question accordingly.</p>
+<section id="isolate-the-source-of-the-error" class="level3" data-number="3.2.2">
+<h3 data-number="3.2.2" class="anchored" data-anchor-id="isolate-the-source-of-the-error"><span class="header-section-number">3.2.2</span> Isolate the source of the error</h3>
+<p>An error in a <code>targets</code> pipeline might not originate from the <code>targets</code> package itself. The underlying cause might be a bug in <a href="https://github.com/ropensci/targets/blob/a419fb99d3c07e2270f2507c8d6ec83d87cb85d6/DESCRIPTION#L58-L112">one of the R packages that <code>targets</code> depends on</a>, or it might come from the custom R code you inject into your pipeline. As best you can, please try to find the true source of the error. For example, try running similar code without the <code>targets</code> package and see if you get the same error. If the error does not come from <code>targets</code> itself, please do not post your question on a <code>targets</code>-focused discussion forum.</p>
 </section>
-<section id="set-expectations" class="level3" data-number="3.2.3">
-<h3 data-number="3.2.3" class="anchored" data-anchor-id="set-expectations"><span class="header-section-number">3.2.3</span> Set expectations</h3>
-<p>Computer code is extremely strict. In order to run properly, it needs to be exactly correct, down to the last detail. That makes every single piece of every single computer program susceptible to programming errors and usage errors. For every bug you discover, there are hundreds of strange and unguessable potential causes. The culprit could be a typo buried deep in the <code>targets</code> codebase, an incorrect hidden assumption lost in translation about how to use <code>targets</code>, an obscure bug in an obscure R package dependency, a mistake in one of your R functions, or some other mysterious or unexpected reason. In addition, you may be the first user to experience the problem. So when you ask for help, it is not enough to state the error and ask what might be the solution. The true answer is too surprising to predict, even for the most experienced experts of R and <code>targets</code>.</p>
-</section>
-<section id="write-a-reprex" class="level3" data-number="3.2.4">
-<h3 data-number="3.2.4" class="anchored" data-anchor-id="write-a-reprex"><span class="header-section-number">3.2.4</span> Write a reprex</h3>
-<p>To set up the discussion for success, please provide the complete context of the problem, including a reprex. The purpose of a reprex, or reproducible example<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, is to eliminate the knowledge gaps, misunderstandings, and hidden assumptions where bugs hide. A reprex is a sample of complete, self-contained, runnable code that fully emulates and reproduces the problem. The code should <a href="https://style.tidyverse.org/">look clean and readable</a>, be as short and concise as possible, run in as few seconds as possible, and contain only the details most relevant to troubleshooting. You can embed the code inline in your question, or you can upload it to a public repository and post the link. Regardless, please expect that anyone trying to help will read all the code and run the enclosed <code>_targets.R</code> file on their own private computer. This process is hands-on and empirical, so please make it as quick and easy as possible for the people who volunteer their valuable time and energy to answer questions.</p>
+<section id="write-a-reprex" class="level3" data-number="3.2.3">
+<h3 data-number="3.2.3" class="anchored" data-anchor-id="write-a-reprex"><span class="header-section-number">3.2.3</span> Write a reprex</h3>
+<p>When something goes wrong, it is natural to simply share the error and ask why it happened. But this is not enough information, not even for an expert in <code>targets</code>. Any response will be guesswork, and guesses about computer code are usually wrong. The person helping you needs to actually run your code. This is the only way to test that a solution really works.</p>
+<p>When you ask for help with a problem, please provide a reprex<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. A reprex is a small sample of runnable code that emulates the problem. If you provide a reprex, the person helping you can troubleshoot empirically, and the responses you get will be faster and more useful.</p>
+<p>A viable reprex must:</p>
+<ol type="1">
+<li>Be runnable by anyone else. For example, do not reference files that only you can access.</li>
+<li>Actually generate the expected error when someone else runs it.</li>
+</ol>
+<p>In addition, a good reprex:</p>
+<ul>
+<li>Has <a href="https://style.tidyverse.org/">clean and readable</a> code.</li>
+<li>Runs quickly on any machine.</li>
+<li>Is simple and concise enough for someone else to digest quickly and understand without much effort.</li>
+</ul>
 <p>The following posts explain how to write a good reprex.</p>
 <ul>
 <li><a href="https://stackoverflow.com/help/minimal-reproducible-example" class="uri">https://stackoverflow.com/help/minimal-reproducible-example</a></li>
@@ -474,11 +456,7 @@ Summary
 <li><code>jagstargets</code>: <a href="https://github.com/ropensci/jagstargets/discussions" class="uri">https://github.com/ropensci/jagstargets/discussions</a></li>
 <li><code>stantargets</code>: <a href="https://github.com/ropensci/stantargets/discussions" class="uri">https://github.com/ropensci/stantargets/discussions</a></li>
 </ul>
-<p>GitHub makes it easy to search for and link to public discussions. Not only does this help users solve their own problems, it also helps the maintainer avoid repetition. So please use discussions instead of private emails, instant messages, or mentions on social media.</p>
-<section id="out-of-office" class="level4" data-number="3.3.2.1">
-<h4 data-number="3.3.2.1" class="anchored" data-anchor-id="out-of-office"><span class="header-section-number">3.3.2.1</span> Out of office</h4>
-<p>When the maintainer is out of office, the GitHub repositories above will enter vacation mode. During these times, <a href="https://docs.github.com/en/communities/moderating-comments-and-conversations/limiting-interactions-in-your-repository">Github interactions are temporarily limited</a>, which means users cannot open or comment on <a href="https://docs.github.com/en/issues/tracking-your-work-with-issues/about-issues">issues</a> or <a href="https://docs.github.com/en/discussions">discussions</a>. Each repository has an <a href="https://github.com/ropensci/targets/issues/1007">issue like this one</a> to show when vacation mode is turned on and when the maintainer will return and re-enable interactions.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
-</section>
+<p>GitHub makes it easy to search for and link to public discussions. Not only does this help users solve their own problems, it also helps the maintainer avoid repetition. So please use public discussions instead of private emails, instant messages, or mentions on social media.</p>
 </section>
 </section>
 <section id="sec-help-user" class="level2" data-number="3.4">
@@ -490,9 +468,8 @@ Summary
 <section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn1"><p>Also known as a minimal reproducible example or minimal working example.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>Also known as a reproducible example, minimal reproducible example, or minimal working example.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn2"><p>You may need to create a free <a href="https://github.com/">GitHub</a> account, but the process is straightforward.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3"><p>I automate these interaction settings and issues using R functions <code>vacation_on()</code> and <code>vacation_off()</code> from <a href="https://github.com/wlandau/dotfiles/blob/main/github/vacation.R" class="uri">https://github.com/wlandau/dotfiles/blob/main/github/vacation.R</a>.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
 
@@ -933,7 +910,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       &nbsp;
     </div>   
     <div class="nav-footer-center">
-<p>How to get help: <a href="https://books.ropensci.org/targets/help.html" class="uri">https://books.ropensci.org/targets/help.html</a><br>Copyright 2024, Eli Lilly and Company</p>
+<p>How to get help: <a href="https://books.ropensci.org/targets/help.html" class="uri">https://books.ropensci.org/targets/help.html</a><br>Copyright 2025, Eli Lilly and Company</p>
 <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/ropensci-books/targets/edit/main/help.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div>
     <div class="nav-footer-right">
       &nbsp;
