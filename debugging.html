@@ -339,10 +339,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#finish-the-pipeline-anyway" id="toc-finish-the-pipeline-anyway" class="nav-link" data-scroll-target="#finish-the-pipeline-anyway"><span class="header-section-number">4.3</span> Finish the pipeline anyway</a></li>
   <li><a href="#error-messages" id="toc-error-messages" class="nav-link" data-scroll-target="#error-messages"><span class="header-section-number">4.4</span> Error messages</a></li>
   <li><a href="#debugging-in-functions" id="toc-debugging-in-functions" class="nav-link" data-scroll-target="#debugging-in-functions"><span class="header-section-number">4.5</span> Debugging in functions</a></li>
-  <li><a href="#system-issues" id="toc-system-issues" class="nav-link" data-scroll-target="#system-issues"><span class="header-section-number">4.6</span> System issues</a></li>
-  <li><a href="#pause-the-pipeline-with-browser" id="toc-pause-the-pipeline-with-browser" class="nav-link" data-scroll-target="#pause-the-pipeline-with-browser"><span class="header-section-number">4.7</span> Pause the pipeline with <code>browser()</code></a></li>
-  <li><a href="#pause-the-pipeline-with-the-debug-option" id="toc-pause-the-pipeline-with-the-debug-option" class="nav-link" data-scroll-target="#pause-the-pipeline-with-the-debug-option"><span class="header-section-number">4.8</span> Pause the pipeline with the <code>debug</code> option</a></li>
-  <li><a href="#workspaces" id="toc-workspaces" class="nav-link" data-scroll-target="#workspaces"><span class="header-section-number">4.9</span> Workspaces</a></li>
+  <li><a href="#pause-the-pipeline-with-browser" id="toc-pause-the-pipeline-with-browser" class="nav-link" data-scroll-target="#pause-the-pipeline-with-browser"><span class="header-section-number">4.6</span> Pause the pipeline with <code>browser()</code></a></li>
+  <li><a href="#pause-the-pipeline-with-the-debug-option" id="toc-pause-the-pipeline-with-the-debug-option" class="nav-link" data-scroll-target="#pause-the-pipeline-with-the-debug-option"><span class="header-section-number">4.7</span> Pause the pipeline with the <code>debug</code> option</a></li>
+  <li><a href="#workspaces" id="toc-workspaces" class="nav-link" data-scroll-target="#workspaces"><span class="header-section-number">4.8</span> Workspaces</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/ropensci-books/targets/edit/main/debugging.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
@@ -368,18 +367,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>This chapter explains how to debug <code>targets</code> pipelines. The repository at <a href="https://github.com/wlandau/targets-debug" class="uri">https://github.com/wlandau/targets-debug</a> has example R code. To practice the debugging techniques explained below, <a href="https://github.com/wlandau/targets-debug/archive/refs/heads/main.zip">download the code</a> and step through the interactive R scripts <code>demo_small.R</code>, <code>demo_browser.R</code>, and <code>demo_workspace.R</code>. To ask for help using <code>targets</code>, please read the <a href="help.html">help chapter</a>.</p>
+<p>This chapter offers advice on debugging <code>targets</code> pipelines. The repository at <a href="https://github.com/wlandau/targets-debug" class="uri">https://github.com/wlandau/targets-debug</a> has example R code. To practice the debugging techniques explained below, <a href="https://github.com/wlandau/targets-debug/archive/refs/heads/main.zip">download the code</a> and step through the interactive R scripts <code>demo_small.R</code>, <code>demo_browser.R</code>, and <code>demo_workspace.R</code>. The <a href="help.html">help chapter</a> has advice on asking effective questions if you need help from a human.</p>
 <section id="debugging-in-targets-is-different" class="level2" data-number="4.1">
 <h2 data-number="4.1" class="anchored" data-anchor-id="debugging-in-targets-is-different"><span class="header-section-number">4.1</span> Debugging in <code>targets</code> is different</h2>
-<p>R code is easiest to debug when it is interactive. In the R console or <a href="https://www.rstudio.com/products/rstudio/">RStudio IDE</a>, you have full control over the code and the objects in the environment, and you are free to dissect, tinker, and test until you find and fix the issue. However, a pipeline is the opposite of interactive. In <code>targets</code>, several layers of encapsulation and automation separate you from the code you want to debug:</p>
+<p>R code is easiest to debug when it is interactive. In the R console or <a href="https://www.rstudio.com/products/rstudio/">RStudio IDE</a>, you have full control over the code and the objects in the environment, and you are free to dissect, tinker, and test until you find and fix the issue. However, a pipeline is deliberately non-interactive because it tries to be automated and reproducible. In <code>targets</code>, several layers of encapsulation separate you from the code you want to debug:</p>
 <ul>
 <li>The pipeline runs in an external non-interactive <a href="https://github.com/r-lib/callr"><code>callr::r()</code></a> process where you cannot use the R console.</li>
-<li>Data management</li>
-<li>Environment management</li>
-<li><a href="hpc.html">High-performance computing</a></li>
-<li>Built-in error handling</li>
+<li>The targets in the pipeline may run on <a href="crew.html">parallel workers</a>.</li>
+<li><a href="https://docs.ropensci.org/targets/reference/tar_make.html"><code>tar_make()</code></a> automatically saves output data to disk.</li>
+<li><a href="https://docs.ropensci.org/targets/reference/tar_make.html"><code>tar_make()</code></a> has its own error-catching system.</li>
 </ul>
-<p>Although these layers are essential for reproducibility and scale, you will need to cut through them in order to diagnose and solve issues in pipelines. This chapter explains how.</p>
+<p>Although these layers are essential for reproducibility and scale, you will need to peel them back to diagnose and solve problems. This chapter explains how.</p>
 </section>
 <section id="debugging-example" class="level2" data-number="4.2">
 <h2 data-number="4.2" class="anchored" data-anchor-id="debugging-example"><span class="header-section-number">4.2</span> Debugging example</h2>
@@ -393,43 +391,40 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>simulate_data <span class="ot">&lt;-</span> <span class="cf">function</span>(units) {</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">unit =</span> <span class="fu">seq_len</span>(units), <span class="at">factor =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> units, <span class="at">mean =</span> <span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">expand_grid</span>(<span class="at">measurement =</span> <span class="fu">seq_len</span>(<span class="dv">4</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">outcome =</span> <span class="fu">sqrt</span>(factor) <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="fu">n</span>()))</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>analyze_data <span class="ot">&lt;-</span> <span class="cf">function</span>(data) {</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gls</span>(</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">model =</span> outcome <span class="sc">~</span> factor,</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> data,</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">correlation =</span> <span class="fu">corSymm</span>(<span class="at">form =</span> <span class="sc">~</span> measurement <span class="sc">|</span> unit),</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> measurement)</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tidy</span>(<span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.95</span>)</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(<span class="at">name =</span> dataset1, <span class="at">command =</span> <span class="fu">simulate_data</span>(<span class="dv">100</span>)),</span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(<span class="at">name =</span> model, <span class="at">command =</span> <span class="fu">analyze_data</span>(dataset1))</span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">options</span>(<span class="at">warn =</span> <span class="sc">-</span><span class="dv">1</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">unit =</span> <span class="fu">seq_len</span>(units), <span class="at">factor =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> units, <span class="at">mean =</span> <span class="dv">2</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">expand_grid</span>(<span class="at">measurement =</span> <span class="fu">seq_len</span>(<span class="dv">4</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">outcome =</span> <span class="fu">sqrt</span>(factor) <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="fu">n</span>()))</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>analyze_data <span class="ot">&lt;-</span> <span class="cf">function</span>(data) {</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gls</span>(</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">model =</span> outcome <span class="sc">~</span> factor,</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> data,</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">correlation =</span> <span class="fu">corSymm</span>(<span class="at">form =</span> <span class="sc">~</span> measurement <span class="sc">|</span> unit),</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> measurement)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tidy</span>(<span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.95</span>)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(<span class="at">name =</span> data, <span class="at">command =</span> <span class="fu">simulate_data</span>(<span class="dv">100</span>)),</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(<span class="at">name =</span> model, <span class="at">command =</span> <span class="fu">analyze_data</span>(data))</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>This pipeline has an error.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start target dataset1</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built target dataset1 [0.499 seconds]</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start target model</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✖ error target model</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • end pipeline [0.631 seconds]</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning messages:</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1: NaNs produced </span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2: 1 targets produced warnings. Run tar_meta(fields = warnings, complete_only = TRUE) for the messages. </span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ! Error running targets::tar_make()</span></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Target errors: targets::tar_meta(fields = error, complete_only = TRUE)</span></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Tips: https://books.ropensci.org/targets/debugging.html</span></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Last error: missing values in object</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; + data dispatched</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ data completed [173ms, 4.37 kB]</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; + model dispatched</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✖ model errored</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✖ errored pipeline [281ms, 1 completed, 0 skipped]</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ! Error in tar_make():</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   missing values in object</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   See https://books.ropensci.org/targets/debugging.html</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="finish-the-pipeline-anyway" class="level2" data-number="4.3">
@@ -449,28 +444,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start target dataset1</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built target dataset1 [0.657 seconds]</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start target model</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✖ error target model</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✖ error target model</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • end pipeline [0.783 seconds]</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning messages:</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1: NaNs produced </span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2: 1 targets produced warnings. Run tar_meta(fields = warnings, complete_only = TRUE) for the messages.</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; + data dispatched</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ data completed [632ms, 4.37 kB]</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; + model dispatched</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✖ model errored</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✖ errored pipeline [804ms, 1 completed, 0 skipped]</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># We have a NULL placeholder for the model target.</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(model)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; NULL</span></span>
 <span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co"># We do have a result for target {model}.</span></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(model)</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; NULL</span></span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="co"># But it is not up to date.</span></span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_outdated</span>()</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "model"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co"># But it is not up to date.</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_outdated</span>()</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "model"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="error-messages" class="level2" data-number="4.4">
 <h2 data-number="4.4" class="anchored" data-anchor-id="error-messages"><span class="header-section-number">4.4</span> Error messages</h2>
-<p>Still, it is important to fix known errors. The metadata in <code>_targets/meta/meta</code> is a good place to start. It stores the most recent error and warning messages for each target. <code>tar_meta()</code> can retrieve these messages.</p>
+<p>Still, it is important to fix known errors. The metadata in <code>_targets/meta/meta</code> is a good place to start. It stores the most recent error and warning messages for each target. <code>tar_meta()</code> can retrieve these messages.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_meta</span>(<span class="at">fields =</span> error, <span class="at">complete_only =</span> <span class="cn">TRUE</span>)</span>
@@ -479,350 +470,284 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt; &lt;chr&gt;                   </span></span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 model missing values in object</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_meta</span>(<span class="at">fields =</span> warnings, <span class="at">complete_only =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 1 × 2</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   name     warnings     </span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;    &lt;chr&gt;        </span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 dataset1 NaNs produced</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>It looks like missing values in the data are responsible for the error in the <code>model</code> target. Maybe this clue alone is enough to repair the code.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> If not, read on.</p>
+<p>It looks like missing values in the data are responsible for the error in the <code>model</code> target. Maybe this clue alone is enough to repair the code.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> If not, read on.</p>
 </section>
 <section id="debugging-in-functions" class="level2" data-number="4.5">
 <h2 data-number="4.5" class="anchored" data-anchor-id="debugging-in-functions"><span class="header-section-number">4.5</span> Debugging in functions</h2>
 <p>Most errors are come from custom user-defined functions like <code>simulate_data()</code> and <code>analyze_data()</code>. See if you can reproduce the error in the R console.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Restart your R session.</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>rstudioapi<span class="sc">::</span><span class="fu">restartSession</span>()</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Loads globals like tar_option_set() packages, simulate_data(), and analyze_data():</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_load_globals</span>()</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the data that the target depends on.</span></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_load</span>(dataset1)</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Run the command of the errored target.</span></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="fu">analyze_data</span>(dataset1)</span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error in na.fail.default(list(measurement = c(1L, 2L, 3L, 4L, 1L, 2L,  : </span></span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   missing values in object</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Restart your R session.</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>rstudioapi<span class="sc">::</span><span class="fu">restartSession</span>()</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Loads globals like tar_option_set() packages, simulate_data(), and analyze_data():</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_load_globals</span>()</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the data that the target depends on.</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_load</span>(data)</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Run the command of the errored target.</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="fu">analyze_data</span>(data)</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error in `na.fail.default()`:</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   missing values in object</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>If you see the same error here that you saw in the pipeline, then good! Now that you are in an interactive R session, all the <a href="https://adv-r.hadley.nz/debugging.html">usual debugging techniques and tools</a> such as <code>debug()</code> and <code>browser()</code> can help you figure out how to fix your code, and you can exclude <code>targets</code> from the rest of the debugging process.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">debug</span>(analyze_data)</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">analyze_data</span>(dataset1)</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; debugging in: analyze_data(dataset)</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ...</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">2</span>]<span class="sc">&gt;</span> <span class="fu">anyNA</span>(dataset<span class="sc">$</span>outcome) <span class="co"># Do I need to handle missing values?</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">debug</span>(analyze_data)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">analyze_data</span>(data)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; debugging in: analyze_data(data)</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ...</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">2</span>]<span class="sc">&gt;</span> <span class="fu">anyNA</span>(data<span class="sc">$</span>outcome) <span class="co"># Do I need to handle missing values?</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>In some cases, however, you may not see the original error:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>dataset <span class="ot">&lt;-</span> <span class="fu">simulate_data</span>(<span class="dv">100</span>)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">analyze_data</span>(dataset)</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2 × 7</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   term        estimate std.error statistic  p.value conf.low conf.high</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; * &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;</span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 (Intercept)    0.595    0.152       3.92 1.05e- 4    0.297     0.892</span></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 factor         0.362    0.0476      7.61 2.04e-13    0.269     0.455</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>new_data <span class="ot">&lt;-</span> <span class="fu">simulate_data</span>(<span class="dv">100</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">analyze_data</span>(new_data)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2 × 7</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   term        estimate std.error statistic  p.value conf.low conf.high</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; * &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 (Intercept)    0.595    0.152       3.92 1.05e- 4    0.297     0.892</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 factor         0.362    0.0476      7.61 2.04e-13    0.269     0.455</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Above, the random number generator seed in your local session is different from the seed assigned to the target in the pipeline. The dataset from the pipeline has missing values, whereas the one in the local session does not.</p>
 <p>If you cannot reproduce the error in an interactive R session, read on.</p>
 </section>
-<section id="system-issues" class="level2" data-number="4.6">
-<h2 data-number="4.6" class="anchored" data-anchor-id="system-issues"><span class="header-section-number">4.6</span> System issues</h2>
-<p>If you see an error in the pipeline but not your local interactive R session, then the bug could be system-related. For example, <a href="https://github.com/ropensci/targets/discussions/506">this issue</a> was originally reported as a bug in <code>targets</code> but actually turned out to be a bug in the <a href="https://github.com/rstudio/renv/issues/773#issuecomment-973765196">interaction between packages <code>renv</code> and <code>callr</code></a>. (Remember, <code>targets</code> runs the pipeline in a <code>callr::r()</code> process.) To check for issues like that one, try running <code>tar_make()</code> with <code>callr_function = NULL</code> to avoid <code>callr</code> entirely:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>rstudioapi<span class="sc">::</span><span class="fu">restartSession</span>() <span class="co"># Remove in-memory detritus.</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>targets<span class="sc">::</span><span class="fu">tar_make</span>(<span class="at">callr_function =</span> <span class="cn">NULL</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>In addition, try running your code with <code>callr</code> outside the pipeline:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>callr<span class="sc">::</span><span class="fu">r</span>(</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">func =</span> <span class="cf">function</span>() {</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">library</span>(targets)</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">library</span>(tarchetypes)</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_load_globals</span>()</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    dataset <span class="ot">&lt;-</span> <span class="fu">simulate_data</span>(<span class="dv">100</span>)</span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">analyze_data</span>(dataset)</span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  },</span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">show =</span> <span class="cn">TRUE</span></span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Similarly, you can isolate many <a href="https://books.ropensci.org/targets/hpc.html">high-performance computing</a> problems by directly invoking <a href="https://github.com/mschubert/clustermq"><code>clustermq</code></a> or <a href="https://github.com/HenrikBengtsson/future"><code>future</code></a>. Examples:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console with clustermq:</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"># see https://mschubert.github.io/clustermq/articles/userguide.html</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">clustermq.scheduler =</span> <span class="st">"multiprocess"</span>)</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>clustermq<span class="sc">::</span><span class="fu">Q</span>(</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">function</span>(arg) {</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">library</span>(targets)</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">library</span>(tarchetypes)</span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_load_globals</span>()</span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    dataset <span class="ot">&lt;-</span> <span class="fu">simulate_data</span>(<span class="dv">100</span>)</span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">analyze_data</span>(dataset)</span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  },</span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">arg =</span> <span class="dv">1</span>,</span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_jobs =</span> <span class="dv">1</span></span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console with future:</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># see https://future.futureverse.org</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>future<span class="sc">::</span><span class="fu">plan</span>(future<span class="sc">::</span>multisession)</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> future<span class="sc">::</span><span class="fu">future</span>(</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">expr =</span> {</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">library</span>(targets)</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">library</span>(tarchetypes)</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tar_load_globals</span>()</span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    dataset <span class="ot">&lt;-</span> <span class="fu">simulate_data</span>(<span class="dv">100</span>)</span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">analyze_data</span>(dataset)</span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  },</span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">seed =</span> <span class="cn">TRUE</span></span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>future<span class="sc">::</span><span class="fu">value</span>(f)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>If you successfully reproduce the bug without using <code>targets</code>, then the problem becomes much smaller and much easier to solve. At that point, you can completely exclude <code>targets</code> from the rest of the debugging process.</p>
-</section>
-<section id="pause-the-pipeline-with-browser" class="level2" data-number="4.7">
-<h2 data-number="4.7" class="anchored" data-anchor-id="pause-the-pipeline-with-browser"><span class="header-section-number">4.7</span> Pause the pipeline with <code>browser()</code></h2>
+<section id="pause-the-pipeline-with-browser" class="level2" data-number="4.6">
+<h2 data-number="4.6" class="anchored" data-anchor-id="pause-the-pipeline-with-browser"><span class="header-section-number">4.6</span> Pause the pipeline with <code>browser()</code></h2>
 <p>Sometimes, you may still need to run the pipeline to find the problem. The following trick lets you pause the pipeline and tinker with a running target interactively:</p>
 <ol type="1">
 <li>Insert <a href="https://adv-r.hadley.nz/debugging.html#browser"><code>browser()</code></a> into the function that produces the error.</li>
-<li>Restart your R session to remove detritus from memory.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></li>
+<li>Restart your R session to remove detritus from memory.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></li>
 <li>Call <code>tar_make()</code> with <code>callr_function = NULL</code>, <code>use_crew = FALSE</code>, and <code>as_job = FALSE</code> to run the whole pipeline in your interactive session without launching a new <code>callr::r()</code> process, parallel <code>crew</code> workers, or an RStudio job.</li>
 <li>Poke around until you find the bug.</li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ...</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>analyze_data <span class="ot">&lt;-</span> <span class="cf">function</span>(data) {</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">browser</span>() <span class="co"># Pause the pipeline here.</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gls</span>(</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">model =</span> outcome <span class="sc">~</span> factor,</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> data,</span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">correlation =</span> <span class="fu">corSymm</span>(<span class="at">form =</span> <span class="sc">~</span> measurement <span class="sc">|</span> unit),</span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> measurement)</span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tidy</span>(<span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.95</span>)</span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="co"># ...</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ...</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>analyze_data <span class="ot">&lt;-</span> <span class="cf">function</span>(data) {</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">browser</span>() <span class="co"># Pause the pipeline here.</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gls</span>(</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">model =</span> outcome <span class="sc">~</span> factor,</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> data,</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">correlation =</span> <span class="fu">corSymm</span>(<span class="at">form =</span> <span class="sc">~</span> measurement <span class="sc">|</span> unit),</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> measurement)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tidy</span>(<span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.95</span>)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co"># ...</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Restart your R session.</span></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>rstudioapi<span class="sc">::</span><span class="fu">restartSession</span>()</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Run the whole pipeline in your interactive R session</span></span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="co"># (no callr process, parallel workers, or RStudio job).</span></span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>(<span class="at">callr_function =</span> <span class="cn">NULL</span>, <span class="at">use_crew =</span> <span class="cn">FALSE</span>, <span class="at">as_job =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ skip target dataset1</span></span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start target model</span></span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Called from: analyze_data(dataset1)</span></span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Tinker with the R session to see if you can reproduce the error.</span></span>
-<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> model <span class="ot">&lt;-</span> <span class="fu">gls</span>(</span>
-<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a><span class="sc">+</span>   <span class="at">model =</span> outcome <span class="sc">~</span> factor,</span>
-<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a><span class="sc">+</span>   <span class="at">data =</span> data,</span>
-<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a><span class="sc">+</span>   <span class="at">correlation =</span> <span class="fu">corSymm</span>(<span class="at">form =</span> <span class="sc">~</span> measurement <span class="sc">|</span> unit),</span>
-<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a><span class="sc">+</span>   <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> measurement)</span>
-<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a><span class="sc">+</span> )</span>
-<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error in na.fail.default(list(measurement = c(1L, 2L, 3L, 4L, 1L, 2L,  : </span></span>
-<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   missing values in object</span></span>
-<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Figure out what it would take to fix the error.</span></span>
-<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> model <span class="ot">&lt;-</span> <span class="fu">gls</span>(</span>
-<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a><span class="sc">+</span>   <span class="at">model =</span> outcome <span class="sc">~</span> factor,</span>
-<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a><span class="sc">+</span>   <span class="at">data =</span> data,</span>
-<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a><span class="sc">+</span>   <span class="at">correlation =</span> <span class="fu">corSymm</span>(<span class="at">form =</span> <span class="sc">~</span> measurement <span class="sc">|</span> unit),</span>
-<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a><span class="sc">+</span>   <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> measurement),</span>
-<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a><span class="sc">+</span>   <span class="at">na.action =</span> na.omit</span>
-<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a><span class="sc">+</span> )</span>
-<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Confirm that the bug is fixed.</span></span>
-<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> <span class="fu">tidy</span>(model, <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.95</span>)</span>
-<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2 × 7</span></span>
-<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   term        estimate std.error statistic       p.value conf.low conf.high</span></span>
-<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; * &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;         &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;</span></span>
-<span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 (Intercept)    0.795    0.148       5.36 0.000000145      0.504     1.09 </span></span>
-<span id="cb15-40"><a href="#cb15-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 factor         0.275    0.0466      5.92 0.00000000717    0.184     0.367</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Restart your R session.</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>rstudioapi<span class="sc">::</span><span class="fu">restartSession</span>()</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Run the whole pipeline in your interactive R session</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co"># (no callr process, parallel workers, or RStudio job).</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>(<span class="at">callr_function =</span> <span class="cn">NULL</span>, <span class="at">use_crew =</span> <span class="cn">FALSE</span>, <span class="at">as_job =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; + model dispatched</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Called from: analyze_data(dataset1)</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Tinker with the R session to see if you can reproduce the error.</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> model <span class="ot">&lt;-</span> <span class="fu">gls</span>(</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="sc">+</span>   <span class="at">model =</span> outcome <span class="sc">~</span> factor,</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a><span class="sc">+</span>   <span class="at">data =</span> data,</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a><span class="sc">+</span>   <span class="at">correlation =</span> <span class="fu">corSymm</span>(<span class="at">form =</span> <span class="sc">~</span> measurement <span class="sc">|</span> unit),</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a><span class="sc">+</span>   <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> measurement)</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a><span class="sc">+</span> )</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error in `na.fail.default()`: </span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   missing values in object</span></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Figure out what it would take to fix the error.</span></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> model <span class="ot">&lt;-</span> <span class="fu">gls</span>(</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a><span class="sc">+</span>   <span class="at">model =</span> outcome <span class="sc">~</span> factor,</span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a><span class="sc">+</span>   <span class="at">data =</span> data,</span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a><span class="sc">+</span>   <span class="at">correlation =</span> <span class="fu">corSymm</span>(<span class="at">form =</span> <span class="sc">~</span> measurement <span class="sc">|</span> unit),</span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a><span class="sc">+</span>   <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> measurement),</span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a><span class="sc">+</span>   <span class="at">na.action =</span> na.omit</span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a><span class="sc">+</span> )</span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Confirm that the bug is fixed.</span></span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> <span class="fu">tidy</span>(model, <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.95</span>)</span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2 × 7</span></span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   term        estimate std.error statistic       p.value conf.low conf.high</span></span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; * &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;         &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;</span></span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 (Intercept)    0.795    0.148       5.36 0.000000145      0.504     1.09 </span></span>
+<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 factor         0.275    0.0466      5.92 0.00000000717    0.184     0.367</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="pause-the-pipeline-with-the-debug-option" class="level2" data-number="4.8">
-<h2 data-number="4.8" class="anchored" data-anchor-id="pause-the-pipeline-with-the-debug-option"><span class="header-section-number">4.8</span> Pause the pipeline with the <code>debug</code> option</h2>
+<section id="pause-the-pipeline-with-the-debug-option" class="level2" data-number="4.7">
+<h2 data-number="4.7" class="anchored" data-anchor-id="pause-the-pipeline-with-the-debug-option"><span class="header-section-number">4.7</span> Pause the pipeline with the <code>debug</code> option</h2>
 <p>It may be too tedious to comb through all targets with <code>browser()</code>. For example, what if the pipeline has hundreds of simulated datasets? The following pipeline simulates 100 datasets with 58 experimental units each and 100 datasets with 70 experimental units each. Each dataset is analyzed with <code>gls()</code>. <code>tar_map_rep()</code> from the <code>tarchetypes</code> package organizes this simulation structure and batches the replications for computational efficiency.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">packages =</span> <span class="fu">c</span>(<span class="st">"broom"</span>, <span class="st">"broom.mixed"</span>, <span class="st">"dplyr"</span>, <span class="st">"nlme"</span>, <span class="st">"tibble"</span>, <span class="st">"tidyr"</span>)</span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>simulate_data <span class="ot">&lt;-</span> <span class="cf">function</span>(units) {</span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">unit =</span> <span class="fu">seq_len</span>(units), <span class="at">factor =</span> <span class="fu">rnorm</span>(units, <span class="at">mean =</span> <span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">expand_grid</span>(<span class="at">measurement =</span> <span class="fu">seq_len</span>(<span class="dv">4</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">outcome =</span> <span class="fu">sqrt</span>(factor) <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="fu">n</span>()))</span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>analyze_data <span class="ot">&lt;-</span> <span class="cf">function</span>(data) {</span>
-<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gls</span>(</span>
-<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">model =</span> outcome <span class="sc">~</span> factor,</span>
-<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> data,</span>
-<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">correlation =</span> <span class="fu">corSymm</span>(<span class="at">form =</span> <span class="sc">~</span> measurement <span class="sc">|</span> unit),</span>
-<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> measurement)</span>
-<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tidy</span>(<span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.95</span>)</span>
-<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>simulate_and_analyze_one_dataset <span class="ot">&lt;-</span> <span class="cf">function</span>(units) {</span>
-<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> <span class="fu">simulate_data</span>(units)</span>
-<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">analyze_data</span>(data)</span>
-<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_map_rep</span>( <span class="co"># from the {tarchetypes} package</span></span>
-<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> analysis,</span>
-<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">command =</span> <span class="fu">simulate_and_analyze_one_dataset</span>(units),</span>
-<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">values =</span> <span class="fu">data.frame</span>(<span class="at">units =</span> <span class="fu">c</span>(<span class="dv">58</span>, <span class="dv">70</span>)), <span class="co"># 2 data size scenarios.</span></span>
-<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">names =</span> <span class="fu">all_of</span>(<span class="st">"units"</span>), <span class="co"># The columns of values to use to name the targets.</span></span>
-<span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">batches =</span> <span class="dv">20</span>, <span class="co"># For each scenario, divide the 100 simulations into 20 dynamic branch targets.</span></span>
-<span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">reps =</span> <span class="dv">5</span> <span class="co"># Each branch target (batch) runs simulate_and_analyze_one_dataset(n = 100) 5 times.</span></span>
-<span id="cb16-38"><a href="#cb16-38" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb16-39"><a href="#cb16-39" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">packages =</span> <span class="fu">c</span>(<span class="st">"broom"</span>, <span class="st">"broom.mixed"</span>, <span class="st">"dplyr"</span>, <span class="st">"nlme"</span>, <span class="st">"tibble"</span>, <span class="st">"tidyr"</span>)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>simulate_data <span class="ot">&lt;-</span> <span class="cf">function</span>(units) {</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">options</span>(<span class="at">warn =</span> <span class="sc">-</span><span class="dv">1</span>)</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">unit =</span> <span class="fu">seq_len</span>(units), <span class="at">factor =</span> <span class="fu">rnorm</span>(units, <span class="at">mean =</span> <span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">expand_grid</span>(<span class="at">measurement =</span> <span class="fu">seq_len</span>(<span class="dv">4</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">outcome =</span> <span class="fu">sqrt</span>(factor) <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="fu">n</span>()))</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>analyze_data <span class="ot">&lt;-</span> <span class="cf">function</span>(data) {</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gls</span>(</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">model =</span> outcome <span class="sc">~</span> factor,</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> data,</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">correlation =</span> <span class="fu">corSymm</span>(<span class="at">form =</span> <span class="sc">~</span> measurement <span class="sc">|</span> unit),</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> measurement)</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tidy</span>(<span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.95</span>)</span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>simulate_and_analyze_one_dataset <span class="ot">&lt;-</span> <span class="cf">function</span>(units) {</span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> <span class="fu">simulate_data</span>(units)</span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">analyze_data</span>(data)</span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_map_rep</span>( <span class="co"># from the {tarchetypes} package</span></span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> analysis,</span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">command =</span> <span class="fu">simulate_and_analyze_one_dataset</span>(units),</span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">values =</span> <span class="fu">data.frame</span>(<span class="at">units =</span> <span class="fu">c</span>(<span class="dv">58</span>, <span class="dv">70</span>)), <span class="co"># 2 data size scenarios.</span></span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">names =</span> <span class="fu">all_of</span>(<span class="st">"units"</span>), <span class="co"># The columns of values to use to name the targets.</span></span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">batches =</span> <span class="dv">20</span>, <span class="co"># For each scenario, divide the 100 simulations into 20 dynamic branch targets.</span></span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">reps =</span> <span class="dv">5</span> <span class="co"># Each branch target (batch) runs simulate_and_analyze_one_dataset(n = 100) 5 times.</span></span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ skip target analysis_batch</span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start branch analysis_58_550d992c</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built branch analysis_58_550d992c [1.2 seconds]</span></span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start branch analysis_58_582bca0a</span></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built branch analysis_58_582bca0a [0.895 seconds]</span></span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start branch analysis_58_f0ac3217</span></span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built branch analysis_58_f0ac3217 [0.848 seconds]</span></span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start branch analysis_58_35d814c0</span></span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✖ error branch analysis_58_35d814c0</span></span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • end pipeline [3.56 seconds]</span></span>
-<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning messages:</span></span>
-<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1: NaNs produced </span></span>
-<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2: 1 targets produced warnings. Run tar_meta(fields = warnings, complete_only = TRUE) for the messages. </span></span>
-<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
-<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ! Error running targets::tar_make()</span></span>
-<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Target errors: targets::tar_meta(fields = error, complete_only = TRUE)</span></span>
-<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Tips: https://books.ropensci.org/targets/debugging.html</span></span>
-<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Last error: missing values in object</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; + analysis_batch dispatched</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ analysis_batch completed [0ms, 97 B]</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; + analysis_58 declared [20 branches]</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✖ analysis_58_0ea05e90e3c60147 errored                      </span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✖ errored pipeline [810ms, 2 completed, 0 skipped]</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ! Error in tar_make():</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   missing values in object</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   See https://books.ropensci.org/targets/debugging.html</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Remember, if you just want to see the results that succeeded, run the pipeline with <code>error = "null"</code> in <code>tar_option_set()</code>. This temporary workaround is especially helpful with so many simulations.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">packages =</span> <span class="fu">c</span>(<span class="st">"broom"</span>, <span class="st">"broom.mixed"</span>, <span class="st">"dplyr"</span>, <span class="st">"nlme"</span>, <span class="st">"tibble"</span>, <span class="st">"tidyr"</span>),</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">error =</span> <span class="st">"null"</span></span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Functions etc...</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">packages =</span> <span class="fu">c</span>(<span class="st">"broom"</span>, <span class="st">"broom.mixed"</span>, <span class="st">"dplyr"</span>, <span class="st">"nlme"</span>, <span class="st">"tibble"</span>, <span class="st">"tidyr"</span>),</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">error =</span> <span class="st">"null"</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Functions etc...</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start target analysis_batch</span></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built target analysis_batch [0.002 seconds]</span></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start branch analysis_58_550d992c</span></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built branch analysis_58_550d992c [1.252 seconds]</span></span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start branch analysis_58_582bca0a</span></span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built branch analysis_58_582bca0a [0.864 seconds]</span></span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start branch analysis_58_f0ac3217</span></span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built branch analysis_58_f0ac3217 [0.838 seconds]</span></span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start branch analysis_58_35d814c0</span></span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✖ error branch analysis_58_35d814c0</span></span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✖ error branch analysis_58_35d814c0</span></span>
-<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start branch analysis_58_e8c6aeab</span></span>
-<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built branch analysis_58_e8c6aeab [0.774 seconds]</span></span>
-<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # More targets...</span></span>
-<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ...</span></span>
-<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start target analysis</span></span>
-<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built target analysis [0.008 seconds]</span></span>
-<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • end pipeline [27.823 seconds]</span></span>
-<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Read the simulations that succeeded.</span></span>
-<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(analysis)</span>
-<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 270 × 12</span></span>
-<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    term        estimate std.error statistic      p.value conf.low conf.high units tar_batch tar_rep   tar_seed tar_group</span></span>
-<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;     &lt;int&gt;   &lt;int&gt;      &lt;int&gt;     &lt;int&gt;</span></span>
-<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1 (Intercept)    0.758    0.234       3.24 0.00137        0.300      1.22     58         1       1 -633351515         1</span></span>
-<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2 factor         0.306    0.0696      4.40 0.0000168      0.170      0.443    58         1       1 -633351515         1</span></span>
-<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3 (Intercept)    0.524    0.229       2.28 0.0232         0.0745     0.974    58         1       2 -915590912         1</span></span>
-<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4 factor         0.402    0.0708      5.68 0.0000000402   0.263      0.541    58         1       2 -915590912         1</span></span>
-<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5 (Intercept)    0.797    0.195       4.08 0.0000624      0.414      1.18     58         1       3 1619222314         1</span></span>
-<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6 factor         0.295    0.0611      4.82 0.00000257     0.175      0.414    58         1       3 1619222314         1</span></span>
-<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7 (Intercept)    0.639    0.216       2.96 0.00336        0.216      1.06     58         1       4  825884824         1</span></span>
-<span id="cb19-34"><a href="#cb19-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8 factor         0.376    0.0723      5.21 0.000000424    0.235      0.518    58         1       4  825884824         1</span></span>
-<span id="cb19-35"><a href="#cb19-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9 (Intercept)    0.850    0.151       5.63 0.0000000521   0.554      1.15     58         1       5 2080314913         1</span></span>
-<span id="cb19-36"><a href="#cb19-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10 factor         0.270    0.0507      5.31 0.000000252    0.170      0.369    58         1       5 2080314913         1</span></span>
-<span id="cb19-37"><a href="#cb19-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # … with 260 more rows</span></span>
-<span id="cb19-38"><a href="#cb19-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ Use `print(n = ...)` to see more rows</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; + analysis_batch dispatched</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ analysis_batch completed [0ms, 97 B]</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; + analysis_58 declared [20 branches]</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✖ analysis_58_0ea05e90e3c60147 errored </span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✖ analysis_58_6b77f315fc663bee errored </span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✖ analysis_58_cef9803445fd2742 errored </span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✖ analysis_58_66e82c295e9c8fb7 errored </span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✖ analysis_58_62ba11e34d87b6d0 errored </span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✖ analysis_58_0aa7ec9d3a482b98 errored </span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; + analysis_70 declared [20 branches]  </span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✖ analysis_70_0ea05e90e3c60147 errored </span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✖ analysis_70_e693a7e1ba8177f8 errored  </span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✖ analysis_70_cef9803445fd2742 errored  </span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✖ analysis_70_66e82c295e9c8fb7 errored</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✖ analysis_70_6319f7f8f2676866 errored </span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✖ analysis_70_ca6bd7e8ae4fc65f errored</span></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✖ analysis_70_62ba11e34d87b6d0 errored </span></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✖ analysis_70_1ae85d59f0c9cedf errored </span></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✖ analysis_70_d1f66671ad88fe8e errored </span></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; + analysis_58_combine dispatched   </span></span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ analysis_58_combine completed [0ms, 7.26 kB] </span></span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; + analysis_70_combine dispatched            </span></span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ analysis_70_combine completed [0ms, 5.79 kB]  </span></span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; + analysis dispatched                     </span></span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ analysis completed [1ms, 12.69 kB]  </span></span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✖ errored pipeline [11.8s, 29 completed, 0 skipped]</span></span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Read the simulations that succeeded.</span></span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_read</span>(analysis)</span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 250 × 12</span></span>
+<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    term        estimate std.error statistic  p.value conf.low conf.high units</span></span>
+<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;</span></span>
+<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1 (Intercept)    0.775    0.167       4.64 5.78e- 6   0.448      1.10     58</span></span>
+<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2 factor         0.285    0.0525      5.43 1.42e- 7   0.182      0.388    58</span></span>
+<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3 (Intercept)    0.892    0.161       5.53 8.75e- 8   0.576      1.21     58</span></span>
+<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4 factor         0.262    0.0477      5.48 1.09e- 7   0.168      0.355    58</span></span>
+<span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5 (Intercept)    1.04     0.186       5.61 5.93e- 8   0.676      1.40     58</span></span>
+<span id="cb14-40"><a href="#cb14-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6 factor         0.203    0.0607      3.34 9.72e- 4   0.0839     0.322    58</span></span>
+<span id="cb14-41"><a href="#cb14-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7 (Intercept)    0.665    0.163       4.08 6.23e- 5   0.346      0.985    58</span></span>
+<span id="cb14-42"><a href="#cb14-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8 factor         0.350    0.0508      6.88 5.75e-11   0.250      0.449    58</span></span>
+<span id="cb14-43"><a href="#cb14-43" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9 (Intercept)    1.03     0.162       6.36 1.07e- 9   0.713      1.35     58</span></span>
+<span id="cb14-44"><a href="#cb14-44" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10 factor         0.244    0.0514      4.74 3.77e- 6   0.143      0.345    58</span></span>
+<span id="cb14-45"><a href="#cb14-45" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 240 more rows</span></span>
+<span id="cb14-46"><a href="#cb14-46" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 4 more variables: tar_batch &lt;int&gt;, tar_rep &lt;int&gt;, tar_seed &lt;int&gt;,</span></span>
+<span id="cb14-47"><a href="#cb14-47" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   tar_group &lt;int&gt;</span></span>
+<span id="cb14-48"><a href="#cb14-48" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ Use `print(n = ...)` to see more rows</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Now let’s seriously debug this pipeline. If each call to <code>simulate_and_analyze_one_dataset()</code> takes a long time to run, then the first step is to set one rep per batch in <code>tar_map_rep()</code> while keeping the total number of reps the same. In other words, increase <code>batches</code> from 20 to 100 and decrease <code>reps</code> from 5 to 1.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>. Also remove the <code>units = 70</code> scenario because we can reproduce the error without it.</p>
+<p>Now let’s seriously debug this pipeline. If each call to <code>simulate_and_analyze_one_dataset()</code> takes a long time to run, then the first step is to set one rep per batch in <code>tar_map_rep()</code> while keeping the total number of reps the same. In other words, increase <code>batches</code> from 20 to 100 and decrease <code>reps</code> from 5 to 1.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>. Also remove the <code>units = 70</code> scenario because we can reproduce the error without it.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co"># packages, options, and functions...</span></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_map_rep</span>(</span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> analysis,</span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">command =</span> <span class="fu">simulate_and_analyze_one_dataset</span>(units),</span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">values =</span> <span class="fu">data.frame</span>(<span class="at">units =</span> <span class="dv">58</span>), <span class="co"># Remove the units = 70 scenario.</span></span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">names =</span> <span class="fu">all_of</span>(<span class="st">"units"</span>),</span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">batches =</span> <span class="dv">100</span>, <span class="co"># 100 batches now</span></span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">reps =</span> <span class="dv">1</span> <span class="co"># 1 rep per batch now</span></span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">packages =</span> <span class="fu">c</span>(<span class="st">"broom"</span>, <span class="st">"broom.mixed"</span>, <span class="st">"dplyr"</span>, <span class="st">"nlme"</span>, <span class="st">"tibble"</span>, <span class="st">"tidyr"</span>),</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Functions...</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_map_rep</span>(</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> analysis,</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">command =</span> <span class="fu">simulate_and_analyze_one_dataset</span>(units),</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">values =</span> <span class="fu">data.frame</span>(<span class="at">units =</span> <span class="dv">58</span>), <span class="co"># Remove the units = 70 scenario.</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">names =</span> <span class="fu">all_of</span>(<span class="st">"units"</span>),</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">batches =</span> <span class="dv">100</span>, <span class="co"># 100 batches now</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">reps =</span> <span class="dv">1</span> <span class="co"># 1 rep per batch now</span></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start target analysis_batch</span></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built target analysis_batch [0.002 seconds]</span></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start branch analysis_58_550d992c</span></span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built branch analysis_58_550d992c [0.502 seconds]</span></span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start branch analysis_58_582bca0a</span></span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built branch analysis_58_582bca0a [0.208 seconds]</span></span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start branch analysis_58_f0ac3217</span></span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # More successful targets...</span></span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ...</span></span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start branch analysis_58_b59aa384</span></span>
-<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✖ error branch analysis_58_b59aa384</span></span>
-<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • end pipeline [3.828 seconds]</span></span>
-<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning messages:</span></span>
-<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1: NaNs produced </span></span>
-<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2: 1 targets produced warnings. Run tar_meta(fields = warnings, complete_only = TRUE) for the messages. </span></span>
-<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
-<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ! Error running targets::tar_make()</span></span>
-<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Target errors: targets::tar_meta(fields = error, complete_only = TRUE)</span></span>
-<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Tips: https://books.ropensci.org/targets/debugging.html</span></span>
-<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Last error: missing values in object</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; + analysis_batch dispatched</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ analysis_batch completed [0ms, 97 B]</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; + analysis_58 declared [100 branches]</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✖ analysis_58_8edfc70f9a7feaf4 errored                       </span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✖ errored pipeline [1.1s, 8 completed, 0 skipped]          </span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ! Error in tar_make():</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   missing values in object</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   See https://books.ropensci.org/targets/debugging.html</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Around 20 targets ran successfully, and target <code>analysis_58_b59aa384</code> hit an error. Let’s interactively debug <code>analysis_58_b59aa384</code> without interfering with any other targets:</p>
+<p>8 targets ran successfully, and target <code>analysis_58_8edfc70f9a7feaf4</code> hit an error. Let’s interactively debug <code>analysis_58_8edfc70f9a7feaf4</code> without interfering with any other targets:</p>
 <ol type="1">
-<li>Set the <code>debug</code> option to <code>"analysis_58_b59aa384"</code> in <code>tar_option_set()</code>.</li>
+<li>Set the <code>debug</code> option to <code>"analysis_58_8edfc70f9a7feaf4"</code> in <code>tar_option_set()</code>.</li>
 <li>Optional: set <code>cue = tar_cue(mode = "never")</code> in <code>tar_option_set()</code> to force skip all targets except:
 <ul>
-<li><code>analysis_58_b59aa384</code> and other targets in the <code>debug</code> option.</li>
+<li><code>analysis_58_8edfc70f9a7feaf4</code> and other targets in the <code>debug</code> option.</li>
 <li>targets that do not already exist in the <a href="data.html">metadata</a>.</li>
 <li>targets that set their own <a href="https://docs.ropensci.org/targets/reference/tar_cue.html">cues</a>.</li>
 </ul></li>
@@ -830,209 +755,172 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Run <code>tar_make(callr_function = NULL, use_crew = FALSE, as_job = FALSE)</code>.</li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(</span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">packages =</span> <span class="fu">c</span>(<span class="st">"broom"</span>, <span class="st">"broom.mixed"</span>, <span class="st">"dplyr"</span>, <span class="st">"nlme"</span>, <span class="st">"tibble"</span>, <span class="st">"tidyr"</span>),</span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">debug =</span> <span class="st">"analysis_58_b59aa384"</span>, <span class="co"># Set the target you want to debug.</span></span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">cue =</span> <span class="fu">tar_cue</span>(<span class="at">mode =</span> <span class="st">"never"</span>) <span class="co"># Force skip non-debugging outdated targets.</span></span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Functions etc...</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">packages =</span> <span class="fu">c</span>(<span class="st">"broom"</span>, <span class="st">"broom.mixed"</span>, <span class="st">"dplyr"</span>, <span class="st">"nlme"</span>, <span class="st">"tibble"</span>, <span class="st">"tidyr"</span>),</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">debug =</span> <span class="st">"analysis_58_8edfc70f9a7feaf4"</span>, <span class="co"># Set the target you want to debug.</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">cue =</span> <span class="fu">tar_cue</span>(<span class="at">mode =</span> <span class="st">"never"</span>) <span class="co"># Force skip non-debugging outdated targets.</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Functions etc...</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Restart your R session.</span></span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>rstudioapi<span class="sc">::</span><span class="fu">restartSession</span>()</span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Run the pipeline in your interactive R session</span></span>
-<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="co"># (no callr process, no parallel crew workers, no RStudio job)</span></span>
-<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>(<span class="at">callr_function =</span> <span class="cn">NULL</span>, <span class="at">use_crew =</span> <span class="cn">FALSE</span>, <span class="at">as_job =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;✔ skip target analysis_batch</span></span>
-<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;✔ skip branch analysis_58_550d992c</span></span>
-<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;✔ skip branch analysis_58_582bca0a</span></span>
-<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;✔ skip branch analysis_58_f0ac3217</span></span>
-<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;✔ skip branch analysis_58_35d814c0</span></span>
-<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;✔ skip branch analysis_58_e8c6aeab</span></span>
-<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;✔ skip branch analysis_58_18f79420</span></span>
-<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;✔ skip branch analysis_58_1af19a55</span></span>
-<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;✔ skip branch analysis_58_5e604f91</span></span>
-<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;✔ skip branch analysis_58_5d2c5812</span></span>
-<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;✔ skip branch analysis_58_729b7859</span></span>
-<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;✔ skip branch analysis_58_d3899b7b</span></span>
-<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;✔ skip branch analysis_58_2a182d3f</span></span>
-<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;✔ skip branch analysis_58_5be362d3</span></span>
-<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;✔ skip branch analysis_58_5d86137a</span></span>
-<span id="cb23-25"><a href="#cb23-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;✔ skip branch analysis_58_a3562efd</span></span>
-<span id="cb23-26"><a href="#cb23-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;✔ skip branch analysis_58_a6d57bfd</span></span>
-<span id="cb23-27"><a href="#cb23-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;✔ skip branch analysis_58_f15d092c</span></span>
-<span id="cb23-28"><a href="#cb23-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;✔ skip branch analysis_58_53efc7f5</span></span>
-<span id="cb23-29"><a href="#cb23-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;• start branch analysis_58_b59aa384</span></span>
-<span id="cb23-30"><a href="#cb23-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;• pause pipeline</span></span>
-<span id="cb23-31"><a href="#cb23-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  debug target analysis_58_b59aa384</span></span>
-<span id="cb23-32"><a href="#cb23-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;</span></span>
-<span id="cb23-33"><a href="#cb23-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;ℹ You are now running an interactive debugger.</span></span>
-<span id="cb23-34"><a href="#cb23-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  You can enter code and print objects as with the normal R console.</span></span>
-<span id="cb23-35"><a href="#cb23-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  How to use: https://adv-r.hadley.nz/debugging.html#browser</span></span>
-<span id="cb23-36"><a href="#cb23-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;</span></span>
-<span id="cb23-37"><a href="#cb23-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;ℹ The debugger is poised to run the command of target analysis_58_b59aa384:</span></span>
-<span id="cb23-38"><a href="#cb23-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;</span></span>
-<span id="cb23-39"><a href="#cb23-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     tarchetypes::tar_rep_run(command = tarchetypes::tar_append_static_values(object = simulate_and_analyze_one_dataset(58), </span></span>
-<span id="cb23-40"><a href="#cb23-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    values = list(units = 58)), batch = analysis_batch, reps = 1, </span></span>
-<span id="cb23-41"><a href="#cb23-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    iteration = "vector")</span></span>
-<span id="cb23-42"><a href="#cb23-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;</span></span>
-<span id="cb23-43"><a href="#cb23-43" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;ℹ Tip: run debug(tarchetypes::tar_rep_run) and then enter "c"</span></span>
-<span id="cb23-44"><a href="#cb23-44" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  to move the debugger inside function tarchetypes::tar_rep_run().</span></span>
-<span id="cb23-45"><a href="#cb23-45" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  Then debug the function as you would normally (without {targets}).</span></span>
-<span id="cb23-46"><a href="#cb23-46" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;Called from: eval(expr = expr, envir = envir)</span></span>
-<span id="cb23-47"><a href="#cb23-47" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Restart your R session.</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>rstudioapi<span class="sc">::</span><span class="fu">restartSession</span>()</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Run the pipeline in your interactive R session</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="co"># (no callr process, no parallel crew workers, no RStudio job)</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>(<span class="at">callr_function =</span> <span class="cn">NULL</span>, <span class="at">use_crew =</span> <span class="cn">FALSE</span>, <span class="at">as_job =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; + analysis_58 declared [100 branches]</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; → You are now running an interactive debugger in target analysis_58_8edfc70f9a7feaf4.</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; You can enter code and print objects as with the normal R console.</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; How to use: https://adv-r.hadley.nz/debugging.html#browser</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; → The debugger is poised to run the command of target analysis_58_8edfc70f9a7feaf4:</span></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     tarchetypes::tar_rep_run(command = tarchetypes::tar_append_static_values(object = simulate_and_analyze_one_dataset(58), </span></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     values = list(units = 58)), batch = analysis_batch, reps = 1, </span></span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     rep_workers = 1L, iteration = "vector")</span></span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;</span></span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; → Tip: run debug(your_function) and then enter "c"          </span></span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; to move the debugger inside your_function(),   [7ms, 0+, 1-]</span></span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; where your_function() is called from the command of target</span></span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; analysis_58_8edfc70f9a7feaf4.</span></span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Then debug the function as you would normally (without `targets`).</span></span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Called from: eval(expr = expr, envir = envir)</span></span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>At this point, we are in an interactive debugger again. Only this time, we quickly skipped straight to the target we want to debug. We can follow the advice in the prompt above, or we can tinker in other ways.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Jump to the function we want to debug.</span></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> <span class="fu">debug</span>(analyze_data)</span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> c <span class="co"># Continue to the next breakpoint.</span></span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; debugging in: analyze_data(data)</span></span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Tinker with the R session to see if you can reproduce the error.</span></span>
-<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">2</span>]<span class="sc">&gt;</span> model <span class="ot">&lt;-</span> <span class="fu">gls</span>(</span>
-<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a><span class="sc">+</span>   <span class="at">model =</span> outcome <span class="sc">~</span> factor,</span>
-<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="sc">+</span>   <span class="at">data =</span> data,</span>
-<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a><span class="sc">+</span>   <span class="at">correlation =</span> <span class="fu">corSymm</span>(<span class="at">form =</span> <span class="sc">~</span> measurement <span class="sc">|</span> unit),</span>
-<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a><span class="sc">+</span>   <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> measurement)</span>
-<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a><span class="sc">+</span> )</span>
-<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error in na.fail.default(list(measurement = c(1L, 2L, 3L, 4L, 1L, 2L,  : </span></span>
-<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   missing values in object</span></span>
-<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Figure out what it would take to fix the error.</span></span>
-<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span>  model <span class="ot">&lt;-</span> <span class="fu">gls</span>(</span>
-<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a><span class="sc">+</span>   <span class="at">model =</span> outcome <span class="sc">~</span> factor,</span>
-<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a><span class="sc">+</span>   <span class="at">data =</span> data,</span>
-<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a><span class="sc">+</span>   <span class="at">correlation =</span> <span class="fu">corSymm</span>(<span class="at">form =</span> <span class="sc">~</span> measurement <span class="sc">|</span> unit),</span>
-<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a><span class="sc">+</span>   <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> measurement),</span>
-<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a><span class="sc">+</span>   <span class="at">na.action =</span> na.omit</span>
-<span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a><span class="sc">+</span> )</span>
-<span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-26"><a href="#cb24-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Confirm that the bug is fixed.</span></span>
-<span id="cb24-27"><a href="#cb24-27" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> <span class="fu">tidy</span>(model, <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.95</span>)</span>
-<span id="cb24-28"><a href="#cb24-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2 × 7</span></span>
-<span id="cb24-29"><a href="#cb24-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   term        estimate std.error statistic   p.value conf.low conf.high</span></span>
-<span id="cb24-30"><a href="#cb24-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; * &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;</span></span>
-<span id="cb24-31"><a href="#cb24-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 (Intercept)    0.925    0.205       4.51 0.0000103    0.523     1.33 </span></span>
-<span id="cb24-32"><a href="#cb24-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 factor         0.279    0.0646      4.32 0.0000230    0.153     0.406</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Jump to the function we want to debug.</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> <span class="fu">debug</span>(analyze_data)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> c <span class="co"># Continue to the next breakpoint.</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; debugging in: analyze_data(data)</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Tinker with the R session to see if you can reproduce the error.</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">2</span>]<span class="sc">&gt;</span> model <span class="ot">&lt;-</span> <span class="fu">gls</span>(</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="sc">+</span>   <span class="at">model =</span> outcome <span class="sc">~</span> factor,</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="sc">+</span>   <span class="at">data =</span> data,</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="sc">+</span>   <span class="at">correlation =</span> <span class="fu">corSymm</span>(<span class="at">form =</span> <span class="sc">~</span> measurement <span class="sc">|</span> unit),</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="sc">+</span>   <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> measurement)</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a><span class="sc">+</span> )</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error in na.fail.default(): </span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   missing values in object</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Figure out what it would take to fix the error.</span></span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span>  model <span class="ot">&lt;-</span> <span class="fu">gls</span>(</span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a><span class="sc">+</span>   <span class="at">model =</span> outcome <span class="sc">~</span> factor,</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a><span class="sc">+</span>   <span class="at">data =</span> data,</span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a><span class="sc">+</span>   <span class="at">correlation =</span> <span class="fu">corSymm</span>(<span class="at">form =</span> <span class="sc">~</span> measurement <span class="sc">|</span> unit),</span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a><span class="sc">+</span>   <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> measurement),</span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a><span class="sc">+</span>   <span class="at">na.action =</span> na.omit</span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a><span class="sc">+</span> )</span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Confirm that the bug is fixed.</span></span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a>Browse[<span class="dv">1</span>]<span class="sc">&gt;</span> <span class="fu">tidy</span>(model, <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.95</span>)</span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2 × 7</span></span>
+<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   term        estimate std.error statistic   p.value conf.low conf.high</span></span>
+<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; * &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;</span></span>
+<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 (Intercept)    0.925    0.205       4.51 0.0000103    0.523     1.33 </span></span>
+<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 factor         0.279    0.0646      4.32 0.0000230    0.153     0.406</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="workspaces" class="level2" data-number="4.9">
-<h2 data-number="4.9" class="anchored" data-anchor-id="workspaces"><span class="header-section-number">4.9</span> Workspaces</h2>
-<p>A workspace is a special file that helps locally reconstruct the environment of a target outside the pipeline. To demonstrate, consider a different version of the above example which saves the datasets and the models in different targets. We set <code>workspace_on_error = TRUE</code> in <code>tar_option_set()</code> so that each errored target proactively saves a workspace file.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p>
+<section id="workspaces" class="level2" data-number="4.8">
+<h2 data-number="4.8" class="anchored" data-anchor-id="workspaces"><span class="header-section-number">4.8</span> Workspaces</h2>
+<p>A workspace is a special file that helps locally reconstruct the environment of a target outside the pipeline. By default, every target that throws an error generates a workspace.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a><a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(</span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">packages =</span> <span class="fu">c</span>(<span class="st">"broom"</span>, <span class="st">"broom.mixed"</span>, <span class="st">"dplyr"</span>, <span class="st">"nlme"</span>, <span class="st">"tibble"</span>, <span class="st">"tidyr"</span>),</span>
-<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">workspace_on_error =</span> <span class="cn">TRUE</span> <span class="co"># Save a workspace file for a target that errors out.</span></span>
-<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>simulate_data <span class="ot">&lt;-</span> <span class="cf">function</span>(units) {</span>
-<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">unit =</span> <span class="fu">seq_len</span>(units), <span class="at">factor =</span> <span class="fu">rnorm</span>(units, <span class="at">mean =</span> <span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">expand_grid</span>(<span class="at">measurement =</span> <span class="fu">seq_len</span>(<span class="dv">4</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">outcome =</span> <span class="fu">sqrt</span>(factor) <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="fu">n</span>()))</span>
-<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>analyze_data <span class="ot">&lt;-</span> <span class="cf">function</span>(data) {</span>
-<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gls</span>(</span>
-<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">model =</span> outcome <span class="sc">~</span> factor,</span>
-<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> data,</span>
-<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">correlation =</span> <span class="fu">corSymm</span>(<span class="at">form =</span> <span class="sc">~</span> measurement <span class="sc">|</span> unit),</span>
-<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> measurement)</span>
-<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb25-23"><a href="#cb25-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tidy</span>(<span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.95</span>)</span>
-<span id="cb25-24"><a href="#cb25-24" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb25-25"><a href="#cb25-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-26"><a href="#cb25-26" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
-<span id="cb25-27"><a href="#cb25-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(rep, <span class="fu">seq_len</span>(<span class="dv">100</span>)),</span>
-<span id="cb25-28"><a href="#cb25-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data, <span class="fu">simulate_data</span>(<span class="dv">100</span>), <span class="at">pattern =</span> <span class="fu">map</span>(rep)),</span>
-<span id="cb25-29"><a href="#cb25-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(analysis, <span class="fu">analyze_data</span>(data), <span class="at">pattern =</span> <span class="fu">map</span>(data))</span>
-<span id="cb25-30"><a href="#cb25-30" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _targets.R</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tarchetypes)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_option_set</span>(</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">packages =</span> <span class="fu">c</span>(<span class="st">"broom"</span>, <span class="st">"broom.mixed"</span>, <span class="st">"dplyr"</span>, <span class="st">"nlme"</span>, <span class="st">"tibble"</span>, <span class="st">"tidyr"</span>)</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>simulate_data <span class="ot">&lt;-</span> <span class="cf">function</span>(units) {</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">options</span>(<span class="at">warn =</span> <span class="sc">-</span><span class="dv">1</span>)</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">unit =</span> <span class="fu">seq_len</span>(units), <span class="at">factor =</span> <span class="fu">rnorm</span>(units, <span class="at">mean =</span> <span class="dv">3</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">expand_grid</span>(<span class="at">measurement =</span> <span class="fu">seq_len</span>(<span class="dv">4</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">outcome =</span> <span class="fu">sqrt</span>(factor) <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="fu">n</span>()))</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>analyze_data <span class="ot">&lt;-</span> <span class="cf">function</span>(data) {</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gls</span>(</span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">model =</span> outcome <span class="sc">~</span> factor,</span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> data,</span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">correlation =</span> <span class="fu">corSymm</span>(<span class="at">form =</span> <span class="sc">~</span> measurement <span class="sc">|</span> unit),</span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> measurement)</span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tidy</span>(<span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">conf.level =</span> <span class="fl">0.95</span>)</span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(rep, <span class="fu">seq_len</span>(<span class="dv">100</span>)),</span>
+<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(data, <span class="fu">simulate_data</span>(<span class="dv">100</span>), <span class="at">pattern =</span> <span class="fu">map</span>(rep)),</span>
+<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tar_target</span>(analysis, <span class="fu">analyze_data</span>(data), <span class="at">pattern =</span> <span class="fu">map</span>(data))</span>
+<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start target rep</span></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built target rep [0.6 seconds]</span></span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start branch data_c9beb7ca</span></span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built branch data_c9beb7ca [0.015 seconds]</span></span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start branch data_3658ffe6</span></span>
-<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built branch data_3658ffe6 [0.009 seconds]</span></span>
-<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start branch data_b786c6ae</span></span>
-<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # More data targets...</span></span>
-<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ...</span></span>
-<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built pattern data</span></span>
-<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start branch analysis_3ccf0b08</span></span>
-<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built branch analysis_3ccf0b08 [0.214 seconds]</span></span>
-<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start branch analysis_0e85e530</span></span>
-<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • built branch analysis_0e85e530 [0.227 seconds]</span></span>
-<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start branch analysis_03816a9f</span></span>
-<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # More analysis targets...</span></span>
-<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ...</span></span>
-<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • start branch analysis_02de2921</span></span>
-<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • record workspace analysis_02de2921</span></span>
-<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✖ error branch analysis_02de2921</span></span>
-<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; • end pipeline [5.619 seconds]</span></span>
-<span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; There were 15 warnings (use warnings() to see them)</span></span>
-<span id="cb26-25"><a href="#cb26-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
-<span id="cb26-26"><a href="#cb26-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ! Error running targets::tar_make()</span></span>
-<span id="cb26-27"><a href="#cb26-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Target errors: targets::tar_meta(fields = error, complete_only = TRUE)</span></span>
-<span id="cb26-28"><a href="#cb26-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Tips: https://books.ropensci.org/targets/debugging.html</span></span>
-<span id="cb26-29"><a href="#cb26-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Last error: missing values in object</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_make</span>()</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; + rep dispatched</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ rep completed [145ms, 97 B]</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; + data declared [100 branches]</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ data completed [410ms, 442.17 kB]                           </span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; + analysis declared [100 branches]                            </span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✖ analysis_9f60c6e05a6c5414 errored                            </span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✖ errored pipeline [1.2s, 101 completed, 0 skipped]            </span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error:</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ! Error in tar_make():</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   missing values in object</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   See https://books.ropensci.org/targets/debugging.html</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>What went wrong with target <code>analysis_02de2921</code>? To find out, we load the workspace in an interactive session.</p>
+<p>What went wrong with target <code>analysis_9f60c6e05a6c5414</code>? To find out, we load the workspace in an interactive session.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="co"># List the available workspaces.</span></span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_workspaces</span>()</span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "analysis_02de2921"</span></span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the workspace.</span></span>
-<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_workspace</span>(analysis_02de2921)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co"># List the available workspaces.</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_workspaces</span>()</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "analysis_9f60c6e05a6c5414"</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the workspace.</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_workspace</span>(analysis_9f60c6e05a6c5414)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>At this point, the global objects, functions, and upstream dependencies of target <code>analysis_02de2921</code> are in memory. In addition, the target’s original random number generator seed is set.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a></p>
+<p>At this point, the global objects, functions, and upstream dependencies of target <code>analysis_9f60c6e05a6c5414</code> are in memory. In addition, the target’s original random number generator seed is set.<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span>()</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "analyze_data"  "data"          "simulate_data"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span>()</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "analyze_data"  "data"          "simulate_data"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>With the data and functions in hand, you can reproduce the error locally.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">analyze_data</span>(data)</span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error in na.fail.default(list(measurement = c(1L, 2L, 3L, 4L, 1L, 2L,  :</span></span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   missing values in object</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R console</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">analyze_data</span>(data)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error in na.fail.default():</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   missing values in object</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>For more assistance, you can load the [traceback] from the workspace file.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_traceback</span>(analysis_02de2921)</span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="co">#  [1] "eval(expr = expr, envir = envir)"</span></span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="co">#  [2] "eval(expr = expr, envir = envir)"</span></span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="co">#  [3] "analyze_data(data)"</span></span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="co">#  [4] "gls(model = outcome ~ factor, data = data, correlation = corSymm(form = ~measurement | unit), weights = varIden"</span></span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="co">#  [5] "tidy(., conf.int = TRUE, conf.level = 0.95)"</span></span>
-<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="co">#  [6] "gls(model = outcome ~ factor, data = data, correlation = corSymm(form = ~measurement | unit), weights = varIden"</span></span>
-<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a><span class="co">#  [7] "do.call(model.frame, mfArgs)"</span></span>
-<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a><span class="co">#  [8] "(function (formula, ...) \nUseMethod(\"model.frame\"))(formula = ~measurement + unit + outcome + factor, data = li"</span></span>
-<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a><span class="co">#  [9] "model.frame.default(formula = ~measurement + unit + outcome + factor, data = list(c(1, 1, 1, 1, 2, 2, 2, 2, 3, "</span></span>
-<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a><span class="co"># [10] "(function (object, ...) \nUseMethod(\"na.fail\"))(list(c(1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, "</span></span>
-<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a><span class="co"># [11] "na.fail.default(list(c(1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2"</span></span>
-<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a><span class="co"># [12] "stop(\"missing values in object\")"</span></span>
-<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a><span class="co"># [13] ".handleSimpleError(function (condition) \n{\n    state$error &lt;- build_message(condition)\n    state$traceback &lt;- b"</span></span>
-<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a><span class="co"># [14] "h(simpleError(msg, call))"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tar_traceback</span>(analysis_9f60c6e05a6c5414)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [1] "analyze_data(data)"                                                           </span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [2] "gls(model = outcome ~ factor, data = data, correlation = corSymm(form = ..."  </span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [3] "tidy(., conf.int = TRUE, conf.level = 0.95)"                                  </span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [4] "gls(model = outcome ~ factor, data = data, correlation = corSymm(form = ..."  </span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [5] "do.call(model.frame, mfArgs)"                                                 </span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [6] "(function (formula, ...)  UseMethod(\"model.frame\"))(formula = ~measureme..."</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [7] "model.frame.default(formula = ~measurement + unit + outcome +      facto..."  </span></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [8] "(function (object, ...)  UseMethod(\"na.fail\"))(structure(list(measuremen..."</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [9] "na.fail.default(structure(list(measurement = c(1L, 2L, 3L, 4L,  1L, 2L, ..."  </span></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [10] "stop(\"missing values in object\")"                                           </span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [11] ".handleSimpleError(function (condition)  {     state$error &lt;- build_mess..."  </span></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [12] "h(simpleError(msg, call))"    </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 
@@ -1040,11 +928,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn1"><p>You can fix the bug by either removing the missing values from the dataset or by setting <code>na.action = na.omit</code> in <code>gls()</code>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>With <code>callr_function = NULL</code>, a messy local R environment can accidentally change the functions and objects that a target depends on, which can invalidate those targets and erase hard-earned results that were previously correct. This is why <code>targets</code> uses <code>callr</code> in the first place, and it is why <code>callr_function = NULL</code> is for debugging only. If you do need <code>callr_function = NULL</code>, please restart your R session first.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3"><p>In <code>tarchetypes</code> version <code>0.7.1.9000</code> and above, this re-batching will <a href="https://github.com/ropensci/tarchetypes/pull/113">not change the random number generator seed assigned to each call to <code>simulate_and_analyze_one_dataset()</code></a>.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn4"><p><code>tar_option_set()</code> also has a <code>workspaces</code> argument to let you choose which targets save workspace files, regardless of whether they hit errors.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn5"><p>You can retrieve this seed with <code>tar_meta(names = analysis_02de2921, fields = seed)</code>. In the pipeline, <code>targets</code> sets this seed with <code>withr::with_seed()</code> just before running the target. However, other functions or target factories may set their own seeds. For example, <code>tarchetypes::tar_map_rep()</code> sets its own target seeds so they are <a href="https://github.com/ropensci/tarchetypes/pull/113">resilient to re-batching</a>. For more details on seeds, see the documentation of the <code>seed</code> argument of <a href="https://docs.ropensci.org/targets/reference/tar_option_set.html#arguments"><code>tar_option_set()</code></a>.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p><code>tar_meta(fields = warnings, complete_only = TRUE)</code> retrieves warnings.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>You can fix the bug by either removing the missing values from the dataset or by setting <code>na.action = na.omit</code> in <code>gls()</code>.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>With <code>callr_function = NULL</code>, a messy local R environment can accidentally change the functions and objects that a target depends on, which can invalidate those targets and erase hard-earned results that were previously correct. This is why <code>targets</code> uses <code>callr</code> in the first place, and it is why <code>callr_function = NULL</code> is for debugging only. If you do need <code>callr_function = NULL</code>, please restart your R session first.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>In <code>tarchetypes</code> version <code>0.7.1.9000</code> and above, this re-batching will <a href="https://github.com/ropensci/tarchetypes/pull/113">not change the random number generator seed assigned to each call to <code>simulate_and_analyze_one_dataset()</code></a>.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>See the <code>workspace_on_error</code> argument of <code>tar_option_set()</code>.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p><code>tar_option_set()</code> also has a <code>workspaces</code> argument to let you choose which targets save workspace files, regardless of whether they hit errors.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>You can retrieve this seed with <code>tar_meta(names = analysis_9f60c6e05a6c5414, fields = seed)</code>. In the pipeline, <code>targets</code> sets this seed with <code>withr::with_seed()</code> just before running the target. However, other functions or target factories may set their own seeds. For example, <code>tarchetypes::tar_map_rep()</code> sets its own target seeds so they are <a href="https://github.com/ropensci/tarchetypes/pull/113">resilient to re-batching</a>. For more details on seeds, see the documentation of the <code>seed</code> argument of <a href="https://docs.ropensci.org/targets/reference/tar_option_set.html#arguments"><code>tar_option_set()</code></a>.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
 
