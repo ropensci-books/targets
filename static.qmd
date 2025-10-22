@@ -41,7 +41,7 @@ Static branching is the act of defining a group of targets in bulk before the pi
 
 ## Map
 
-[`tar_map()`](https://docs.ropensci.org/tarchetypes/reference/tar_map.html) from the [`tarchetypes`](https://github.com/ropensci/tarchetypes) package creates copies of existing target objects, where each new command is a variation on the original. In the example below, we have a data analysis workflow that iterates over datasets and analysis methods. The `values` data frame has the operational parameters of each data analysis, and `tar_map()` creates one new target per row.
+[`tar_map()`](https://docs.ropensci.org/tarchetypes/reference/tar_map.html) from the [`tarchetypes`](https://github.com/ropensci/tarchetypes) package creates copies of existing target definition objects, where each new command is a variation on the original. In the example below, we have a data analysis workflow that iterates over datasets and analysis methods. The `values` data frame has the operational parameters of each data analysis, and `tar_map()` creates one new target per row.
 
 ```{r, echo = TRUE, eval = FALSE}
 # _targets.R file:
@@ -244,7 +244,7 @@ tar_make()
 tar_read(combined_target)
 ```
 
-To use `tar_combine()` and `tar_map()` together in more complicated situations, you may need to supply `unlist = FALSE` to `tar_map()`. That way, `tar_map()` will return a nested list of target objects, and you can combine the ones you want. The pipeline extends our previous `tar_map()` example by combining just the summaries, omitting the analyses from `tar_combine()`. Also note the use of `bind_rows(!!!.x)` below. This is how you supply custom code to combine the return values of other targets. `.x` is a placeholder for the return values, and `!!!` is the "unquote-splice" operator from the `rlang` package.
+To use `tar_combine()` and `tar_map()` together in more complicated situations, you may need to supply `unlist = FALSE` to `tar_map()`. That way, `tar_map()` will return a nested list of target definition objects, and you can combine the ones you want. The pipeline extends our previous `tar_map()` example by combining just the summaries, omitting the analyses from `tar_combine()`. Also note the use of `bind_rows(!!!.x)` below. This is how you supply custom code to combine the return values of other targets. `.x` is a placeholder for the return values, and `!!!` is the "unquote-splice" operator from the `rlang` package.
 
 ```{r, eval = FALSE, echo = TRUE}
 # _targets.R file:
