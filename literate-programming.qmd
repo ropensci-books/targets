@@ -18,10 +18,10 @@ Literate programming is the practice of mixing code and descriptive writing in o
 
 There are two kinds of literate programming in `targets`:
 
-1. A literate programming source document (or Quarto project) that renders inside an individual target. Here, you define a special kind of target that runs a lightweight R Markdown report which depends on upstream targets.
-2. [Target Markdown](#markdown), an overarching system in which one or more [Quarto](https://quarto.org/) or R Markdown files write the `_targets.R` file and encapsulate the pipeline.
+1. A literate programming source document (or Quarto project) that renders inside an individual target. Here, you define a special kind of target that runs a lightweight R Markdown report or Quarto report/project which depends on upstream targets.
+2. The [`tar_tangle()`](https://docs.ropensci.org/tarchetypes/reference/tar_tangle.html#details) function available in `tarchetypes` >= 0.13.2.9002, which lets you express the pipeline itself as a Quarto or R Markdown document. 
 
-We recommend (1) in order to fully embrace pipelines as a paradigm, and that is where this chapter will focus. However, (2) is still supported, and we include it [in an appendix](#markdown).
+This chapter focuses on (1), which is more ubiquitous and versatile.
 
 ## R Markdown targets
 
